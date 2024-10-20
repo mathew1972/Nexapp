@@ -4,11 +4,11 @@ frappe.ui.form.on('Lead', {
         const fields = [
             'naming_series', 'salutation', 'first_name', 'middle_name', 'last_name',
             'lead_name', 'job_title', 'gender', 'source', 'lead_owner', 'status',
-            'customer', 'type', 'request_type', 'email_id', 'website', 'custom_rating',
+            'customer', 'type', 'request_type', 'email_id', 'website', 
             'mobile_no', 'whatsapp_no', 'phone', 'phone_ext', 'company_name',
             'no_of_employees', 'annual_revenue', 'industry', 'market_segment',
-            'territory', 'custom_street__', 'custom_zip_code_', 'country', 'city',
-            'fax', 'state', 'contact_html', 'custom__description__', 'custom_description', 'custom_zip_code__'
+            'territory', 'country', 'city',
+            'fax', 'state', 'contact_html', 'custom_description_'
         ];
 
         // Apply styles and focus/blur effects for each field in the list

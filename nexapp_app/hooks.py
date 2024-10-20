@@ -250,11 +250,29 @@ app_include_css = "/assets/nexapp_app/css/custom.css"
 
 fixtures = [
     {
-        "dt": "Website Theme",
-        "dt": "Website Settings",        
-        "dt": "Territory",
-        "dt": "Web Page",
-        "dt": "Navbar Settings"
+        "dt": "Website Theme"
+    },
+    {
+        "dt": "Website Settings"
+    },
+    {
+        "dt": "Territory"
+    },
+    {
+        "dt": "Web Page"
+    },
+    {
+        "dt": "Navbar Settings", 
+        "filters": [["module", "=", "Nexapp App"]]
+    },
+    {
+        "dt": "Custom Field", 
+        "filters": [["module", "=", "Nexapp App"]]
+    },
+    {
+        "dt": "Property Setter", 
+        "filters": [["module", "=", "Nexapp App"]]
     }
+
 ]
 
