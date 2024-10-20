@@ -248,3 +248,12 @@ doctype_js = {
 
 app_include_css = "/assets/nexapp_app/css/custom.css"
 
+fixtures = [
+    {
+        "dt": "Website Theme",
+        "dt": "Website Settings",        
+        "dt": "Territory",
+        "dt": "Web Page"
+    }
+]
+
