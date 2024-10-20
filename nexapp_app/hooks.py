@@ -253,7 +253,8 @@ fixtures = [
         "dt": "Website Theme",
         "dt": "Website Settings",        
         "dt": "Territory",
-        "dt": "Web Page"
+        "dt": "Web Page",
+        "dt": "Navbar Settings"
     }
 ]
 
