@@ -242,3 +242,9 @@ app_license = "mit"
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+doctype_js = {
+    "Lead": "public/js/lead_custom.js"
+}
+
+app_include_css = "/assets/nexapp_app/css/custom.css"
+

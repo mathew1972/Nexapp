@@ -1,0 +1,8 @@
+.navbar {
+    background-color: #313949 !important;
+    border-bottom: 1px solid #ccc;
+}
+
+.navbar .navbar-brand, .navbar .navbar-nav > li > a {
+    color: white !important;
+}
