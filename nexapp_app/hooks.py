@@ -243,7 +243,8 @@ app_license = "mit"
 # }
 
 doctype_js = {
-    "Lead": "public/js/lead_custom.js"
+    "Lead": "public/js/lead_custom.js",
+    "Quotation": "public/js/Quotation_custom.js"
 }
 
 app_include_css = "/assets/nexapp_app/css/custom.css"
@@ -260,11 +261,7 @@ fixtures = [
     },
     {
         "dt": "Web Page"
-    },
-    {
-        "dt": "Navbar Settings", 
-        "filters": [["module", "=", "Nexapp App"]]
-    },
+    },    
     {
         "dt": "Custom Field", 
         "filters": [["module", "=", "Nexapp App"]]

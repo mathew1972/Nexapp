@@ -39,18 +39,6 @@
   "docstatus": 0,
   "doctype": "Territory",
   "is_group": 0,
-  "modified": "2024-10-20 19:18:40.613699",
-  "name": "West India",
-  "old_parent": "All Territories",
-  "parent_territory": "All Territories",
-  "targets": [],
-  "territory_manager": null,
-  "territory_name": "West India"
- },
- {
-  "docstatus": 0,
-  "doctype": "Territory",
-  "is_group": 0,
   "modified": "2024-10-20 19:19:07.877690",
   "name": "Central India",
   "old_parent": "All Territories",
@@ -82,5 +70,17 @@
   "targets": [],
   "territory_manager": null,
   "territory_name": "North India"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Territory",
+  "is_group": 0,
+  "modified": "2024-10-20 19:18:40.613699",
+  "name": "West India",
+  "old_parent": "All Territories",
+  "parent_territory": "All Territories",
+  "targets": [],
+  "territory_manager": null,
+  "territory_name": "West India"
  }
 ]
