@@ -244,7 +244,8 @@ app_license = "mit"
 
 doctype_js = {
     "Lead": "public/js/lead_custom.js",
-    "Quotation": "public/js/Quotation_custom.js"
+    "Quotation": "public/js/Quotation_custom.js",
+    "Item": "public/js/Item_custom.js"
 }
 
 app_include_css = "/assets/nexapp_app/css/custom.css"
