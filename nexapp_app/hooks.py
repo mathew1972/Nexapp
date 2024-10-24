@@ -242,6 +242,7 @@ app_license = "mit"
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+# Hooks
 doctype_js = {
     "Lead": "public/js/lead_custom.js",
     "Quotation": "public/js/Quotation_custom.js",

@@ -19,7 +19,7 @@ frappe.ui.form.on('Opportunity', {
             if (frm.fields_dict[field]) {
                 const fieldElement = $(frm.fields_dict[field].wrapper).find('input, textarea, select');
 
-                // Check if the field is mandatory
+                // Check if the field is mandatory//
                 if (frm.fields_dict[field].df.reqd) {
                     fieldElement.css({
                         'border': '1px solid #ccc',
