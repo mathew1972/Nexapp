@@ -1,5 +1,5 @@
 app_name = "nexapp"
-app_title = "Nexapp ERP"
+app_title = "Nexapp"
 app_publisher = "Nexapp Technologies Private Limited"
 app_description = "Nexapp ERP"
 app_email = "mathewsamuel10@gmail.com"
@@ -15,7 +15,7 @@ app_license = "mit"
 # 	{
 # 		"name": "nexapp",
 # 		"logo": "/assets/nexapp/logo.png",
-# 		"title": "Nexapp ERP",
+# 		"title": "Nexapp",
 # 		"route": "/nexapp",
 # 		"has_permission": "nexapp.api.permission.has_app_permission"
 # 	}
