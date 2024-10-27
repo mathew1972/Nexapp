@@ -70,7 +70,7 @@ app_license = "mit"
 # automatically create page for each record of this doctype
 # website_generators = ["Web Page"]
 
-# Jinja
+# Jinjanexapperp.com
 # ----------
 
 # add methods and filters to jinja environment
@@ -242,3 +242,25 @@ app_license = "mit"
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+app_include_css = "/assets/nexapp/css/custom.css"
+
+
+
+doctype_js = {
+    "Lead": "public/js/lead_custom.js",
+    "Opportunity": "public/js/Deal_custom.js",
+    "Customer": "public/js/Customer_custom.js",
+    "Quotation": "public/js/Quotes_custom.js",
+    "Item": "public/js/Product_custom.js"   
+    
+}
+
+fixtures = [
+    {"dt": "Territory"},
+    {"dt": "DocType", "filters": [["module", "=", "Nexapp"]]},
+    {"dt": "Custom Field", "filters": [["module", "=", "Nexapp"]]},
+    {"dt": "Property Setter", "filters": [["module", "=", "Nexapp"]]},
+    {"dt": "Website Theme"},
+    {"dt": "Website Settings"},
+    {"dt": "Web Page"}
+]
