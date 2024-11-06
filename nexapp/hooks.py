@@ -242,16 +242,38 @@ app_license = "mit"
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
-app_include_css = "/assets/nexapp/css/custom.css"
-
-
+app_include_css = [
+    "/assets/nexapp/css/custom.css"    
+]
 
 doctype_js = {
     "Lead": "public/js/lead_custom.js",
     "Opportunity": "public/js/Deal_custom.js",
     "Customer": "public/js/Customer_custom.js",
     "Quotation": "public/js/Quotes_custom.js",
-    "Item": "public/js/Product_custom.js"   
+    "Quotation": "public/js/quotation_custom.js",
+    "Item": "public/js/Product_custom.js",
+    "Item Price": "public/js/Product_Price_custom.js",
+    "Sales Order": "public/js/Sales_Order_custom.js",
+    "Sales Invoice": "public/js/Sales_Invoice_custom.js",
+    "Payment Entry": "public/js/Payment_Entry_custom.js",
+    "Territory": "public/js/Territory_custom.js",
+    "Job Opening": "public/js/Job_opening _custom.js",
+    "Job Applicant": "public/js/Job_applicant_custom.js",
+    "Job Offer": "public/js/Job_offer_custom.js",
+    "Staffing Plan": "public/js/Staffing_plan_custom.js",
+    "Job Requisition": "public/js/Job_requisition_custom.js",
+    "Employee Referral": "public/js/Employee_referral_custom.js",
+    "Interview Type": "public/js/Interview_type_custom.js",
+    "Interview Round": "public/js/Interview_round_custom.js",
+    "Interview": "public/js/Interview_custom.js",
+    "Interview Feedback": "public/js/Interview_feedback_custom.js",
+    "Appointment Letter Template": "public/js/Appointment_letter_template_custom.js",
+    "Appointment Letter": "public/js/Appointment_letter_custom.js",
+    "Employee": "public/js/Employee_custom.js"                 
+
+
+    
     
 }
 
@@ -260,7 +282,14 @@ fixtures = [
     {"dt": "DocType", "filters": [["module", "=", "Nexapp"]]},
     {"dt": "Custom Field", "filters": [["module", "=", "Nexapp"]]},
     {"dt": "Property Setter", "filters": [["module", "=", "Nexapp"]]},
-    {"dt": "Website Theme"},
     {"dt": "Website Settings"},
-    {"dt": "Web Page"}
+    {"dt": "Navbar Settings"},
+    {"dt": "Website Theme"},
+    {"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},
+    {"dt": "Custom HTML Block", "filters": [["name", "=", "Recruitment Workspace"]]},
+    {"dt": "Workspace", "filters": [["name", "=", "HR Recruitment"]]}
 ]
+
+
+
+

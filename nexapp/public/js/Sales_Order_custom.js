@@ -1,40 +1,40 @@
-frappe.ui.form.on('Quotation', {
+frappe.ui.form.on('Sales Order', {
     refresh: function(frm) {
         const fields = [
-            'title', 'quotation_to', 'party_name', 'customer_name', 
-            'is_reverse_charge', 'is_export_with_gst', 'transaction_date', 
-            'order_type', 'valid_till', 'company', 'amended_from', 
-            'naming_series', 'currency_and_price_list', 'currency', 
-            'conversion_rate', 'selling_price_list', 'price_list_currency', 
-            'plc_conversion_rate', 'ignore_pricing_rule', 'scan_barcode', 
-            'items', 'total_qty', 'total_net_weight', 'base_total', 
-            'base_net_total', 'total', 'net_total', 'tax_category', 
-            'taxes_and_charges', 'shipping_rule', 'incoterm', 
+            'title', 'naming_series', 'customer', 'customer_name', 'tax_id',
+            'order_type', 'transaction_date', 'delivery_date', 'po_no', 'po_date',
+            'company', 'skip_delivery_note', 'is_reverse_charge', 'is_export_with_gst', 
+            'amended_from', 'cost_center', 'project', 'currency_and_price_list', 
+            'currency', 'conversion_rate', 'selling_price_list', 'price_list_currency', 
+            'plc_conversion_rate', 'ignore_pricing_rule', 'sec_warehouse', 
+            'scan_barcode', 'set_warehouse', 'reserve_stock', 'items', 'total_qty', 
+            'total_net_weight', 'base_total', 'base_net_total', 'total', 'net_total', 
+            'tax_category', 'taxes_and_charges', 'shipping_rule', 'incoterm', 
             'named_place', 'taxes', 'base_total_taxes_and_charges', 
             'total_taxes_and_charges', 'totals', 'base_grand_total', 
-            'base_rounding_adjustment', 'base_rounded_total', 
-            'base_in_words', 'grand_total', 'rounding_adjustment', 
-            'rounded_total', 'in_words', 'apply_discount_on', 
-            'base_discount_amount', 'coupon_code', 
-            'additional_discount_percentage', 'discount_amount', 
-            'referral_sales_partner', 'sec_tax_breakup', 
-            'other_charges_calculation', 'gst_breakup_table', 
-            'packed_items', 'pricing_rule_details', 'pricing_rules', 
-            'address_and_contact_tab', 'customer_address', 
-            'address_display', 'billing_address_gstin', 'gst_category', 
-            'place_of_supply', 'contact_person', 'contact_display', 
-            'contact_mobile', 'contact_email', 'shipping_address_name', 
-            'shipping_address', 'company_address', 'company_gstin', 
-            'company_address_display', 'terms_tab', 
-            'payment_terms_template', 'payment_schedule', 'tc_name', 
-            'terms', 'more_info_tab', 'auto_repeat', 
-            'update_auto_repeat_reference', 'print_settings', 
-            'letter_head', 'group_same_items', 'select_print_heading', 
-            'language', 'lost_reasons', 'competitors', 
-            'order_lost_reason', 'status', 'customer_group', 
-            'territory', 'campaign', 'source', 
-            'opportunity', 'supplier_quotation', 'enq_det', 
-            'connections_tab'
+            'base_rounding_adjustment', 'base_rounded_total', 'base_in_words', 
+            'grand_total', 'rounding_adjustment', 'rounded_total', 'in_words', 
+            'advance_paid', 'disable_rounded_total', 'apply_discount_on', 
+            'base_discount_amount', 'coupon_code', 'additional_discount_percentage', 
+            'discount_amount', 'other_charges_calculation', 'packing_list', 
+            'packed_items', 'pricing_rule_details', 'pricing_rules', 'contact_info', 
+            'billing_address_column', 'customer_address', 'address_display', 
+            'billing_address_gstin', 'gst_category', 'place_of_supply', 
+            'customer_group', 'territory', 'contact_person', 'contact_display', 
+            'contact_phone', 'contact_mobile', 'contact_email', 'shipping_address_column', 
+            'shipping_address_name', 'shipping_address', 'dispatch_address_name', 
+            'dispatch_address', 'company_address', 'company_gstin', 
+            'company_address_display', 'payment_terms_template', 'payment_schedule', 
+            'tc_name', 'terms', 'more_info', 'status', 'delivery_status', 
+            'per_delivered', 'per_billed', 'per_picked', 'billing_status', 
+            'sales_partner', 'amount_eligible_for_commission', 'commission_rate', 
+            'total_commission', 'sales_team', 'loyalty_points_redemption', 
+            'loyalty_points', 'loyalty_amount', 'from_date', 'to_date', 'auto_repeat', 
+            'update_auto_repeat_reference', 'printing_details', 'letter_head', 
+            'group_same_items', 'select_print_heading', 'language', 
+            'represents_company', 'source', 'inter_company_order_reference', 
+            'campaign', 'party_account_currency', 'connections_tab', 
+            'ecommerce_gstin'
         ];
 
         fields.forEach(function(field) {
@@ -135,4 +135,3 @@ frappe.ui.form.on('Quotation', {
         });
     }
 })
-

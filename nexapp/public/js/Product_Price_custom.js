@@ -1,40 +1,47 @@
-frappe.ui.form.on('Quotation', {
+frappe.ui.form.on('Item Price', {
     refresh: function(frm) {
         const fields = [
-            'title', 'quotation_to', 'party_name', 'customer_name', 
-            'is_reverse_charge', 'is_export_with_gst', 'transaction_date', 
-            'order_type', 'valid_till', 'company', 'amended_from', 
-            'naming_series', 'currency_and_price_list', 'currency', 
-            'conversion_rate', 'selling_price_list', 'price_list_currency', 
-            'plc_conversion_rate', 'ignore_pricing_rule', 'scan_barcode', 
-            'items', 'total_qty', 'total_net_weight', 'base_total', 
-            'base_net_total', 'total', 'net_total', 'tax_category', 
-            'taxes_and_charges', 'shipping_rule', 'incoterm', 
-            'named_place', 'taxes', 'base_total_taxes_and_charges', 
-            'total_taxes_and_charges', 'totals', 'base_grand_total', 
-            'base_rounding_adjustment', 'base_rounded_total', 
-            'base_in_words', 'grand_total', 'rounding_adjustment', 
-            'rounded_total', 'in_words', 'apply_discount_on', 
-            'base_discount_amount', 'coupon_code', 
-            'additional_discount_percentage', 'discount_amount', 
-            'referral_sales_partner', 'sec_tax_breakup', 
-            'other_charges_calculation', 'gst_breakup_table', 
-            'packed_items', 'pricing_rule_details', 'pricing_rules', 
-            'address_and_contact_tab', 'customer_address', 
-            'address_display', 'billing_address_gstin', 'gst_category', 
-            'place_of_supply', 'contact_person', 'contact_display', 
-            'contact_mobile', 'contact_email', 'shipping_address_name', 
-            'shipping_address', 'company_address', 'company_gstin', 
-            'company_address_display', 'terms_tab', 
-            'payment_terms_template', 'payment_schedule', 'tc_name', 
-            'terms', 'more_info_tab', 'auto_repeat', 
-            'update_auto_repeat_reference', 'print_settings', 
-            'letter_head', 'group_same_items', 'select_print_heading', 
-            'language', 'lost_reasons', 'competitors', 
-            'order_lost_reason', 'status', 'customer_group', 
-            'territory', 'campaign', 'source', 
-            'opportunity', 'supplier_quotation', 'enq_det', 
-            'connections_tab'
+            'details', 'item_code', 'item_name', 'item_group', 
+            'gst_hsn_code', 'stock_uom', 'disabled', 
+            'allow_alternative_item', 'is_stock_item', 
+            'has_variants', 'opening_stock', 'valuation_rate', 
+            'standard_rate', 'is_fixed_asset', 'auto_create_assets', 
+            'is_grouped_asset', 'asset_category', 'asset_naming_series', 
+            'over_delivery_receipt_allowance', 'over_billing_allowance', 
+            'image', 'naming_series', 'description', 'brand', 
+            'unit_of_measure_conversion', 'uoms', 'dashboard_tab', 
+            'shelf_life_in_days', 'end_of_life', 
+            'default_material_request_type', 'valuation_method', 
+            'warranty_period', 'weight_per_unit', 'weight_uom', 
+            'allow_negative_stock', 'sb_barcodes', 'barcodes', 
+            'reorder_levels', 'serial_nos_and_batches', 
+            'has_batch_no', 'create_new_batch', 'batch_number_series', 
+            'has_expiry_date', 'retain_sample', 'sample_quantity', 
+            'has_serial_no', 'serial_no_series', 'variant_of', 
+            'variant_based_on', 'attributes', 'accounting', 
+            'enable_deferred_expense', 'no_of_months_exp', 
+            'enable_deferred_revenue', 'no_of_months', 
+            'item_defaults', 'purchasing_tab', 'purchase_uom', 
+            'min_order_qty', 'safety_stock', 'is_purchase_item', 
+            'purchase_details_cb', 'lead_time_days', 'last_purchase_rate', 
+            'is_customer_provided_item', 'customer', 'supplier_details', 
+            'delivered_by_supplier', 'supplier_items', 
+            'foreign_trade_details', 'country_of_origin', 
+            'customs_tariff_number', 'sales_details', 'sales_uom', 
+            'grant_commission', 'is_sales_item', 'max_discount', 
+            'customer_details', 'customer_items', 
+            'is_ineligible_for_itc', 'taxes', 
+            'inspection_required_before_purchase', 
+            'quality_inspection_template', 
+            'inspection_required_before_delivery', 'manufacturing', 
+            'include_item_in_manufacturing', 'is_sub_contracted_item', 
+            'default_bom', 'customer_code', 
+            'default_item_manufacturer', 'default_manufacturer_part_no', 
+            'total_projected_qty', 'custom_product_type', 'custom_product_category',
+            'uom', 'packing_unit', 'item_description', 'price_list_details', 
+            'price_list', 'customer', 'supplier', 'batch_no', 'buying', 
+            'selling', 'item_details', 'currency', 'price_list_rate', 
+            'valid_from', 'lead_time_days', 'valid_upto', 'note', 'reference'
         ];
 
         fields.forEach(function(field) {
@@ -125,14 +132,5 @@ frappe.ui.form.on('Quotation', {
         styleSheet.type = "text/css";
         styleSheet.innerText = style;
         document.head.appendChild(styleSheet);
-
-        // Set query for opportunity_owner to dynamically load user list
-        frm.set_query('opportunity_owner', function() {
-            return {
-                query: 'frappe.core.doctype.user.user.user_query',
-                filters: { 'enabled': 1 }
-            };
-        });
     }
 })
-
