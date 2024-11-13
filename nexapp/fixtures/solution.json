@@ -1,0 +1,44 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Solution",
+  "modified": "2024-11-12 22:35:24.966578",
+  "name": "IR-1100-4G-D Dual Sim",
+  "solution": "IR-1100-4G-D Dual Sim"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Solution",
+  "modified": "2024-11-12 22:36:01.936131",
+  "name": "IR11004GSW",
+  "solution": "IR11004GSW"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Solution",
+  "modified": "2024-11-12 22:36:19.356499",
+  "name": "IR-1100-4G-S Single Sim",
+  "solution": "IR-1100-4G-S Single Sim"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Solution",
+  "modified": "2024-11-12 22:36:37.165316",
+  "name": "Instawireless",
+  "solution": "Instawireless"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Solution",
+  "modified": "2024-11-12 22:36:51.267448",
+  "name": "IR-1100-4G-S MBB+Sim",
+  "solution": "IR-1100-4G-S MBB+Sim"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Solution",
+  "modified": "2024-11-12 22:37:03.849266",
+  "name": "IPv6 Solution",
+  "solution": "IPv6 Solution"
+ }
+]

@@ -13,3 +13,5 @@ Additionally, the navbar has been changed to black, and two new Doctypes have be
     Product Category
 
 Updating Custom HTML Block and many UI of HR Recruitment.  
+
+Creating Doctype for Site and ui for various doctype

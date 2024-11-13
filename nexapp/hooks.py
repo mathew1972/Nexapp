@@ -177,6 +177,9 @@ app_license = "mit"
 # override_whitelisted_methods = {
 # 	"frappe.desk.doctype.event.event.get_events": "nexapp.event.get_events"
 # }
+
+
+
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
@@ -251,8 +254,6 @@ doctype_js = {
     "Opportunity": "public/js/Deal_custom.js",
     "Customer": "public/js/Customer_custom.js",
     "Quotation": "public/js/Quotes_custom.js",
-    "Quotation": "public/js/quotation_custom.js",
-    "Item": "public/js/Product_custom.js",
     "Item Price": "public/js/Product_Price_custom.js",
     "Sales Order": "public/js/Sales_Order_custom.js",
     "Sales Invoice": "public/js/Sales_Invoice_custom.js",
@@ -270,7 +271,49 @@ doctype_js = {
     "Interview Feedback": "public/js/Interview_feedback_custom.js",
     "Appointment Letter Template": "public/js/Appointment_letter_template_custom.js",
     "Appointment Letter": "public/js/Appointment_letter_custom.js",
-    "Employee": "public/js/Employee_custom.js"                 
+    "Employee": "public/js/Employee_custom.js",
+    "Leave Application": "public/js/Leave_application_custom.js",
+    "Company": "public/js/Company_custom.js",
+    "Branch": "public/js/Branch_custom.js",
+    "Department": "public/js/Department_custom.js",
+    "Designation": "public/js/Designation_custom.js",
+    "Employee Group": "public/js/Employee_group_custom.js",
+    "Employee Grade": "public/js/Employee_grade_custom.js",
+    "Compensatory Leave Request": "public/js/Compensatory_leave_request_custom.js",
+    "HR Settings": "public/js/HR_settings_custom.js",
+    "Daily Work Summary Group": "public/js/Daily_work_summary_group_custom.js",
+    "Attendance": "public/js/Attendance_custom.js",
+    "Attendance Request": "public/js/Attendance_request_custom.js",
+    "Employee Checkin": "public/js/Employee_checkin_custom.js",
+    "Expense Claim": "public/js/Expense_claim_custom.js",
+    "Employee Advance": "public/js/Employee_advance_custom.js",
+    "Travel Request": "public/js/Travel_request_custom.js",
+
+    "Delivery Note": "public/js/Stock_custom_ui.js",
+    "Material Request": "public/js/Stock_custom_ui.js",
+    "Stock Entry": "public/js/Stock_custom_ui.js",
+    "Purchase Receipt": "public/js/Stock_custom_ui.js",
+    "Item": "public/js/Stock_custom_ui.js",
+    "Item Group": "public/js/Stock_custom_ui.js",
+    "Product Bundle": "public/js/Stock_custom_ui.js",
+    "Shipping Rule": "public/js/Stock_custom_ui.js",
+    "Item Alternative": "public/js/Stock_custom_ui.js",
+    "Pick List": "public/js/Stock_custom_ui.js",
+    "Warehouse": "public/js/Stock_custom_ui.js",
+    "UOM": "public/js/Stock_custom_ui.js",
+    "Brand": "public/js/Stock_custom_ui.js",
+    "Item Attribute": "public/js/Stock_custom_ui.js",
+    "Serial No": "public/js/Stock_custom_ui.js",
+    "Batch": "public/js/Stock_custom_ui.js",
+    "Installation Note": "public/js/Stock_custom_ui.js",
+    "Stock Reconciliation": "public/js/Stock_custom_ui.js",
+    "Landed Cost Voucher": "public/js/Stock_custom_ui.js",
+    "Packing Slip": "public/js/Stock_custom_ui.js",
+    "Quality Inspection": "public/js/Stock_custom_ui.js",
+    "Quality Inspection Template": "public/js/Stock_custom_ui.js",
+    "Quick Stock Balance": "public/js/Stock_custom_ui.js",
+   
+    "Site": "public/js/Site_custom.js"  
 
 
     
@@ -279,9 +322,12 @@ doctype_js = {
 
 fixtures = [
     {"dt": "Territory"},
+    {"dt": "Site Type"},
+    {"dt": "Solution"},
+    {"dt": "SOW"},  
     {"dt": "DocType", "filters": [["module", "=", "Nexapp"]]},
-    {"dt": "Custom Field", "filters": [["module", "=", "Nexapp"]]},
-    {"dt": "Property Setter", "filters": [["module", "=", "Nexapp"]]},
+    {"dt": "Custom Field", "filters": [["module", "=", "Nexapp"]]},    
+    {"dt": "Property Setter"},
     {"dt": "Website Settings"},
     {"dt": "Navbar Settings"},
     {"dt": "Website Theme"},
@@ -289,7 +335,3 @@ fixtures = [
     {"dt": "Custom HTML Block", "filters": [["name", "=", "Recruitment Workspace"]]},
     {"dt": "Workspace", "filters": [["name", "=", "HR Recruitment"]]}
 ]
-
-
-
-
