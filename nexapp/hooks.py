@@ -313,10 +313,7 @@ doctype_js = {
     "Quality Inspection Template": "public/js/Stock_custom_ui.js",
     "Quick Stock Balance": "public/js/Stock_custom_ui.js",
    
-    "Site": "public/js/Site_custom.js"  
-
-
-    
+    "Site": "public/js/Site_custom.js"      
     
 }
 

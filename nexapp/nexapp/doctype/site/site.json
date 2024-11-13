@@ -1,0 +1,584 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "SFA-.YYYY./.######",
+ "creation": "2024-11-03 10:45:47.957259",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "project_information_section",
+  "order_type",
+  "customer_type",
+  "existing_circuit_id",
+  "accounts",
+  "choose_product_type",
+  "column_break_nghj",
+  "site_owner",
+  "bdm",
+  "project_status",
+  "project_stages",
+  "poc_to_paid_date",
+  "service_requirement_section",
+  "managed_service",
+  "config_type",
+  "column_break_syhb",
+  "solution",
+  "site_information_section",
+  "site_name",
+  "supply_product",
+  "customer_request",
+  "user_quantity",
+  "site_phone",
+  "phases",
+  "column_break_plvm",
+  "site_type",
+  "quantity",
+  "client_site_id",
+  "commited_tat",
+  "region",
+  "contact_information_section",
+  "contact_person_1",
+  "contact_person1",
+  "contact_number1",
+  "email",
+  "designation",
+  "department",
+  "column_break_lldf",
+  "contact_person__2",
+  "contact_person2",
+  "contact_number2",
+  "email2",
+  "designation2",
+  "department2",
+  "section_break_ovsj",
+  "billing_status",
+  "column_break_ctsh",
+  "warranty",
+  "address_information_section",
+  "street",
+  "district",
+  "country",
+  "column_break_ypqk",
+  "pincode",
+  "city",
+  "state",
+  "section_break_uunv",
+  "sow",
+  "column_break_gwad",
+  "if_others_specify",
+  "add_product_in_supply_section",
+  "product",
+  "description_section",
+  "description",
+  "column_break_zdoe",
+  "response_status"
+ ],
+ "fields": [
+  {
+   "fieldname": "project_information_section",
+   "fieldtype": "Section Break",
+   "label": "Project Information"
+  },
+  {
+   "fieldname": "order_type",
+   "fieldtype": "Select",
+   "label": "Order Type",
+   "options": "\nService\nSupply\nShift Address\nUpgrade\nDegrade",
+   "reqd": 1
+  },
+  {
+   "default": "-None-",
+   "fieldname": "customer_type",
+   "fieldtype": "Select",
+   "label": "Customer Type  ",
+   "options": "-None-\nPaid Customer\nPOC Customer"
+  },
+  {
+   "depends_on": "eval:doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
+   "fieldname": "existing_circuit_id",
+   "fieldtype": "Data",
+   "label": "Existing Circuit id"
+  },
+  {
+   "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"  || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
+   "fieldname": "accounts",
+   "fieldtype": "Data",
+   "label": "Accounts "
+  },
+  {
+   "default": "-None-",
+   "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
+   "fieldname": "choose_product_type",
+   "fieldtype": "Select",
+   "label": "Choose Product Type  ",
+   "options": "-None-\nSingle Line\nMulti Line"
+  },
+  {
+   "fieldname": "column_break_nghj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "__user",
+   "fieldname": "site_owner",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Site Owner ",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"  || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
+   "fieldname": "bdm",
+   "fieldtype": "Link",
+   "label": "BDM  ",
+   "options": "Sales Person"
+  },
+  {
+   "default": "Pending for Delivery ",
+   "fieldname": "project_status",
+   "fieldtype": "Data",
+   "label": "Project Status  ",
+   "options": "Pending for Delivery \n",
+   "read_only": 1
+  },
+  {
+   "default": "With Sales Team",
+   "fieldname": "project_stages",
+   "fieldtype": "Data",
+   "label": "Project Stages  ",
+   "read_only": 1
+  },
+  {
+   "fieldname": "poc_to_paid_date",
+   "fieldtype": "Date",
+   "label": "POC to Paid Date  "
+  },
+  {
+   "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"  || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
+   "fieldname": "service_requirement_section",
+   "fieldtype": "Section Break",
+   "label": " Service Requirement"
+  },
+  {
+   "default": "-None-",
+   "fieldname": "managed_service",
+   "fieldtype": "Select",
+   "label": "Managed Service ",
+   "options": "-None-\nProactive\nReactive"
+  },
+  {
+   "default": "-None-",
+   "fieldname": "config_type",
+   "fieldtype": "Select",
+   "label": "Config Type",
+   "options": "-None-\nRemote Config\nOnsite Installation"
+  },
+  {
+   "fieldname": "column_break_syhb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "solution",
+   "fieldtype": "Link",
+   "label": "Solution  ",
+   "options": "Solution"
+  },
+  {
+   "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"  || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
+   "fieldname": "site_information_section",
+   "fieldtype": "Section Break",
+   "label": "Site Information"
+  },
+  {
+   "fieldname": "site_name",
+   "fieldtype": "Data",
+   "label": "Site Name  "
+  },
+  {
+   "fieldname": "supply_product",
+   "fieldtype": "Select",
+   "label": "Supply Product  ",
+   "options": "-None-\nA\nB\nC\nD\nE"
+  },
+  {
+   "fieldname": "customer_request",
+   "fieldtype": "Date",
+   "label": "Customer request"
+  },
+  {
+   "fieldname": "user_quantity",
+   "fieldtype": "Int",
+   "label": "User Quantity "
+  },
+  {
+   "fieldname": "site_phone",
+   "fieldtype": "Data",
+   "label": "Site Phone  "
+  },
+  {
+   "default": "-None-",
+   "fieldname": "phases",
+   "fieldtype": "Select",
+   "label": "Phases ",
+   "options": "-None-\nPhase 1\nPhase 2\nPhase 3\nPhase 4\nPhase 5"
+  },
+  {
+   "fieldname": "column_break_plvm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "site_type",
+   "fieldtype": "Link",
+   "label": "Site Type  ",
+   "options": "Site Type"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Int",
+   "label": "Quantity  "
+  },
+  {
+   "fieldname": "client_site_id",
+   "fieldtype": "Data",
+   "label": "Client Site ID  "
+  },
+  {
+   "default": "-None-",
+   "fieldname": "commited_tat",
+   "fieldtype": "Select",
+   "label": "Commited TAT ",
+   "options": "-None-\n1 Day\n2 Day\n3 Day\n4 Day\n5 Day\n1 Week\n2 Weeks\n3 Weeks\n4 Weeks\n5 Weeks\n6 Weeks\n7 Weeks\n8 Weeks\n9 Weeks\n10 Weeks"
+  },
+  {
+   "fieldname": "region",
+   "fieldtype": "Link",
+   "label": "Region",
+   "options": "Territory",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"  || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
+   "fieldname": "contact_information_section",
+   "fieldtype": "Section Break",
+   "label": "Contact Information"
+  },
+  {
+   "fieldname": "contact_person_1",
+   "fieldtype": "Heading",
+   "label": "Contact Person 1"
+  },
+  {
+   "fieldname": "contact_person1",
+   "fieldtype": "Data",
+   "label": "Contact Person1"
+  },
+  {
+   "fieldname": "contact_number1",
+   "fieldtype": "Data",
+   "label": "Contact Number"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email  "
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "label": "Designation  "
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Data",
+   "label": "Department  "
+  },
+  {
+   "fieldname": "column_break_lldf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "contact_person__2",
+   "fieldtype": "Heading",
+   "label": "Contact Person  2"
+  },
+  {
+   "fieldname": "contact_person2",
+   "fieldtype": "Data",
+   "label": "Contact Person"
+  },
+  {
+   "fieldname": "contact_number2",
+   "fieldtype": "Data",
+   "label": "Contact Number"
+  },
+  {
+   "fieldname": "email2",
+   "fieldtype": "Data",
+   "label": "Email "
+  },
+  {
+   "fieldname": "designation2",
+   "fieldtype": "Data",
+   "label": "Designation  "
+  },
+  {
+   "fieldname": "department2",
+   "fieldtype": "Data",
+   "label": "Department  "
+  },
+  {
+   "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"  || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
+   "fieldname": "section_break_ovsj",
+   "fieldtype": "Section Break",
+   "label": "Billing Information"
+  },
+  {
+   "default": "Billing Pending",
+   "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"",
+   "fieldname": "billing_status",
+   "fieldtype": "Select",
+   "label": "Billing Status ",
+   "options": "Billing Pending\nBilling Completed"
+  },
+  {
+   "fieldname": "column_break_ctsh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "-None-",
+   "fieldname": "warranty",
+   "fieldtype": "Select",
+   "label": "Warranty ",
+   "options": "-None-\n1\n2\n3\n4\n5"
+  },
+  {
+   "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"  || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
+   "fieldname": "address_information_section",
+   "fieldtype": "Section Break",
+   "label": "Address Information"
+  },
+  {
+   "fieldname": "street",
+   "fieldtype": "Data",
+   "label": "Street  "
+  },
+  {
+   "fieldname": "district",
+   "fieldtype": "Data",
+   "label": "District  "
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Data",
+   "label": "Country "
+  },
+  {
+   "fieldname": "column_break_ypqk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pincode",
+   "fieldtype": "Data",
+   "label": "Pincode  "
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City  "
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "State  "
+  },
+  {
+   "depends_on": "eval:doc.order_type==\"Service\"",
+   "fieldname": "section_break_uunv",
+   "fieldtype": "Section Break",
+   "label": "SOW Information"
+  },
+  {
+   "fieldname": "sow",
+   "fieldtype": "Table MultiSelect",
+   "label": "SOW",
+   "options": "SOW Child"
+  },
+  {
+   "fieldname": "column_break_gwad",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "if_others_specify",
+   "fieldtype": "Data",
+   "label": "If Others Specify  "
+  },
+  {
+   "depends_on": "eval:doc.order_type==\"Supply\"",
+   "fieldname": "add_product_in_supply_section",
+   "fieldtype": "Section Break",
+   "label": "Add Product in Supply"
+  },
+  {
+   "fieldname": "product",
+   "fieldtype": "Table",
+   "label": "Product",
+   "options": "Site Item"
+  },
+  {
+   "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"  || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
+   "fieldname": "description_section",
+   "fieldtype": "Section Break",
+   "label": "Description"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "column_break_zdoe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "response_status",
+   "fieldtype": "Small Text",
+   "label": "Response Status  "
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-11-13 19:00:28.264796",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Site",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Desk User",
+   "share": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User",
+   "share": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Maintenance User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Maintenance User",
+   "share": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Maintenance Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Maintenance Manager",
+   "share": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
