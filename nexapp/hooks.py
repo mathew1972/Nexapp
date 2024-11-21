@@ -312,16 +312,25 @@ doctype_js = {
     "Quality Inspection": "public/js/Stock_custom_ui.js",
     "Quality Inspection Template": "public/js/Stock_custom_ui.js",
     "Quick Stock Balance": "public/js/Stock_custom_ui.js",
+    "Ticket Master": "public/js/Ticket_master_custom.js",
+
+    "Feasibility": "doctype/feasibility/feasibility.js",
+    "Site": "doctype/site/site.js",
+
    
-    "Site": "public/js/Site_custom.js"      
+    "Site": "public/js/Site_custom.js",
+    "Site": "public/js/Site_pincode_custom.js",
+    "Feasibility": "public/js/Feasibility_pincode_custom.js",
+    "Project": "public/js/Project_custom_ui.js"
+
+               
     
 }
 
 fixtures = [
     {"dt": "Territory"},
     {"dt": "Site Type"},
-    {"dt": "Solution"},
-    {"dt": "SOW"},  
+    {"dt": "Solution"},    
     {"dt": "DocType", "filters": [["module", "=", "Nexapp"]]},
     {"dt": "Custom Field", "filters": [["module", "=", "Nexapp"]]},    
     {"dt": "Property Setter"},

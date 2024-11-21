@@ -1,0 +1,95 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "TIX-.MM.-.YYYY.-.######",
+ "creation": "2024-11-20 12:28:20.777905",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "ticket_information_section",
+  "subject",
+  "company",
+  "column_break_lewc",
+  "circuit_id",
+  "raised_by_email",
+  "section_break_ynnr",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "ticket_information_section",
+   "fieldtype": "Section Break",
+   "label": "Ticket Information "
+  },
+  {
+   "fieldname": "subject",
+   "fieldtype": "Data",
+   "label": "Subject",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Company"
+  },
+  {
+   "fieldname": "column_break_lewc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Circuit ID",
+   "options": "Circuit"
+  },
+  {
+   "fieldname": "raised_by_email",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Raised By (Email)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_ynnr",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text",
+   "label": "Description",
+   "reqd": 1
+  }
+ ],
+ "hide_toolbar": 1,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-11-20 13:03:43.375731",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Ticket Master",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

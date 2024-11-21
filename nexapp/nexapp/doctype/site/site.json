@@ -1,97 +1,87 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "SFA-.YYYY./.######",
+ "autoname": ".#####",
  "creation": "2024-11-03 10:45:47.957259",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "project_information_section",
+  "section_break_qawd",
+  "parent_project",
+  "child_project",
+  "project_manager",
+  "column_break_sbty",
+  "site_status",
+  "circuit_id",
+  "project_coordinator",
+  "order_information_section",
   "order_type",
   "customer_type",
   "existing_circuit_id",
-  "accounts",
-  "choose_product_type",
+  "site_name",
+  "customer_request",
+  "phases",
   "column_break_nghj",
-  "site_owner",
-  "bdm",
-  "project_status",
-  "project_stages",
-  "poc_to_paid_date",
+  "sales_order",
+  "customer_name",
+  "customer_po_no",
+  "customer_po_date",
+  "region",
+  "site_information_section",
+  "site_item",
   "service_requirement_section",
   "managed_service",
   "config_type",
   "column_break_syhb",
   "solution",
-  "site_information_section",
-  "site_name",
-  "supply_product",
-  "customer_request",
-  "user_quantity",
-  "site_phone",
-  "phases",
-  "column_break_plvm",
+  "primary_plan",
+  "secondary_plan",
+  "mbb_bandwidth",
+  "address_information_section",
   "site_type",
-  "quantity",
-  "client_site_id",
-  "commited_tat",
-  "region",
+  "street",
+  "city",
+  "country",
+  "column_break_ypqk",
+  "site_id__legal_code",
+  "pincode",
+  "district",
+  "state",
+  "site_phone",
   "contact_information_section",
-  "contact_person_1",
   "contact_person1",
   "contact_number1",
   "email",
   "designation",
   "department",
   "column_break_lldf",
-  "contact_person__2",
   "contact_person2",
   "contact_number2",
-  "email2",
-  "designation2",
-  "department2",
+  "secondary_email",
+  "other_designation",
+  "other_department",
   "section_break_ovsj",
   "billing_status",
   "column_break_ctsh",
-  "warranty",
-  "address_information_section",
-  "street",
-  "district",
-  "country",
-  "column_break_ypqk",
-  "pincode",
-  "city",
-  "state",
-  "section_break_uunv",
-  "sow",
-  "column_break_gwad",
-  "if_others_specify",
-  "add_product_in_supply_section",
-  "product",
+  "section_break_pixr",
+  "product_in_service",
   "description_section",
-  "description",
-  "column_break_zdoe",
-  "response_status"
+  "description"
  ],
  "fields": [
-  {
-   "fieldname": "project_information_section",
-   "fieldtype": "Section Break",
-   "label": "Project Information"
-  },
   {
    "fieldname": "order_type",
    "fieldtype": "Select",
    "label": "Order Type",
-   "options": "\nService\nSupply\nShift Address\nUpgrade\nDegrade",
+   "options": "\nService\nShift Address\nUpgrade\nDegrade",
    "reqd": 1
   },
   {
-   "default": "-None-",
    "fieldname": "customer_type",
    "fieldtype": "Select",
    "label": "Customer Type  ",
-   "options": "-None-\nPaid Customer\nPOC Customer"
+   "options": "\nPaid Customer\nPOC Customer",
+   "reqd": 1
   },
   {
    "depends_on": "eval:doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
@@ -100,61 +90,8 @@
    "label": "Existing Circuit id"
   },
   {
-   "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"  || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
-   "fieldname": "accounts",
-   "fieldtype": "Data",
-   "label": "Accounts "
-  },
-  {
-   "default": "-None-",
-   "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
-   "fieldname": "choose_product_type",
-   "fieldtype": "Select",
-   "label": "Choose Product Type  ",
-   "options": "-None-\nSingle Line\nMulti Line"
-  },
-  {
    "fieldname": "column_break_nghj",
    "fieldtype": "Column Break"
-  },
-  {
-   "default": "__user",
-   "fieldname": "site_owner",
-   "fieldtype": "Link",
-   "in_filter": 1,
-   "in_list_view": 1,
-   "in_preview": 1,
-   "in_standard_filter": 1,
-   "label": "Site Owner ",
-   "options": "User",
-   "reqd": 1
-  },
-  {
-   "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"  || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
-   "fieldname": "bdm",
-   "fieldtype": "Link",
-   "label": "BDM  ",
-   "options": "Sales Person"
-  },
-  {
-   "default": "Pending for Delivery ",
-   "fieldname": "project_status",
-   "fieldtype": "Data",
-   "label": "Project Status  ",
-   "options": "Pending for Delivery \n",
-   "read_only": 1
-  },
-  {
-   "default": "With Sales Team",
-   "fieldname": "project_stages",
-   "fieldtype": "Data",
-   "label": "Project Stages  ",
-   "read_only": 1
-  },
-  {
-   "fieldname": "poc_to_paid_date",
-   "fieldtype": "Date",
-   "label": "POC to Paid Date  "
   },
   {
    "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"  || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
@@ -181,77 +118,43 @@
    "fieldtype": "Column Break"
   },
   {
-   "allow_in_quick_entry": 1,
-   "fieldname": "solution",
-   "fieldtype": "Link",
-   "label": "Solution  ",
-   "options": "Solution"
-  },
-  {
    "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"  || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
    "fieldname": "site_information_section",
    "fieldtype": "Section Break",
-   "label": "Site Information"
+   "label": "Product Information"
   },
   {
    "fieldname": "site_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
    "label": "Site Name  "
-  },
-  {
-   "fieldname": "supply_product",
-   "fieldtype": "Select",
-   "label": "Supply Product  ",
-   "options": "-None-\nA\nB\nC\nD\nE"
   },
   {
    "fieldname": "customer_request",
    "fieldtype": "Date",
-   "label": "Customer request"
-  },
-  {
-   "fieldname": "user_quantity",
-   "fieldtype": "Int",
-   "label": "User Quantity "
+   "label": "Customer request",
+   "placeholder": "DD-MM-YYYY",
+   "reqd": 1
   },
   {
    "fieldname": "site_phone",
-   "fieldtype": "Data",
+   "fieldtype": "Phone",
    "label": "Site Phone  "
   },
   {
-   "default": "-None-",
    "fieldname": "phases",
    "fieldtype": "Select",
    "label": "Phases ",
-   "options": "-None-\nPhase 1\nPhase 2\nPhase 3\nPhase 4\nPhase 5"
+   "options": "\nPhase 1\nPhase 2\nPhase 3\nPhase 4\nPhase 5"
   },
   {
-   "fieldname": "column_break_plvm",
-   "fieldtype": "Column Break"
-  },
-  {
+   "allow_in_quick_entry": 1,
    "fieldname": "site_type",
    "fieldtype": "Link",
    "label": "Site Type  ",
    "options": "Site Type"
-  },
-  {
-   "fieldname": "quantity",
-   "fieldtype": "Int",
-   "label": "Quantity  "
-  },
-  {
-   "fieldname": "client_site_id",
-   "fieldtype": "Data",
-   "label": "Client Site ID  "
-  },
-  {
-   "default": "-None-",
-   "fieldname": "commited_tat",
-   "fieldtype": "Select",
-   "label": "Commited TAT ",
-   "options": "-None-\n1 Day\n2 Day\n3 Day\n4 Day\n5 Day\n1 Week\n2 Weeks\n3 Weeks\n4 Weeks\n5 Weeks\n6 Weeks\n7 Weeks\n8 Weeks\n9 Weeks\n10 Weeks"
   },
   {
    "fieldname": "region",
@@ -267,19 +170,15 @@
    "label": "Contact Information"
   },
   {
-   "fieldname": "contact_person_1",
-   "fieldtype": "Heading",
-   "label": "Contact Person 1"
-  },
-  {
    "fieldname": "contact_person1",
    "fieldtype": "Data",
    "label": "Contact Person1"
   },
   {
    "fieldname": "contact_number1",
-   "fieldtype": "Data",
-   "label": "Contact Number"
+   "fieldtype": "Phone",
+   "label": "Contact Number1",
+   "placeholder": "Select the Country from dropdown"
   },
   {
    "fieldname": "email",
@@ -301,34 +200,15 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "contact_person__2",
-   "fieldtype": "Heading",
-   "label": "Contact Person  2"
-  },
-  {
    "fieldname": "contact_person2",
    "fieldtype": "Data",
-   "label": "Contact Person"
+   "label": "Contact Person2"
   },
   {
    "fieldname": "contact_number2",
-   "fieldtype": "Data",
-   "label": "Contact Number"
-  },
-  {
-   "fieldname": "email2",
-   "fieldtype": "Data",
-   "label": "Email "
-  },
-  {
-   "fieldname": "designation2",
-   "fieldtype": "Data",
-   "label": "Designation  "
-  },
-  {
-   "fieldname": "department2",
-   "fieldtype": "Data",
-   "label": "Department  "
+   "fieldtype": "Phone",
+   "label": "Contact Number2",
+   "placeholder": "Select the Country from dropdown"
   },
   {
    "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"  || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
@@ -349,13 +229,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "-None-",
-   "fieldname": "warranty",
-   "fieldtype": "Select",
-   "label": "Warranty ",
-   "options": "-None-\n1\n2\n3\n4\n5"
-  },
-  {
    "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"  || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
    "fieldname": "address_information_section",
    "fieldtype": "Section Break",
@@ -364,17 +237,20 @@
   {
    "fieldname": "street",
    "fieldtype": "Data",
-   "label": "Street  "
+   "label": "Street  ",
+   "reqd": 1
   },
   {
    "fieldname": "district",
    "fieldtype": "Data",
-   "label": "District  "
+   "label": "District  ",
+   "placeholder": "District update automatically"
   },
   {
    "fieldname": "country",
    "fieldtype": "Data",
-   "label": "Country "
+   "label": "Country ",
+   "placeholder": "State update automatically"
   },
   {
    "fieldname": "column_break_ypqk",
@@ -383,50 +259,21 @@
   {
    "fieldname": "pincode",
    "fieldtype": "Data",
-   "label": "Pincode  "
+   "label": "Pincode  ",
+   "placeholder": "Please add correct Pin Code",
+   "reqd": 1
   },
   {
    "fieldname": "city",
    "fieldtype": "Data",
-   "label": "City  "
+   "label": "City  ",
+   "placeholder": "City update automatically"
   },
   {
    "fieldname": "state",
    "fieldtype": "Data",
-   "label": "State  "
-  },
-  {
-   "depends_on": "eval:doc.order_type==\"Service\"",
-   "fieldname": "section_break_uunv",
-   "fieldtype": "Section Break",
-   "label": "SOW Information"
-  },
-  {
-   "fieldname": "sow",
-   "fieldtype": "Table MultiSelect",
-   "label": "SOW",
-   "options": "SOW Child"
-  },
-  {
-   "fieldname": "column_break_gwad",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "if_others_specify",
-   "fieldtype": "Data",
-   "label": "If Others Specify  "
-  },
-  {
-   "depends_on": "eval:doc.order_type==\"Supply\"",
-   "fieldname": "add_product_in_supply_section",
-   "fieldtype": "Section Break",
-   "label": "Add Product in Supply"
-  },
-  {
-   "fieldname": "product",
-   "fieldtype": "Table",
-   "label": "Product",
-   "options": "Site Item"
+   "label": "State  ",
+   "placeholder": "State update automatically"
   },
   {
    "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"  || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
@@ -437,21 +284,164 @@
   {
    "fieldname": "description",
    "fieldtype": "Small Text",
-   "label": "Description"
+   "label": "Description",
+   "max_height": "80px"
   },
   {
-   "fieldname": "column_break_zdoe",
+   "allow_in_quick_entry": 1,
+   "fieldname": "solution",
+   "fieldtype": "Link",
+   "label": "Solution  ",
+   "options": "Solution",
+   "reqd": 1
+  },
+  {
+   "fieldname": "secondary_email",
+   "fieldtype": "Data",
+   "label": "Secondary Email "
+  },
+  {
+   "fieldname": "other_designation",
+   "fieldtype": "Data",
+   "label": "Other Designation  "
+  },
+  {
+   "fieldname": "other_department",
+   "fieldtype": "Data",
+   "label": "Other Department  "
+  },
+  {
+   "depends_on": "eval:doc.choose_product_type==\"Multi Line\"",
+   "fieldname": "section_break_pixr",
+   "fieldtype": "Section Break",
+   "label": "Add Product in Service"
+  },
+  {
+   "fieldname": "product_in_service",
+   "fieldtype": "Table",
+   "options": "Product in Service"
+  },
+  {
+   "depends_on": "eval:doc.solution==\"IR-1100-4G-D Dual Sim\" || doc.solution==\"IR-1100 Branch Series\" || doc.solution==\"IR-2100 Branch Series\" || doc.solution==\"IR-1100-USB\" || doc.solution==\"IR-1100-4G-S Single Sim\"\n",
+   "fieldname": "primary_plan",
+   "fieldtype": "Data",
+   "label": "Primary Plan  "
+  },
+  {
+   "depends_on": "eval:doc.solution==\"4G D MBB + MBB\" || doc.solution==\"IR-1100 MBB + MBB\" || doc.solution==\"Nexapp ILL+MBB\" || doc.solution==\"IR-1100-4G-D Dual Sim\" || doc.solution==\"IR-1100-MBB+USB\" || doc.solution==\"IR-1100-4G-S MBB+Sim\"\n",
+   "fieldname": "secondary_plan",
+   "fieldtype": "Data",
+   "label": "Secondary Plan  "
+  },
+  {
+   "bold": 1,
+   "fieldname": "project_manager",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Project Manager ",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "project_coordinator",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Project Coordinator",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_qawd",
+   "fieldtype": "Section Break",
+   "label": "Project Information"
+  },
+  {
+   "fieldname": "parent_project",
+   "fieldtype": "Link",
+   "label": "Parent Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "column_break_sbty",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "response_status",
-   "fieldtype": "Small Text",
-   "label": "Response Status  "
+   "fieldname": "child_project",
+   "fieldtype": "Link",
+   "label": "Child Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Data",
+   "label": "Circuit ID",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "sales_order.po_no",
+   "fieldname": "customer_po_no",
+   "fieldtype": "Data",
+   "label": "Customer PO No",
+   "options": "Sales Order"
+  },
+  {
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "label": "Sales Order",
+   "options": "Sales Order"
+  },
+  {
+   "fieldname": "site_status",
+   "fieldtype": "Select",
+   "label": "Site Status  ",
+   "options": "Pending for Delivery\nWith Sales Team\nDelivered"
+  },
+  {
+   "fieldname": "order_information_section",
+   "fieldtype": "Section Break",
+   "label": "Order Information"
+  },
+  {
+   "fieldname": "site_item",
+   "fieldtype": "Table",
+   "label": "Site Item",
+   "options": "Site Item"
+  },
+  {
+   "fieldname": "site_id__legal_code",
+   "fieldtype": "Data",
+   "label": "Site ID / Legal Code"
+  },
+  {
+   "fetch_from": "sales_order.customer",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "sales_order.po_date",
+   "fieldname": "customer_po_date",
+   "fieldtype": "Date",
+   "label": "Customer PO Date"
+  },
+  {
+   "depends_on": "eval:doc.solution==\"4G D MBB + MBB\" || doc.solution==\"IR-1100 Branch Series\" || doc.solution==\"IR-1100 MBB + MBB\" || doc.solution==\"IR-2100 Branch Series\" || doc.solution==\"IR-3100 Core Series\" || doc.solution==\"IR-4100 Core Series\" || doc.solution==\"IR-5100 Core Series\" || doc.solution==\"IR-6100 Core Series\" || doc.solution==\"IR-7100 Core Series\" || doc.solution==\"Nexapp ILL+MBB\" || doc.solution==\"IR-1100-USB\" || doc.solution==\"IR-1100-MBB\" || doc.solution==\"IR-1100-MBB+USB\" || doc.solution==\"IR-1100-4G-S MBB+Sim\" || doc.solution==\"IR-1100-4G-S Single Sim\"\n",
+   "fieldname": "mbb_bandwidth",
+   "fieldtype": "Data",
+   "label": "MBB Bandwidth "
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-13 19:00:28.264796",
+ "modified": "2024-11-21 18:19:33.277874",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

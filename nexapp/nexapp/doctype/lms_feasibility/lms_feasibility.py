@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class SOWChild(Document):
+class LMSFeasibility(Document):
 	pass

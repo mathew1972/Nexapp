@@ -1,70 +1,52 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2024-11-03 11:05:36.118858",
+ "creation": "2024-11-20 20:24:45.929738",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "site_information_section",
   "product",
-  "quantity",
-  "otc",
-  "amc",
-  "otc_sub_total",
-  "amc_sub_total"
+  "product_name",
+  "serial_no",
+  "mobile_no"
  ],
  "fields": [
-  {
-   "fieldname": "site_information_section",
-   "fieldtype": "Section Break"
-  },
   {
    "fieldname": "product",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Product ",
-   "options": "Item",
-   "reqd": 1
+   "label": "Product Code",
+   "options": "Item"
   },
   {
-   "fieldname": "quantity",
-   "fieldtype": "Float",
+   "fetch_from": "product.serial_no_series",
+   "fieldname": "serial_no",
+   "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Quantity",
-   "non_negative": 1,
-   "precision": "0",
-   "reqd": 1
+   "label": "Serial No",
+   "options": "Serial No"
   },
   {
-   "fieldname": "otc",
-   "fieldtype": "Currency",
+   "fieldname": "mobile_no",
+   "fieldtype": "Link",
    "in_list_view": 1,
-   "label": " OTC "
+   "label": "Mobile No",
+   "options": "Serial No"
   },
   {
-   "fieldname": "amc",
-   "fieldtype": "Currency",
+   "fetch_from": "product.item_name",
+   "fieldname": "product_name",
+   "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "AMC"
-  },
-  {
-   "fieldname": "otc_sub_total",
-   "fieldtype": "Currency",
-   "in_list_view": 1,
-   "label": "OTC Sub Total"
-  },
-  {
-   "fieldname": "amc_sub_total",
-   "fieldtype": "Currency",
-   "in_list_view": 1,
-   "label": " AMC Sub Total "
+   "label": "Product Name",
+   "options": "Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-11-13 19:01:39.582537",
+ "modified": "2024-11-21 18:29:54.067266",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site Item",

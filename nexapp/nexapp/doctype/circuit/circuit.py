@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class SOW(Document):
+class Circuit(Document):
 	pass

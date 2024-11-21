@@ -1,0 +1,75 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-11-20 17:15:42.085324",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "site",
+  "circuit_id",
+  "product",
+  "quantity",
+  "amount",
+  "total_amount",
+  "billing_term"
+ ],
+ "fields": [
+  {
+   "fieldname": "site",
+   "fieldtype": "Link",
+   "label": "Circuit Address",
+   "options": "Feasibility"
+  },
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "label": "Circuit ID",
+   "options": "Feasibility"
+  },
+  {
+   "fieldname": "product",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Product",
+   "options": "Item"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Quantity"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Amount"
+  },
+  {
+   "fieldname": "billing_term",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Billing Term",
+   "options": "MRC\nQRC\nHRC\nARC"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-11-20 18:04:07.919661",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Sales Order Booking Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

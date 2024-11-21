@@ -1,0 +1,277 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "FS./.#####.",
+ "creation": "2024-11-14 18:28:18.484404",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "site_information_section",
+  "company1",
+  "site_name",
+  "column_break_zthd",
+  "site_id__legal_code",
+  "project_manager",
+  "address_information_section",
+  "pincode",
+  "district",
+  "state",
+  "longitude",
+  "column_break_jmai",
+  "street",
+  "city",
+  "country",
+  "latitude",
+  "contact_information_section",
+  "contact_person",
+  "contact_mobile",
+  "email_id",
+  "column_break_jtep",
+  "other_person",
+  "other_mobile",
+  "other_email",
+  "solution_requiremnt_section",
+  "solution",
+  "static_ip",
+  "lms_plan",
+  "column_break_gxjo",
+  "primary_data_plan",
+  "secondary_data_plan",
+  "lms_plan_2",
+  "feasibility_information_section",
+  "feasibility_status",
+  "column_break_hfyn",
+  "feasibility_output",
+  "lms_provider_information_section",
+  "lms_provider"
+ ],
+ "fields": [
+  {
+   "fieldname": "site_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Site Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "State"
+  },
+  {
+   "fieldname": "longitude",
+   "fieldtype": "Data",
+   "label": "Longitude"
+  },
+  {
+   "fieldname": "column_break_jmai",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "site_id__legal_code",
+   "fieldtype": "Data",
+   "label": "Site ID / Legal Code",
+   "read_only": 1
+  },
+  {
+   "fieldname": "street",
+   "fieldtype": "Data",
+   "label": "Street"
+  },
+  {
+   "fieldname": "district",
+   "fieldtype": "Data",
+   "label": "District"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Data",
+   "label": "Country"
+  },
+  {
+   "fieldname": "latitude",
+   "fieldtype": "Data",
+   "label": "Latitude"
+  },
+  {
+   "fieldname": "solution_requiremnt_section",
+   "fieldtype": "Section Break",
+   "label": "Solution Requiremnt"
+  },
+  {
+   "fieldname": "solution",
+   "fieldtype": "Link",
+   "label": "Solution",
+   "options": "Solution"
+  },
+  {
+   "fieldname": "contact_information_section",
+   "fieldtype": "Section Break",
+   "label": "Contact Information"
+  },
+  {
+   "fieldname": "contact_person",
+   "fieldtype": "Data",
+   "label": "Contact Person"
+  },
+  {
+   "fieldname": "contact_mobile",
+   "fieldtype": "Phone",
+   "label": "Contact Mobile"
+  },
+  {
+   "fieldname": "email_id",
+   "fieldtype": "Data",
+   "label": "Email ID"
+  },
+  {
+   "fieldname": "column_break_jtep",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "other_person",
+   "fieldtype": "Data",
+   "label": "Other Person"
+  },
+  {
+   "fieldname": "other_mobile",
+   "fieldtype": "Phone",
+   "label": "Other Mobile"
+  },
+  {
+   "fieldname": "other_email",
+   "fieldtype": "Data",
+   "label": "Other Email"
+  },
+  {
+   "fieldname": "feasibility_information_section",
+   "fieldtype": "Section Break",
+   "label": "Feasibility Information"
+  },
+  {
+   "default": "Pending",
+   "fieldname": "feasibility_status",
+   "fieldtype": "Select",
+   "label": "Feasibility Status",
+   "options": "Pending\nCompleted"
+  },
+  {
+   "default": "Not Started",
+   "fieldname": "feasibility_output",
+   "fieldtype": "Select",
+   "label": "Feasibility Output",
+   "options": "Not Started\nFeasible\nPartial Feasible\nNot Feasible\nHigh Commercials"
+  },
+  {
+   "fieldname": "column_break_hfyn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_gxjo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "primary_data_plan",
+   "fieldtype": "Select",
+   "label": "Primary Data Plan",
+   "options": "\n2Mbps\n4Mbps\n6Mbps\n8Mbps\n10Mbps\n20Mbps\n50Mbps\n100Mbps\n150Mbps\n200Mbps\n300Mbps\n1Gbps"
+  },
+  {
+   "fieldname": "secondary_data_plan",
+   "fieldtype": "Select",
+   "label": "Secondary Data Plan",
+   "options": "\n2Mbps\n4Mbps\n6Mbps\n8Mbps\n10Mbps\n20Mbps\n50Mbps\n100Mbps\n150Mbps\n200Mbps\n300Mbps\n1Gbps"
+  },
+  {
+   "fieldname": "static_ip",
+   "fieldtype": "Select",
+   "label": "Static IP",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "lms_plan",
+   "fieldtype": "Link",
+   "label": "LMS Plan",
+   "options": "Item"
+  },
+  {
+   "fieldname": "lms_plan_2",
+   "fieldtype": "Link",
+   "label": "LMS Plan 2",
+   "options": "Item"
+  },
+  {
+   "fieldname": "lms_provider_information_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Provider Information"
+  },
+  {
+   "fieldname": "lms_provider",
+   "fieldtype": "Table",
+   "label": "LMS Provider ",
+   "options": "LMS Feasibility"
+  },
+  {
+   "fieldname": "company1",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "pincode",
+   "fieldtype": "Data",
+   "label": "Pin Code"
+  },
+  {
+   "fieldname": "project_manager",
+   "fieldtype": "Link",
+   "label": "Project Manager",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "column_break_zthd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "site_information_section",
+   "fieldtype": "Section Break",
+   "label": "Site Information"
+  },
+  {
+   "fieldname": "address_information_section",
+   "fieldtype": "Section Break",
+   "label": "Address Information",
+   "placeholder": "Test"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-11-21 16:08:55.685794",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Feasibility",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

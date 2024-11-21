@@ -5,5 +5,5 @@
 from frappe.tests.utils import FrappeTestCase
 
 
-class TestSOW(FrappeTestCase):
+class TestTicketSubCategory(FrappeTestCase):
 	pass

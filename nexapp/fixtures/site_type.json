@@ -40,5 +40,40 @@
   "modified": "2024-11-12 22:51:32.011365",
   "name": "ASP-DR",
   "site_type": "ASP-DR"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Site Type",
+  "modified": "2024-11-18 14:56:49.154934",
+  "name": "ATM-Onsite",
+  "site_type": "ATM-Onsite"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Site Type",
+  "modified": "2024-11-18 15:00:04.862225",
+  "name": "ATM-Offsite",
+  "site_type": "ATM-Offsite"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Site Type",
+  "modified": "2024-11-18 15:00:30.497873",
+  "name": "Headoffice",
+  "site_type": "Headoffice"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Site Type",
+  "modified": "2024-11-18 15:00:45.306146",
+  "name": "Customer-DR",
+  "site_type": "Customer-DR"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Site Type",
+  "modified": "2024-11-18 15:01:03.300335",
+  "name": "Customer-DC",
+  "site_type": "Customer-DC"
  }
 ]

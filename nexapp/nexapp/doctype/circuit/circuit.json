@@ -1,0 +1,52 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:circuit_id",
+ "creation": "2024-11-20 12:40:49.931616",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "circuit_id",
+  "circuit_company"
+ ],
+ "fields": [
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "circuit_id",
+   "fieldtype": "Data",
+   "label": "Circuit ID",
+   "unique": 1
+  },
+  {
+   "fieldname": "circuit_company",
+   "fieldtype": "Data",
+   "label": "Company"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-11-20 13:23:42.105713",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Circuit",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

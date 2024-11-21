@@ -1,0 +1,64 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-11-16 22:01:27.565525",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "mbb_vendor",
+  "bandwidth_type",
+  "bandwith",
+  "media",
+  "otc"
+ ],
+ "fields": [
+  {
+   "fieldname": "mbb_vendor",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "MBB Vendor",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "bandwidth_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Bandwidth Type",
+   "options": "\nBroadband\nLandline"
+  },
+  {
+   "fieldname": "bandwith",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Bandwith",
+   "options": "\n2 Mbps\n4 Mbps\n6 Mbps\n8 Mbps\n10 Mbps\n20 Mbps\n30 Mbps\n50 Mbps\n100 Mbps\n150 Mbps\n200 Mbps\n300 Mbps\n500 Mbps\n1 Gbps"
+  },
+  {
+   "fieldname": "media",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Media",
+   "options": "\nWireless\nWireline\nFTTH"
+  },
+  {
+   "fieldname": "otc",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "OTC"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-11-16 22:18:10.938770",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Feasibility Wireline",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
