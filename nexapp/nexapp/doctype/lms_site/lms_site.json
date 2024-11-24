@@ -1,0 +1,128 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-11-22 13:07:22.965452",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "lms_supplier",
+  "bandwith_type",
+  "media",
+  "otc",
+  "static_ip_cost",
+  "billing_terms",
+  "support_mode",
+  "column_break_bben",
+  "supplier_contact",
+  "lms_bandwith",
+  "static_ip",
+  "mrc",
+  "security_deposit",
+  "billing_mode"
+ ],
+ "fields": [
+  {
+   "fieldname": "lms_supplier",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "LMS Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "bandwith_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Bandwith Type",
+   "options": "\nILL\nMBB\n4G\n5G"
+  },
+  {
+   "fieldname": "column_break_bben",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "supplier_contact",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Supplier Contact"
+  },
+  {
+   "fieldname": "lms_bandwith",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "LMS Bandwith",
+   "options": "Item"
+  },
+  {
+   "fieldname": "media",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Media",
+   "options": "\nWired\nRF\n4G\n5G"
+  },
+  {
+   "fieldname": "static_ip",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Static IP",
+   "options": "\nAvailable\nNot Available"
+  },
+  {
+   "fieldname": "otc",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "OTC"
+  },
+  {
+   "fieldname": "mrc",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "MRC"
+  },
+  {
+   "fieldname": "static_ip_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Static IP Cost"
+  },
+  {
+   "fieldname": "security_deposit",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Security Deposit"
+  },
+  {
+   "fieldname": "billing_terms",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Billing Terms",
+   "options": "\nPre-Paid\nPost-Paid"
+  },
+  {
+   "fieldname": "billing_mode",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Billing Mode",
+   "options": "\nMRC\nQRC\nHYRC\nARC"
+  },
+  {
+   "fieldname": "support_mode",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Support Mode",
+   "options": "\nEmail\nSupport Potal\nHelpdesk No"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-11-22 16:26:34.463577",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "LMS Site",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -12,7 +12,8 @@ frappe.ui.form.on('Feasibility', {
             'other_email', 'solution_requiremnt_section', 'solution', 'static_ip', 'lms_plan', 
             'column_break_gxjo', 'primary_data_plan', 'secondary_data_plan', 'lms_plan_2', 
             'feasibility_information_section', 'feasibility_status', 'column_break_hfyn', 
-            'feasibility_output', 'lms_provider_information_section', 'lms_provider'
+            'feasibility_output', 'lms_provider_information_section', 'lms_provider', 'project_id',
+            'description'
         ];
 
         fields.forEach(function(field) {
@@ -70,11 +71,34 @@ frappe.ui.form.on('Feasibility', {
     after_save: function(frm) {
         // Ensure the ID is available after saving
         if (frm.doc.name) {
-            // Set the field 'site_id__legal_code' with the generated 'name' (ID)
-            frm.set_value('site_id__legal_code', frm.doc.name);
+            // Set the field 'circuit_id' with the generated 'name' (ID)
+            frm.set_value('circuit_id', frm.doc.name);
 
             // Save the changes to the document
             frm.save();
         }
     }
 });
+
+frappe.ui.form.on('Feasibility', {
+    customer_request: function (frm) {
+        if (frm.doc.customer_request) {
+            const today = frappe.datetime.now_date(); // Get today's date
+            if (frm.doc.customer_request > today) {
+                frappe.msgprint(__('The Customer Request date cannot be greater than today.'));
+                frm.set_value('customer_request', null); // Clear the field
+            }
+        }
+    }
+});
+
+frappe.ui.form.on('Feasibility', {
+    refresh: function(frm) {
+        // Check if the feasibility status is "Completed"
+        if (frm.doc.feasibility_status == 'Completed') {
+            // Make only the feasibility_status field read-only
+            frm.set_df_property('feasibility_status', 'read_only', 1);
+        }
+    }
+});
+

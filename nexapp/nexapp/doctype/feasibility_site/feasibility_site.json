@@ -1,0 +1,114 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-11-23 11:04:18.359683",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "site",
+  "column_break_jutw",
+  "feasibility_output",
+  "address_information_section",
+  "street",
+  "district",
+  "state",
+  "longitude",
+  "column_break_pbad",
+  "pin_code",
+  "city",
+  "country",
+  "latitude",
+  "section_break_uhsq",
+  "site_product"
+ ],
+ "fields": [
+  {
+   "fieldname": "site",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Site"
+  },
+  {
+   "fieldname": "feasibility_output",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Feasibility Output",
+   "options": "Not Started\nFeasible"
+  },
+  {
+   "fieldname": "column_break_jutw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "address_information_section",
+   "fieldtype": "Section Break",
+   "label": "Address Information"
+  },
+  {
+   "fieldname": "street",
+   "fieldtype": "Data",
+   "label": "Street"
+  },
+  {
+   "fieldname": "district",
+   "fieldtype": "Data",
+   "label": "District"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "State"
+  },
+  {
+   "fieldname": "longitude",
+   "fieldtype": "Data",
+   "label": "Longitude"
+  },
+  {
+   "fieldname": "column_break_pbad",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pin_code",
+   "fieldtype": "Data",
+   "label": "Pin Code"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Data",
+   "label": "Country"
+  },
+  {
+   "fieldname": "latitude",
+   "fieldtype": "Data",
+   "label": "Latitude"
+  },
+  {
+   "fieldname": "section_break_uhsq",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "site_product",
+   "fieldtype": "Button",
+   "label": "Site Product"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-11-23 15:27:36.703166",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Feasibility Site",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

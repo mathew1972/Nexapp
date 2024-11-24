@@ -315,7 +315,7 @@ doctype_js = {
     "Ticket Master": "public/js/Ticket_master_custom.js",
 
     "Feasibility": "doctype/feasibility/feasibility.js",
-    "Site": "doctype/site/site.js",
+    #"Site": "doctype/site/site.js",
 
    
     "Site": "public/js/Site_custom.js",
@@ -338,6 +338,15 @@ fixtures = [
     {"dt": "Navbar Settings"},
     {"dt": "Website Theme"},
     {"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},
-    {"dt": "Custom HTML Block", "filters": [["name", "=", "Recruitment Workspace"]]},
-    {"dt": "Workspace", "filters": [["name", "=", "HR Recruitment"]]}
+    {"dt": "Custom HTML Block", "filters": [["name", "=", "Recruitment Workspace"]]},    
+    {"dt": "Workspace"}
+
 ]
+
+doc_events = {
+    "Feasibility": {
+        "after_save": "nexapp.nexapp.doctype.feasibility.feasibility.create_site_from_feasibility",
+    }
+}
+
+

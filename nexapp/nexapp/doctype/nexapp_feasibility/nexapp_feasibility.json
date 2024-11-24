@@ -1,0 +1,66 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-11-23 11:01:00.300135",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "column_break_xuxd",
+  "project_manager",
+  "section_break_cong",
+  "site"
+ ],
+ "fields": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "column_break_xuxd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "project_manager",
+   "fieldtype": "Link",
+   "label": "Project Manager",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "section_break_cong",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "site",
+   "fieldtype": "Table",
+   "label": "Site",
+   "options": "Feasibility Site"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-11-23 11:09:32.588907",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Nexapp Feasibility",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

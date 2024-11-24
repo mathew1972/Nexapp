@@ -1,34 +1,35 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": ".#####",
+ "autoname": "SITE- .######.",
  "creation": "2024-11-03 10:45:47.957259",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "section_break_qawd",
-  "parent_project",
-  "child_project",
-  "project_manager",
-  "column_break_sbty",
+  "feasibility_section",
   "site_status",
+  "feasibility_status",
+  "feasibility_project_manager",
+  "feasibility_completed_date",
+  "column_break_dlsw",
   "circuit_id",
-  "project_coordinator",
+  "site_project_manager",
+  "section_break_qawd",
+  "project",
+  "customer_po_no",
+  "sales_order",
+  "column_break_sbty",
+  "customer",
+  "customer_po_date",
   "order_information_section",
   "order_type",
   "customer_type",
   "existing_circuit_id",
   "site_name",
-  "customer_request",
-  "phases",
   "column_break_nghj",
-  "sales_order",
-  "customer_name",
-  "customer_po_no",
-  "customer_po_date",
   "region",
-  "site_information_section",
-  "site_item",
+  "phase",
+  "customer_request",
   "service_requirement_section",
   "managed_service",
   "config_type",
@@ -42,29 +43,35 @@
   "street",
   "city",
   "country",
+  "longitude",
   "column_break_ypqk",
   "site_id__legal_code",
   "pincode",
   "district",
   "state",
+  "latitude",
   "site_phone",
   "contact_information_section",
-  "contact_person1",
-  "contact_number1",
-  "email",
+  "contact_person",
+  "contact_mobile",
+  "email_id",
   "designation",
   "department",
   "column_break_lldf",
-  "contact_person2",
-  "contact_number2",
-  "secondary_email",
+  "other_person",
+  "other_mobile",
+  "other_email_id",
   "other_designation",
   "other_department",
+  "site_information_section",
+  "site_item",
+  "section_break_pixr",
+  "product_in_service",
+  "lms_provider_information_section",
+  "lms_provider",
   "section_break_ovsj",
   "billing_status",
   "column_break_ctsh",
-  "section_break_pixr",
-  "product_in_service",
   "description_section",
   "description"
  ],
@@ -73,15 +80,13 @@
    "fieldname": "order_type",
    "fieldtype": "Select",
    "label": "Order Type",
-   "options": "\nService\nShift Address\nUpgrade\nDegrade",
-   "reqd": 1
+   "options": "\nService\nShift Address\nUpgrade\nDegrade"
   },
   {
    "fieldname": "customer_type",
    "fieldtype": "Select",
    "label": "Customer Type  ",
-   "options": "\nPaid Customer\nPOC Customer",
-   "reqd": 1
+   "options": "\nPaid Customer\nPOC Customer"
   },
   {
    "depends_on": "eval:doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
@@ -135,19 +140,12 @@
    "fieldname": "customer_request",
    "fieldtype": "Date",
    "label": "Customer request",
-   "placeholder": "DD-MM-YYYY",
-   "reqd": 1
+   "placeholder": "DD-MM-YYYY"
   },
   {
    "fieldname": "site_phone",
    "fieldtype": "Phone",
    "label": "Site Phone  "
-  },
-  {
-   "fieldname": "phases",
-   "fieldtype": "Select",
-   "label": "Phases ",
-   "options": "\nPhase 1\nPhase 2\nPhase 3\nPhase 4\nPhase 5"
   },
   {
    "allow_in_quick_entry": 1,
@@ -159,31 +157,17 @@
   {
    "fieldname": "region",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
    "label": "Region",
-   "options": "Territory",
-   "reqd": 1
+   "options": "Territory"
   },
   {
    "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"  || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
    "fieldname": "contact_information_section",
    "fieldtype": "Section Break",
    "label": "Contact Information"
-  },
-  {
-   "fieldname": "contact_person1",
-   "fieldtype": "Data",
-   "label": "Contact Person1"
-  },
-  {
-   "fieldname": "contact_number1",
-   "fieldtype": "Phone",
-   "label": "Contact Number1",
-   "placeholder": "Select the Country from dropdown"
-  },
-  {
-   "fieldname": "email",
-   "fieldtype": "Data",
-   "label": "Email  "
   },
   {
    "fieldname": "designation",
@@ -200,18 +184,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "contact_person2",
-   "fieldtype": "Data",
-   "label": "Contact Person2"
-  },
-  {
-   "fieldname": "contact_number2",
-   "fieldtype": "Phone",
-   "label": "Contact Number2",
-   "placeholder": "Select the Country from dropdown"
-  },
-  {
-   "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"  || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
    "fieldname": "section_break_ovsj",
    "fieldtype": "Section Break",
    "label": "Billing Information"
@@ -237,8 +209,7 @@
   {
    "fieldname": "street",
    "fieldtype": "Data",
-   "label": "Street  ",
-   "reqd": 1
+   "label": "Street  "
   },
   {
    "fieldname": "district",
@@ -260,8 +231,7 @@
    "fieldname": "pincode",
    "fieldtype": "Data",
    "label": "Pincode  ",
-   "placeholder": "Please add correct Pin Code",
-   "reqd": 1
+   "placeholder": "Please add correct Pin Code"
   },
   {
    "fieldname": "city",
@@ -276,10 +246,8 @@
    "placeholder": "State update automatically"
   },
   {
-   "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"  || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
    "fieldname": "description_section",
-   "fieldtype": "Section Break",
-   "label": "Description"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "description",
@@ -292,13 +260,7 @@
    "fieldname": "solution",
    "fieldtype": "Link",
    "label": "Solution  ",
-   "options": "Solution",
-   "reqd": 1
-  },
-  {
-   "fieldname": "secondary_email",
-   "fieldtype": "Data",
-   "label": "Secondary Email "
+   "options": "Solution"
   },
   {
    "fieldname": "other_designation",
@@ -334,53 +296,20 @@
    "label": "Secondary Plan  "
   },
   {
-   "bold": 1,
-   "fieldname": "project_manager",
-   "fieldtype": "Link",
-   "in_filter": 1,
-   "in_list_view": 1,
-   "in_preview": 1,
-   "in_standard_filter": 1,
-   "label": "Project Manager ",
-   "options": "Employee",
-   "reqd": 1
-  },
-  {
-   "bold": 1,
-   "fieldname": "project_coordinator",
-   "fieldtype": "Link",
-   "in_filter": 1,
-   "in_list_view": 1,
-   "in_preview": 1,
-   "in_standard_filter": 1,
-   "label": "Project Coordinator",
-   "options": "Employee",
-   "reqd": 1
-  },
-  {
    "fieldname": "section_break_qawd",
    "fieldtype": "Section Break",
    "label": "Project Information"
-  },
-  {
-   "fieldname": "parent_project",
-   "fieldtype": "Link",
-   "label": "Parent Project",
-   "options": "Project"
   },
   {
    "fieldname": "column_break_sbty",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "child_project",
-   "fieldtype": "Link",
-   "label": "Child Project",
-   "options": "Project"
-  },
-  {
    "fieldname": "circuit_id",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
    "label": "Circuit ID",
    "read_only": 1
   },
@@ -395,11 +324,15 @@
    "fieldname": "sales_order",
    "fieldtype": "Link",
    "label": "Sales Order",
-   "options": "Sales Order"
+   "options": "Sales Order",
+   "read_only": 1
   },
   {
    "fieldname": "site_status",
    "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
    "label": "Site Status  ",
    "options": "Pending for Delivery\nWith Sales Team\nDelivered"
   },
@@ -420,13 +353,6 @@
    "label": "Site ID / Legal Code"
   },
   {
-   "fetch_from": "sales_order.customer",
-   "fieldname": "customer_name",
-   "fieldtype": "Data",
-   "label": "Customer Name",
-   "reqd": 1
-  },
-  {
    "fetch_from": "sales_order.po_date",
    "fieldname": "customer_po_date",
    "fieldtype": "Date",
@@ -437,11 +363,125 @@
    "fieldname": "mbb_bandwidth",
    "fieldtype": "Data",
    "label": "MBB Bandwidth "
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "longitude",
+   "fieldtype": "Data",
+   "label": "Longitude"
+  },
+  {
+   "fieldname": "latitude",
+   "fieldtype": "Data",
+   "label": "Latitude"
+  },
+  {
+   "fieldname": "contact_person",
+   "fieldtype": "Data",
+   "label": "Contact Person"
+  },
+  {
+   "fieldname": "other_person",
+   "fieldtype": "Data",
+   "label": "Other Person"
+  },
+  {
+   "fieldname": "contact_mobile",
+   "fieldtype": "Phone",
+   "label": "Contact Mobile",
+   "placeholder": "Select the Country from dropdown"
+  },
+  {
+   "fieldname": "other_mobile",
+   "fieldtype": "Phone",
+   "label": "Other Mobile",
+   "placeholder": "Select the Country from dropdown"
+  },
+  {
+   "fieldname": "email_id",
+   "fieldtype": "Data",
+   "label": "Email ID"
+  },
+  {
+   "fieldname": "other_email_id",
+   "fieldtype": "Data",
+   "label": "Other Email ID"
+  },
+  {
+   "fieldname": "phase",
+   "fieldtype": "Select",
+   "label": "Phase",
+   "options": "\nPhase 1\nPhase 2\nPhase 3\nPhase 4\nPhase 5"
+  },
+  {
+   "fieldname": "feasibility_status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Feasibility Status",
+   "options": "\nPending\nCompleted",
+   "read_only": 1
+  },
+  {
+   "fieldname": "feasibility_completed_date",
+   "fieldtype": "Datetime",
+   "label": "Feasibility Completed Date",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"  || doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
+   "fieldname": "lms_provider_information_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Provider Information"
+  },
+  {
+   "fieldname": "lms_provider",
+   "fieldtype": "Table",
+   "label": "LMS Provider",
+   "options": "LMS Site"
+  },
+  {
+   "fieldname": "feasibility_section",
+   "fieldtype": "Section Break",
+   "label": "Site Status"
+  },
+  {
+   "fieldname": "column_break_dlsw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "fieldname": "site_project_manager",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Site Project Manager ",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "fetch_if_empty": 1,
+   "fieldname": "feasibility_project_manager",
+   "fieldtype": "Link",
+   "label": "Feasibility Project Manager",
+   "options": "Employee",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-21 18:19:33.277874",
+ "modified": "2024-11-24 19:29:10.821688",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

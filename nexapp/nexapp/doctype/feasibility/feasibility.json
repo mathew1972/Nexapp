@@ -1,24 +1,28 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "FS./.#####.",
+ "autoname": ".#####.",
  "creation": "2024-11-14 18:28:18.484404",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "site_information_section",
-  "company1",
+  "column_break_vfai",
   "site_name",
+  "customer",
+  "customer_request",
   "column_break_zthd",
-  "site_id__legal_code",
-  "project_manager",
+  "circuit_id",
+  "feasibility_project_manager",
+  "phase",
+  "region",
   "address_information_section",
-  "pincode",
+  "street",
   "district",
   "state",
   "longitude",
   "column_break_jmai",
-  "street",
+  "pincode",
   "city",
   "country",
   "latitude",
@@ -26,11 +30,16 @@
   "contact_person",
   "contact_mobile",
   "email_id",
+  "designation",
+  "department",
   "column_break_jtep",
   "other_person",
   "other_mobile",
-  "other_email",
+  "other_email_id",
+  "other_designation",
+  "other_department",
   "solution_requiremnt_section",
+  "order_type",
   "solution",
   "static_ip",
   "lms_plan",
@@ -40,16 +49,20 @@
   "lms_plan_2",
   "feasibility_information_section",
   "feasibility_status",
+  "feasibility_completed_date",
   "column_break_hfyn",
   "feasibility_output",
   "lms_provider_information_section",
-  "lms_provider"
+  "lms_provider",
+  "description"
  ],
  "fields": [
   {
    "fieldname": "site_name",
    "fieldtype": "Data",
    "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
    "label": "Site Name",
    "reqd": 1
   },
@@ -71,12 +84,6 @@
   {
    "fieldname": "column_break_jmai",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "site_id__legal_code",
-   "fieldtype": "Data",
-   "label": "Site ID / Legal Code",
-   "read_only": 1
   },
   {
    "fieldname": "street",
@@ -144,11 +151,6 @@
    "label": "Other Mobile"
   },
   {
-   "fieldname": "other_email",
-   "fieldtype": "Data",
-   "label": "Other Email"
-  },
-  {
    "fieldname": "feasibility_information_section",
    "fieldtype": "Section Break",
    "label": "Feasibility Information"
@@ -157,6 +159,9 @@
    "default": "Pending",
    "fieldname": "feasibility_status",
    "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
    "label": "Feasibility Status",
    "options": "Pending\nCompleted"
   },
@@ -217,21 +222,9 @@
    "options": "LMS Feasibility"
   },
   {
-   "fieldname": "company1",
-   "fieldtype": "Link",
-   "label": "Company",
-   "options": "Customer"
-  },
-  {
    "fieldname": "pincode",
    "fieldtype": "Data",
    "label": "Pin Code"
-  },
-  {
-   "fieldname": "project_manager",
-   "fieldtype": "Link",
-   "label": "Project Manager",
-   "options": "Employee"
   },
   {
    "fieldname": "column_break_zthd",
@@ -247,11 +240,103 @@
    "fieldtype": "Section Break",
    "label": "Address Information",
    "placeholder": "Test"
+  },
+  {
+   "fieldname": "column_break_vfai",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "fieldname": "circuit_id",
+   "fieldtype": "Data",
+   "label": "Circuit ID",
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Company",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "other_email_id",
+   "fieldtype": "Data",
+   "label": "Other Email ID"
+  },
+  {
+   "fieldname": "customer_request",
+   "fieldtype": "Date",
+   "label": "Customer request"
+  },
+  {
+   "fieldname": "phase",
+   "fieldtype": "Select",
+   "label": "Phase",
+   "options": "\nPhase 1\nPhase 2\nPhase 3\nPhase 4\nPhase 5"
+  },
+  {
+   "fieldname": "feasibility_completed_date",
+   "fieldtype": "Datetime",
+   "label": "Feasibility Completed Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "region",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Region",
+   "options": "Territory"
+  },
+  {
+   "bold": 1,
+   "fetch_if_empty": 1,
+   "fieldname": "feasibility_project_manager",
+   "fieldtype": "Link",
+   "label": "Feasibility Project Manager",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "order_type",
+   "fieldtype": "Select",
+   "label": "Order Type",
+   "options": "\nService\nShift Address\nUpgrade\nDegrade"
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "label": "Designation"
+  },
+  {
+   "fieldname": "other_designation",
+   "fieldtype": "Data",
+   "label": "Other Designation"
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Data",
+   "label": "Department"
+  },
+  {
+   "fieldname": "other_department",
+   "fieldtype": "Data",
+   "label": "Other Department"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description",
+   "max_height": "80px"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-21 16:08:55.685794",
+ "modified": "2024-11-24 19:25:39.385006",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",

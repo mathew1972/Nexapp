@@ -54,3 +54,4 @@ def handle_ticket_master(ticket_master):
             issue_doc.insert()
 
     return "Processed Successfully"
+
