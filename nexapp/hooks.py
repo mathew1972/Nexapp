@@ -341,7 +341,7 @@ fixtures = [
     {"dt": "Site Type"},
     {"dt": "Solution"},    
     {"dt": "DocType", "filters": [["module", "=", "Nexapp"]]},
-    {"dt": "Custom Field", "filters": [["module", "=", "Nexapp"]]},    
+    {"dt": "Custom Field"},    
     {"dt": "Property Setter"},
     {"dt": "Website Settings"},
     {"dt": "Navbar Settings"},
