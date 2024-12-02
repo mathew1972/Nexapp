@@ -1,44 +1,53 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2024-11-15 19:24:46.567834",
+ "creation": "2024-12-02 12:24:07.888635",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "site_name",
-  "product",
-  "quantity"
+  "product_code",
+  "product_name",
+  "qty",
+  "serial_number"
  ],
  "fields": [
   {
-   "fieldname": "product",
+   "fieldname": "product_code",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Product",
+   "in_preview": 1,
+   "label": "Product Code",
    "options": "Item"
   },
   {
-   "fieldname": "quantity",
+   "fetch_from": "product_code.item_name",
+   "fieldname": "product_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Product Name"
+  },
+  {
+   "fieldname": "qty",
    "fieldtype": "Int",
    "in_list_view": 1,
    "label": "Quantity"
   },
   {
-   "fieldname": "site_name",
+   "fieldname": "serial_number",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Site Name",
-   "options": "Site"
+   "label": "Serial Number",
+   "options": "Serial No"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-11-27 15:47:30.602587",
+ "modified": "2024-12-02 13:18:36.133761",
  "modified_by": "Administrator",
  "module": "Nexapp",
- "name": "Task Item",
+ "name": "Ticket Product",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",

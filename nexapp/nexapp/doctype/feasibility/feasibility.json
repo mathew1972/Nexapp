@@ -54,7 +54,7 @@
   "feasibility_output",
   "lms_provider_information_section",
   "lms_provider",
-  "description"
+  "feasibility_remark"
  ],
  "fields": [
   {
@@ -328,15 +328,15 @@
    "label": "Other Department"
   },
   {
-   "fieldname": "description",
+   "fieldname": "feasibility_remark",
    "fieldtype": "Small Text",
-   "label": "Description",
+   "label": "Feasibility Remark",
    "max_height": "80px"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-24 19:25:39.385006",
+ "modified": "2024-11-27 17:18:18.318376",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",

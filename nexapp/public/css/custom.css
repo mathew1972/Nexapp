@@ -7,3 +7,19 @@
     color: white !important;
 }
 
+.indicator {
+    height: 12px;
+    width: 12px;
+    display: inline-block;
+    border-radius: 50%;
+    background-color: grey; /* Default color */
+}
+
+.indicator.green {
+    background-color: green; /* Stock available */
+}
+
+.indicator.red {
+    background-color: red; /* Stock unavailable */
+}
+

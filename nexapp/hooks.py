@@ -249,6 +249,7 @@ app_include_css = [
     "/assets/nexapp/css/custom.css"    
 ]
 
+
 doctype_js = {
     "Lead": "public/js/lead_custom.js",
     "Opportunity": "public/js/Deal_custom.js",
@@ -313,15 +314,23 @@ doctype_js = {
     "Quality Inspection Template": "public/js/Stock_custom_ui.js",
     "Quick Stock Balance": "public/js/Stock_custom_ui.js",
     "Ticket Master": "public/js/Ticket_master_custom.js",
+    
 
     "Feasibility": "doctype/feasibility/feasibility.js",
-    #"Site": "doctype/site/site.js",
+    "Site": "doctype/site/site.js",
 
    
     "Site": "public/js/Site_custom.js",
     "Site": "public/js/Site_pincode_custom.js",
     "Feasibility": "public/js/Feasibility_pincode_custom.js",
-    "Project": "public/js/Project_custom_ui.js"
+    "Project": "public/js/Project_custom_ui.js",
+    "Sales Order": "public/js/Sales_order_circuit.js",
+
+    #"Sales Order": "public/js/sales_order_site.js"
+
+   
+
+    #"Site": "public/js/Site_list.js"
 
                
     
@@ -343,10 +352,35 @@ fixtures = [
 
 ]
 
-doc_events = {
-    "Feasibility": {
-        "after_save": "nexapp.nexapp.doctype.feasibility.feasibility.create_site_from_feasibility",
-    }
+doctype_list_js = {
+    "Site": "public/js/Site_list.js"
 }
+
+doctype_js = {
+    "Sales Order": "public/js/sales_order_site.js"   
+}
+
+doctype_js = {
+    "Site": "public/js/stock.js"
+}
+
+doctype_js = {
+    "Site": "public/js/site_feasibility_button.js"  
+}
+
+doctype_js = {
+    "Site": "public/js/site_stock.js"  
+}
+
+doctype_js = {
+    "Issue": "public/js/ticket_custom.js"  
+}
+
+
+
+
+
+
+
 
 

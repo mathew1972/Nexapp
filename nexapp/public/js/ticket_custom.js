@@ -1,27 +1,26 @@
-// Copyright (c) 2024, Nexapp Technologies Private Limited and contributors
-// For license information, please see license.txt
-frappe.ui.form.on('Site', {
+frappe.ui.form.on('Issue', {
     refresh: function (frm) {
         // List of fields to apply custom styles to
         const fields = [
-            'section_break_qawd', 'parent_project', 'child_project', 'project_manager',
-            'column_break_sbty', 'site_status', 'circuit_id', 'project_coordinator',
-            'order_information_section', 'order_type', 'customer_type', 'existing_circuit_id',
-            'site_name', 'customer_request', 'phases', 'column_break_nghj', 'sales_order',
-            'customer_name', 'customer_po_no', 'customer_po_date', 'region',
-            'site_information_section', 'site_item', 'address_information_section',
-            'site_type', 'street', 'city', 'country', 'column_break_ypqk',
-            'site_id__legal_code', 'pincode', 'district', 'state', 'site_phone',
-            'service_requirement_section', 'managed_service', 'config_type',
-            'column_break_syhb', 'solution', 'primary_plan', 'secondary_plan',
-            'contact_information_section', 'contact_person1', 'contact_number1', 'email',
-            'designation', 'department', 'column_break_lldf', 'contact_person2',
-            'contact_number2', 'secondary_email', 'other_designation', 'other_department',
-            'section_break_ovsj', 'billing_status', 'column_break_ctsh',
-            'section_break_pixr', 'product_in_service', 'description_section',
-            'description', 'site_project_manager', 'feasibility_project_manager','longitude',
-            'latitude', 'contact_person', 'contact_mobile', 'email_id', 'other_person', 
-            'other_mobile', 'other_email_id'
+            'subject_section', 'custom_ticket_information', 'status', 'priority',
+            'custom_column_break_dqnlg', 'issue_type', 'custom_impact', 
+            'custom_impact_details', 'custom_requester_details', 'raised_by', 
+            'customer', 'custom_technician', 'cb00', 'custom_circuit_id', 
+            'custom_site_name', 'issue_split_from', 'naming_series', 
+            'custom_product_information', 'custom_product_', 'sb_details', 
+            'subject', 'description', 'custom__attachments', 
+            'service_level_section', 'service_level_agreement', 
+            'response_by', 'reset_service_level_agreement', 'cb', 
+            'agreement_status', 'resolution_by', 
+            'service_level_agreement_creation', 'on_hold_since', 
+            'total_hold_time', 'response', 'first_response_time', 
+            'first_responded_on', 'column_break_26', 'avg_response_time', 
+            'section_break_19', 'resolution_details', 'column_break1', 
+            'opening_date', 'opening_time', 'resolution_date', 
+            'resolution_time', 'user_resolution_time', 'additional_info', 
+            'lead', 'contact', 'email_account', 'column_break_16', 
+            'customer_name', 'project', 'company', 'via_customer_portal', 
+            'attachment', 'content_type'
         ];
 
         // Apply custom styles and interactions to each field
@@ -95,24 +94,6 @@ frappe.ui.form.on('Site', {
                 'transition': 'background-color 0.3s ease, box-shadow 0.3s ease',
                 'box-shadow': '0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06)' // Subtle shadow
             });
-
-            // Add hover effect
-            buttonElement.hover(
-                function () {
-                    // On hover: Use a lighter color
-                    $(this).css({
-                        'background-color': '#5ABBE8', // Light blue color
-                        'box-shadow': '0 6px 8px rgba(0,0,0,0.15), 0 4px 6px rgba(0,0,0,0.1)' // Slightly stronger shadow
-                    });
-                },
-                function () {
-                    // On hover out: Reset to the original color
-                    $(this).css({
-                        'background-color': '#008CBA',
-                        'box-shadow': '0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06)'
-                    });
-                }
-            );
         }
     }
 });

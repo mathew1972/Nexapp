@@ -66,6 +66,16 @@ frappe.ui.form.on('Feasibility', {
                 });
             }
         });
+
+        // Check if the feasibility status is "Completed"
+        if (frm.doc.feasibility_status === 'Completed') {
+            // Make only the feasibility_status field read-only
+            frm.set_df_property('feasibility_status', 'read_only', 1);
+
+            // Set feasibility_completed_date and save it
+            frm.set_value('feasibility_completed_date', frappe.datetime.now_datetime());
+            frm.save_or_update();
+        }
     },
 
     after_save: function(frm) {
@@ -77,11 +87,9 @@ frappe.ui.form.on('Feasibility', {
             // Save the changes to the document
             frm.save();
         }
-    }
-});
+    },
 
-frappe.ui.form.on('Feasibility', {
-    customer_request: function (frm) {
+    customer_request: function(frm) {
         if (frm.doc.customer_request) {
             const today = frappe.datetime.now_date(); // Get today's date
             if (frm.doc.customer_request > today) {
@@ -91,14 +99,3 @@ frappe.ui.form.on('Feasibility', {
         }
     }
 });
-
-frappe.ui.form.on('Feasibility', {
-    refresh: function(frm) {
-        // Check if the feasibility status is "Completed"
-        if (frm.doc.feasibility_status == 'Completed') {
-            // Make only the feasibility_status field read-only
-            frm.set_df_property('feasibility_status', 'read_only', 1);
-        }
-    }
-});
-
