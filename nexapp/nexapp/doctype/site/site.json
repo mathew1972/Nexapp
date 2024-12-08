@@ -1,11 +1,17 @@
 {
  "actions": [],
+ "allow_events_in_timeline": 1,
  "allow_rename": 1,
  "autoname": "SITE- .######.",
  "creation": "2024-11-03 10:45:47.957259",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "site_information_tab",
+  "section_break_xvmk",
+  "column_break_yehx",
+  "column_break_lbut",
+  "feasibility_information",
   "feasibility_section",
   "site_name",
   "customer",
@@ -16,46 +22,43 @@
   "delivery_date",
   "column_break_dlsw",
   "circuit_id",
-  "feasibility_information",
   "site_status",
+  "customer_type",
   "site_project_manager",
   "order_type",
-  "customer_type",
+  "site_remark",
   "section_break_pixr",
   "product_in_service",
-  "section_break_ovsj",
-  "billing_status",
-  "column_break_ctsh",
-  "description_section",
-  "description",
   "stock_information_tab",
   "site_item",
   "tab_3_tab",
-  "project_information_section",
+  "section_break_wnfg",
+  "column_break_frik",
   "project",
   "project_name",
   "expected_start_date",
   "expected_end_date",
   "column_break_xqbv",
   "sales_order",
-  "sales_order_amount",
   "sales_order_date",
+  "sales_order_amount",
   "column_break_aujv",
   "customer_po_no",
   "customer_po_date",
   "customer_po_amount",
-  "site_information_tab",
+  "site_address_tab",
   "street",
   "city",
   "country",
   "longitude",
-  "latitude",
   "column_break_xbyr",
-  "site_id__legal_code",
   "pincode",
   "district",
   "state",
+  "latitude",
+  "site_id__legal_code",
   "contact_information_tab",
+  "primary_contact_column",
   "contact_person",
   "contact_mobile",
   "email_id",
@@ -152,26 +155,10 @@
    "label": "Department  "
   },
   {
-   "fieldname": "section_break_ovsj",
-   "fieldtype": "Section Break",
-   "label": "Billing Information"
-  },
-  {
-   "default": "Billing Pending",
-   "depends_on": "eval:doc.order_type==\"Service\" || doc.order_type==\"Supply\"",
-   "fieldname": "billing_status",
-   "fieldtype": "Select",
-   "label": "Billing Status ",
-   "options": "Billing Pending\nBilling Completed"
-  },
-  {
-   "fieldname": "column_break_ctsh",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "street",
-   "fieldtype": "Data",
-   "label": "Street  "
+   "fieldtype": "Small Text",
+   "label": "Address/ Street  ",
+   "placeholder": "Enter address to check availability in your area"
   },
   {
    "fieldname": "district",
@@ -183,7 +170,7 @@
    "fieldname": "country",
    "fieldtype": "Data",
    "label": "Country ",
-   "placeholder": "State update automatically"
+   "placeholder": "Country update automatically"
   },
   {
    "fieldname": "pincode",
@@ -204,16 +191,6 @@
    "placeholder": "State update automatically"
   },
   {
-   "fieldname": "description_section",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "description",
-   "fieldtype": "Small Text",
-   "label": "Description",
-   "max_height": "80px"
-  },
-  {
    "allow_in_quick_entry": 1,
    "fieldname": "solution",
    "fieldtype": "Link",
@@ -223,12 +200,12 @@
   {
    "fieldname": "other_designation",
    "fieldtype": "Data",
-   "label": "Other Designation  "
+   "label": "Designation  "
   },
   {
    "fieldname": "other_department",
    "fieldtype": "Data",
-   "label": "Other Department  "
+   "label": "Department  "
   },
   {
    "depends_on": "eval:doc.choose_product_type==\"Multi Line\"",
@@ -254,6 +231,7 @@
    "label": "Secondary Plan  "
   },
   {
+   "bold": 1,
    "fieldname": "circuit_id",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -267,8 +245,9 @@
    "fetch_from": "sales_order.po_no",
    "fieldname": "customer_po_no",
    "fieldtype": "Link",
-   "label": "Customer PO No",
-   "options": "Customer PO"
+   "label": "Customer's PO",
+   "options": "Customer PO",
+   "read_only": 1
   },
   {
    "fieldname": "sales_order",
@@ -301,7 +280,7 @@
    "fetch_from": "customer_po_no.customer_po_date",
    "fieldname": "customer_po_date",
    "fieldtype": "Date",
-   "label": "Customer PO Date",
+   "label": "Customer's PO Date",
    "read_only": 1
   },
   {
@@ -314,7 +293,7 @@
    "fieldname": "customer",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Company",
+   "label": "Customer",
    "options": "Customer"
   },
   {
@@ -335,19 +314,19 @@
   {
    "fieldname": "other_person",
    "fieldtype": "Data",
-   "label": "Other Person"
+   "label": "Contact Person"
   },
   {
+   "default": "+91-",
    "fieldname": "contact_mobile",
-   "fieldtype": "Phone",
-   "label": "Contact Mobile",
-   "placeholder": "Select the Country from dropdown"
+   "fieldtype": "Data",
+   "label": "Contact Mobile"
   },
   {
+   "default": "+91-",
    "fieldname": "other_mobile",
-   "fieldtype": "Phone",
-   "label": "Other Mobile",
-   "placeholder": "Select the Country from dropdown"
+   "fieldtype": "Data",
+   "label": "Contact Mobile"
   },
   {
    "fieldname": "email_id",
@@ -357,7 +336,7 @@
   {
    "fieldname": "other_email_id",
    "fieldtype": "Data",
-   "label": "Other Email ID"
+   "label": "Email ID"
   },
   {
    "fieldname": "phase",
@@ -367,8 +346,7 @@
   },
   {
    "fieldname": "feasibility_section",
-   "fieldtype": "Section Break",
-   "label": "Site Status"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "column_break_dlsw",
@@ -389,7 +367,8 @@
    "fieldname": "project",
    "fieldtype": "Link",
    "label": "Project",
-   "options": "Project"
+   "options": "Project",
+   "read_only": 1
   },
   {
    "fieldname": "delivery_date",
@@ -399,11 +378,6 @@
   {
    "fieldname": "tab_3_tab",
    "fieldtype": "Tab Break",
-   "label": "Project Information"
-  },
-  {
-   "fieldname": "project_information_section",
-   "fieldtype": "Section Break",
    "label": "Project Information"
   },
   {
@@ -430,18 +404,14 @@
   },
   {
    "fieldname": "column_break_myyx",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "label": "Alternate Contact"
   },
   {
    "fieldname": "feasibility_information",
    "fieldtype": "Button",
    "label": "Feasibility Information",
    "placeholder": "Click the button to view the Feasibility details"
-  },
-  {
-   "fieldname": "site_information_tab",
-   "fieldtype": "Tab Break",
-   "label": "Site Information"
   },
   {
    "fieldname": "provisioning_tab",
@@ -466,32 +436,26 @@
   {
    "fieldname": "sales_order_amount",
    "fieldtype": "Currency",
-   "label": "Sales Order Amount"
+   "label": "Sales Order Amount",
+   "read_only": 1
   },
   {
    "fieldname": "customer_po_amount",
    "fieldtype": "Currency",
-   "label": "Customer PO Amount"
+   "label": "Customer's PO Amount",
+   "read_only": 1
   },
   {
    "fieldname": "sales_order_date",
-   "fieldtype": "Data",
-   "label": "Sales Order Date"
+   "fieldtype": "Date",
+   "label": "Sales Order Date",
+   "read_only": 1
   },
   {
    "fieldname": "project_name",
    "fieldtype": "Data",
-   "label": "Project Name"
-  },
-  {
-   "fieldname": "expected_start_date",
-   "fieldtype": "Date",
-   "label": "Project Expected Start Date"
-  },
-  {
-   "fieldname": "expected_end_date",
-   "fieldtype": "Date",
-   "label": "Project Expected End Date"
+   "label": "Project Name",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_aujv",
@@ -513,11 +477,64 @@
    "fieldtype": "Table",
    "label": "LMS Vendor",
    "options": "LMS Site"
+  },
+  {
+   "fieldname": "site_address_tab",
+   "fieldtype": "Tab Break",
+   "label": "Site Address"
+  },
+  {
+   "fieldname": "section_break_xvmk",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_yehx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_lbut",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_frik",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "expected_start_date",
+   "fieldtype": "Date",
+   "label": "Project Start Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "expected_end_date",
+   "fieldtype": "Date",
+   "label": "Project End Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "site_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Site Information"
+  },
+  {
+   "fieldname": "section_break_wnfg",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "site_remark",
+   "fieldtype": "Small Text",
+   "label": "Site Remark",
+   "max_height": "80px"
+  },
+  {
+   "fieldname": "primary_contact_column",
+   "fieldtype": "Column Break",
+   "label": "Primary Contact"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-02 13:22:34.293859",
+ "modified": "2024-12-07 10:35:10.929870",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

@@ -1,6 +1,5 @@
 // Copyright (c) 2024, Nexapp Technologies Private Limited and contributors
 // For license information, please see license.txt
-
 frappe.ui.form.on('Site', {
     feasibility_information: function (frm) {
         if (frm.doc.circuit_id) {
@@ -72,9 +71,6 @@ function show_horizontal_feasibility_popup(feasibility_data) {
                     <strong>Feasibility Completed Date:</strong> ${formatDate(feasibility_data.feasibility_completed_date)}
                 </div>
                 <div style="flex: 1 1 calc(50% - 15px);">
-                    <strong>Feasibility Output:</strong> ${feasibility_data.feasibility_output || 'N/A'}
-                </div>
-                <div style="flex: 1 1 calc(50% - 15px);">
                     <strong>Customer Request:</strong> ${formatDate(feasibility_data.customer_request || 'N/A')}
                 </div>
                 <div style="flex: 1 1 calc(50% - 15px);">
@@ -87,13 +83,13 @@ function show_horizontal_feasibility_popup(feasibility_data) {
                     <thead style="background: #f1f1f1;">
                         <tr>
                             <th style="padding: 10px; border-bottom: 1px solid #ddd;">LMS Supplier</th>
+                            <th style="padding: 10px; border-bottom: 1px solid #ddd;">Supplier Contact</th>
                             <th style="padding: 10px; border-bottom: 1px solid #ddd;">Bandwidth Type</th>
                             <th style="padding: 10px; border-bottom: 1px solid #ddd;">Media</th>
                             <th style="padding: 10px; border-bottom: 1px solid #ddd;">OTC</th>
                             <th style="padding: 10px; border-bottom: 1px solid #ddd;">Static IP Cost</th>
                             <th style="padding: 10px; border-bottom: 1px solid #ddd;">Billing Terms</th>
-                            <th style="padding: 10px; border-bottom: 1px solid #ddd;">Support Mode</th>
-                            <th style="padding: 10px; border-bottom: 1px solid #ddd;">Supplier Contact</th>
+                            <th style="padding: 10px; border-bottom: 1px solid #ddd;">Support Mode</th>                            
                             <th style="padding: 10px; border-bottom: 1px solid #ddd;">LMS Bandwidth</th>
                             <th style="padding: 10px; border-bottom: 1px solid #ddd;">Static IP</th>
                             <th style="padding: 10px; border-bottom: 1px solid #ddd;">MRC</th>
@@ -109,13 +105,13 @@ function show_horizontal_feasibility_popup(feasibility_data) {
             content += `
                 <tr>
                     <td style="padding: 10px; border-bottom: 1px solid #ddd;">${row.lms_supplier || 'N/A'}</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">${row.supplier_contact || 'N/A'}</td>
                     <td style="padding: 10px; border-bottom: 1px solid #ddd;">${row.bandwidth_type || 'N/A'}</td>
                     <td style="padding: 10px; border-bottom: 1px solid #ddd;">${row.media || 'N/A'}</td>
                     <td style="padding: 10px; border-bottom: 1px solid #ddd;">${row.otc || 'N/A'}</td>
                     <td style="padding: 10px; border-bottom: 1px solid #ddd;">${row.static_ip_cost || 'N/A'}</td>
                     <td style="padding: 10px; border-bottom: 1px solid #ddd;">${row.billing_terms || 'N/A'}</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">${row.support_mode || 'N/A'}</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">${row.supplier_contact || 'N/A'}</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">${row.support_mode || 'N/A'}</td>                    
                     <td style="padding: 10px; border-bottom: 1px solid #ddd;">${row.lms_bandwidth || 'N/A'}</td>
                     <td style="padding: 10px; border-bottom: 1px solid #ddd;">${row.static_ip || 'N/A'}</td>
                     <td style="padding: 10px; border-bottom: 1px solid #ddd;">${row.mrc || 'N/A'}</td>

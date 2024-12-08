@@ -7,19 +7,29 @@
     color: white !important;
 }
 
-.indicator {
-    height: 12px;
-    width: 12px;
+/* Target the color dot specifically within the child table for the 'item_name' column */
+.grid-body .item-color-dot {
+    width: 10px; /* Set desired size */
+    height: 10px; /* Set desired size */
+    border-radius: 50%; /* Make it circular */
     display: inline-block;
-    border-radius: 50%;
-    background-color: grey; /* Default color */
+    margin-right: 5px; /* Space between the dot and text */
+    vertical-align: middle; /* Align dot with the text */
 }
 
-.indicator.green {
-    background-color: green; /* Stock available */
+/* Ensure color dots do not appear in dialogs */
+.dialog .item-color-dot {
+    display: none;
 }
 
-.indicator.red {
-    background-color: red; /* Stock unavailable */
+.dialog .item-color-dot {
+    display: none; /* Do not display inside dialogs */
 }
 
+.status-strip {
+    height: 5px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}

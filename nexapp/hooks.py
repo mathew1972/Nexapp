@@ -249,18 +249,21 @@ app_include_css = [
     "/assets/nexapp/css/custom.css"    
 ]
 
-
 doctype_js = {
     "Lead": "public/js/lead_custom.js",
     "Opportunity": "public/js/Deal_custom.js",
     "Customer": "public/js/Customer_custom.js",
     "Quotation": "public/js/Quotes_custom.js",
     "Item Price": "public/js/Product_Price_custom.js",
-    "Sales Order": "public/js/Sales_Order_custom.js",
+    "Sales Order": [
+        "public/js/Sales_Order_custom.js",
+        "public/js/sales_order_site.js",
+        "public/js/Sales_order_circuit.js"
+    ],
     "Sales Invoice": "public/js/Sales_Invoice_custom.js",
     "Payment Entry": "public/js/Payment_Entry_custom.js",
     "Territory": "public/js/Territory_custom.js",
-    "Job Opening": "public/js/Job_opening _custom.js",
+    "Job Opening": "public/js/Job_opening_custom.js",
     "Job Applicant": "public/js/Job_applicant_custom.js",
     "Job Offer": "public/js/Job_offer_custom.js",
     "Staffing Plan": "public/js/Staffing_plan_custom.js",
@@ -289,7 +292,6 @@ doctype_js = {
     "Expense Claim": "public/js/Expense_claim_custom.js",
     "Employee Advance": "public/js/Employee_advance_custom.js",
     "Travel Request": "public/js/Travel_request_custom.js",
-
     "Delivery Note": "public/js/Stock_custom_ui.js",
     "Material Request": "public/js/Stock_custom_ui.js",
     "Stock Entry": "public/js/Stock_custom_ui.js",
@@ -314,32 +316,32 @@ doctype_js = {
     "Quality Inspection Template": "public/js/Stock_custom_ui.js",
     "Quick Stock Balance": "public/js/Stock_custom_ui.js",
     "Ticket Master": "public/js/Ticket_master_custom.js",
-    
-
-    "Feasibility": "doctype/feasibility/feasibility.js",
-    "Site": "doctype/site/site.js",
-
-   
-    "Site": "public/js/Site_custom.js",
-    "Site": "public/js/Site_pincode_custom.js",
-    "Feasibility": "public/js/Feasibility_pincode_custom.js",
+    "Feasibility": [
+        "doctype/feasibility/feasibility.js",
+        "public/js/feasibility_pincode.js",
+        "public/js/feasibility_map.js"
+    ],
+    "Site": [
+        "doctype/site/site.js",
+        "public/js/site_feasibility_button.js",
+        "public/js/site_stock.js",
+        #"public/js/stock.js",
+        "public/js/site_map.js",
+        "public/js/site_pincode.js"
+    ],
     "Project": "public/js/Project_custom_ui.js",
-    "Sales Order": "public/js/Sales_order_circuit.js",
+    "Issue": "public/js/ticket_custom.js"
+}
 
-    #"Sales Order": "public/js/sales_order_site.js"
-
-   
-
-    #"Site": "public/js/Site_list.js"
-
-               
-    
+doctype_list_js = {
+    "Site": "public/js/Site_list.js"
 }
 
 fixtures = [
     {"dt": "Territory"},
     {"dt": "Site Type"},
     {"dt": "Solution"},    
+    {"dt": "Data Plan"},
     {"dt": "DocType", "filters": [["module", "=", "Nexapp"]]},
     {"dt": "Custom Field"},    
     {"dt": "Property Setter"},
@@ -352,34 +354,11 @@ fixtures = [
 
 ]
 
-doctype_list_js = {
-    "Site": "public/js/Site_list.js"
+doc_events = {
+    "Sales Order": {
+        "on_submit": "nexapp.api.update_custom_circuit_id_in_stock_reservation"
+    }
 }
-
-doctype_js = {
-    "Sales Order": "public/js/sales_order_site.js"   
-}
-
-doctype_js = {
-    "Site": "public/js/stock.js"
-}
-
-doctype_js = {
-    "Site": "public/js/site_feasibility_button.js"  
-}
-
-doctype_js = {
-    "Site": "public/js/site_stock.js"  
-}
-
-doctype_js = {
-    "Issue": "public/js/ticket_custom.js"  
-}
-
-
-
-
-
 
 
 

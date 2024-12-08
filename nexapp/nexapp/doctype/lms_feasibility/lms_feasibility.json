@@ -3,7 +3,6 @@
  "allow_rename": 1,
  "creation": "2024-11-20 15:41:01.543146",
  "doctype": "DocType",
- "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "lms_supplier",
@@ -34,7 +33,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "LMS Bandwith",
-   "options": "Item"
+   "options": "LMS Plan"
   },
   {
    "fieldname": "bandwith_type",
@@ -109,7 +108,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-11-21 13:13:09.198617",
+ "modified": "2024-12-06 00:16:28.017449",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "LMS Feasibility",

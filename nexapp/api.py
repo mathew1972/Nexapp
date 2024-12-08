@@ -57,98 +57,18 @@ def handle_ticket_master(ticket_master):
 
 ###########################################################3
 import frappe
-from frappe.utils import nowdate, add_days
-
-@frappe.whitelist()
-def create_sales_order(site_name):
-    """
-    Create a Sales Order for the given Site with validation for customer_po_no and project.
-    """
-    try:
-        # Fetch the Site document
-        site = frappe.get_doc("Site", site_name)
-        
-        # Ensure the Site has a linked customer
-        if not site.customer:
-            frappe.throw(f"Customer not linked to Site {site_name}")
-
-        # Validate that customer_po_no and project are not blank
-        if not site.customer_po_no or not site.project:
-            frappe.throw("Please update both Customer PO Number (customer_po_no) and Project for the Site.")
-
-        # Fetch the value of customer_po_no and project from the first site
-        first_site_customer_po_no = site.customer_po_no
-        first_site_project = site.project
-
-        # Loop through selected sites to check that all have the same customer_po_no and project
-        for site_item in site.get("site_item"):
-            if site_item.customer_po_no != first_site_customer_po_no:
-                frappe.throw("All selected sites must have the same Customer PO Number (customer_po_no).")
-            if site_item.project != first_site_project:
-                frappe.throw("All selected sites must have the same Project.")
-
-        # Prepare Sales Order details
-        sales_order = frappe.get_doc({
-            "doctype": "Sales Order",
-            "customer": site.customer,
-            "delivery_date": add_days(nowdate(), 30),  # Delivery date: 30 days from today
-            "items": []
-        })
-
-        # Add items from the Site's child table (Site Item) to the Sales Order
-        for site_item in site.get("site_item"):
-            sales_order.append("items", {
-                "item_code": site_item.product_name,
-                "qty": site_item.qty,
-                "custom_feasibility": site.circuit_id,  # Assuming this maps to custom_feasibility
-                "custom_site_info": site_name,  # Map the Site name to custom_site_info
-                "customer_po_no": site.customer_po_no,  # Include the PO number from the parent Site Doctype
-                "project": site.project  # Include the project from the parent Site Doctype
-            })
-
-        # Insert the Sales Order in draft mode
-        sales_order.insert()
-
-        # Return the created Sales Order name
-        return sales_order.name
-
-    except frappe.ValidationError as e:
-        frappe.throw(str(e))
-    except Exception as e:
-        frappe.log_error(message=str(e), title="Sales Order Creation Error")
-        frappe.throw(f"An unexpected error occurred: {str(e)}")
-
-##########################################################
-import frappe
-
-@frappe.whitelist()
-def get_filtered_circuit_ids(customer):
-    """
-    Fetch the list of circuit_ids from the Feasibility doctype
-    where the customer matches the selected customer.
-    """
-    if not customer:
-        return []
-
-    # Fetch Feasibility records where customer matches
-    feasibility_records = frappe.get_all('Feasibility', filters={'customer': customer}, fields=['circuit_id'])
-
-    # Extract the circuit_id from the records
-    circuit_ids = [record['circuit_id'] for record in feasibility_records]
-
-    return circuit_ids
-###################################################################
-import frappe
 from frappe.utils import now
 
 @frappe.whitelist()
 def sales_order_to_site(sales_order):
-    # Fetch the Sales Order Document
+    # Fetch the Sales Order Document by its name
     so_doc = frappe.get_doc("Sales Order", sales_order)
     
+    # Check if the PO Number is present in the Sales Order; raise an error if not
     if not so_doc.po_no:
         frappe.throw(_("Client PO Number is missing in the Sales Order"))
     
+    # Dictionary to group items by their custom feasibility
     grouped_sites = {}
 
     # Group items by custom_feasibility
@@ -161,28 +81,36 @@ def sales_order_to_site(sales_order):
                 "order_type": item.custom_order_type,  # Fetch the custom_order_type here
                 "items": []
             }
+        # Add item to the corresponding feasibility group
         grouped_sites[feasibility]["items"].append({
             "item_code": item.item_code,
             "qty": item.qty
         })
     
-    # Fetch the associated Project details
+    # Fetch the associated Project details, if any
     project_doc = None
     if so_doc.project:
         project_doc = frappe.get_doc("Project", so_doc.project)
 
-    # Create Site Doctypes for each group
+    # Create Site Doctypes for each grouped feasibility
     for feasibility, site_data in grouped_sites.items():
         # Fetch the Feasibility document using the circuit_id
         feasibility_doc = frappe.get_doc("Feasibility", feasibility)
+        
+        # Raise an error if the Feasibility document is not found
         if not feasibility_doc:
             frappe.throw(_("Feasibility with circuit_id {0} not found").format(feasibility))
         
-        # Create the Site document
+        # Update the Feasibility document with Sales Order name and transaction date
+        feasibility_doc.sales_order = so_doc.name
+        feasibility_doc.sales_order_date = so_doc.transaction_date  # Update the sales_order_date field
+        feasibility_doc.save(ignore_permissions=True)
+
+        # Create a new Site document and populate its fields
         site_doc = frappe.new_doc("Site")
         site_doc.customer = so_doc.customer
         site_doc.customer_po_no = so_doc.po_no
-        site_doc.customer_po_date = so_doc.po_date  # Map po_date to customer_po_date in Site
+        site_doc.customer_po_date = so_doc.po_date  # Map PO date to customer_po_date in Site
         site_doc.sales_order = so_doc.name          # Map Sales Order name to sales_order in Site
         site_doc.sales_order_amount = so_doc.grand_total  # Map grand_total to sales_order_amount in Site
         site_doc.customer_po_amount = so_doc.custom_customer_purchase_amount  # Map custom_customer_purchase_amount to customer_po_amount
@@ -203,7 +131,7 @@ def sales_order_to_site(sales_order):
         site_doc.longitude = feasibility_doc.longitude
         site_doc.latitude = feasibility_doc.latitude
 
-        # Map additional fields from Feasibility
+        # Map additional fields from Feasibility to Site
         site_doc.contact_person = feasibility_doc.contact_person
         site_doc.contact_mobile = feasibility_doc.contact_mobile
         site_doc.email_id = feasibility_doc.email_id
@@ -214,6 +142,10 @@ def sales_order_to_site(sales_order):
         site_doc.other_email_id = feasibility_doc.other_email_id
         site_doc.other_designation = feasibility_doc.other_designation
         site_doc.other_department = feasibility_doc.other_department
+        
+        # Map the 'region' and 'phase' fields from Feasibility to Site
+        site_doc.region = feasibility_doc.region  # Assign region from Feasibility to Site
+        site_doc.phase = feasibility_doc.phase  # Assign phase from Feasibility to Site
 
         # Map fields from Project to Site (if project exists)
         if project_doc:
@@ -225,7 +157,7 @@ def sales_order_to_site(sales_order):
         if not hasattr(site_doc, "site_item"):
             frappe.throw(_("The 'site_item' field is missing in the Site Doctype. Please ensure the field is correctly defined."))
 
-        # Add items to Site Item child table
+        # Add items to the Site Item child table
         for item in site_data["items"]:
             site_doc.append("site_item", {
                 "item_code": item["item_code"],
@@ -236,41 +168,11 @@ def sales_order_to_site(sales_order):
         site_doc.insert(ignore_permissions=True)
         frappe.db.commit()
 
+    # Return a success message
     return {"status": "success"}
 
-########################################################################3
-#STOCK BALANCE
-#########################################################################
+###############################################################
 
-import frappe
-
-@frappe.whitelist()
-def get_stock_details(item_code, warehouse):
-    """
-    Fetch stock balance and reserved stock for the given item and warehouse.
-    """
-    if not item_code or not warehouse:
-        return {"item_balance": 0, "item_reserved": 0}
-
-    # Fetch stock details for the specified item and warehouse
-    stock_details = frappe.db.get_value(
-        "Bin", 
-        {"item_code": item_code, "warehouse": warehouse}, 
-        ["actual_qty", "reserved_qty"], 
-        as_dict=True
-    )
-
-    if stock_details:
-        return {
-            "item_balance": stock_details.get("actual_qty", 0),
-            "item_reserved": stock_details.get("reserved_qty", 0),
-        }
-    
-    return {"item_balance": 0, "item_reserved": 0}
-
-###################################################################################
-#STICK STOCK
-###################################################################################
 import frappe
 
 @frappe.whitelist()
@@ -299,4 +201,66 @@ def get_stock_details(item_code, warehouse):
         }
     return {"item_balance": 0, "item_reserved": 0}
 
-############################################################################
+#################################################################################
+import frappe
+
+@frappe.whitelist(allow_guest=True)
+def get_filtered_feasibility(customer):
+    # Define possible feasibility statuses
+    feasibility_statuses = ["Feasible", "Partial Feasible", "High Commercials"]
+
+    # Fetch feasibility records where:
+    # 1. The customer matches.
+    # 2. The feasibility_status is valid.
+    # 3. The sales_order field is empty or null.
+    feasibilities = frappe.get_all('Feasibility', filters={
+        'customer': customer,
+        'feasibility_status': ['in', feasibility_statuses],
+        'sales_order': ['in', [None, '', 'null']]  # Ensure the sales_order is empty or null
+    }, fields=['circuit_id'])
+
+    # Extract the circuit_ids from the feasibility records
+    circuit_ids = [feasibility['circuit_id'] for feasibility in feasibilities]
+
+    # Return the list of circuit_ids (empty list if no records found)
+    return circuit_ids if circuit_ids else []
+
+
+############################################################################################3
+import frappe
+
+def update_custom_circuit_id_in_stock_reservation(doc, method):
+    """
+    This function updates the 'custom_circuit_id' in the Stock Reservation Entries
+    based on the Sales Order Item's 'custom_feasibility' when the Sales Order is submitted.
+    
+    Args:
+        doc: The current Sales Order document.
+        method (str): The event (e.g., 'on_submit') that triggered this function.
+    """
+    try:
+        # Loop through each Sales Order Item
+        for item in doc.items:
+            # Check if the item has a custom feasibility value
+            if item.custom_feasibility:
+                # Get the Stock Reservation Entries linked to this Sales Order Item
+                stock_reservation_entries = frappe.get_all(
+                    "Stock Reservation Entry",
+                    filters={"voucher_no": doc.name, "voucher_detail_no": item.name},
+                    fields=["name"]
+                )
+
+                # Loop through each Stock Reservation Entry
+                for entry in stock_reservation_entries:
+                    # Update the 'custom_circuit_id' in the Stock Reservation Entry
+                    frappe.db.set_value(
+                        "Stock Reservation Entry", entry.name, "custom_circuit_id", item.custom_feasibility
+                    )
+                    frappe.msgprint(f"Updated custom_circuit_id for Stock Reservation Entry: {entry.name}")
+
+    except frappe.DoesNotExistError:
+        frappe.msgprint(f"Error: Sales Order {doc.name} does not exist.")
+    except Exception as e:
+        frappe.msgprint(f"An error occurred: {str(e)}")
+
+###############################################################################

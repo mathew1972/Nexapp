@@ -1,17 +1,16 @@
-CRM updated - UI changes applied to the following Doctypes:
+feasibility_map.js - Integrates GoMaps.Pro API to fetch dynamic street suggestions, validates address fields, and displays a user-friendly dropdown for precise, interactive selection.
 
-    Lead
-    Deal
-    Product
-    Quotes
-    Customer
-    Product Price
+feasibility_pincode.js - Validates Indian pincodes with a 500 ms debounce, fetches location details via Postal API, autofills fields, and provides real-time user feedback.
 
-Additionally, the navbar has been changed to black, and two new Doctypes have been created:
+site_map.js - Integrates GoMaps.Pro API to fetch dynamic street suggestions, validates address fields, and displays a user-friendly dropdown for precise, interactive selection.
 
-    Product Type
-    Product Category
+site_pincode.js - Validates Indian pincodes with a 500 ms debounce, fetches location details via Postal API, autofills fields, and provides real-time user feedback.
 
-Updating Custom HTML Block and many UI of HR Recruitment.  
+feasibility.js - Customizes field styling, manages dynamic interactions like focus/blur effects, enforces validation, automates date handling, updates circuit_id, and ensures feasibility status accuracy.
 
-Creating Doctype for Site and ui for various doctype
+site_feasibility_button.js - The script fetches feasibility data based on circuit_id and displays it in a dialog, including a table with LMS feasibility details and other related information.
+
+
+
+
+

@@ -19,9 +19,12 @@ frappe.ui.form.on('Site', {
             'contact_number2', 'secondary_email', 'other_designation', 'other_department',
             'section_break_ovsj', 'billing_status', 'column_break_ctsh',
             'section_break_pixr', 'product_in_service', 'description_section',
-            'description', 'site_project_manager', 'feasibility_project_manager','longitude',
+            'site_remark', 'site_project_manager', 'feasibility_project_manager','longitude',
             'latitude', 'contact_person', 'contact_mobile', 'email_id', 'other_person', 
-            'other_mobile', 'other_email_id'
+            'other_mobile', 'other_email_id', 'customer', 'phase', 'delivery_date', 'sales_order',
+            'customer_po_no', 'customer_po_date', 'site_name', 'customer_po_date', 'project',
+            'project_name', 'expected_start_date', 'expected_end_date', 'sales_order', 'sales_order_amount',
+            'sales_order_date', 'customer_po_no', 'customer_po_date', 'customer_po_amount'
         ];
 
         // Apply custom styles and interactions to each field
@@ -93,7 +96,9 @@ frappe.ui.form.on('Site', {
                 'cursor': 'pointer',
                 'border-radius': '12px', // Rounded corners
                 'transition': 'background-color 0.3s ease, box-shadow 0.3s ease',
-                'box-shadow': '0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06)' // Subtle shadow
+                'box-shadow': '0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06)', // Subtle shadow
+                'float': 'right', // Align button to the right
+                'margin-top': '-20px' // Moves the button slightly upwards
             });
 
             // Add hover effect
@@ -114,5 +119,35 @@ frappe.ui.form.on('Site', {
                 }
             );
         }
+
+        // New Feature: Adding icons to specified fields
+        const fieldsWithIcons = [
+            { field: 'site_project_manager', icon: 'fa-user-o', topPosition: '70%' },
+            { field: 'delivery_date', icon: 'fa-calendar', topPosition: '70%' },
+            { field: 'department', icon: 'fa-building-o', topPosition: '70%' },
+            { field: 'other_department', icon: 'fa-building-o', topPosition: '70%' },
+            { field: 'email_id', icon: 'fa-envelope-o', topPosition: '70%' },
+            { field: 'other_email_id', icon: 'fa-envelope-o', topPosition: '70%' },
+            { field: 'contact_mobile', icon: 'fa-mobile', topPosition: '70%' },
+            { field: 'other_mobile', icon: 'fa-mobile', topPosition: '70%' },
+            { field: 'contact_person', icon: 'fa-user-o', topPosition: '70%' },
+            { field: 'other_person', icon: 'fa-user-o', topPosition: '70%' }
+        ];
+
+        fieldsWithIcons.forEach(function (config) {
+            const fieldWrapper = frm.fields_dict[config.field]?.wrapper;
+            if (!fieldWrapper) return;
+
+            $(fieldWrapper).css('position', 'relative');
+
+            // Prevent duplicate icons
+            if ($(fieldWrapper).find('.custom-field-icon').length === 0) {
+                $(fieldWrapper).append(`
+                    <span class="custom-field-icon" style="position: absolute; right: 10px; top: ${config.topPosition}; transform: translateY(-50%);">
+                        <i class="fa ${config.icon}" aria-hidden="true"></i>
+                    </span>
+                `);
+            }
+        });
     }
 });

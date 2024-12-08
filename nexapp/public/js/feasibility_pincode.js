@@ -12,10 +12,14 @@ frappe.ui.form.on('Feasibility', {
         $(frm.fields_dict.pincode.input).on('input', debounce(function() {
             const pincode = frm.doc.pincode.replace(/\D/g, ''); // Remove non-digit characters
 
-            if (pincode.length === 6) { // Ensure the pincode is 6 digits for India
+            // Reset alert flag when user starts typing
+            frm._alert_shown = false;
+
+            // If pincode length is exactly 6 digits, fetch location details
+            if (pincode.length === 6) {
+                // Fetch location details
                 frappe.show_alert({message: "Fetching location details...", indicator: "blue"});
 
-                // Make the external API call
                 fetch("https://api.postalpincode.in/pincode/" + pincode)
                     .then(response => response.json())
                     .then(data => {
@@ -34,17 +38,14 @@ frappe.ui.form.on('Feasibility', {
                         console.error("API Error:", error);
                         frappe.msgprint("Error fetching data from API.");
                     });
-            } else if (pincode.length === 0) { // If pincode is cleared, reset the fields
+            } 
+            // If pincode length is less than 6 and greater than 0, do nothing
+            else if (pincode.length === 0) {
                 frm.set_value("district", "");
                 frm.set_value("country", "");
                 frm.set_value("city", "");
                 frm.set_value("state", "");
-            } else if (pincode.length < 6) {
-                frappe.show_alert({
-                    message: "Please enter a valid 6-digit pincode.",
-                    indicator: "red"
-                }, 5); // Display alert for 5 seconds
             }
-        }, 500)); // 500 ms debounce
+        }, 500)); // 500 ms debounce for input
     }
 });

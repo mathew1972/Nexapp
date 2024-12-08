@@ -23,7 +23,7 @@ function fetch_stock_for_child_row(frm, cdt, cdn) {
 
     if (row.item_code && row.warehouse) {
         frappe.call({
-            method: "nexapp.api.get_stock_details", 
+            method: "nexapp.api.get_stock_details", // Adjust to your app's path
             args: {
                 item_code: row.item_code,
                 warehouse: row.warehouse,
