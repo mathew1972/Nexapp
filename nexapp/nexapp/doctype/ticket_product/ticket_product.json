@@ -8,19 +8,22 @@
  "field_order": [
   "product_code",
   "product_name",
+  "warehouse",
   "qty",
-  "serial_number"
+  "serial_number",
+  "info"
  ],
  "fields": [
   {
    "fieldname": "product_code",
    "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_preview": 1,
    "label": "Product Code",
-   "options": "Item"
+   "options": "Item",
+   "reqd": 1
   },
   {
+   "bold": 1,
+   "columns": 5,
    "fetch_from": "product_code.item_name",
    "fieldname": "product_name",
    "fieldtype": "Data",
@@ -28,23 +31,42 @@
    "label": "Product Name"
   },
   {
+   "bold": 1,
+   "columns": 1,
    "fieldname": "qty",
    "fieldtype": "Int",
    "in_list_view": 1,
    "label": "Quantity"
   },
   {
+   "bold": 1,
+   "columns": 2,
    "fieldname": "serial_number",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Serial Number",
    "options": "Serial No"
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "bold": 1,
+   "columns": 2,
+   "fieldname": "info",
+   "fieldtype": "Button",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Open Knowledge Base"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-12-02 13:18:36.133761",
+ "modified": "2024-12-10 01:14:19.172742",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Ticket Product",

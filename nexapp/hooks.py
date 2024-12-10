@@ -316,6 +316,7 @@ doctype_js = {
     "Quality Inspection Template": "public/js/Stock_custom_ui.js",
     "Quick Stock Balance": "public/js/Stock_custom_ui.js",
     "Ticket Master": "public/js/Ticket_master_custom.js",
+    
     "Feasibility": [
         "doctype/feasibility/feasibility.js",
         "public/js/feasibility_pincode.js",
@@ -336,6 +337,11 @@ doctype_js = {
 doctype_list_js = {
     "Site": "public/js/Site_list.js"
 }
+
+doctype_js = {
+    "Issue": "public/js/ticket_product.js"
+}
+
 
 fixtures = [
     {"dt": "Territory"},
