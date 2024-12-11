@@ -1,47 +1,67 @@
 frappe.ui.form.on('Issue', {
-    // Trigger extraction when 'subject' is modified
-    subject: function(frm) {
-        extractCustomCircuitID(frm, 'subject');
+    onload: function (frm) {
+        // Extract and update custom_circuit_id when the form is loaded
+        extractAndUpdateCustomCircuitID(frm);
     },
-    // Trigger extraction when 'description' is modified
-    description: function(frm) {
-        extractCustomCircuitID(frm, 'description');
+
+    subject: function (frm) {
+        // Extract and update custom_circuit_id when the subject field is changed
+        extractAndUpdateCustomCircuitID(frm);
+    },
+
+    description: function (frm) {
+        // Extract and update custom_circuit_id when the description field is changed
+        extractAndUpdateCustomCircuitID(frm);
     }
 });
 
 /**
- * Extracts a 5-digit custom circuit ID from the specified field (subject/description)
- * and updates the 'custom_circuit_id' field accordingly.
+ * Extracts and updates the custom_circuit_id field based on the subject or description fields.
  *
  * @param {Object} frm - The current form instance
- * @param {string} fieldName - The field name to extract the custom circuit ID from (e.g., 'subject' or 'description')
  */
-function extractCustomCircuitID(frm, fieldName) {
-    try {
-        // Get the value of the specified field
-        let fieldValue = frm.doc[fieldName];
+function extractAndUpdateCustomCircuitID(frm) {
+    let customCircuitID = null;
 
-        if (fieldValue) {
-            // Regular expression to find a sequence of exactly 5 digits
-            let customCircuitIDRegex = /(\d{5})/;
-
-            // Search for the custom circuit ID in the text
-            let match = fieldValue.match(customCircuitIDRegex);
-
-            if (match) {
-                // Set the custom_circuit_id field with the extracted value
-                frm.set_value('custom_circuit_id', match[0]).then(() => {
-                    frm.refresh_field('custom_circuit_id');
-                });
-            } else {
-                // Clear the custom_circuit_id field if no match is found
-                frm.set_value('custom_circuit_id', null).then(() => {
-                    frm.refresh_field('custom_circuit_id');
-                });
-            }
-        }
-    } catch (error) {
-        // Handle potential errors gracefully
-        console.error(`Error in extracting custom_circuit_id from ${fieldName}:`, error);
+    // Check the subject field for a custom circuit ID
+    if (frm.doc.subject) {
+        customCircuitID = extractCustomCircuitID(frm.doc.subject);
     }
+
+    // Check the description field only if customCircuitID is not found in subject
+    if (!customCircuitID && frm.doc.description) {
+        const descriptionText = stripHtmlTags(frm.doc.description); // Remove any HTML tags from the description
+        customCircuitID = extractCustomCircuitID(descriptionText);
+    }
+
+    // Update the custom_circuit_id field if a valid ID is found, otherwise clear it
+    if (customCircuitID) {
+        frm.set_value('custom_circuit_id', customCircuitID);
+    } else {
+        frm.set_value('custom_circuit_id', null); // Clear the field if no ID is found
+    }
+    frm.refresh_field('custom_circuit_id'); // Refresh the field to reflect the updated value
+}
+
+/**
+ * Extracts a 5-digit custom circuit ID from a string.
+ *
+ * @param {string} text - The input text to search for the custom circuit ID.
+ * @return {string|null} - The extracted custom circuit ID, or null if not found.
+ */
+function extractCustomCircuitID(text) {
+    const regex = /\d{5}/; // Regular expression to match 5 consecutive digits
+    const match = text.match(regex);
+    return match ? match[0] : null;
+}
+
+/**
+ * Strips HTML tags from a given string and returns the plain text content.
+ *
+ * @param {string} input - The input string potentially containing HTML tags.
+ * @return {string} - The plain text content without HTML tags.
+ */
+function stripHtmlTags(input) {
+    let doc = new DOMParser().parseFromString(input, 'text/html'); // Parse the input string as HTML
+    return doc.body.textContent || ""; // Return the plain text content
 }
