@@ -213,10 +213,12 @@ def get_filtered_feasibility(customer):
     # 1. The customer matches.
     # 2. The feasibility_status is valid.
     # 3. The sales_order field is empty or null.
+    # 4. The document status is 'Submitted' (docstatus = 1).
     feasibilities = frappe.get_all('Feasibility', filters={
         'customer': customer,
         'feasibility_status': ['in', feasibility_statuses],
-        'sales_order': ['in', [None, '', 'null']]  # Ensure the sales_order is empty or null
+        'sales_order': ['in', [None, '', 'null']],  # Ensure the sales_order is empty or null
+        'docstatus': 1  # Ensure the document is 'Submitted'
     }, fields=['circuit_id'])
 
     # Extract the circuit_ids from the feasibility records
@@ -224,8 +226,6 @@ def get_filtered_feasibility(customer):
 
     # Return the list of circuit_ids (empty list if no records found)
     return circuit_ids if circuit_ids else []
-
-
 ############################################################################################3
 import frappe
 
@@ -264,9 +264,6 @@ def update_custom_circuit_id_in_stock_reservation(doc, method):
         frappe.msgprint(f"An error occurred: {str(e)}")
 
 ###############################################################################
-import frappe
-from frappe import _
-
 @frappe.whitelist()
 def fetch_site_items(custom_circuit_id):
     # Validate input
@@ -278,25 +275,44 @@ def fetch_site_items(custom_circuit_id):
     if not site_doc:
         frappe.throw(_("No Site found with Circuit ID: {0}").format(custom_circuit_id))
 
-    # Get the first matching Site document name
     site_name = site_doc[0]["name"]
     site_data = frappe.get_doc("Site", site_name)
 
-    # Ensure the Site has a 'site_item' child table
-    if not hasattr(site_data, "site_item"):
-        frappe.throw(_("The 'site_item' field is missing in the Site Doctype. Please ensure the field is correctly defined."))
+    # Prepare data for 'custom_product_' (existing functionality)
+    site_items = []
+    if hasattr(site_data, "site_item"):
+        for item in site_data.site_item:
+            site_items.append({
+                "product_code": item.item_code or None,
+                "qty": item.qty or 0,
+                "warehouse": item.warehouse or None,
+                "serial_number": item.serial_no or None,
+                "item_name": item.item_name or None
+            })
 
-    # Prepare the list of items to return, including item_name
-    items = []
-    for item in site_data.site_item:
-        items.append({
-            "product_code": item.item_code or None,
-            "qty": item.qty or 0,
-            "warehouse": item.warehouse or None,
-            "serial_number": item.serial_no or None,
-            "item_name": item.item_name or None
-            
-        })
+    # Prepare data for 'custom_lms_vendor' (new functionality, corrected to 'lms_vendor')
+    lms_items = []
+    if hasattr(site_data, "lms_vendor"):  # Corrected to 'lms_vendor'
+        for item in site_data.lms_vendor:
+            lms_items.append({
+                "lms_supplier": item.lms_supplier or None,
+                "bandwith_type": item.bandwith_type or None,
+                "media": item.media or None,
+                "otc": item.otc or 0,
+                "static_ip_cost": item.static_ip_cost or 0,
+                "billing_terms": item.billing_terms or None,
+                "support_mode": item.support_mode or None,
+                "contact_person": item.contact_person or None,
+                "supplier_contact": item.supplier_contact or None,
+                "lms_bandwith": item.lms_bandwith or None,
+                "static_ip": item.static_ip or None,
+                "mrc": item.mrc or 0,
+                "security_deposit": item.security_deposit or 0,
+                "billing_mode": item.billing_mode or None
+            })
 
-    # Return the fetched items
-    return items
+    # Return data
+    return {
+        "site_items": site_items,
+        "lms_items": lms_items
+    }

@@ -476,14 +476,13 @@
    "placeholder": "This data will be automatically updated"
   }
  ],
- "hide_toolbar": 1,
  "icon": "fa fa-file-text",
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2024-12-08 23:55:47.883125",
+ "modified": "2024-12-11 18:47:31.179212",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",

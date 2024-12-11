@@ -7,28 +7,43 @@ frappe.ui.form.on('Issue', {
                     custom_circuit_id: frm.doc.custom_circuit_id
                 },
                 callback: function (r) {
-                    if (r.message && Array.isArray(r.message)) {
-                        // Clear existing rows in the correct child table (custom_product_)
-                        frm.clear_table("custom_product_");
-
-                        // Iterate over the items and add them to the child table
-                        r.message.forEach((item) => {
-                            if (item && typeof item === "object") {
-                                // Safely add a new row to the correct child table
+                    if (r.message) {
+                        // Handle 'custom_product_' as before
+                        if (Array.isArray(r.message.site_items)) {
+                            frm.clear_table("custom_product_");
+                            r.message.site_items.forEach((item) => {
                                 let child = frm.add_child("custom_product_");
                                 child.product_code = item.product_code || "";
                                 child.qty = item.qty || 0;
                                 child.warehouse = item.warehouse || "";
                                 child.serial_number = item.serial_number || "";
-                                child.product_name = item.item_name || "";  
-                            }
-                        });
+                                child.product_name = item.item_name || "";
+                            });
+                            frm.refresh_field("custom_product_");
+                        }
 
-                        // Refresh the child table to reflect the added rows
-                        frm.refresh_field("custom_product_");
-
-                        // Explicitly refresh the button visibility
-                        frm.fields_dict["custom_product_"].grid.get_field('info').$input.trigger('change');
+                        // Handle 'LMS Ticket'
+                        if (Array.isArray(r.message.lms_items)) {
+                            frm.clear_table("custom_lms_vendor");
+                            r.message.lms_items.forEach((item) => {
+                                let lms_child = frm.add_child("custom_lms_vendor");
+                                lms_child.lms_supplier = item.lms_supplier || "";
+                                lms_child.bandwith_type = item.bandwith_type || "";
+                                lms_child.media = item.media || "";
+                                lms_child.otc = item.otc || 0;
+                                lms_child.static_ip_cost = item.static_ip_cost || 0;
+                                lms_child.billing_terms = item.billing_terms || "";
+                                lms_child.support_mode = item.support_mode || "";
+                                lms_child.contact_person = item.contact_person || "";
+                                lms_child.supplier_contact = item.supplier_contact || "";
+                                lms_child.lms_bandwith = item.lms_bandwith || "";
+                                lms_child.static_ip = item.static_ip || "";
+                                lms_child.mrc = item.mrc || 0;
+                                lms_child.security_deposit = item.security_deposit || 0;
+                                lms_child.billing_mode = item.billing_mode || "";
+                            });
+                            frm.refresh_field("custom_lms_vendor");
+                        }
                     }
                 },
                 error: function (err) {

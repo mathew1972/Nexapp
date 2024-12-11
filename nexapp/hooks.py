@@ -249,7 +249,39 @@ app_include_css = [
     "/assets/nexapp/css/custom.css"    
 ]
 
+doctype_list_js = {
+    "Site": "public/js/Site_list.js"
+}
+
+fixtures = [
+    {"dt": "Territory"},
+    {"dt": "Site Type"},
+    {"dt": "Solution"},    
+    {"dt": "Data Plan"},
+    {"dt": "DocType", "filters": [["module", "=", "Nexapp"]]},
+    {"dt": "Custom Field"},    
+    {"dt": "Property Setter"},
+    {"dt": "Website Settings"},
+    {"dt": "Navbar Settings"},
+    {"dt": "Website Theme"},
+    {"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},
+    {"dt": "Custom HTML Block", "filters": [["name", "=", "Recruitment Workspace"]]},    
+    {"dt": "Workspace"}
+
+]
+
+doc_events = {
+    "Sales Order": {
+        "on_submit": "nexapp.api.update_custom_circuit_id_in_stock_reservation"
+    }
+}
+
 doctype_js = {
+    "Issue": [
+        "public/js/ticket_product.js",
+        "public/js/ticket_custom.js",
+        "public/js/issue_custom_id_extractor.js"
+    ],
     "Lead": "public/js/lead_custom.js",
     "Opportunity": "public/js/Deal_custom.js",
     "Customer": "public/js/Customer_custom.js",
@@ -316,7 +348,6 @@ doctype_js = {
     "Quality Inspection Template": "public/js/Stock_custom_ui.js",
     "Quick Stock Balance": "public/js/Stock_custom_ui.js",
     "Ticket Master": "public/js/Ticket_master_custom.js",
-    
     "Feasibility": [
         "doctype/feasibility/feasibility.js",
         "public/js/feasibility_pincode.js",
@@ -326,45 +357,19 @@ doctype_js = {
         "doctype/site/site.js",
         "public/js/site_feasibility_button.js",
         "public/js/site_stock.js",
-        #"public/js/stock.js",
         "public/js/site_map.js",
         "public/js/site_pincode.js"
     ],
-    "Project": "public/js/Project_custom_ui.js",
-    "Issue": "public/js/ticket_custom.js"
-}
-
-doctype_list_js = {
-    "Site": "public/js/Site_list.js"
-}
-
-doctype_js = {
-    "Issue": "public/js/ticket_product.js"
+    "Project": "public/js/Project_custom_ui.js"
 }
 
 
-fixtures = [
-    {"dt": "Territory"},
-    {"dt": "Site Type"},
-    {"dt": "Solution"},    
-    {"dt": "Data Plan"},
-    {"dt": "DocType", "filters": [["module", "=", "Nexapp"]]},
-    {"dt": "Custom Field"},    
-    {"dt": "Property Setter"},
-    {"dt": "Website Settings"},
-    {"dt": "Navbar Settings"},
-    {"dt": "Website Theme"},
-    {"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},
-    {"dt": "Custom HTML Block", "filters": [["name", "=", "Recruitment Workspace"]]},    
-    {"dt": "Workspace"}
 
-]
+   
+    
 
-doc_events = {
-    "Sales Order": {
-        "on_submit": "nexapp.api.update_custom_circuit_id_in_stock_reservation"
-    }
-}
+
+
 
 
 
