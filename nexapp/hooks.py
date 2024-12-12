@@ -324,7 +324,10 @@ doctype_js = {
     "Expense Claim": "public/js/Expense_claim_custom.js",
     "Employee Advance": "public/js/Employee_advance_custom.js",
     "Travel Request": "public/js/Travel_request_custom.js",
-    "Delivery Note": "public/js/Stock_custom_ui.js",
+    "Delivery Note": [
+        "public/js/Stock_custom_ui.js",  
+        "public/js/sales_order_delivery_note_id.js"         
+    ],
     "Material Request": "public/js/Stock_custom_ui.js",
     "Stock Entry": "public/js/Stock_custom_ui.js",
     "Purchase Receipt": "public/js/Stock_custom_ui.js",
@@ -362,6 +365,9 @@ doctype_js = {
     ],
     "Project": "public/js/Project_custom_ui.js"
 }
+
+
+
 
 
 
