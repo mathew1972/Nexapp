@@ -46,6 +46,10 @@
   "customer_po_no",
   "customer_po_date",
   "customer_po_amount",
+  "column_break_uonu",
+  "invoice_no",
+  "invoice_date",
+  "invoice_amount",
   "site_address_tab",
   "street",
   "city",
@@ -530,11 +534,30 @@
    "fieldname": "primary_contact_column",
    "fieldtype": "Column Break",
    "label": "Primary Contact"
+  },
+  {
+   "fieldname": "column_break_uonu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "invoice_no",
+   "fieldtype": "Data",
+   "label": "Invoice No"
+  },
+  {
+   "fieldname": "invoice_date",
+   "fieldtype": "Date",
+   "label": "Invoice Date"
+  },
+  {
+   "fieldname": "invoice_amount",
+   "fieldtype": "Currency",
+   "label": "Invoice Amount"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-07 10:35:10.929870",
+ "modified": "2024-12-16 00:02:30.295156",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

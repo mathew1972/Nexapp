@@ -255,6 +255,9 @@ doctype_list_js = {
 
 fixtures = [
     {"dt": "Territory"},
+    {'dt': 'Product Type'},
+    {'dt': 'Product Category'},
+    {'dt': 'Brand'},      
     {"dt": "Site Type"},
     {"dt": "Solution"},    
     {"dt": "Data Plan"},
@@ -263,7 +266,7 @@ fixtures = [
     {"dt": "Property Setter"},
     {"dt": "Website Settings"},
     {"dt": "Navbar Settings"},
-    {"dt": "Website Theme"},
+    {"dt": "Website Theme" , "filters": [["module", "=", "Nexapp"]]},
     {"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},
     {"dt": "Custom HTML Block", "filters": [["name", "=", "Recruitment Workspace"]]},    
     {"dt": "Workspace"}

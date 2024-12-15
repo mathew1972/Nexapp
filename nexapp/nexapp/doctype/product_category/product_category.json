@@ -10,6 +10,7 @@
  ],
  "fields": [
   {
+   "allow_in_quick_entry": 1,
    "fieldname": "product_category",
    "fieldtype": "Data",
    "label": "Product Category",
@@ -18,7 +19,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-13 19:11:51.127111",
+ "modified": "2024-12-15 19:46:55.617942",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Product Category",
