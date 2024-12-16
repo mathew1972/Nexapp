@@ -253,9 +253,18 @@ doctype_list_js = {
     "Site": "public/js/Site_list.js"
 }
 
+doc_events = {
+    "Delivery Note": {
+        "on_submit": "nexapp.api.update_site_status_on_delivery_note_save"
+    },
+    "Sales Order": {
+        "on_submit": "nexapp.api.update_custom_circuit_id_in_stock_reservation"
+    }
+}
+
 fixtures = [
     {"dt": "Territory"},
-    {'dt': 'Product Type'},
+    {'dt': 'Product Type'},    
     {'dt': 'Product Category'},
     {'dt': 'Brand'},      
     {"dt": "Site Type"},
@@ -272,12 +281,6 @@ fixtures = [
     {"dt": "Workspace"}
 
 ]
-
-doc_events = {
-    "Sales Order": {
-        "on_submit": "nexapp.api.update_custom_circuit_id_in_stock_reservation"
-    }
-}
 
 doctype_js = {
     "Issue": [
@@ -368,6 +371,10 @@ doctype_js = {
     ],
     "Project": "public/js/Project_custom_ui.js"
 }
+
+
+
+
 
 
 

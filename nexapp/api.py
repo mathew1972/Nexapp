@@ -317,3 +317,23 @@ def fetch_site_items(custom_circuit_id):
         "lms_items": lms_items
     }
 #################################################################################
+import frappe
+
+def update_site_status_on_delivery_note_save(doc, method):
+    """Update the site_status of Site Doctype based on Delivery Note Items."""
+    
+    for item in doc.items:
+        # Check if custom_circuit_id exists for the item
+        if item.custom_circuit_id:
+            # Search for the Site doctype with matching circuit_id
+            site = frappe.db.get_value("Site", {"circuit_id": item.custom_circuit_id}, "name")
+            
+            if site:
+                # Get the Site document
+                site_doc = frappe.get_doc("Site", site)
+                
+                # Update the site_status field
+                site_doc.site_status = "Delivered"
+                
+                # Save the updated Site document
+                site_doc.save(ignore_permissions=True)
