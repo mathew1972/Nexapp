@@ -264,16 +264,18 @@ def update_custom_circuit_id_in_stock_reservation(doc, method):
         frappe.msgprint(f"An error occurred: {str(e)}")
 
 ###############################################################################
+import frappe
+
 @frappe.whitelist()
 def fetch_site_items(custom_circuit_id):
     # Validate input
     if not custom_circuit_id:
-        frappe.throw(_("Custom Circuit ID is required."))
+        return {"error": "Custom Circuit ID is required."}
 
     # Fetch the Site document with the matching Circuit ID
     site_doc = frappe.get_all("Site", filters={"circuit_id": custom_circuit_id}, fields=["name"])
     if not site_doc:
-        frappe.throw(_("No Site found with Circuit ID: {0}").format(custom_circuit_id))
+        return {"error": f"No Site found with Circuit ID: {custom_circuit_id}"}
 
     site_name = site_doc[0]["name"]
     site_data = frappe.get_doc("Site", site_name)

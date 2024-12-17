@@ -283,10 +283,9 @@ fixtures = [
 ]
 
 doctype_js = {
-    "Issue": [
-        "public/js/ticket_product.js",
-        "public/js/ticket_custom.js",
-        "public/js/issue_custom_id_extractor.js"
+    "Issue": [              
+        "public/js/issue_custom_id_extractor.js",
+        "public/js/ticket_product.js"
     ],
     "Lead": "public/js/lead_custom.js",
     "Opportunity": "public/js/Deal_custom.js",
