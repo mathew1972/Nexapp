@@ -62,7 +62,7 @@ frappe.ui.form.on('Issue', {
             'custom_column_break_dqnlg', 'issue_type', 'custom_impact', 'custom_impact_details',
             'custom_requester_details', 'raised_by', 'customer', 'custom_technician', 'cb00',
             'custom_circuit_id', 'custom_site_name', 'issue_split_from', 'naming_series',
-            'custom_product_information', 'custom_product_', 'custom_lms_vendor_information',
+            'custom_product_information', 'custom_lms_vendor_information',
             'custom_lms_vendor', 'sb_details', 'subject', 'description', 'custom__attachments',
             'service_level_section', 'service_level_agreement', 'response_by', 'reset_service_level_agreement',
             'cb', 'agreement_status', 'resolution_by', 'service_level_agreement_creation',

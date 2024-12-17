@@ -4737,22 +4737,6 @@
  },
  {
   "default_value": null,
-  "doc_type": "Issue",
-  "docstatus": 0,
-  "doctype": "Property Setter",
-  "doctype_or_field": "DocType",
-  "field_name": null,
-  "is_system_generated": 0,
-  "modified": "2024-12-16 00:53:26.646260",
-  "module": "Nexapp",
-  "name": "Issue-main-field_order",
-  "property": "field_order",
-  "property_type": "Data",
-  "row_name": null,
-  "value": "[\"subject_section\", \"custom_circuit_id\", \"raised_by\", \"custom_technician\", \"priority\", \"custom_impact\", \"cb00\", \"issue_split_from\", \"custom_site_name\", \"customer\", \"naming_series\", \"status\", \"issue_type\", \"custom_impact_details\", \"sb_details\", \"subject\", \"description\", \"service_level_section\", \"service_level_agreement\", \"response_by\", \"reset_service_level_agreement\", \"cb\", \"agreement_status\", \"resolution_by\", \"service_level_agreement_creation\", \"on_hold_since\", \"total_hold_time\", \"response\", \"first_response_time\", \"first_responded_on\", \"column_break_26\", \"avg_response_time\", \"section_break_19\", \"resolution_details\", \"column_break1\", \"opening_date\", \"opening_time\", \"resolution_date\", \"resolution_time\", \"user_resolution_time\", \"additional_info\", \"lead\", \"contact\", \"email_account\", \"column_break_16\", \"customer_name\", \"project\", \"company\", \"via_customer_portal\", \"attachment\", \"content_type\", \"custom_tab_2\", \"custom_product\", \"custom_tab_3\", \"custom_lms_ticket\"]"
- },
- {
-  "default_value": null,
   "doc_type": "Item",
   "docstatus": 0,
   "doctype": "Property Setter",
@@ -5550,5 +5534,21 @@
   "property_type": "Data",
   "row_name": null,
   "value": "[\"serial_no\", \"batch_no\", \"circuit_id\", \"column_break_2\", \"qty\", \"warehouse\", \"delivered_qty\", \"section_break_6\", \"incoming_rate\", \"column_break_8\", \"outgoing_rate\", \"stock_value_difference\", \"is_outward\", \"stock_queue\"]"
+ },
+ {
+  "default_value": null,
+  "doc_type": "Issue",
+  "docstatus": 0,
+  "doctype": "Property Setter",
+  "doctype_or_field": "DocType",
+  "field_name": null,
+  "is_system_generated": 0,
+  "modified": "2024-12-17 12:40:39.285877",
+  "module": null,
+  "name": "Issue-main-field_order",
+  "property": "field_order",
+  "property_type": "Data",
+  "row_name": null,
+  "value": "[\"subject_section\", \"custom_circuit_id\", \"raised_by\", \"custom_technician\", \"priority\", \"custom_impact\", \"cb00\", \"issue_split_from\", \"custom_site_name\", \"customer\", \"naming_series\", \"status\", \"issue_type\", \"custom_impact_details\", \"sb_details\", \"subject\", \"description\", \"service_level_section\", \"service_level_agreement\", \"response_by\", \"reset_service_level_agreement\", \"cb\", \"agreement_status\", \"resolution_by\", \"service_level_agreement_creation\", \"on_hold_since\", \"total_hold_time\", \"response\", \"first_response_time\", \"first_responded_on\", \"column_break_26\", \"avg_response_time\", \"section_break_19\", \"resolution_details\", \"column_break1\", \"opening_date\", \"opening_time\", \"resolution_date\", \"resolution_time\", \"user_resolution_time\", \"additional_info\", \"lead\", \"contact\", \"email_account\", \"column_break_16\", \"customer_name\", \"project\", \"company\", \"via_customer_portal\", \"attachment\", \"content_type\", \"custom_tab_2\", \"custom_product_\", \"custom_tab_3\", \"custom_lms_vendor\"]"
  }
 ]
