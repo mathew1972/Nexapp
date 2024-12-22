@@ -65,3 +65,4 @@ function update_all_child_rows_stock(frm) {
         }
     });
 }
+

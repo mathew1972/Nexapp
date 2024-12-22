@@ -8,39 +8,26 @@
  "field_order": [
   "product_code",
   "product_name",
-  "warehouse",
-  "qty",
   "serial_number",
+  "warranty_expiry_date",
+  "warranty_period_days",
   "info"
  ],
  "fields": [
   {
+   "columns": 5,
+   "fetch_from": "product_name.item_name",
    "fieldname": "product_code",
    "fieldtype": "Link",
-   "label": "Product Code",
+   "in_list_view": 1,
+   "label": "Product",
    "options": "Item",
    "reqd": 1
   },
   {
    "bold": 1,
-   "columns": 5,
-   "fetch_from": "product_code.item_name",
-   "fieldname": "product_name",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Product Name"
-  },
-  {
-   "bold": 1,
-   "columns": 1,
-   "fieldname": "qty",
-   "fieldtype": "Int",
-   "in_list_view": 1,
-   "label": "Quantity"
-  },
-  {
-   "bold": 1,
    "columns": 2,
+   "fetch_from": "product_code.serial_no_series",
    "fieldname": "serial_number",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -48,26 +35,37 @@
    "options": "Serial No"
   },
   {
-   "fieldname": "warehouse",
-   "fieldtype": "Link",
-   "label": "Warehouse",
-   "options": "Warehouse"
-  },
-  {
    "bold": 1,
    "columns": 2,
-   "depends_on": "eval:doc.product_name && doc.product_name.length > 0\n",
    "fieldname": "info",
    "fieldtype": "Button",
    "in_list_view": 1,
    "in_preview": 1,
-   "label": "Open Knowledge Base"
+   "label": "Service Guide"
+  },
+  {
+   "fetch_from": "serial_number.warranty_expiry_date",
+   "fieldname": "warranty_expiry_date",
+   "fieldtype": "Date",
+   "label": "Warranty Expiry Date"
+  },
+  {
+   "fetch_from": "serial_number.warranty_period",
+   "fieldname": "warranty_period_days",
+   "fieldtype": "Int",
+   "label": "Warranty Period Days"
+  },
+  {
+   "fetch_from": "serial_number.item_name",
+   "fieldname": "product_name",
+   "fieldtype": "Data",
+   "label": "Product Name"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-12-12 11:03:06.220080",
+ "modified": "2024-12-22 11:46:57.312936",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Ticket Product",

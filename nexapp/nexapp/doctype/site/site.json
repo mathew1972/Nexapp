@@ -11,6 +11,7 @@
   "section_break_xvmk",
   "column_break_yehx",
   "column_break_lbut",
+  "column_break_pfpp",
   "feasibility_information",
   "feasibility_section",
   "site_name",
@@ -30,6 +31,7 @@
   "section_break_pixr",
   "product_in_service",
   "stock_information_tab",
+  "stock_live_update_section",
   "site_item",
   "tab_3_tab",
   "section_break_wnfg",
@@ -83,9 +85,17 @@
   "secondary_plan",
   "mbb_bandwidth",
   "provisioning_tab",
+  "section_break_czqw",
   "provisioning_item",
   "logistics_tab",
-  "logistics",
+  "service_provider",
+  "tracking_status",
+  "estimated_delivery_date",
+  "column_break_tbdw",
+  "awb_number",
+  "current_location",
+  "section_break_kpsc",
+  "tracking_history",
   "lms_tab",
   "lms_vendor"
  ],
@@ -261,6 +271,7 @@
    "read_only": 1
   },
   {
+   "bold": 1,
    "fieldname": "site_status",
    "fieldtype": "Select",
    "in_list_view": 1,
@@ -433,11 +444,6 @@
    "label": "LMS"
   },
   {
-   "fieldname": "logistics",
-   "fieldtype": "Data",
-   "label": "Logistics"
-  },
-  {
    "fieldname": "sales_order_amount",
    "fieldtype": "Currency",
    "label": "Sales Order Amount",
@@ -553,11 +559,64 @@
    "fieldname": "invoice_amount",
    "fieldtype": "Currency",
    "label": "Invoice Amount"
+  },
+  {
+   "fieldname": "section_break_czqw",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_pfpp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "stock_live_update_section",
+   "fieldtype": "Section Break",
+   "label": "Stock Live Update"
+  },
+  {
+   "fieldname": "service_provider",
+   "fieldtype": "Data",
+   "label": "Service Provider"
+  },
+  {
+   "fieldname": "tracking_status",
+   "fieldtype": "Select",
+   "label": "Tracking Status",
+   "options": "\nIn Progress\nDelivered\nReturned\nLost"
+  },
+  {
+   "fieldname": "estimated_delivery_date",
+   "fieldtype": "Date",
+   "label": "Estimated Delivery Date"
+  },
+  {
+   "fieldname": "column_break_tbdw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "awb_number",
+   "fieldtype": "Data",
+   "label": "AWB Number"
+  },
+  {
+   "fieldname": "current_location",
+   "fieldtype": "Data",
+   "label": "Current Location"
+  },
+  {
+   "fieldname": "section_break_kpsc",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "tracking_history",
+   "fieldtype": "Table",
+   "label": "Tracking History",
+   "options": "Tracking History"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-16 00:02:30.295156",
+ "modified": "2024-12-22 16:01:57.546171",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

@@ -2,22 +2,22 @@ frappe.ui.form.on('Issue', {
     custom_circuit_id: function (frm) {
         if (frm.doc.custom_circuit_id) {
             frappe.call({
-                method: "nexapp.api.fetch_site_items", // Server-side method
+                method: "nexapp.api.fetch_provisioning_items", // Server-side method
                 args: {
                     custom_circuit_id: frm.doc.custom_circuit_id
                 },
                 callback: function (r) {
                     if (r.message) {
                         // Handle 'custom_product_' as before
-                        if (Array.isArray(r.message.site_items)) {
+                        if (Array.isArray(r.message.provisioning_items)) {
                             frm.clear_table("custom_product_");
-                            r.message.site_items.forEach((item) => {
+                            r.message.provisioning_items.forEach((item) => {
                                 let child = frm.add_child("custom_product_");
-                                child.product_code = item.product_code || "";
-                                child.qty = item.qty || 0;
-                                child.warehouse = item.warehouse || "";
-                                child.serial_number = item.serial_number || "";
-                                child.product_name = item.item_name || "";
+                                child.product_code = item.product_code || ""; 
+                                child.product_name = item.product || "";                                                                
+                                child.serial_number = item.serial_number || "";                                 
+                                child.warranty_expiry_date = item.warranty_expiry_date || "";  
+                                child.warranty_period_days = item.warranty_period_days || "";                                 
                             });
                             frm.refresh_field("custom_product_");
                         }

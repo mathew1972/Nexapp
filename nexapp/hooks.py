@@ -278,7 +278,9 @@ fixtures = [
     {"dt": "Website Theme" , "filters": [["module", "=", "Nexapp"]]},
     {"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},
     {"dt": "Custom HTML Block", "filters": [["name", "=", "Recruitment Workspace"]]},    
-    {"dt": "Workspace"}
+    {"dt": "Workspace"},
+    {"dt": 'Service Level Agreement'},
+    {"dt": 'Holiday List'}
 
 ]
 
@@ -331,7 +333,8 @@ doctype_js = {
     "Travel Request": "public/js/Travel_request_custom.js",
     "Delivery Note": [
         "public/js/Stock_custom_ui.js",  
-        "public/js/sales_order_delivery_note_id.js"         
+        "public/js/sales_order_delivery_note_id.js",
+        "public/js/delivery_note_serial.js"         
     ],
     "Material Request": "public/js/Stock_custom_ui.js",
     "Stock Entry": "public/js/Stock_custom_ui.js",
@@ -370,6 +373,7 @@ doctype_js = {
     ],
     "Project": "public/js/Project_custom_ui.js"
 }
+
 
        
        
