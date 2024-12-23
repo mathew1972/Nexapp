@@ -3,7 +3,6 @@
  "allow_rename": 1,
  "creation": "2024-11-22 13:07:22.965452",
  "doctype": "DocType",
- "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "lms_supplier",
@@ -119,7 +118,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-12-10 21:53:46.318498",
+ "modified": "2024-12-23 19:27:49.202703",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "LMS Site",

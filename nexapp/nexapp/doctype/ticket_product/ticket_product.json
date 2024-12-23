@@ -27,7 +27,6 @@
   {
    "bold": 1,
    "columns": 2,
-   "fetch_from": "product_code.serial_no_series",
    "fieldname": "serial_number",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -65,7 +64,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-12-22 11:46:57.312936",
+ "modified": "2024-12-23 19:44:45.735685",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Ticket Product",

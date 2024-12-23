@@ -272,13 +272,14 @@
   },
   {
    "bold": 1,
+   "default": "Pending",
    "fieldname": "site_status",
    "fieldtype": "Select",
    "in_list_view": 1,
    "in_preview": 1,
    "in_standard_filter": 1,
    "label": "Site Status  ",
-   "options": "Pending for Delivery\nWith Sales Team\nDelivered"
+   "options": "Pending\nDelivered"
   },
   {
    "fieldname": "site_item",
@@ -616,7 +617,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-22 16:01:57.546171",
+ "modified": "2024-12-23 19:14:28.024724",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

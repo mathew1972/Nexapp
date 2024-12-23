@@ -56,23 +56,21 @@
   "solution_requiremnt_tab",
   "solution_section",
   "order_type",
-  "solution",
+  "primary_data_plan",
   "lms_plan",
   "static_ip",
   "column_break_jyvg",
-  "primary_data_plan",
+  "solution",
   "secondary_data_plan",
   "lms_plan_2",
   "lms_provider_information_tab",
   "lms_section",
   "lms_provider",
   "amended_from",
-  "billing_information_tab",
+  "billing_information_ta",
   "sales_order",
-  "sales_order_date",
   "column_break_jitn",
-  "bill_no",
-  "bill_date"
+  "sales_order_date"
  ],
  "fields": [
   {
@@ -438,12 +436,6 @@
    "mandatory_depends_on": "eval: doc.feasibility_status === \"High Commercials\" || doc.feasibility_status === \"Feasible\" || doc.feasibility_status === \"Partial Feasible\"\n"
   },
   {
-   "fieldname": "billing_information_tab",
-   "fieldtype": "Tab Break",
-   "label": "Billing Information",
-   "placeholder": "This data will be automatically updated"
-  },
-  {
    "allow_on_submit": 1,
    "fieldname": "sales_order",
    "fieldtype": "Data",
@@ -462,17 +454,9 @@
    "fieldtype": "Column Break"
   },
   {
-   "allow_on_submit": 1,
-   "fieldname": "bill_no",
-   "fieldtype": "Data",
-   "label": "Bill No",
-   "placeholder": "This data will be automatically updated"
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "bill_date",
-   "fieldtype": "Date",
-   "label": "Bill Date",
+   "fieldname": "billing_information_ta",
+   "fieldtype": "Tab Break",
+   "label": "Sales Order Information",
    "placeholder": "This data will be automatically updated"
   }
  ],
@@ -482,7 +466,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2024-12-23 09:55:44.983671",
+ "modified": "2024-12-23 19:06:19.762488",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",
