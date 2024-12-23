@@ -44,6 +44,9 @@ frappe.ui.form.on('Issue', {
                             });
                             frm.refresh_field("custom_lms_vendor");
                         }
+                        // Save the updated Issue document
+                        frm.save(); // Save the updated child tables to the database
+
                     }
                 },
                 error: function (err) {
