@@ -482,7 +482,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2024-12-22 20:48:39.551312",
+ "modified": "2024-12-23 09:55:44.983671",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",
@@ -569,6 +569,32 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
+ "states": [
+  {
+   "color": "Orange",
+   "custom": 1,
+   "title": "Pending"
+  },
+  {
+   "color": "Green",
+   "custom": 1,
+   "title": "Feasible"
+  },
+  {
+   "color": "Yellow",
+   "custom": 1,
+   "title": "Partial Feasible"
+  },
+  {
+   "color": "Blue",
+   "custom": 1,
+   "title": "High Commercials"
+  },
+  {
+   "color": "Red",
+   "custom": 1,
+   "title": "Not Feasible"
+  }
+ ],
  "track_changes": 1
 }

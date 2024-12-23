@@ -86,7 +86,9 @@ def sales_order_to_site(sales_order):
         # Add item to the corresponding feasibility group
         grouped_sites[feasibility]["items"].append({
             "item_code": item.item_code,
-            "qty": item.qty
+            "qty": item.qty,
+            "item_name": item.item_name
+            
         })
     
     # Fetch the associated Project details, if any
@@ -163,7 +165,8 @@ def sales_order_to_site(sales_order):
         for item in site_data["items"]:
             site_doc.append("site_item", {
                 "item_code": item["item_code"],
-                "qty": item["qty"]
+                "qty": item["qty"],
+                "item_name": item["item_name"]                
             })
 
         # Save the new Site document
