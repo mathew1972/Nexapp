@@ -3,38 +3,49 @@
  "allow_rename": 1,
  "creation": "2024-11-20 20:53:05.171534",
  "doctype": "DocType",
+ "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "docked_id"
+  "carrier",
+  "awb_number",
+  "pickup_date",
+  "tracking_status"
  ],
  "fields": [
   {
-   "fieldname": "docked_id",
+   "fieldname": "carrier",
    "fieldtype": "Data",
-   "label": "Docked Id"
+   "in_list_view": 1,
+   "label": "Carrier"
+  },
+  {
+   "fieldname": "awb_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "AWB Number"
+  },
+  {
+   "fieldname": "pickup_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Pickup Date"
+  },
+  {
+   "fieldname": "tracking_status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Tracking Status"
   }
  ],
  "index_web_pages_for_search": 1,
+ "istable": 1,
  "links": [],
- "modified": "2024-11-20 20:53:23.702153",
+ "modified": "2024-12-24 23:35:02.521693",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Logistics",
  "owner": "Administrator",
- "permissions": [
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "System Manager",
-   "share": 1,
-   "write": 1
-  }
- ],
+ "permissions": [],
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

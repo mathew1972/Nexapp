@@ -1,42 +1,37 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2024-12-22 12:47:08.293648",
+ "creation": "2024-12-24 23:16:04.093783",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "date",
-  "location",
-  "status"
+  "circuit_id",
+  "site_name"
  ],
  "fields": [
   {
-   "fieldname": "date",
-   "fieldtype": "Date",
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Date"
+   "label": "Circuit ID",
+   "options": "Feasibility"
   },
   {
-   "fieldname": "location",
+   "fetch_from": "circuit_id.site_name",
+   "fieldname": "site_name",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Location"
-  },
-  {
-   "fieldname": "status",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Status"
+   "label": "Site Name"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-12-22 12:48:15.190481",
+ "modified": "2024-12-24 23:24:06.721680",
  "modified_by": "Administrator",
  "module": "Nexapp",
- "name": "Tracking History",
+ "name": "Shipment Site",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",

@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class TrackingHistory(Document):
+class CarrierItem(Document):
 	pass

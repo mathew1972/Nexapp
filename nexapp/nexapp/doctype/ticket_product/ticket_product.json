@@ -7,19 +7,17 @@
  "engine": "InnoDB",
  "field_order": [
   "product_code",
-  "product_name",
   "serial_number",
+  "product_name",
   "warranty_expiry_date",
   "warranty_period_days",
   "info"
  ],
  "fields": [
   {
-   "columns": 5,
    "fetch_from": "product_name.item_name",
    "fieldname": "product_code",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "label": "Product",
    "options": "Item",
    "reqd": 1
@@ -55,16 +53,19 @@
    "label": "Warranty Period Days"
   },
   {
+   "bold": 1,
+   "columns": 5,
    "fetch_from": "serial_number.item_name",
    "fieldname": "product_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Product Name"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-12-23 19:44:45.735685",
+ "modified": "2024-12-29 20:26:12.910525",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Ticket Product",

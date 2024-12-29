@@ -20,9 +20,9 @@
   "feasibility_completed_date",
   "column_break_zthd",
   "circuit_id",
+  "feasibility_status",
   "feasibility_project_manager",
   "region",
-  "feasibility_status",
   "feasibility_remark",
   "reason_for_partial_feasible",
   "reason_for_high_commercials",
@@ -277,7 +277,6 @@
    "fieldname": "region",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "in_preview": 1,
    "in_standard_filter": 1,
    "label": "Region",
    "options": "Territory",
@@ -360,7 +359,7 @@
   {
    "fieldname": "lms_provider_information_tab",
    "fieldtype": "Tab Break",
-   "label": "LMS Provider Information"
+   "label": "LMS Provider "
   },
   {
    "fieldname": "lms_section",
@@ -440,14 +439,16 @@
    "fieldname": "sales_order",
    "fieldtype": "Data",
    "label": "Sales Order",
-   "placeholder": "This data will be automatically updated"
+   "placeholder": "This data will be automatically updated",
+   "read_only": 1
   },
   {
    "allow_on_submit": 1,
    "fieldname": "sales_order_date",
    "fieldtype": "Date",
    "label": "Sales Order Date",
-   "placeholder": "This data will be automatically updated"
+   "placeholder": "This data will be automatically updated",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_jitn",
@@ -456,7 +457,7 @@
   {
    "fieldname": "billing_information_ta",
    "fieldtype": "Tab Break",
-   "label": "Sales Order Information",
+   "label": "Sales Order ",
    "placeholder": "This data will be automatically updated"
   }
  ],
@@ -466,7 +467,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2024-12-23 19:06:19.762488",
+ "modified": "2024-12-25 19:00:51.132973",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",

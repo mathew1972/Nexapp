@@ -12,7 +12,7 @@
   "entity": null,
   "entity_type": "Customer",
   "holiday_list": "Holiday List 2025",
-  "modified": "2024-12-22 21:51:33.332281",
+  "modified": "2024-12-29 20:48:31.726807",
   "name": "SLA-Issue-SLA - Support",
   "pause_sla_on": [
    {
@@ -111,7 +111,7 @@
     "workday": "Saturday"
    },
    {
-    "end_time": "18:00:00",
+    "end_time": "22:00:00",
     "parent": "SLA-Issue-SLA - Support",
     "parentfield": "support_and_resolution",
     "parenttype": "Service Level Agreement",

@@ -51,7 +51,6 @@
   "column_break_uonu",
   "invoice_no",
   "invoice_date",
-  "invoice_amount",
   "site_address_tab",
   "street",
   "city",
@@ -88,14 +87,7 @@
   "section_break_czqw",
   "provisioning_item",
   "logistics_tab",
-  "service_provider",
-  "tracking_status",
-  "estimated_delivery_date",
-  "column_break_tbdw",
-  "awb_number",
-  "current_location",
-  "section_break_kpsc",
-  "tracking_history",
+  "logistics_information",
   "lms_tab",
   "lms_vendor"
  ],
@@ -255,18 +247,17 @@
    "read_only": 1
   },
   {
-   "allow_in_quick_entry": 1,
    "fetch_from": "sales_order.po_no",
    "fieldname": "customer_po_no",
    "fieldtype": "Link",
-   "label": "Customer's PO",
+   "label": "Customer's PO No",
    "options": "Customer PO",
    "read_only": 1
   },
   {
    "fieldname": "sales_order",
    "fieldtype": "Link",
-   "label": "Sales Order",
+   "label": "Sales Order Np",
    "options": "Sales Order",
    "read_only": 1
   },
@@ -382,7 +373,7 @@
   {
    "fieldname": "project",
    "fieldtype": "Link",
-   "label": "Project",
+   "label": "Project No",
    "options": "Project",
    "read_only": 1
   },
@@ -394,12 +385,12 @@
   {
    "fieldname": "tab_3_tab",
    "fieldtype": "Tab Break",
-   "label": "Project Information"
+   "label": "Project"
   },
   {
    "fieldname": "service_requirement_tab",
    "fieldtype": "Tab Break",
-   "label": "Service Requirement"
+   "label": "Service "
   },
   {
    "fieldname": "column_break_dtxu",
@@ -411,7 +402,8 @@
   },
   {
    "fieldname": "column_break_xqbv",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "label": "Sales Order"
   },
   {
    "fieldname": "contact_information_tab",
@@ -470,7 +462,8 @@
   },
   {
    "fieldname": "column_break_aujv",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "label": "Purchase Order"
   },
   {
    "fieldname": "provisioning_item",
@@ -481,7 +474,7 @@
   {
    "fieldname": "stock_information_tab",
    "fieldtype": "Tab Break",
-   "label": "Stock Information "
+   "label": "Stock "
   },
   {
    "fieldname": "lms_vendor",
@@ -508,7 +501,8 @@
   },
   {
    "fieldname": "column_break_frik",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "label": "Project "
   },
   {
    "fieldname": "expected_start_date",
@@ -544,22 +538,20 @@
   },
   {
    "fieldname": "column_break_uonu",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "label": "Invoice"
   },
   {
    "fieldname": "invoice_no",
    "fieldtype": "Data",
-   "label": "Invoice No"
+   "label": "Invoice No",
+   "read_only": 1
   },
   {
    "fieldname": "invoice_date",
    "fieldtype": "Date",
-   "label": "Invoice Date"
-  },
-  {
-   "fieldname": "invoice_amount",
-   "fieldtype": "Currency",
-   "label": "Invoice Amount"
+   "label": "Invoice Date",
+   "read_only": 1
   },
   {
    "fieldname": "section_break_czqw",
@@ -575,49 +567,15 @@
    "label": "Stock Live Update"
   },
   {
-   "fieldname": "service_provider",
-   "fieldtype": "Data",
-   "label": "Service Provider"
-  },
-  {
-   "fieldname": "tracking_status",
-   "fieldtype": "Select",
-   "label": "Tracking Status",
-   "options": "\nIn Progress\nDelivered\nReturned\nLost"
-  },
-  {
-   "fieldname": "estimated_delivery_date",
-   "fieldtype": "Date",
-   "label": "Estimated Delivery Date"
-  },
-  {
-   "fieldname": "column_break_tbdw",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "awb_number",
-   "fieldtype": "Data",
-   "label": "AWB Number"
-  },
-  {
-   "fieldname": "current_location",
-   "fieldtype": "Data",
-   "label": "Current Location"
-  },
-  {
-   "fieldname": "section_break_kpsc",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "tracking_history",
+   "fieldname": "logistics_information",
    "fieldtype": "Table",
-   "label": "Tracking History",
-   "options": "Tracking History"
+   "label": "Logistics Information",
+   "options": "Logistics"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-23 19:14:28.024724",
+ "modified": "2024-12-25 19:24:27.887648",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

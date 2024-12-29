@@ -20,18 +20,18 @@
   "meta_description": null,
   "meta_image": null,
   "meta_title": null,
-  "modified": "2024-12-15 18:57:52.038899",
+  "modified": "2024-12-29 19:57:40.347373",
   "module": "Nexapp",
   "name": "nexapp-hero-page",
   "page_blocks": [
    {
     "add_background_image": 0,
     "add_border_at_bottom": 0,
-    "add_border_at_top": 1,
-    "add_bottom_padding": 1,
-    "add_container": 0,
+    "add_border_at_top": 0,
+    "add_bottom_padding": 0,
+    "add_container": 1,
     "add_shade": 0,
-    "add_top_padding": 1,
+    "add_top_padding": 0,
     "background_image": null,
     "css_class": null,
     "hide_block": 0,
@@ -40,7 +40,7 @@
     "parenttype": "Web Page",
     "section_id": null,
     "web_template": "Cover Image",
-    "web_template_values": "{\"url\":\"/files/Hero-6.png\"}"
+    "web_template_values": "{\"url\":\"/files/Managing Work, Simplified-1acba15.png\"}"
    }
   ],
   "published": 1,

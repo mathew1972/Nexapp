@@ -8,7 +8,7 @@ frappe.ui.form.on('Site', {
         }
 
         // Your API key (replace with your valid API key)
-        const apiKey = 'AlzaSypCabnWlB6o3pIsf7q0FrB90mqqUqz27SK';
+        const apiKey = 'AlzaSy6XDkagsDhc2QpCUqUEbnuy8JCo6aZU0IH';
         const url = 'https://maps.gomaps.pro/maps/api/place/queryautocomplete/json';
 
         // Extract required fields from the form

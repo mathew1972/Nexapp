@@ -408,3 +408,42 @@ def update_serial_and_batch_entry_and_provisioning_item(serial_and_batch_bundle,
         error_message = f"Error in update_serial_and_batch_entry_and_provisioning_item: {str(e)}"
         frappe.log_error(frappe.get_traceback(), error_message)
         return f"error: {str(e)}"
+##########################################################################
+import frappe
+
+@frappe.whitelist()
+def update_logistics(shipment):
+    shipment_data = frappe.parse_json(shipment)
+    
+    # Get details from Shipment
+    carrier = shipment_data.get("carrier")
+    awb_number = shipment_data.get("awb_number")
+    tracking_status = shipment_data.get("tracking_status")
+    pickup_date = shipment_data.get("pickup_date")
+    shipment_sites = shipment_data.get("shipment_site")  # Child table entries
+    
+    if not shipment_sites:
+        frappe.throw("No Shipment Sites found to process.")
+    
+    for site in shipment_sites:
+        circuit_id = site.get("circuit_id")
+        if not circuit_id:
+            continue
+
+        # Find matching Logistics child rows by circuit_id
+        logistics_entries = frappe.get_all("Logistics", filters={}, fields=["name"])
+        
+        for entry in logistics_entries:
+            logistics_doc = frappe.get_doc("Logistics", entry.name)
+            
+            for row in logistics_doc.get("logistics"):
+                if row.circuit_id == circuit_id:
+                    # Update matching row
+                    row.carrier = carrier
+                    row.awb_number = awb_number
+                    row.tracking_status = tracking_status
+                    row.pickup_date = pickup_date
+
+                    logistics_doc.save()
+                    frappe.db.commit()  # Commit the changes
+                    break

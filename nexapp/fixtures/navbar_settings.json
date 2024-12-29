@@ -1,7 +1,7 @@
 [
  {
   "announcement_widget": null,
-  "app_logo": "",
+  "app_logo": "/files/Nexapp-Logo_Registered-white-.png",
   "docstatus": 0,
   "doctype": "Navbar Settings",
   "help_dropdown": [
@@ -90,7 +90,7 @@
     "route": "https://frappe.io/support"
    }
   ],
-  "modified": "2024-12-15 18:47:50.344392",
+  "modified": "2024-12-24 20:38:35.914604",
   "name": "Navbar Settings",
   "settings_dropdown": [
    {

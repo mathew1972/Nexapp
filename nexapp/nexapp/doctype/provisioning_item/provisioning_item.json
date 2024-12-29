@@ -25,7 +25,7 @@
   },
   {
    "columns": 3,
-   "fetch_from": "serial_number.item_name",
+   "fetch_from": "product_code.item_code",
    "fieldname": "product",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -63,7 +63,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-12-22 11:27:41.471633",
+ "modified": "2024-12-29 20:42:52.749794",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Provisioning Item",
