@@ -15,48 +15,12 @@
   "docstatus": 0,
   "doctype": "Territory",
   "is_group": 0,
-  "modified": "2024-12-14 23:47:59.149100",
-  "name": "North",
-  "old_parent": "All Territories",
-  "parent_territory": "All Territories",
-  "targets": [],
-  "territory_manager": null,
-  "territory_name": "North"
- },
- {
-  "docstatus": 0,
-  "doctype": "Territory",
-  "is_group": 0,
-  "modified": "2024-12-14 23:48:33.041614",
-  "name": "South",
-  "old_parent": "All Territories",
-  "parent_territory": "All Territories",
-  "targets": [],
-  "territory_manager": null,
-  "territory_name": "South"
- },
- {
-  "docstatus": 0,
-  "doctype": "Territory",
-  "is_group": 0,
-  "modified": "2024-12-14 23:49:00.490350",
+  "modified": "2024-12-30 01:32:35.445787",
   "name": "West",
   "old_parent": "All Territories",
   "parent_territory": "All Territories",
   "targets": [],
   "territory_manager": null,
   "territory_name": "West"
- },
- {
-  "docstatus": 0,
-  "doctype": "Territory",
-  "is_group": 0,
-  "modified": "2024-12-14 23:49:44.060486",
-  "name": "East",
-  "old_parent": "All Territories",
-  "parent_territory": "All Territories",
-  "targets": [],
-  "territory_manager": null,
-  "territory_name": "East"
  }
 ]
