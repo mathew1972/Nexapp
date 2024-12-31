@@ -1,7 +1,7 @@
 [
  {
   "announcement_widget": null,
-  "app_logo": "/files/Nexapp-Logo_Registered-white-.png",
+  "app_logo": null,
   "docstatus": 0,
   "doctype": "Navbar Settings",
   "help_dropdown": [
@@ -90,7 +90,7 @@
     "route": "https://frappe.io/support"
    }
   ],
-  "modified": "2024-12-24 20:38:35.914604",
+  "modified": "2024-12-31 19:41:41.741709",
   "name": "Navbar Settings",
   "settings_dropdown": [
    {
@@ -116,6 +116,18 @@
     "parentfield": "settings_dropdown",
     "parenttype": "Navbar Settings",
     "route": null
+   },
+   {
+    "action": null,
+    "condition": "frappe.boot.fc_communication_secret && frappe.boot.setup_complete && !frappe.is_mobile() && frappe.user.has_role('System Manager')",
+    "hidden": 0,
+    "is_standard": 1,
+    "item_label": "Manage Billing",
+    "item_type": "Route",
+    "parent": "Navbar Settings",
+    "parentfield": "settings_dropdown",
+    "parenttype": "Navbar Settings",
+    "route": "/billing"
    },
    {
     "action": "frappe.ui.toolbar.setup_session_defaults()",

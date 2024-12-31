@@ -3,7 +3,7 @@
   "docstatus": 0,
   "doctype": "Territory",
   "is_group": 1,
-  "modified": "2024-12-14 10:04:12.733407",
+  "modified": "2024-12-31 19:42:36.549851",
   "name": "All Territories",
   "old_parent": "",
   "parent_territory": null,
@@ -15,12 +15,24 @@
   "docstatus": 0,
   "doctype": "Territory",
   "is_group": 0,
-  "modified": "2024-12-30 01:32:35.445787",
-  "name": "West",
+  "modified": "2024-12-31 19:42:36.563649",
+  "name": "India",
   "old_parent": "All Territories",
   "parent_territory": "All Territories",
   "targets": [],
   "territory_manager": null,
-  "territory_name": "West"
+  "territory_name": "India"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Territory",
+  "is_group": 0,
+  "modified": "2024-12-31 19:42:36.575280",
+  "name": "Rest Of The World",
+  "old_parent": "All Territories",
+  "parent_territory": "All Territories",
+  "targets": [],
+  "territory_manager": null,
+  "territory_name": "Rest Of The World"
  }
 ]
