@@ -1,1 +1,44 @@
-[]
+[
+ {
+  "docstatus": 0,
+  "doctype": "Product Type",
+  "modified": "2025-01-01 01:22:07.902981",
+  "name": "M2M",
+  "product_type": "M2M"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Product Type",
+  "modified": "2025-01-01 01:22:21.308662",
+  "name": "SDWIFI",
+  "product_type": "SDWIFI"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Product Type",
+  "modified": "2025-01-01 01:22:32.250711",
+  "name": "NaaS",
+  "product_type": "NaaS"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Product Type",
+  "modified": "2025-01-01 01:23:30.670551",
+  "name": "Prepaid",
+  "product_type": "Prepaid"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Product Type",
+  "modified": "2025-01-01 01:23:41.575071",
+  "name": "Postpaid",
+  "product_type": "Postpaid"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Product Type",
+  "modified": "2025-01-01 01:26:45.524809",
+  "name": "SDWAN",
+  "product_type": "SDWAN"
+ }
+]

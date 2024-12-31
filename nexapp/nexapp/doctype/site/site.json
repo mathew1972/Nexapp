@@ -3,7 +3,7 @@
  "allow_events_in_timeline": 1,
  "allow_rename": 1,
  "autoname": "SITE- .######.",
- "creation": "2024-11-03 10:45:47.957259",
+ "creation": "2024-12-31 21:01:55.709456",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -249,9 +249,8 @@
   {
    "fetch_from": "sales_order.po_no",
    "fieldname": "customer_po_no",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Customer's PO No",
-   "options": "Customer PO",
    "read_only": 1
   },
   {
@@ -575,7 +574,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-25 19:24:27.887648",
+ "modified": "2024-12-31 22:49:22.517391",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

@@ -1,1 +1,28 @@
-[]
+[
+ {
+  "background_color": null,
+  "button_gradients": 0,
+  "button_rounded_corners": 1,
+  "button_shadows": 0,
+  "custom": 1,
+  "custom_overrides": null,
+  "custom_scss": ".navbar-light {\n    border-bottom: 1px solid #e2e2e2;\n    background: #313949;\n}\n\n.navbar-light .navbar-nav .nav-link {\n    color: #FFFFFF;\n    font-size: .875rem;\n    font-weight: 500;\n}\n\n.btn.btn-primary {\n    background-color: #F39D17;\n    color: var(--neutral);\n    white-space: nowrap;\n    --icon-stroke: currentColor;\n    --icon-fill-bg: var(--btn-primary);\n}\n\n",
+  "dark_color": null,
+  "docstatus": 0,
+  "doctype": "Website Theme",
+  "font_properties": "wght@300;400;500;600;700;800",
+  "font_size": null,
+  "google_font": "Merriweather",
+  "ignored_apps": [],
+  "js": null,
+  "light_color": null,
+  "modified": "2024-12-31 22:10:33.938121",
+  "module": "Nexapp",
+  "name": "Nexapp",
+  "primary_color": null,
+  "text_color": null,
+  "theme": "Nexapp",
+  "theme_scss": "\n@import url(\"https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;500;600;700;800&display=swap\");\n// backward compatibility. deprecated in v15\n$font-family-sans-serif: \"Merriweather\", \"InterVariable\", \"Inter\", -apple-system, BlinkMacSystemFont,\n\t\"Segoe UI\", \"Roboto\", \"Oxygen\", \"Ubuntu\", \"Cantarell\", \"Fira Sans\",\n\t\"Droid Sans\", \"Helvetica Neue\", sans-serif;\n\n// override font stack if custom font is set in website theme\n:root {\n\t--font-stack: \"Merriweather\", \"InterVariable\", \"Inter\", -apple-system, BlinkMacSystemFont,\n\t\"Segoe UI\", \"Roboto\", \"Oxygen\", \"Ubuntu\", \"Cantarell\", \"Fira Sans\",\n\t\"Droid Sans\", \"Helvetica Neue\", sans-serif !important;\n}\n$enable-shadows: false;\n$enable-gradients: false;\n$enable-rounded: true;\n\n// Bootstrap Variable Overrides\n\n\n// Import themes from installed apps\n@import \"frappe/public/scss/website.bundle\";\n@import \"erpnext/public/scss/website\";\n\n\n\n// Custom Theme\n.navbar-light {\n    border-bottom: 1px solid #e2e2e2;\n    background: #313949;\n}\n\n.navbar-light .navbar-nav .nav-link {\n    color: #FFFFFF;\n    font-size: .875rem;\n    font-weight: 500;\n}\n\n.btn.btn-primary {\n    background-color: #F39D17;\n    color: var(--neutral);\n    white-space: nowrap;\n    --icon-stroke: currentColor;\n    --icon-fill-bg: var(--btn-primary);\n}\n\n\n\n:root {\n\t}\n",
+  "theme_url": "/files/website_theme/nexapp_63093113.css"
+ }
+]
