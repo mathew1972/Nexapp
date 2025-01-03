@@ -281,7 +281,9 @@ fixtures = [
     {"dt": "Workspace"},
     {"dt": 'Service Level Agreement'},
     {"dt": 'Selling Settings'},  
-    {"dt": 'Stock Settings'},     
+    {"dt": 'Stock Settings'}, 
+    {"dt": 'Stock Settings'},
+    {"dt": 'LMS Plan'},    
     {"dt": 'Holiday List'}
 ]
 
@@ -372,7 +374,7 @@ doctype_js = {
         "public/js/site_map.js",
         "public/js/site_pincode.js"
     ],
-    "Project": "public/js/Project_custom_ui.js"
+    "Project": "public/js/Project_custom_ui.js"    
 }
 
 

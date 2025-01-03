@@ -37,7 +37,7 @@ frappe.ui.form.on('Company', {
             'stock_received_but_not_billed', 'default_provisional_account', 
             'expenses_included_in_valuation', 'manufacturing_section', 'default_operating_cost_account', 
             'dashboard_tab', 'print_options', 'show_physical_signature', 'logo_for_printing', 
-            'bank_details_for_printing', 'registration_details_for_printing'
+            'bank_details_for_printing', 'registration_details_for_printing', 'round_off_for_opening'
         ];
 
         fields.forEach(function(field) {

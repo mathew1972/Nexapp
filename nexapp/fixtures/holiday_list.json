@@ -1,1 +1,178 @@
-[]
+[
+ {
+  "color": "#CB2929",
+  "country": "IN",
+  "docstatus": 0,
+  "doctype": "Holiday List",
+  "from_date": "2025-01-01",
+  "holiday_list_name": "Holiday 2025",
+  "holidays": [
+   {
+    "description": "Makar Sankranti / Pongal",
+    "holiday_date": "2025-01-14",
+    "parent": "Holiday 2025",
+    "parentfield": "holidays",
+    "parenttype": "Holiday List",
+    "weekly_off": 0
+   },
+   {
+    "description": "Republic Day",
+    "holiday_date": "2025-01-26",
+    "parent": "Holiday 2025",
+    "parentfield": "holidays",
+    "parenttype": "Holiday List",
+    "weekly_off": 0
+   },
+   {
+    "description": "Holi",
+    "holiday_date": "2025-03-14",
+    "parent": "Holiday 2025",
+    "parentfield": "holidays",
+    "parenttype": "Holiday List",
+    "weekly_off": 0
+   },
+   {
+    "description": "Eid ul-Fitr (estimated)",
+    "holiday_date": "2025-03-30",
+    "parent": "Holiday 2025",
+    "parentfield": "holidays",
+    "parenttype": "Holiday List",
+    "weekly_off": 0
+   },
+   {
+    "description": "Eid ul-Fitr (estimated)",
+    "holiday_date": "2025-03-31",
+    "parent": "Holiday 2025",
+    "parentfield": "holidays",
+    "parenttype": "Holiday List",
+    "weekly_off": 0
+   },
+   {
+    "description": "Palm Sunday",
+    "holiday_date": "2025-04-13",
+    "parent": "Holiday 2025",
+    "parentfield": "holidays",
+    "parenttype": "Holiday List",
+    "weekly_off": 0
+   },
+   {
+    "description": "Dr. B. R. Ambedkar's Jayanti",
+    "holiday_date": "2025-04-14",
+    "parent": "Holiday 2025",
+    "parentfield": "holidays",
+    "parenttype": "Holiday List",
+    "weekly_off": 0
+   },
+   {
+    "description": "Good Friday",
+    "holiday_date": "2025-04-18",
+    "parent": "Holiday 2025",
+    "parentfield": "holidays",
+    "parenttype": "Holiday List",
+    "weekly_off": 0
+   },
+   {
+    "description": "Easter Sunday",
+    "holiday_date": "2025-04-20",
+    "parent": "Holiday 2025",
+    "parentfield": "holidays",
+    "parenttype": "Holiday List",
+    "weekly_off": 0
+   },
+   {
+    "description": "Labour Day; Maharashtra Day",
+    "holiday_date": "2025-05-01",
+    "parent": "Holiday 2025",
+    "parentfield": "holidays",
+    "parenttype": "Holiday List",
+    "weekly_off": 0
+   },
+   {
+    "description": "Eid al-Adha (estimated)",
+    "holiday_date": "2025-06-06",
+    "parent": "Holiday 2025",
+    "parentfield": "holidays",
+    "parenttype": "Holiday List",
+    "weekly_off": 0
+   },
+   {
+    "description": "Eid al-Adha (estimated)",
+    "holiday_date": "2025-06-07",
+    "parent": "Holiday 2025",
+    "parentfield": "holidays",
+    "parenttype": "Holiday List",
+    "weekly_off": 0
+   },
+   {
+    "description": "Feast of Pentecost",
+    "holiday_date": "2025-06-08",
+    "parent": "Holiday 2025",
+    "parentfield": "holidays",
+    "parenttype": "Holiday List",
+    "weekly_off": 0
+   },
+   {
+    "description": "Day of Ashura (estimated)",
+    "holiday_date": "2025-07-05",
+    "parent": "Holiday 2025",
+    "parentfield": "holidays",
+    "parenttype": "Holiday List",
+    "weekly_off": 0
+   },
+   {
+    "description": "Independence Day",
+    "holiday_date": "2025-08-15",
+    "parent": "Holiday 2025",
+    "parentfield": "holidays",
+    "parenttype": "Holiday List",
+    "weekly_off": 0
+   },
+   {
+    "description": "Mawlid (estimated)",
+    "holiday_date": "2025-09-04",
+    "parent": "Holiday 2025",
+    "parentfield": "holidays",
+    "parenttype": "Holiday List",
+    "weekly_off": 0
+   },
+   {
+    "description": "Gandhi Jayanti",
+    "holiday_date": "2025-10-02",
+    "parent": "Holiday 2025",
+    "parentfield": "holidays",
+    "parenttype": "Holiday List",
+    "weekly_off": 0
+   },
+   {
+    "description": "Dussehra",
+    "holiday_date": "2025-10-15",
+    "parent": "Holiday 2025",
+    "parentfield": "holidays",
+    "parenttype": "Holiday List",
+    "weekly_off": 0
+   },
+   {
+    "description": "Diwali",
+    "holiday_date": "2025-10-20",
+    "parent": "Holiday 2025",
+    "parentfield": "holidays",
+    "parenttype": "Holiday List",
+    "weekly_off": 0
+   },
+   {
+    "description": "Christmas Day",
+    "holiday_date": "2025-12-25",
+    "parent": "Holiday 2025",
+    "parentfield": "holidays",
+    "parenttype": "Holiday List",
+    "weekly_off": 0
+   }
+  ],
+  "modified": "2025-01-01 13:05:19.683633",
+  "name": "Holiday 2025",
+  "subdivision": "MH",
+  "to_date": "2025-12-31",
+  "total_holidays": 20,
+  "weekly_off": ""
+ }
+]
