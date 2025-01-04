@@ -262,29 +262,28 @@ doc_events = {
     }
 }
 
-fixtures = [    
-    {'dt': 'Product Type'},    
-    {'dt': 'Product Category'},
-    {'dt': 'Brand'},      
+fixtures = [
+    {"dt": "Product Type"},
+    {"dt": "Product Category"},
+    {"dt": "Brand"},
     {"dt": "Site Type"},
-    {"dt": "Solution"},    
+    {"dt": "Solution"},
     {"dt": "Data Plan"},
     {"dt": "DocType", "filters": [["module", "=", "Nexapp"]]},
-    {"dt": "Custom Field"},    
-    {"dt": "Property Setter"}, 
+    {"dt": "Custom Field"},
+    {"dt": "Property Setter"},
     {"dt": "Website Settings"},
     {"dt": "Web Form"},
     {"dt": "Navbar Settings"},
     {"dt": "Website Theme"},
     {"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},
-    {"dt": "Custom HTML Block", "filters": [["name", "=", "Recruitment Workspace"]]},    
+    {"dt": "Custom HTML Block", "filters": [["name", "=", "Recruitment Workspace"]]},
     {"dt": "Workspace"},
-    {"dt": 'Service Level Agreement'},
-    {"dt": 'Selling Settings'},  
-    {"dt": 'Stock Settings'}, 
-    {"dt": 'Stock Settings'},
-    {"dt": 'LMS Plan'},    
-    {"dt": 'Holiday List'}
+    {"dt": "Service Level Agreement"},
+    {"dt": "Selling Settings"},
+    {"dt": "Stock Settings"},
+    {"dt": "LMS Plan"},
+    {"dt": "Holiday List"}
 ]
 
 doctype_js = {

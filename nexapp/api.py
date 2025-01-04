@@ -411,52 +411,69 @@ def update_serial_and_batch_entry_and_provisioning_item(serial_and_batch_bundle,
 ##########################################################################
 import frappe
 
-@frappe.whitelist()
-def update_logistics(shipment):
+@frappe.whitelist(allow_guest=True)
+def update_logistics_data(shipment_name, circuit_ids, carrier, awb_number, tracking_status, pickup_date):
     try:
-        shipment_data = frappe.parse_json(shipment)
-        frappe.log_error(shipment_data, "Debug - Shipment Data Received")  # Log the received shipment data
-        
-        # Get details from Shipment
-        carrier = shipment_data.get("carrier")  
-        awb_number = shipment_data.get("awb_number")
-        tracking_status = shipment_data.get("tracking_status")
-        pickup_date = shipment_data.get("pickup_date")
-        shipment_sites = shipment_data.get("shipment_site")  # Child table entries
-        
-        # Debug the shipment sites data
-        frappe.log_error(shipment_sites, "Debug - Shipment Sites")
+        circuit_ids = frappe.parse_json(circuit_ids)  # Convert string to list
+        frappe.log_error(f"Received circuit_ids: {circuit_ids}", "update_logistics_data")
 
-        if not shipment_sites:
-            frappe.throw("No Shipment Sites found to process.")
-        
-        for site in shipment_sites:
-            circuit_id = site.get("circuit_id")
-            frappe.log_error(circuit_id, "Debug - Circuit ID")  # Log circuit ID
-            if not circuit_id:
-                continue
+        for circuit_id in circuit_ids:
+            # Fetch the site linked with the circuit_id and the linked logistics_information
+            site = frappe.get_all('Site', filters={'circuit_id': circuit_id}, fields=['name', 'logistics_information'])
+            frappe.log_error(f"Site for circuit_id {circuit_id}: {site}", "update_logistics_data")
 
-            # Find matching Logistics child rows by circuit_id
-            logistics_entries = frappe.get_all("Logistics", filters={}, fields=["name"])
-            frappe.log_error(logistics_entries, "Debug - Logistics Entries")  # Log fetched logistics entries
-            
-            for entry in logistics_entries:
-                logistics_doc = frappe.get_doc("Logistics", entry.name)
-                frappe.log_error(logistics_doc, "Debug - Logistics Document")  # Log the logistics document
-                
-                for row in logistics_doc.get("logistics"):
-                    frappe.log_error(row.circuit_id, "Debug - Row Circuit ID")  # Log each row's circuit ID
-                    if row.circuit_id == circuit_id:
-                        # Update matching row
-                        row.carrier = carrier
-                        row.awb_number = awb_number
-                        row.tracking_status = tracking_status
-                        row.pickup_date = pickup_date
+            if site:
+                site_name = site[0].get('name')  # Assuming there is only one record
+                logistics_information_link = site[0].get('logistics_information')
 
-                        logistics_doc.save()
-                        frappe.db.commit()  # Commit the changes
-                        frappe.log_error("Logistics entry updated successfully", "Debug - Update Success")
-                        break
+                if logistics_information_link:
+                    # Get the existing Logistics records (child table entries) linked to this Site
+                    logistics_records = frappe.get_all('Logistics', filters={'parent': logistics_information_link}, fields=['name', 'carrier', 'awb_number', 'tracking_status', 'pickup_date'])
+                    frappe.log_error(f"Existing logistics records for site {site_name}: {logistics_records}", "update_logistics_data")
+
+                    # Assuming we're adding a new logistics entry to the child table
+                    new_logistics_entry = {
+                        'carrier': carrier,
+                        'awb_number': awb_number,
+                        'tracking_status': tracking_status,
+                        'pickup_date': pickup_date
+                    }
+
+                    # Check if logistics record already exists or insert a new one
+                    if logistics_records:
+                        # Optionally, you can update the existing record if needed
+                        # Example: update the first logistics record
+                        logistics_to_update = logistics_records[0]  # Assuming you want to update the first record
+                        logistics_to_update.update(new_logistics_entry)
+                        logistics_to_update.save()
+                        frappe.db.commit()
+                        frappe.log_error(f"Updated logistics record: {logistics_to_update.name}", "update_logistics_data")
+                        return {'success': True, 'message': 'Logistics data updated successfully.'}
+
+                    else:
+                        # Create a new record in the Logistics child table
+                        new_logistics = frappe.get_doc({
+                            'doctype': 'Logistics',
+                            'parent': logistics_information_link,  # Link it to the correct site
+                            **new_logistics_entry
+                        })
+                        new_logistics.insert()
+
+                        # Commit the new logistics entry to the database
+                        frappe.db.commit()
+                        frappe.log_error(f"Inserted new logistics record: {new_logistics.name}", "update_logistics_data")
+
+                        return {'success': True, 'message': 'Logistics data inserted successfully.'}
+
+                else:
+                    frappe.log_error(f"No logistics_information link found for site {site_name}", "update_logistics_data")
+                    return {'success': False, 'message': 'No logistics_information link found for the site.'}
+            else:
+                frappe.log_error(f"Site with circuit_id {circuit_id} not found.", "update_logistics_data")
+                return {'success': False, 'message': f'Site with circuit_id {circuit_id} not found.'}
+
+        return {'success': False, 'message': 'No matching site found for the given circuit_ids.'}
+
     except Exception as e:
-        frappe.log_error(frappe.get_traceback(), "Debug - Update Logistics Error")
-        raise e
+        frappe.log_error(f"Error in update_logistics_data: {str(e)}", "update_logistics_data")
+        return {'success': False, 'message': f"An error occurred: {str(e)}"}
