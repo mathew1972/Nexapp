@@ -279,10 +279,8 @@ fixtures = [
     {"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},
     {"dt": "Custom HTML Block", "filters": [["name", "=", "Recruitment Workspace"]]},
     {"dt": "Workspace"},
-    {"dt": "Service Level Agreement"},
-    {"dt": "Selling Settings"},
-    {"dt": "Stock Settings"},
-    {"dt": "LMS Plan"},
+    {"dt": "Service Level Agreement"},      
+    {"dt": "LMS Plan"},    
     {"dt": "Holiday List"}
 ]
 
