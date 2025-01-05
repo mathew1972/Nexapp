@@ -86,8 +86,6 @@
   "provisioning_tab",
   "section_break_czqw",
   "provisioning_item",
-  "logistics_tab",
-  "logistics_information",
   "lms_tab",
   "lms_vendor"
  ],
@@ -426,11 +424,6 @@
    "label": "Provisioning"
   },
   {
-   "fieldname": "logistics_tab",
-   "fieldtype": "Tab Break",
-   "label": "Logistics"
-  },
-  {
    "fieldname": "lms_tab",
    "fieldtype": "Tab Break",
    "label": "LMS"
@@ -564,17 +557,11 @@
    "fieldname": "stock_live_update_section",
    "fieldtype": "Section Break",
    "label": "Stock Live Update"
-  },
-  {
-   "fieldname": "logistics_information",
-   "fieldtype": "Table",
-   "label": "Logistics Information",
-   "options": "Logistics"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-31 22:49:22.517391",
+ "modified": "2025-01-05 21:20:51.329729",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

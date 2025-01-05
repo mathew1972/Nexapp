@@ -272,15 +272,16 @@ fixtures = [
     {"dt": "DocType", "filters": [["module", "=", "Nexapp"]]},
     {"dt": "Custom Field"},
     {"dt": "Property Setter"},
-    {"dt": "Website Settings"},
-    {"dt": "Web Form"},
-    {"dt": "Navbar Settings"},
-    {"dt": "Website Theme"},
+    {"dt": "Website Settings"},    
+    {"dt": "Web Form", "filters": [["module", "=", "Nexapp"]]},
+    {"dt": "Navbar Settings"},    
+    {"dt": "Website Theme", "filters": [["module", "=", "Nexapp"]]},
     {"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},
     {"dt": "Custom HTML Block", "filters": [["name", "=", "Recruitment Workspace"]]},
     {"dt": "Workspace"},
     {"dt": "Service Level Agreement"},      
     {"dt": "LMS Plan"},    
+    {"dt": "File"},
     {"dt": "Holiday List"}
 ]
 
