@@ -275,7 +275,7 @@ fixtures = [
     {"dt": "Website Settings"},    
     {"dt": "Web Form", "filters": [["module", "=", "Nexapp"]]},
     {"dt": "Navbar Settings"},    
-    {"dt": "Website Theme", "filters": [["module", "=", "Nexapp"]]},
+    {"dt": "Website Theme"},
     {"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},
     {"dt": "Custom HTML Block", "filters": [["name", "=", "Recruitment Workspace"]]},
     {"dt": "Workspace"},
