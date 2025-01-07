@@ -280,8 +280,7 @@ fixtures = [
     {"dt": "Custom HTML Block", "filters": [["name", "=", "Recruitment Workspace"]]},
     {"dt": "Workspace"},
     {"dt": "Service Level Agreement"},      
-    {"dt": "LMS Plan"},    
-    {"dt": "File"},
+    {"dt": "LMS Plan"},     
     {"dt": "Workspace"},
     {"dt": "Holiday List"}
 ]
