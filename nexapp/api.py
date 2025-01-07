@@ -348,11 +348,12 @@ def update_site_status_on_delivery_note_save(doc, method):
                 site_doc.save(ignore_permissions=True)
 
 ############################################################################3
+import frappe
+
 @frappe.whitelist()
-def update_serial_and_batch_entry_and_provisioning_item(serial_and_batch_bundle, custom_circuit_id):
+def update_serial_and_batch_entry(serial_and_batch_bundle, custom_circuit_id):
     """
     Updates the custom_circuit field in Serial and Batch Entry based on the Serial and Batch Bundle.
-    Also checks and updates the serial_number and product_code in Provisioning Item under the Site Doctype if circuit_id matches.
     """
     try:
         # Check if Serial and Batch Bundle exists
@@ -362,49 +363,18 @@ def update_serial_and_batch_entry_and_provisioning_item(serial_and_batch_bundle,
             frappe.log_error(message, "Serial and Batch Entry Update")
             return message
 
-        # Fetch the item_code from the Serial and Batch Bundle
-        item_code = serial_and_batch_bundle_doc.item_code
-        if not item_code:
-            message = "Item Code is missing in Serial and Batch Bundle."
-            frappe.log_error(message, "Serial and Batch Entry Update")
-            return message
-
-        # Iterate over the Serial and Batch Entry child table and update 'custom_circuit'
+        # Update the custom_circuit field in Serial and Batch Entry
         for entry in serial_and_batch_bundle_doc.entries:
-            serial_no = entry.serial_no  # Fetch the serial_no for the entry
-            
-            # Update the custom_circuit field in Serial and Batch Entry
             frappe.db.set_value(
                 "Serial and Batch Entry",
                 entry.name,  # Entry name in Serial and Batch Entry table
                 "custom_circuit",
                 custom_circuit_id
             )
-
-            # Check if 'Site' exists where circuit_id matches the custom_circuit_id
-            site_doc = frappe.db.get_value("Site", {"circuit_id": custom_circuit_id}, "name")
-            if site_doc:
-                # Fetch the Site document
-                site_doc = frappe.get_doc("Site", site_doc)
-
-                # Check if 'product_code' is missing in the Provisioning Item child table and update
-                provisioning_item = site_doc.provisioning_item
-                serial_numbers = [item.serial_number for item in provisioning_item]
-
-                # Only update if serial_number is not already present
-                if serial_no not in serial_numbers:
-                    # Append the new serial_no and item_code to the Provisioning Item child table
-                    new_item = site_doc.append("provisioning_item", {})
-                    new_item.serial_number = serial_no
-                    new_item.product_code = item_code  # Set the product_code from the Serial and Batch Bundle
-                    
-                # Save the updated Site document
-                site_doc.save()
-
+        
         frappe.db.commit()  # Commit the transaction
         return "success"
 
     except Exception as e:
-        error_message = f"Error in update_serial_and_batch_entry_and_provisioning_item: {str(e)}"
-        frappe.log_error(frappe.get_traceback(), error_message)
+        frappe.log_error(frappe.get_traceback(), "Error in update_serial_and_batch_entry")
         return f"error: {str(e)}"

@@ -6,7 +6,10 @@ frappe.ui.form.on('Lead', {
             'customer', 'type', 'request_type', 'email_id', 'website', 
             'mobile_no', 'whatsapp_no', 'phone', 'phone_ext', 'company_name',
             'no_of_employees', 'annual_revenue', 'industry', 'market_segment',
-            'territory', 'country', 'city', 'fax', 'state', 'contact_html', 'custom_description_'
+            'territory', 'country', 'city', 'fax', 'state', 'contact_html', 'custom_description_',
+            'custom_secondary_email', 'custom_description', 'qualification_status', 'qualified_by',
+            'qualified_on', 'campaign_name', 'company', 'language', 'custom_pin_code', 'custom_district',
+            'custom_linkedin_possible_profile__'
         ];
 
         fields.forEach(function(field) {

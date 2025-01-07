@@ -282,6 +282,7 @@ fixtures = [
     {"dt": "Service Level Agreement"},      
     {"dt": "LMS Plan"},    
     {"dt": "File"},
+    {"dt": "Workspace"},
     {"dt": "Holiday List"}
 ]
 
@@ -290,7 +291,10 @@ doctype_js = {
         "public/js/issue_custom_id_extractor.js",
         "public/js/ticket_product.js"
     ],
-    "Lead": "public/js/lead_custom.js",
+    "Lead": [
+        "public/js/lead_pincode.js",
+        "public/js/lead_custom.js"
+    ],    
     "Opportunity": "public/js/Deal_custom.js",
     "Customer": "public/js/Customer_custom.js",
     "Quotation": "public/js/Quotes_custom.js",
