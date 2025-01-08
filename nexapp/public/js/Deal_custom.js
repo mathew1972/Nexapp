@@ -12,7 +12,8 @@ frappe.ui.form.on('Opportunity', {
             'phone', 'contact_email', 'contact_mobile', 'phone_ext', 'whatsapp', 'address_html', 
             'customer_address', 'address_display', 'contact_html', 'contact_display', 'items', 
             'base_total', 'total', 'activities_tab', 'open_activities_html', 
-            'all_activities_html', 'notes_tab', 'notes_html', 'notes'
+            'all_activities_html', 'notes_tab', 'notes_html', 'notes', 'custom_deal_name',
+            'custom_expected_revenue__', 'custom_pin_code', 'custom_district', 'custom_description'
         ];
 
         fields.forEach(function(field) {
@@ -141,3 +142,73 @@ frappe.ui.form.on('Opportunity', {
         }, 500);
     }
 })
+
+frappe.ui.form.on('Opportunity', {
+    opportunity_amount: function(frm) {
+        calculate_expected_revenue(frm);
+    },
+    probability: function(frm) {
+        calculate_expected_revenue(frm);
+    }
+});
+
+function calculate_expected_revenue(frm) {
+    if (frm.doc.opportunity_amount && frm.doc.probability) {
+        // Calculate custom expected revenue
+        frm.set_value('custom_expected_revenue__', frm.doc.opportunity_amount * (frm.doc.probability / 100));
+    } else {
+        // Set to zero if fields are empty
+        frm.set_value('custom_expected_revenue__', 0);
+    }
+}
+
+function debounce(fn, delay) {
+    let timer;
+    return function (...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn.apply(this, args), delay);
+    };
+}
+
+frappe.ui.form.on('Opportunity', {
+    refresh: function(frm) {
+        // Attach a debounced event handler to the custom_pin_code field when the form loads
+        $(frm.fields_dict.custom_pin_code.input).on('input', debounce(function() {
+            const pincode = frm.doc.custom_pin_code.replace(/\D/g, ''); // Remove non-digit characters
+
+            if (pincode.length === 6) { // Ensure the pincode is 6 digits for India
+                frappe.show_alert({message: "Fetching location details...", indicator: "blue"});
+
+                // Make the external API call
+                fetch("https://api.postalpincode.in/pincode/" + pincode)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data[0].Status === "Success" && data[0].PostOffice.length > 0) {
+                            const postOffice = data[0].PostOffice[0]; // Get the first Post Office entry
+
+                            frm.set_value("custom_district", postOffice.District || "");
+                            frm.set_value("country", postOffice.Country || "India");
+                            frm.set_value("city", postOffice.Block || "");
+                            frm.set_value("state", postOffice.State || "");
+                        } else {
+                            frappe.msgprint("Pincode not found or invalid.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("API Error:", error);
+                        frappe.msgprint("Error fetching data from API.");
+                    });
+            } else if (pincode.length === 0) { // If pincode is cleared, reset the fields
+                frm.set_value("custom_district", "");
+                frm.set_value("country", "");
+                frm.set_value("city", "");
+                frm.set_value("state", "");
+            } else if (pincode.length < 6) {
+                frappe.show_alert({
+                    message: "Please enter a valid 6-digit pincode.",
+                    indicator: "red"
+                }, 5); // Display alert for 5 seconds
+            }
+        }, 500)); // 500 ms debounce
+    }
+});
