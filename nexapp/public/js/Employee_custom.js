@@ -17,7 +17,8 @@ frappe.ui.form.on('Employee', {
             'valid_upto', 'date_of_issue', 'place_of_issue', 'bio', 'educational_qualification', 'education', 
             'previous_work_experience', 'external_work_history', 'internal_work_history', 'resignation_letter_date', 
             'relieving_date', 'held_on', 'new_workplace', 'leave_encashed', 'encashment_date', 
-            'reason_for_leaving', 'feedback', 'lft', 'rgt', 'old_parent'
+            'reason_for_leaving', 'feedback', 'lft', 'rgt', 'old_parent','pan_number', 'provident_fund_account',
+            'health_details'
         ];
 
         fields.forEach(function(field) {

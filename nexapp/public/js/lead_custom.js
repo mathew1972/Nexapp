@@ -9,7 +9,8 @@ frappe.ui.form.on('Lead', {
             'territory', 'country', 'city', 'fax', 'state', 'contact_html', 'custom_description_',
             'custom_secondary_email', 'custom_description', 'qualification_status', 'qualified_by',
             'qualified_on', 'campaign_name', 'company', 'language', 'custom_pin_code', 'custom_district',
-            'custom_linkedin_possible_profile__'
+            'custom_linkedin_possible_profile__', 'custom_interested_for__', 'custom_street__'
+            
         ];
 
         fields.forEach(function(field) {

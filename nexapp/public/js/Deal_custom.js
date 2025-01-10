@@ -13,7 +13,8 @@ frappe.ui.form.on('Opportunity', {
             'customer_address', 'address_display', 'contact_html', 'contact_display', 'items', 
             'base_total', 'total', 'activities_tab', 'open_activities_html', 
             'all_activities_html', 'notes_tab', 'notes_html', 'notes', 'custom_deal_name',
-            'custom_expected_revenue__', 'custom_pin_code', 'custom_district', 'custom_description'
+            'custom_expected_revenue__', 'custom_pin_code', 'custom_district', 'custom_description',
+            'custom_customer_name_2', 'custom_lob__', 'custom_nos_units_', 'custom_type'
         ];
 
         fields.forEach(function(field) {

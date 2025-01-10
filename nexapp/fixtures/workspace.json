@@ -687,7 +687,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2024-10-10 16:55:59.080694",
+  "modified": "2025-01-10 19:53:20.703298",
   "module": "HR",
   "name": "HR",
   "number_cards": [],
@@ -696,7 +696,7 @@
   "quick_lists": [],
   "restrict_to_domain": "",
   "roles": [],
-  "sequence_id": 8.0,
+  "sequence_id": 11.0,
   "shortcuts": [
    {
     "color": null,
@@ -925,7 +925,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2022-09-16 12:11:30.520597",
+  "modified": "2025-01-10 19:53:22.598426",
   "module": "Payroll",
   "name": "Payroll",
   "number_cards": [],
@@ -934,7 +934,7 @@
   "quick_lists": [],
   "restrict_to_domain": "",
   "roles": [],
-  "sequence_id": 15.0,
+  "sequence_id": 24.0,
   "shortcuts": [
    {
     "color": null,
@@ -1399,7 +1399,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2024-10-05 10:28:10.623892",
+  "modified": "2025-01-10 19:53:19.172788",
   "module": "GST India",
   "name": "GST India",
   "number_cards": [
@@ -1437,7 +1437,7 @@
     "role": "Accounts Manager"
    }
   ],
-  "sequence_id": 3.0,
+  "sequence_id": 4.0,
   "shortcuts": [
    {
     "color": "Grey",
@@ -1866,7 +1866,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2023-01-09 13:41:38.549412",
+  "modified": "2025-01-10 19:53:20.893283",
   "module": "HR",
   "name": "Recruitment",
   "number_cards": [],
@@ -1884,7 +1884,7 @@
   ],
   "restrict_to_domain": null,
   "roles": [],
-  "sequence_id": 3.0,
+  "sequence_id": 12.0,
   "shortcuts": [
    {
     "color": "Grey",
@@ -2489,7 +2489,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2024-08-11 11:35:33.462001",
+  "modified": "2025-01-10 19:53:21.032399",
   "module": "HR",
   "name": "Employee Lifecycle",
   "number_cards": [],
@@ -2523,7 +2523,7 @@
   ],
   "restrict_to_domain": null,
   "roles": [],
-  "sequence_id": 6.0,
+  "sequence_id": 13.0,
   "shortcuts": [
    {
     "color": "Grey",
@@ -3010,7 +3010,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2024-12-10 17:51:08.275060",
+  "modified": "2025-01-10 19:53:21.308729",
   "module": "HR",
   "name": "Shift & Attendance",
   "number_cards": [],
@@ -3019,7 +3019,7 @@
   "quick_lists": [],
   "restrict_to_domain": null,
   "roles": [],
-  "sequence_id": 7.0,
+  "sequence_id": 15.0,
   "shortcuts": [
    {
     "color": "Grey",
@@ -3442,7 +3442,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2023-09-29 16:55:20.281587",
+  "modified": "2025-01-10 19:53:21.625058",
   "module": "HR",
   "name": "Leaves",
   "number_cards": [],
@@ -3451,7 +3451,7 @@
   "quick_lists": [],
   "restrict_to_domain": null,
   "roles": [],
-  "sequence_id": 12.0,
+  "sequence_id": 17.0,
   "shortcuts": [
    {
     "color": "Orange",
@@ -3808,7 +3808,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2023-03-30 22:51:21.593682",
+  "modified": "2025-01-10 19:53:21.183177",
   "module": "HR",
   "name": "Performance",
   "number_cards": [],
@@ -3817,7 +3817,7 @@
   "quick_lists": [],
   "restrict_to_domain": null,
   "roles": [],
-  "sequence_id": 7.0,
+  "sequence_id": 14.0,
   "shortcuts": [
    {
     "color": "Orange",
@@ -4342,7 +4342,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2024-08-11 11:40:45.636550",
+  "modified": "2025-01-10 19:53:21.465168",
   "module": "HR",
   "name": "Expense Claims",
   "number_cards": [],
@@ -4351,7 +4351,7 @@
   "quick_lists": [],
   "restrict_to_domain": null,
   "roles": [],
-  "sequence_id": 8.0,
+  "sequence_id": 16.0,
   "shortcuts": [
    {
     "color": "Grey",
@@ -5084,7 +5084,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2024-08-11 11:45:37.351654",
+  "modified": "2025-01-10 19:53:22.713360",
   "module": "Payroll",
   "name": "Salary Payout",
   "number_cards": [],
@@ -5093,7 +5093,7 @@
   "quick_lists": [],
   "restrict_to_domain": null,
   "roles": [],
-  "sequence_id": 10.0,
+  "sequence_id": 25.0,
   "shortcuts": [
    {
     "color": "Red",
@@ -5394,7 +5394,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2022-09-16 11:48:54.314522",
+  "modified": "2025-01-10 19:53:22.879825",
   "module": "Payroll",
   "name": "Tax & Benefits",
   "number_cards": [],
@@ -5403,7 +5403,7 @@
   "quick_lists": [],
   "restrict_to_domain": null,
   "roles": [],
-  "sequence_id": 38.0,
+  "sequence_id": 26.0,
   "shortcuts": [
    {
     "color": "Red",
@@ -5848,7 +5848,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2023-05-24 14:47:18.765388",
+  "modified": "2025-01-10 19:53:18.581909",
   "module": "Setup",
   "name": "Home",
   "number_cards": [],
@@ -5952,7 +5952,7 @@
     "parenttype": "Workspace"
    }
   ],
-  "content": "[{\"id\":\"Cj2TyhgiWy\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Territory Wise Sales\",\"col\":12}},{\"id\":\"LAKRmpYMRA\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"XGIwEUStw_\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"id\":\"69RN0XsiJK\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Lead\",\"col\":3}},{\"id\":\"t6PQ0vY-Iw\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Opportunity\",\"col\":3}},{\"id\":\"VOFE0hqXRD\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer\",\"col\":3}},{\"id\":\"0ik53fuemG\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Analytics\",\"col\":3}},{\"id\":\"wdROEmB_XG\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"id\":\"AA6RdI8orJ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Quotes\",\"col\":3}},{\"id\":\"ngeADLy5NX\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Feasibility\",\"col\":3}},{\"id\":\"afIHPj7HvQ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Order\",\"col\":3}},{\"id\":\"cR7GeQltWD\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Site\",\"col\":3}},{\"id\":\"-I9HhcgUKE\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"ttpROKW9vk\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"-76QPdbBHy\",\"type\":\"card\",\"data\":{\"card_name\":\"Sales Pipeline\",\"col\":4}},{\"id\":\"_YmGwzVWRr\",\"type\":\"card\",\"data\":{\"card_name\":\"Masters\",\"col\":4}},{\"id\":\"Bma1PxoXk3\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"id\":\"80viA0R83a\",\"type\":\"card\",\"data\":{\"card_name\":\"Campaign\",\"col\":4}},{\"id\":\"Buo5HtKRFN\",\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}},{\"id\":\"sLS_x4FMK2\",\"type\":\"card\",\"data\":{\"card_name\":\"Maintenance\",\"col\":4}}]",
+  "content": "[{\"id\":\"Cj2TyhgiWy\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Territory Wise Sales\",\"col\":12}},{\"id\":\"LAKRmpYMRA\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"XGIwEUStw_\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"id\":\"69RN0XsiJK\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Lead\",\"col\":3}},{\"id\":\"t6PQ0vY-Iw\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Opportunity\",\"col\":3}},{\"id\":\"VOFE0hqXRD\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer\",\"col\":3}},{\"id\":\"0ik53fuemG\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Analytics\",\"col\":3}},{\"id\":\"wdROEmB_XG\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"id\":\"AA6RdI8orJ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Quotes\",\"col\":3}},{\"id\":\"ngeADLy5NX\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Feasibility\",\"col\":3}},{\"id\":\"afIHPj7HvQ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Order\",\"col\":3}},{\"id\":\"cR7GeQltWD\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Site\",\"col\":3}},{\"id\":\"-I9HhcgUKE\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"ttpROKW9vk\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"-76QPdbBHy\",\"type\":\"card\",\"data\":{\"card_name\":\"Sales Pipeline\",\"col\":4}},{\"id\":\"QYqej5YaKt\",\"type\":\"card\",\"data\":{\"card_name\":\"CRM\",\"col\":4}},{\"id\":\"xxuaVZE0g-\",\"type\":\"card\",\"data\":{\"card_name\":\"Site Activity\",\"col\":4}},{\"id\":\"_YmGwzVWRr\",\"type\":\"card\",\"data\":{\"card_name\":\"Masters\",\"col\":4}},{\"id\":\"Bma1PxoXk3\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"id\":\"80viA0R83a\",\"type\":\"card\",\"data\":{\"card_name\":\"Campaign\",\"col\":4}},{\"id\":\"Buo5HtKRFN\",\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}},{\"id\":\"sLS_x4FMK2\",\"type\":\"card\",\"data\":{\"card_name\":\"Maintenance\",\"col\":4}}]",
   "custom_blocks": [],
   "docstatus": 0,
   "doctype": "Workspace",
@@ -6206,150 +6206,6 @@
     "label": "Warranty Claim",
     "link_count": 0,
     "link_to": "Warranty Claim",
-    "link_type": "DocType",
-    "onboard": 0,
-    "only_for": null,
-    "parent": "CRM",
-    "parentfield": "links",
-    "parenttype": "Workspace",
-    "report_ref_doctype": null,
-    "type": "Link"
-   },
-   {
-    "dependencies": null,
-    "description": null,
-    "hidden": 0,
-    "icon": null,
-    "is_query_report": 0,
-    "label": "Masters",
-    "link_count": 7,
-    "link_to": null,
-    "link_type": null,
-    "onboard": 0,
-    "only_for": null,
-    "parent": "CRM",
-    "parentfield": "links",
-    "parenttype": "Workspace",
-    "report_ref_doctype": null,
-    "type": "Card Break"
-   },
-   {
-    "dependencies": null,
-    "description": null,
-    "hidden": 0,
-    "icon": null,
-    "is_query_report": 0,
-    "label": "Territory",
-    "link_count": 0,
-    "link_to": "Territory",
-    "link_type": "DocType",
-    "onboard": 0,
-    "only_for": null,
-    "parent": "CRM",
-    "parentfield": "links",
-    "parenttype": "Workspace",
-    "report_ref_doctype": null,
-    "type": "Link"
-   },
-   {
-    "dependencies": null,
-    "description": null,
-    "hidden": 0,
-    "icon": null,
-    "is_query_report": 0,
-    "label": "Customer Group",
-    "link_count": 0,
-    "link_to": "Customer Group",
-    "link_type": "DocType",
-    "onboard": 0,
-    "only_for": null,
-    "parent": "CRM",
-    "parentfield": "links",
-    "parenttype": "Workspace",
-    "report_ref_doctype": null,
-    "type": "Link"
-   },
-   {
-    "dependencies": null,
-    "description": null,
-    "hidden": 0,
-    "icon": null,
-    "is_query_report": 0,
-    "label": "Contact",
-    "link_count": 0,
-    "link_to": "Contact",
-    "link_type": "DocType",
-    "onboard": 0,
-    "only_for": null,
-    "parent": "CRM",
-    "parentfield": "links",
-    "parenttype": "Workspace",
-    "report_ref_doctype": null,
-    "type": "Link"
-   },
-   {
-    "dependencies": null,
-    "description": null,
-    "hidden": 0,
-    "icon": null,
-    "is_query_report": 0,
-    "label": "Prospect",
-    "link_count": 0,
-    "link_to": "Prospect",
-    "link_type": "DocType",
-    "onboard": 0,
-    "only_for": null,
-    "parent": "CRM",
-    "parentfield": "links",
-    "parenttype": "Workspace",
-    "report_ref_doctype": null,
-    "type": "Link"
-   },
-   {
-    "dependencies": null,
-    "description": null,
-    "hidden": 0,
-    "icon": null,
-    "is_query_report": 0,
-    "label": "Sales Person",
-    "link_count": 0,
-    "link_to": "Sales Person",
-    "link_type": "DocType",
-    "onboard": 0,
-    "only_for": null,
-    "parent": "CRM",
-    "parentfield": "links",
-    "parenttype": "Workspace",
-    "report_ref_doctype": null,
-    "type": "Link"
-   },
-   {
-    "dependencies": null,
-    "description": null,
-    "hidden": 0,
-    "icon": null,
-    "is_query_report": 0,
-    "label": "Sales Stage",
-    "link_count": 0,
-    "link_to": "Sales Stage",
-    "link_type": "DocType",
-    "onboard": 0,
-    "only_for": null,
-    "parent": "CRM",
-    "parentfield": "links",
-    "parenttype": "Workspace",
-    "report_ref_doctype": null,
-    "type": "Link"
-   },
-   {
-    "dependencies": null,
-    "description": null,
-    "hidden": 0,
-    "icon": null,
-    "is_query_report": 0,
-    "label": "Lead Source",
-    "link_count": 0,
-    "link_to": "Lead Source",
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
@@ -6664,18 +6520,396 @@
     "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "CRM",
+    "link_count": 7,
+    "link_to": null,
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Card Break"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Lead",
+    "link_count": 0,
+    "link_to": "Lead",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Customer",
+    "link_count": 0,
+    "link_to": "Customer",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Deal",
+    "link_count": 0,
+    "link_to": "Opportunity",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Contact",
+    "link_count": 0,
+    "link_to": "Contact",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Quotes",
+    "link_count": 0,
+    "link_to": "Quotation",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "CCR",
+    "link_count": 0,
+    "link_to": "CCR",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Comment",
+    "link_count": 0,
+    "link_to": "Comment",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Site Activity",
+    "link_count": 5,
+    "link_to": null,
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Card Break"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Site",
+    "link_count": 0,
+    "link_to": "Site",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Feasibility",
+    "link_count": 0,
+    "link_to": "Feasibility",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Contract",
+    "link_count": 0,
+    "link_to": "Contract",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Appointment",
+    "link_count": 0,
+    "link_to": "Appointment",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Sales Partner",
+    "link_count": 0,
+    "link_to": "Sales Partner",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Masters",
+    "link_count": 6,
+    "link_to": null,
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Card Break"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Territory",
+    "link_count": 0,
+    "link_to": "Territory",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Customer Group",
+    "link_count": 0,
+    "link_to": "Customer Group",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Contact",
+    "link_count": 0,
+    "link_to": "Contact",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Sales Person",
+    "link_count": 0,
+    "link_to": "Sales Person",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Sales Stage",
+    "link_count": 0,
+    "link_to": "Sales Stage",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Lead Source",
+    "link_count": 0,
+    "link_to": "Lead Source",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "CRM",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
    }
   ],
-  "modified": "2025-01-08 01:12:41.663833",
-  "module": "CRM",
+  "modified": "2025-01-10 19:53:23.925989",
+  "module": "Nexapp",
   "name": "CRM",
   "number_cards": [],
-  "parent_page": "",
+  "parent_page": "CRM Dashboard",
   "public": 1,
   "quick_lists": [],
   "restrict_to_domain": "",
   "roles": [],
-  "sequence_id": 17.0,
+  "sequence_id": 33.0,
   "shortcuts": [
    {
     "color": "Blue",
@@ -7872,8 +8106,8 @@
     "type": "Link"
    }
   ],
-  "modified": "2023-07-04 14:35:58.204465",
-  "module": "Selling",
+  "modified": "2025-01-10 19:53:20.429984",
+  "module": "Nexapp",
   "name": "Selling",
   "number_cards": [],
   "parent_page": "",
@@ -7881,7 +8115,7 @@
   "quick_lists": [],
   "restrict_to_domain": "",
   "roles": [],
-  "sequence_id": 6.0,
+  "sequence_id": 10.0,
   "shortcuts": [
    {
     "color": "Grey",
@@ -8850,7 +9084,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2023-07-04 14:43:30.387683",
+  "modified": "2025-01-10 19:53:19.650019",
   "module": "Buying",
   "name": "Buying",
   "number_cards": [],
@@ -8859,7 +9093,7 @@
   "quick_lists": [],
   "restrict_to_domain": "",
   "roles": [],
-  "sequence_id": 5.0,
+  "sequence_id": 7.0,
   "shortcuts": [
    {
     "color": "Green",
@@ -9368,7 +9602,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2023-05-24 14:47:23.879036",
+  "modified": "2025-01-10 19:53:22.475493",
   "module": "Website",
   "name": "Website",
   "number_cards": [],
@@ -9377,7 +9611,7 @@
   "quick_lists": [],
   "restrict_to_domain": "",
   "roles": [],
-  "sequence_id": 14.0,
+  "sequence_id": 23.0,
   "shortcuts": [
    {
     "color": "Green",
@@ -10034,7 +10268,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2024-01-02 15:47:12.939478",
+  "modified": "2025-01-10 19:53:23.001962",
   "module": "Automation",
   "name": "Tools",
   "number_cards": [],
@@ -10043,7 +10277,7 @@
   "quick_lists": [],
   "restrict_to_domain": "",
   "roles": [],
-  "sequence_id": 17.0,
+  "sequence_id": 27.0,
   "shortcuts": [
    {
     "color": "Grey",
@@ -10378,7 +10612,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2024-01-02 15:39:13.811700",
+  "modified": "2025-01-10 19:53:22.351199",
   "module": "Core",
   "name": "Users",
   "number_cards": [],
@@ -10387,7 +10621,7 @@
   "quick_lists": [],
   "restrict_to_domain": "",
   "roles": [],
-  "sequence_id": 13.0,
+  "sequence_id": 22.0,
   "shortcuts": [
    {
     "color": null,
@@ -10846,7 +11080,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2024-02-28 10:47:38.188832",
+  "modified": "2025-01-10 19:53:23.381210",
   "module": "Integrations",
   "name": "Integrations",
   "number_cards": [],
@@ -10855,7 +11089,7 @@
   "quick_lists": [],
   "restrict_to_domain": "",
   "roles": [],
-  "sequence_id": 20.0,
+  "sequence_id": 29.0,
   "shortcuts": [],
   "title": "Integrations"
  },
@@ -11853,7 +12087,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2024-01-18 22:15:40.941711",
+  "modified": "2025-01-10 19:53:18.779664",
   "module": "Accounts",
   "name": "Accounting",
   "number_cards": [
@@ -13338,7 +13572,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2023-07-04 14:38:14.988756",
+  "modified": "2025-01-10 19:53:19.949503",
   "module": "Stock",
   "name": "Stock",
   "number_cards": [
@@ -13369,7 +13603,7 @@
   "quick_lists": [],
   "restrict_to_domain": "",
   "roles": [],
-  "sequence_id": 7.0,
+  "sequence_id": 8.0,
   "shortcuts": [
    {
     "color": "Green",
@@ -13846,7 +14080,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2024-01-05 17:40:34.570041",
+  "modified": "2025-01-10 19:53:20.254222",
   "module": "Assets",
   "name": "Assets",
   "number_cards": [],
@@ -13855,7 +14089,7 @@
   "quick_lists": [],
   "restrict_to_domain": "",
   "roles": [],
-  "sequence_id": 7.0,
+  "sequence_id": 9.0,
   "shortcuts": [
    {
     "color": null,
@@ -14252,7 +14486,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2023-07-04 14:39:08.935853",
+  "modified": "2025-01-10 19:53:22.066981",
   "module": "Projects",
   "name": "Projects",
   "number_cards": [],
@@ -14261,7 +14495,7 @@
   "quick_lists": [],
   "restrict_to_domain": "",
   "roles": [],
-  "sequence_id": 11.0,
+  "sequence_id": 20.0,
   "shortcuts": [
    {
     "color": "Grey",
@@ -14364,7 +14598,7 @@
  },
  {
   "charts": [],
-  "content": "[{\"id\":\"qzP2mZrGOu\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"id\":\"Fkdjo6bJ7A\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Issue\",\"col\":3}},{\"id\":\"OTS8kx2f3x\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Maintenance Visit\",\"col\":3}},{\"id\":\"smDTSjBR3Z\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Service Level Agreement\",\"col\":3}},{\"id\":\"WCqL_gBYGU\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"oxhWhXp9b2\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"Ff8Ab3nLLN\",\"type\":\"card\",\"data\":{\"card_name\":\"Issues\",\"col\":4}},{\"id\":\"_lndiuJTVP\",\"type\":\"card\",\"data\":{\"card_name\":\"Maintenance\",\"col\":4}},{\"id\":\"R_aNO5ESzJ\",\"type\":\"card\",\"data\":{\"card_name\":\"Service Level Agreement\",\"col\":4}},{\"id\":\"N8aA2afWfi\",\"type\":\"card\",\"data\":{\"card_name\":\"Warranty\",\"col\":4}},{\"id\":\"M5fxGuFwUR\",\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}},{\"id\":\"xKH0kO9q4P\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
+  "content": "[{\"id\":\"qzP2mZrGOu\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"id\":\"Fkdjo6bJ7A\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Issue\",\"col\":3}},{\"id\":\"OTS8kx2f3x\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Maintenance Visit\",\"col\":3}},{\"id\":\"smDTSjBR3Z\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Service Level Agreement\",\"col\":3}},{\"id\":\"WCqL_gBYGU\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"oxhWhXp9b2\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"Ff8Ab3nLLN\",\"type\":\"card\",\"data\":{\"card_name\":\"Ticket Category\",\"col\":4}},{\"id\":\"_lndiuJTVP\",\"type\":\"card\",\"data\":{\"card_name\":\"Maintenance\",\"col\":4}},{\"id\":\"R_aNO5ESzJ\",\"type\":\"card\",\"data\":{\"card_name\":\"Service Level Agreement\",\"col\":4}},{\"id\":\"N8aA2afWfi\",\"type\":\"card\",\"data\":{\"card_name\":\"Warranty\",\"col\":4}},{\"id\":\"M5fxGuFwUR\",\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}},{\"id\":\"xKH0kO9q4P\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"id\":\"AjI9UVEigo\",\"type\":\"card\",\"data\":{\"card_name\":\"Helpdesk Module\",\"col\":4}}]",
   "custom_blocks": [],
   "docstatus": 0,
   "doctype": "Workspace",
@@ -14375,24 +14609,6 @@
   "is_hidden": 0,
   "label": "Support",
   "links": [
-   {
-    "dependencies": null,
-    "description": null,
-    "hidden": 0,
-    "icon": null,
-    "is_query_report": 0,
-    "label": "Issues",
-    "link_count": 0,
-    "link_to": null,
-    "link_type": null,
-    "onboard": 0,
-    "only_for": null,
-    "parent": "Support",
-    "parentfield": "links",
-    "parenttype": "Workspace",
-    "report_ref_doctype": null,
-    "type": "Card Break"
-   },
    {
     "dependencies": "",
     "description": null,
@@ -14507,42 +14723,6 @@
     "hidden": 0,
     "icon": null,
     "is_query_report": 0,
-    "label": "Service Level Agreement",
-    "link_count": 0,
-    "link_to": null,
-    "link_type": null,
-    "onboard": 0,
-    "only_for": null,
-    "parent": "Support",
-    "parentfield": "links",
-    "parenttype": "Workspace",
-    "report_ref_doctype": null,
-    "type": "Card Break"
-   },
-   {
-    "dependencies": "",
-    "description": null,
-    "hidden": 0,
-    "icon": null,
-    "is_query_report": 0,
-    "label": "Service Level Agreement",
-    "link_count": 0,
-    "link_to": "Service Level Agreement",
-    "link_type": "DocType",
-    "onboard": 0,
-    "only_for": null,
-    "parent": "Support",
-    "parentfield": "links",
-    "parenttype": "Workspace",
-    "report_ref_doctype": null,
-    "type": "Link"
-   },
-   {
-    "dependencies": null,
-    "description": null,
-    "hidden": 0,
-    "icon": null,
-    "is_query_report": 0,
     "label": "Warranty",
     "link_count": 0,
     "link_to": null,
@@ -14597,10 +14777,118 @@
     "hidden": 0,
     "icon": null,
     "is_query_report": 0,
-    "label": "Settings",
+    "label": "Reports",
     "link_count": 0,
     "link_to": null,
     "link_type": null,
+    "onboard": 0,
+    "only_for": null,
+    "parent": "Support",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Card Break"
+   },
+   {
+    "dependencies": "Issue",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 1,
+    "label": "First Response Time for Issues",
+    "link_count": 0,
+    "link_to": "First Response Time for Issues",
+    "link_type": "Report",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "Support",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Service Level Agreement",
+    "link_count": 3,
+    "link_to": null,
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "Support",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Card Break"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Service Level Agreement",
+    "link_count": 0,
+    "link_to": "Service Level Agreement",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "Support",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Help Category",
+    "link_count": 0,
+    "link_to": "Help Category",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "Support",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Help Article",
+    "link_count": 0,
+    "link_to": "Help Article",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "Support",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Settings",
+    "link_count": 2,
+    "link_to": null,
+    "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
     "parent": "Support",
@@ -14633,10 +14921,28 @@
     "hidden": 0,
     "icon": null,
     "is_query_report": 0,
-    "label": "Reports",
+    "label": "Portal Settings",
     "link_count": 0,
+    "link_to": "Portal Settings",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "Support",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Ticket Category",
+    "link_count": 4,
     "link_to": null,
-    "link_type": null,
+    "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
     "parent": "Support",
@@ -14646,15 +14952,159 @@
     "type": "Card Break"
    },
    {
-    "dependencies": "Issue",
+    "dependencies": "",
     "description": null,
     "hidden": 0,
     "icon": null,
-    "is_query_report": 1,
-    "label": "First Response Time for Issues",
+    "is_query_report": 0,
+    "label": "Ticket Type",
     "link_count": 0,
-    "link_to": "First Response Time for Issues",
-    "link_type": "Report",
+    "link_to": "Issue Type",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "Support",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": "",
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Ticket Priority",
+    "link_count": 0,
+    "link_to": "Issue Priority",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "Support",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Ticket Category",
+    "link_count": 0,
+    "link_to": "Ticket Category",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "Support",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Ticket Sub Category",
+    "link_count": 0,
+    "link_to": "Ticket Sub Category",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "Support",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Helpdesk Module",
+    "link_count": 4,
+    "link_to": null,
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "Support",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Card Break"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Ticket",
+    "link_count": 0,
+    "link_to": "Issue",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "Support",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Customer",
+    "link_count": 0,
+    "link_to": "Customer",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "Support",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Circuit ID",
+    "link_count": 0,
+    "link_to": "Circuit",
+    "link_type": "DocType",
+    "onboard": 0,
+    "only_for": null,
+    "parent": "Support",
+    "parentfield": "links",
+    "parenttype": "Workspace",
+    "report_ref_doctype": null,
+    "type": "Link"
+   },
+   {
+    "dependencies": null,
+    "description": null,
+    "hidden": 0,
+    "icon": null,
+    "is_query_report": 0,
+    "label": "Change Management",
+    "link_count": 0,
+    "link_to": "Change Management",
+    "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
     "parent": "Support",
@@ -14664,7 +15114,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2023-05-24 14:47:23.408966",
+  "modified": "2025-01-10 19:53:22.204970",
   "module": "Support",
   "name": "Support",
   "number_cards": [],
@@ -14673,7 +15123,7 @@
   "quick_lists": [],
   "restrict_to_domain": "",
   "roles": [],
-  "sequence_id": 12.0,
+  "sequence_id": 21.0,
   "shortcuts": [
    {
     "color": "Yellow",
@@ -14974,7 +15424,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2023-05-24 14:47:22.597974",
+  "modified": "2025-01-10 19:53:21.946682",
   "module": "Quality Management",
   "name": "Quality",
   "number_cards": [],
@@ -14983,7 +15433,7 @@
   "quick_lists": [],
   "restrict_to_domain": "",
   "roles": [],
-  "sequence_id": 9.0,
+  "sequence_id": 19.0,
   "shortcuts": [
    {
     "color": "Grey",
@@ -15620,7 +16070,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2024-10-21 14:13:38.777556",
+  "modified": "2025-01-10 19:53:21.770498",
   "module": "Manufacturing",
   "name": "Manufacturing",
   "number_cards": [],
@@ -15629,7 +16079,7 @@
   "quick_lists": [],
   "restrict_to_domain": "",
   "roles": [],
-  "sequence_id": 8.0,
+  "sequence_id": 18.0,
   "shortcuts": [
    {
     "color": "Grey",
@@ -16204,7 +16654,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2023-08-29 15:48:59.010704",
+  "modified": "2025-01-10 19:53:23.499740",
   "module": "ERPNext Integrations",
   "name": "ERPNext Integrations",
   "number_cards": [],
@@ -16213,7 +16663,7 @@
   "quick_lists": [],
   "restrict_to_domain": "",
   "roles": [],
-  "sequence_id": 21.0,
+  "sequence_id": 30.0,
   "shortcuts": [
    {
     "color": "Grey",
@@ -16986,7 +17436,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2023-05-24 14:47:25.356531",
+  "modified": "2025-01-10 19:53:23.187903",
   "module": "Setup",
   "name": "ERPNext Settings",
   "number_cards": [],
@@ -16995,7 +17445,7 @@
   "quick_lists": [],
   "restrict_to_domain": "",
   "roles": [],
-  "sequence_id": 19.0,
+  "sequence_id": 28.0,
   "shortcuts": [
    {
     "color": "Grey",
@@ -17396,7 +17846,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2024-01-18 22:09:46.221549",
+  "modified": "2025-01-10 19:53:19.040822",
   "module": "Accounts",
   "name": "Payables",
   "number_cards": [],
@@ -17812,7 +18262,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2024-01-18 22:11:51.474477",
+  "modified": "2025-01-10 19:53:19.335710",
   "module": "Accounts",
   "name": "Receivables",
   "number_cards": [],
@@ -17821,7 +18271,7 @@
   "quick_lists": [],
   "restrict_to_domain": "",
   "roles": [],
-  "sequence_id": 4.0,
+  "sequence_id": 5.0,
   "shortcuts": [
    {
     "color": "Grey",
@@ -18350,7 +18800,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2024-01-18 22:13:07.596844",
+  "modified": "2025-01-10 19:53:19.472758",
   "module": "Accounts",
   "name": "Financial Reports",
   "number_cards": [],
@@ -18359,7 +18809,7 @@
   "quick_lists": [],
   "restrict_to_domain": "",
   "roles": [],
-  "sequence_id": 5.0,
+  "sequence_id": 6.0,
   "shortcuts": [],
   "title": "Financial Reports"
  },
@@ -18917,7 +19367,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2024-01-24 12:27:44.769958",
+  "modified": "2025-01-10 19:53:23.647251",
   "module": "Core",
   "name": "Build",
   "number_cards": [],
@@ -18926,7 +19376,7 @@
   "quick_lists": [],
   "restrict_to_domain": "",
   "roles": [],
-  "sequence_id": 27.0,
+  "sequence_id": 31.0,
   "shortcuts": [
    {
     "color": "Grey",
@@ -19068,5 +19518,61 @@
   "sequence_id": 22.0,
   "shortcuts": [],
   "title": "Welcome Workspace"
+ },
+ {
+  "charts": [
+   {
+    "chart_name": "Item-wise Annual Sales",
+    "label": "Item-wise Annual Sales",
+    "parent": "CRM Dashboard",
+    "parentfield": "charts",
+    "parenttype": "Workspace"
+   },
+   {
+    "chart_name": "Sales Order Trends",
+    "label": "Sales Order Trends",
+    "parent": "CRM Dashboard",
+    "parentfield": "charts",
+    "parenttype": "Workspace"
+   },
+   {
+    "chart_name": "Sales Order Analysis",
+    "label": "Sales Order Analysis",
+    "parent": "CRM Dashboard",
+    "parentfield": "charts",
+    "parenttype": "Workspace"
+   }
+  ],
+  "content": "[{\"id\":\"56KdsAsmEZ\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Nexapp Sales\",\"col\":12}},{\"id\":\"JOGCf8KTOn\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Sales Order Trends\",\"col\":12}},{\"id\":\"mXtrWiD01K\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Item-wise Annual Sales\",\"col\":6}},{\"id\":\"MfAEGixR9N\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Sales Order Analysis\",\"col\":6}}]",
+  "custom_blocks": [
+   {
+    "custom_block_name": "Nexapp Sales",
+    "label": "Nexapp Sales",
+    "parent": "CRM Dashboard",
+    "parentfield": "custom_blocks",
+    "parenttype": "Workspace"
+   }
+  ],
+  "docstatus": 0,
+  "doctype": "Workspace",
+  "for_user": "",
+  "hide_custom": 0,
+  "icon": "dashboard-list",
+  "indicator_color": "",
+  "is_hidden": 0,
+  "label": "CRM Dashboard",
+  "links": [],
+  "modified": "2025-01-10 19:53:23.805292",
+  "module": "Nexapp",
+  "name": "CRM Dashboard",
+  "number_cards": [],
+  "parent_page": "",
+  "public": 1,
+  "quick_lists": [],
+  "restrict_to_domain": null,
+  "roles": [],
+  "sequence_id": 32.0,
+  "shortcuts": [],
+  "title": "CRM Dashboard"
  }
 ]

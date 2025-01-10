@@ -1,0 +1,130 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "CCR-.#####",
+ "creation": "2025-01-10 10:24:04.796318",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "meeting",
+  "customer_name",
+  "start_date_and_time",
+  "contact",
+  "transport_type",
+  "column_break_jjiq",
+  "ccr_owner",
+  "customer_type",
+  "end_date_and_time",
+  "other_travellers",
+  "opportunity",
+  "section_break_jxcn",
+  "remarks_and_description"
+ ],
+ "fields": [
+  {
+   "fieldname": "meeting",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Meeting",
+   "options": "\nNew Meeting\nFollow-up Meeting",
+   "reqd": 1
+  },
+  {
+   "default": "__user",
+   "fieldname": "ccr_owner",
+   "fieldtype": "Link",
+   "label": "CCR Owner",
+   "options": "User"
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Link",
+   "label": "Customer Name",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "customer_type",
+   "fieldtype": "Select",
+   "label": "Customer Type ",
+   "options": "\nCustomer\nPartner\nResaler",
+   "reqd": 1
+  },
+  {
+   "fieldname": "start_date_and_time",
+   "fieldtype": "Datetime",
+   "label": "Start Date and Time ",
+   "reqd": 1
+  },
+  {
+   "fieldname": "contact",
+   "fieldtype": "Data",
+   "label": "Contact "
+  },
+  {
+   "fieldname": "opportunity",
+   "fieldtype": "Select",
+   "label": " Opportunity",
+   "options": "\nYes\nNo",
+   "reqd": 1
+  },
+  {
+   "fieldname": "end_date_and_time",
+   "fieldtype": "Datetime",
+   "label": "End Date and Time ",
+   "reqd": 1
+  },
+  {
+   "fieldname": "other_travellers",
+   "fieldtype": "Link",
+   "label": "Other Travellers",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "transport_type",
+   "fieldtype": "Select",
+   "label": "Transport Type ",
+   "options": "\nBike\nCar\nMetro\nTaxi\nAuto",
+   "reqd": 1
+  },
+  {
+   "fieldname": "remarks_and_description",
+   "fieldtype": "Small Text",
+   "label": "Remarks and Description "
+  },
+  {
+   "fieldname": "column_break_jjiq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_jxcn",
+   "fieldtype": "Section Break"
+  }
+ ],
+ "hide_toolbar": 1,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-01-10 11:10:42.074688",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "CCR",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

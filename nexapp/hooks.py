@@ -375,7 +375,8 @@ doctype_js = {
         "public/js/site_map.js",
         "public/js/site_pincode.js"
     ],
-    "Project": "public/js/Project_custom_ui.js"    
+    "Project": "public/js/Project_custom_ui.js",
+    "CCR": "public/js/ccr_custom.js"    
 }
 
 

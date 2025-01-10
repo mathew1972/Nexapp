@@ -1,32 +1,25 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2025-01-08 21:46:34.280542",
+ "creation": "2025-01-10 19:23:19.826480",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "ticket_sub_category",
-  "ticket_category"
+  "name1"
  ],
  "fields": [
   {
-   "fieldname": "ticket_sub_category",
+   "fieldname": "name1",
    "fieldtype": "Data",
-   "label": "Ticket Sub Category"
-  },
-  {
-   "fieldname": "ticket_category",
-   "fieldtype": "Link",
-   "label": "Ticket Category",
-   "options": "Ticket Category"
+   "label": "Name"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-10 19:38:00.765549",
+ "modified": "2025-01-10 19:23:40.732544",
  "modified_by": "Administrator",
  "module": "Nexapp",
- "name": "Ticket Sub Category",
+ "name": "Change Management",
  "owner": "Administrator",
  "permissions": [
   {
