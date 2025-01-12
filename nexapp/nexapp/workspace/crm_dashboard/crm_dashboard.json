@@ -31,7 +31,7 @@
  "is_hidden": 0,
  "label": "CRM Dashboard",
  "links": [],
- "modified": "2025-01-10 19:53:23.805292",
+ "modified": "2025-01-12 23:30:21.667181",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "CRM Dashboard",
@@ -40,7 +40,11 @@
  "parent_page": "",
  "public": 1,
  "quick_lists": [],
- "roles": [],
+ "roles": [
+  {
+   "role": "Nexapp Sales Manager"
+  }
+ ],
  "sequence_id": 32.0,
  "shortcuts": [],
  "title": "CRM Dashboard"

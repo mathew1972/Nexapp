@@ -4369,22 +4369,6 @@
  },
  {
   "default_value": null,
-  "doc_type": "Lead",
-  "docstatus": 0,
-  "doctype": "Property Setter",
-  "doctype_or_field": "DocType",
-  "field_name": null,
-  "is_system_generated": 0,
-  "modified": "2025-01-11 01:06:27.236318",
-  "module": "Nexapp",
-  "name": "Lead-main-field_order",
-  "property": "field_order",
-  "property_type": "Data",
-  "row_name": null,
-  "value": "[\"custom_section_break_vh5ib\", \"lead_owner\", \"first_name\", \"job_title\", \"website\", \"industry\", \"annual_revenue\", \"custom_linkedin_possible_profile__\", \"type\", \"market_segment\", \"custom_interested_for__\", \"qualified_on\", \"column_break_1\", \"salutation\", \"last_name\", \"company_name\", \"email_id\", \"mobile_no\", \"source\", \"no_of_employees\", \"status\", \"territory\", \"qualification_status\", \"qualified_by\", \"custom_section_break_zsnok\", \"custom_column_break_izkpy\", \"column_break_64\", \"whatsapp_no\", \"custom_section_break_ewisf\", \"custom_street__\", \"city\", \"state\", \"custom_column_break_39ixs\", \"custom_pin_code\", \"custom_district\", \"country\", \"contact_info_tab\", \"address_html\", \"custom_column_break_q96mr\", \"contact_html\", \"qualification_tab\", \"custom_column_break_da1im\", \"lead_name\", \"custom_contact\", \"custom_column_break_mdmpb\", \"column_break_38\", \"column_break_31\", \"custom_column_break_lk9ck\", \"phone_ext\", \"address_section\", \"custom_column_break_ayjcf\", \"column_break2\", \"phone\", \"col_break123\", \"custom_column_break_f32sf\", \"fax\", \"request_type\", \"custom_section_break_wfzhp\", \"column_break_28\", \"custom_column_break_rnslj\", \"gender\", \"column_break_20\", \"middle_name\", \"column_break_16\", \"customer\", \"custom_column_break_znlt1\", \"naming_series\", \"custom_column_break_ozjoe\", \"custom_section_break_jr4xm\", \"custom_description\", \"other_info_tab\", \"campaign_name\", \"company\", \"column_break_22\", \"language\", \"image\", \"title\", \"column_break_50\", \"disabled\", \"unsubscribed\", \"blog_subscriber\", \"activities_tab\", \"open_activities_html\", \"all_activities_section\", \"all_activities_html\", \"notes_tab\", \"notes_html\", \"notes\", \"dashboard_tab\"]"
- },
- {
-  "default_value": null,
   "doc_type": "Opportunity",
   "docstatus": 0,
   "doctype": "Property Setter",
@@ -4439,13 +4423,13 @@
   "doctype_or_field": "DocField",
   "field_name": "customer_name",
   "is_system_generated": 0,
-  "modified": "2025-01-11 01:09:35.379766",
+  "modified": "2025-01-12 20:34:04.695771",
   "module": "Nexapp",
   "name": "Opportunity-customer_name-hidden",
   "property": "hidden",
   "property_type": "Check",
   "row_name": null,
-  "value": "0"
+  "value": "1"
  },
  {
   "default_value": null,
@@ -4686,5 +4670,53 @@
   "property_type": "Data",
   "row_name": null,
   "value": "[\"custom_section_break_bj01y\", \"opportunity_owner\", \"job_title\", \"party_name\", \"contact_person\", \"custom_type\", \"source\", \"custom_nos_units_\", \"custom_column_break_wrlr2\", \"status\", \"opportunity_amount\", \"expected_closing\", \"sales_stage\", \"probability\", \"custom_expected_revenue__\", \"custom_lob__\", \"custom_section_break_tkg3q\", \"column_break_54\", \"base_opportunity_amount\", \"contact_email\", \"column_break_17\", \"conversion_rate\", \"contact_mobile\", \"column_break0\", \"currency\", \"website\", \"custom_section_break_lxhvb\", \"custom_pin_code\", \"custom_district\", \"country\", \"whatsapp\", \"column_break_22\", \"city\", \"state\", \"territory\", \"address_contact_section\", \"address_html\", \"customer_address\", \"address_display\", \"column_break3\", \"contact_html\", \"contact_display\", \"section_break_14\", \"phone_ext\", \"organization_details_section\", \"customer_group\", \"column_break_23\", \"annual_revenue\", \"custom_descript\", \"custom_description\", \"custom_section_break_gktqg\", \"naming_series\", \"custom_column_break_d43d8\", \"opportunity_from\", \"column_break_31\", \"column_break_36\", \"column_break_10\", \"more_info\", \"company\", \"campaign\", \"transaction_date\", \"column_break1\", \"language\", \"amended_from\", \"title\", \"first_response_time\", \"lost_detail_section\", \"lost_reasons\", \"order_lost_reason\", \"column_break_56\", \"competitors\", \"contact_info\", \"primary_contact_section\", \"opportunity_type\", \"market_segment\", \"phone\", \"custom_column_break_4jpaw\", \"customer_name\", \"no_of_employees\", \"industry\", \"items_section\", \"items\", \"section_break_32\", \"base_total\", \"column_break_33\", \"total\", \"activities_tab\", \"open_activities_html\", \"all_activities_section\", \"all_activities_html\", \"notes_tab\", \"notes_html\", \"notes\", \"dashboard_tab\"]"
+ },
+ {
+  "default_value": null,
+  "doc_type": "Opportunity",
+  "docstatus": 0,
+  "doctype": "Property Setter",
+  "doctype_or_field": "DocField",
+  "field_name": "currency",
+  "is_system_generated": 0,
+  "modified": "2025-01-12 21:03:31.847539",
+  "module": null,
+  "name": "Opportunity-currency-hidden",
+  "property": "hidden",
+  "property_type": "Check",
+  "row_name": null,
+  "value": "1"
+ },
+ {
+  "default_value": null,
+  "doc_type": "Lead",
+  "docstatus": 0,
+  "doctype": "Property Setter",
+  "doctype_or_field": "DocField",
+  "field_name": "request_type",
+  "is_system_generated": 0,
+  "modified": "2025-01-12 22:58:07.940277",
+  "module": "Nexapp",
+  "name": "Lead-request_type-hidden",
+  "property": "hidden",
+  "property_type": "Check",
+  "row_name": null,
+  "value": "1"
+ },
+ {
+  "default_value": null,
+  "doc_type": "Lead",
+  "docstatus": 0,
+  "doctype": "Property Setter",
+  "doctype_or_field": "DocType",
+  "field_name": null,
+  "is_system_generated": 0,
+  "modified": "2025-01-12 22:24:31.011690",
+  "module": null,
+  "name": "Lead-main-field_order",
+  "property": "field_order",
+  "property_type": "Data",
+  "row_name": null,
+  "value": "[\"custom_section_break_vh5ib\", \"lead_owner\", \"first_name\", \"job_title\", \"website\", \"industry\", \"annual_revenue\", \"custom_linkedin_possible_profile__\", \"type\", \"market_segment\", \"custom_interested_for__\", \"qualified_on\", \"column_break_1\", \"salutation\", \"last_name\", \"company_name\", \"email_id\", \"mobile_no\", \"source\", \"customer\", \"no_of_employees\", \"status\", \"territory\", \"qualification_status\", \"qualified_by\", \"custom_section_break_zsnok\", \"custom_column_break_izkpy\", \"column_break_64\", \"whatsapp_no\", \"custom_section_break_ewisf\", \"custom_street__\", \"city\", \"state\", \"custom_column_break_39ixs\", \"custom_pin_code\", \"custom_district\", \"country\", \"contact_info_tab\", \"address_html\", \"custom_column_break_q96mr\", \"contact_html\", \"qualification_tab\", \"custom_column_break_da1im\", \"lead_name\", \"custom_contact\", \"custom_column_break_mdmpb\", \"column_break_38\", \"column_break_31\", \"custom_column_break_lk9ck\", \"phone_ext\", \"address_section\", \"custom_column_break_ayjcf\", \"column_break2\", \"phone\", \"col_break123\", \"custom_column_break_f32sf\", \"fax\", \"request_type\", \"custom_section_break_wfzhp\", \"column_break_28\", \"custom_column_break_rnslj\", \"gender\", \"column_break_20\", \"middle_name\", \"column_break_16\", \"custom_column_break_znlt1\", \"naming_series\", \"custom_column_break_ozjoe\", \"custom_section_break_jr4xm\", \"custom_description\", \"other_info_tab\", \"campaign_name\", \"company\", \"column_break_22\", \"language\", \"image\", \"title\", \"column_break_50\", \"disabled\", \"unsubscribed\", \"blog_subscriber\", \"activities_tab\", \"open_activities_html\", \"all_activities_section\", \"all_activities_html\", \"notes_tab\", \"notes_html\", \"notes\", \"dashboard_tab\"]"
  }
 ]

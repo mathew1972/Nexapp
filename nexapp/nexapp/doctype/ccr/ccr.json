@@ -104,7 +104,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-10 11:10:42.074688",
+ "modified": "2025-01-12 23:40:08.265884",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "CCR",
@@ -120,6 +120,18 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Nexapp Sales Manager",
    "share": 1,
    "write": 1
   }

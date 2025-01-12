@@ -2,7 +2,7 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "field:product_type",
- "creation": "2024-10-27 01:42:15.505042",
+ "creation": "2025-01-08 21:46:32.469520",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -20,7 +20,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-13 19:12:01.307308",
+ "modified": "2025-01-13 00:01:56.418580",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Product Type",
@@ -79,6 +79,18 @@
    "read": 1,
    "report": 1,
    "role": "Sales User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Nexapp Sales Manager",
    "share": 1,
    "write": 1
   }

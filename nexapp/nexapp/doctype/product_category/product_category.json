@@ -2,7 +2,7 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "field:product_category",
- "creation": "2024-10-27 02:09:12.310514",
+ "creation": "2025-01-08 21:46:32.614933",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -19,7 +19,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-15 19:46:55.617942",
+ "modified": "2025-01-13 00:01:39.696701",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Product Category",
@@ -89,6 +89,18 @@
    "report": 1,
    "role": "Sales User",
    "share": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Nexapp Sales Manager",
+   "share": 1,
+   "write": 1
   }
  ],
  "quick_entry": 1,

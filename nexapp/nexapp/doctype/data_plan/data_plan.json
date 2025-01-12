@@ -2,7 +2,7 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "field:data_plan",
- "creation": "2024-12-05 09:50:37.331332",
+ "creation": "2025-01-08 21:46:34.976389",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -20,7 +20,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-05 09:56:09.305296",
+ "modified": "2025-01-12 23:57:30.640018",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Data Plan",
@@ -108,6 +108,18 @@
    "read": 1,
    "report": 1,
    "role": "Sales Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Nexapp Sales Manager",
    "share": 1,
    "write": 1
   }

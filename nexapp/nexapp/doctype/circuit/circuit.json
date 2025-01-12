@@ -2,7 +2,7 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "field:circuit_id",
- "creation": "2024-11-20 12:40:49.931616",
+ "creation": "2025-01-08 21:46:33.768579",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -25,7 +25,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-20 13:23:42.105713",
+ "modified": "2025-01-13 00:00:52.153000",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Circuit",
@@ -41,6 +41,18 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Nexapp Sales Manager",
    "share": 1,
    "write": 1
   }

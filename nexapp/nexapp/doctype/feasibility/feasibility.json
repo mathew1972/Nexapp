@@ -4,7 +4,7 @@
  "allow_import": 1,
  "allow_rename": 1,
  "autoname": ".#####.",
- "creation": "2024-11-14 18:28:18.484404",
+ "creation": "2025-01-08 21:46:32.959270",
  "default_view": "List",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -66,11 +66,11 @@
   "lms_provider_information_tab",
   "lms_section",
   "lms_provider",
-  "amended_from",
   "billing_information_ta",
   "sales_order",
   "column_break_jitn",
-  "sales_order_date"
+  "sales_order_date",
+  "amended_from"
  ],
  "fields": [
   {
@@ -467,7 +467,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2024-12-25 19:00:51.132973",
+ "modified": "2025-01-12 23:06:55.449446",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",
@@ -548,6 +548,18 @@
    "read": 1,
    "report": 1,
    "role": "Sales Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Nexapp Sales Manager",
    "share": 1,
    "write": 1
   }
