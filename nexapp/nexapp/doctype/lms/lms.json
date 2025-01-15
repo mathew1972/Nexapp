@@ -1,0 +1,163 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-01-15 21:18:48.590080",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "lms_supplier",
+  "bandwith_type",
+  "media",
+  "otc",
+  "static_ip_cost",
+  "billing_terms",
+  "support_mode",
+  "column_break_ctob",
+  "supplier_contact",
+  "lms_bandwith",
+  "static_ip",
+  "mrc",
+  "security_deposit",
+  "billing_mode"
+ ],
+ "fields": [
+  {
+   "fieldname": "lms_supplier",
+   "fieldtype": "Link",
+   "label": "LMS Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "bandwith_type",
+   "fieldtype": "Select",
+   "label": "Bandwith Type",
+   "options": "\nILL\nMBB\n4G\n5G"
+  },
+  {
+   "fieldname": "column_break_ctob",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "lms_supplier.mobile_no",
+   "fieldname": "supplier_contact",
+   "fieldtype": "Data",
+   "label": "Supplier Contact"
+  },
+  {
+   "fieldname": "lms_bandwith",
+   "fieldtype": "Link",
+   "label": "LMS Bandwith",
+   "options": "LMS Plan"
+  },
+  {
+   "fieldname": "media",
+   "fieldtype": "Select",
+   "label": "Media",
+   "options": "\nWired\nRF\n4G\n5G"
+  },
+  {
+   "fieldname": "static_ip",
+   "fieldtype": "Select",
+   "label": "Static IP",
+   "options": "\nAvailable\nNot Available"
+  },
+  {
+   "fieldname": "otc",
+   "fieldtype": "Currency",
+   "label": "OTC"
+  },
+  {
+   "fieldname": "static_ip_cost",
+   "fieldtype": "Currency",
+   "label": "Static IP Cost"
+  },
+  {
+   "fieldname": "mrc",
+   "fieldtype": "Currency",
+   "label": "MRC"
+  },
+  {
+   "fieldname": "billing_terms",
+   "fieldtype": "Select",
+   "label": "Billing Terms",
+   "options": "\nPre-Paid\nPost-Paid"
+  },
+  {
+   "fieldname": "support_mode",
+   "fieldtype": "Select",
+   "label": "Support Mode",
+   "options": "\nEmail\nSupport Potal\nHelpdesk No"
+  },
+  {
+   "fieldname": "security_deposit",
+   "fieldtype": "Currency",
+   "label": "Security Deposit"
+  },
+  {
+   "fieldname": "billing_mode",
+   "fieldtype": "Select",
+   "label": "Billing Mode",
+   "options": "\nMRC\nQRC\nHYRC\nARC"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-01-15 23:56:40.454441",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "LMS",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Nexapp Sales Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
