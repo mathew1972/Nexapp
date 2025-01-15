@@ -15,30 +15,35 @@
   "site_name",
   "customer",
   "customer_request",
-  "phase",
-  "please_rate_the_site",
   "feasibility_completed_date",
   "column_break_zthd",
   "circuit_id",
   "feasibility_status",
-  "feasibility_project_manager",
   "region",
+  "assign_owner",
   "feasibility_remark",
   "reason_for_partial_feasible",
   "reason_for_high_commercials",
   "reason_for_not_feasible",
-  "site_address_tab",
+  "solution_section",
+  "solution",
+  "static_ip",
+  "no_of_static_ip_required",
+  "column_break_jyvg",
+  "primary_data_plan",
+  "secondary_data_plan",
   "site_adress_section",
+  "site_type",
   "street",
   "city",
   "country",
   "longitude",
   "column_break_owdc",
+  "site_id__legal_code",
   "pincode",
   "district",
   "state",
   "latitude",
-  "site_contact_tab",
   "site_contact_section",
   "primary_contact",
   "contact_person",
@@ -53,16 +58,8 @@
   "other_email_id",
   "other_designation",
   "other_department",
-  "solution_requiremnt_tab",
-  "solution_section",
-  "order_type",
-  "primary_data_plan",
-  "lms_plan",
-  "static_ip",
-  "column_break_jyvg",
-  "solution",
-  "secondary_data_plan",
-  "lms_plan_2",
+  "description_information_section",
+  "description",
   "lms_provider_information_tab",
   "lms_section",
   "lms_provider",
@@ -191,20 +188,6 @@
    "reqd": 1
   },
   {
-   "allow_in_quick_entry": 1,
-   "fieldname": "lms_plan",
-   "fieldtype": "Link",
-   "label": "LMS Plan Option - I",
-   "options": "LMS Plan"
-  },
-  {
-   "allow_in_quick_entry": 1,
-   "fieldname": "lms_plan_2",
-   "fieldtype": "Link",
-   "label": "LMS Plan Option - II",
-   "options": "LMS Plan"
-  },
-  {
    "fieldname": "lms_provider",
    "fieldtype": "Table",
    "label": "LMS Provider ",
@@ -224,7 +207,8 @@
   },
   {
    "fieldname": "site_information_section",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Site Information"
   },
   {
    "fieldname": "column_break_vfai",
@@ -261,12 +245,6 @@
    "reqd": 1
   },
   {
-   "fieldname": "phase",
-   "fieldtype": "Select",
-   "label": "Phase",
-   "options": "\nPhase 1\nPhase 2\nPhase 3\nPhase 4\nPhase 5"
-  },
-  {
    "bold": 1,
    "fieldname": "feasibility_completed_date",
    "fieldtype": "Datetime",
@@ -280,22 +258,6 @@
    "in_standard_filter": 1,
    "label": "Region",
    "options": "Territory",
-   "reqd": 1
-  },
-  {
-   "bold": 1,
-   "fetch_if_empty": 1,
-   "fieldname": "feasibility_project_manager",
-   "fieldtype": "Link",
-   "label": "Feasibility Project Manager",
-   "options": "Employee",
-   "reqd": 1
-  },
-  {
-   "fieldname": "order_type",
-   "fieldtype": "Select",
-   "label": "Order Type",
-   "options": "\nService\nShift Address\nUpgrade\nDegrade",
    "reqd": 1
   },
   {
@@ -330,27 +292,12 @@
    "max_height": "80px"
   },
   {
-   "fieldname": "site_address_tab",
-   "fieldtype": "Tab Break",
-   "label": "Site Address"
-  },
-  {
    "fieldname": "column_break_owdc",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "site_contact_tab",
-   "fieldtype": "Tab Break",
-   "label": "Site Contact"
-  },
-  {
    "fieldname": "column_break_sqwp",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "solution_requiremnt_tab",
-   "fieldtype": "Tab Break",
-   "label": "Solution Requiremnt"
   },
   {
    "fieldname": "column_break_jyvg",
@@ -371,11 +318,13 @@
   },
   {
    "fieldname": "solution_section",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Solution Information"
   },
   {
    "fieldname": "site_adress_section",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Adress Information"
   },
   {
    "fieldname": "amended_from",
@@ -427,20 +376,11 @@
    "label": "Site Information"
   },
   {
-   "bold": 1,
-   "depends_on": "eval:doc.feasibility_status==\"High Commercials\" || doc.feasibility_status==\"Feasible\" || doc.feasibility_status==\"Partial Feasible\"\n",
-   "fieldname": "please_rate_the_site",
-   "fieldtype": "Rating",
-   "label": "Please Rate the Site",
-   "mandatory_depends_on": "eval: doc.feasibility_status === \"High Commercials\" || doc.feasibility_status === \"Feasible\" || doc.feasibility_status === \"Partial Feasible\"\n"
-  },
-  {
    "allow_on_submit": 1,
    "fieldname": "sales_order",
    "fieldtype": "Data",
    "label": "Sales Order",
-   "placeholder": "This data will be automatically updated",
-   "read_only": 1
+   "placeholder": "This data will be automatically updated"
   },
   {
    "allow_on_submit": 1,
@@ -459,6 +399,39 @@
    "fieldtype": "Tab Break",
    "label": "Sales Order ",
    "placeholder": "This data will be automatically updated"
+  },
+  {
+   "fieldname": "description_information_section",
+   "fieldtype": "Section Break",
+   "label": "Description Information"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "depends_on": "eval:doc.static_ip==\"Yes\"",
+   "fieldname": "no_of_static_ip_required",
+   "fieldtype": "Data",
+   "label": "No of Static IP Required"
+  },
+  {
+   "fieldname": "site_type",
+   "fieldtype": "Link",
+   "label": "Site Type",
+   "options": "Site Type"
+  },
+  {
+   "fieldname": "site_id__legal_code",
+   "fieldtype": "Data",
+   "label": "Site ID / Legal Code"
+  },
+  {
+   "fieldname": "assign_owner",
+   "fieldtype": "Link",
+   "label": "Assign Owner",
+   "options": "Employee"
   }
  ],
  "icon": "fa fa-file-text",
@@ -467,7 +440,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2025-01-12 23:06:55.449446",
+ "modified": "2025-01-15 17:43:42.505896",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",

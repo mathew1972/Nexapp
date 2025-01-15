@@ -213,3 +213,26 @@ frappe.ui.form.on('Opportunity', {
         }, 500)); // 500 ms debounce
     }
 });
+
+frappe.ui.form.on('Opportunity', {
+    sales_stage: function(frm) {
+        let probability_map = {
+            "Qualification": 10,
+            "Needs Analysis": 20,
+            "Value Proposition": 40,
+            "Identifying Decision Makers": 60,
+            "Proposal/Price Quote": 75,
+            "Negotiation/Review": 90,
+            "Close Won": 100,
+            "Close Drop": 0,
+            "Close Loss to Competition": 0
+        };
+
+        let selected_stage = frm.doc.sales_stage;
+        if (probability_map[selected_stage] !== undefined) {
+            frm.set_value('probability', probability_map[selected_stage]);
+        } else {
+            frm.set_value('probability', 0);
+        }
+    }
+});

@@ -146,7 +146,11 @@ def sales_order_to_site(sales_order):
         site_doc.other_email_id = feasibility_doc.other_email_id
         site_doc.other_designation = feasibility_doc.other_designation
         site_doc.other_department = feasibility_doc.other_department
-        
+
+        site_doc.site_id__legal_code = feasibility_doc.site_id__legal_code
+        site_doc.site_type = feasibility_doc.site_type
+        site_doc.solution = feasibility_doc.solution
+
         # Map the 'region' and 'phase' fields from Feasibility to Site
         site_doc.region = feasibility_doc.region  # Assign region from Feasibility to Site
         site_doc.phase = feasibility_doc.phase  # Assign phase from Feasibility to Site

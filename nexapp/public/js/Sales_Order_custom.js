@@ -36,7 +36,7 @@ frappe.ui.form.on('Sales Order', {
             'represents_company', 'source', 'inter_company_order_reference',
             'campaign', 'party_account_currency', 'connections_tab',
             'ecommerce_gstin', 'custom_customers_po', 'custom_customers__po_date',
-            'custom_customer_purchase_amount'
+            'custom_customer_purchase_amount', 'custom_assign_owner'
         ];
 
         // Apply custom styles and interactions to each field
