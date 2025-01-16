@@ -440,7 +440,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2025-01-15 17:43:42.505896",
+ "modified": "2025-01-16 12:37:35.957147",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",
@@ -484,36 +484,6 @@
    "write": 1
   },
   {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Maintenance User",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Accounts User",
-   "share": 1
-  },
-  {
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Stock User",
-   "share": 1
-  },
-  {
    "email": 1,
    "export": 1,
    "permlevel": 1,
@@ -533,6 +503,18 @@
    "read": 1,
    "report": 1,
    "role": "Nexapp Sales Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "LMS Manager",
    "share": 1,
    "write": 1
   }

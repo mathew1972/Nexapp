@@ -7,7 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "circuit_id",
-  "circuit_company"
+  "customer"
  ],
  "fields": [
   {
@@ -18,14 +18,15 @@
    "unique": 1
   },
   {
-   "fieldname": "circuit_company",
-   "fieldtype": "Data",
-   "label": "Company"
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-13 00:00:52.153000",
+ "modified": "2025-01-16 13:02:52.052375",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Circuit",
@@ -53,6 +54,18 @@
    "read": 1,
    "report": 1,
    "role": "Nexapp Sales Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "LMS Manager",
    "share": 1,
    "write": 1
   }

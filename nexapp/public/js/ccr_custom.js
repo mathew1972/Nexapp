@@ -3,7 +3,7 @@
             const fields = [
                 'meeting', 'customer_name', 'start_date_and_time', 'contact', 'transport_type', 
                 'column_break_jjiq', 'ccr_owner', 'customer_type', 'end_date_and_time', 'other_travellers', 
-                'opportunity', 'section_break_jxcn', 'remarks_and_description'
+                'opportunity', 'section_break_jxcn', 'remarks_and_description', 'circuit_id'
             ];
 
             fields.forEach(function(field) {

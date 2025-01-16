@@ -21,7 +21,7 @@ frappe.ui.form.on('Feasibility', {
             'phase', 'lms_plan_2', 'lms_provider_information_tab', 'lms_section', 
             'lms_provider', 'amended_from', 'billing_information_tab', 
             'sales_order', 'sales_order_date', 'column_break_jitn', 'bill_no', 
-            'bill_date'
+            'bill_date', 'description'
         ];
 
         fields.forEach(function (field) {

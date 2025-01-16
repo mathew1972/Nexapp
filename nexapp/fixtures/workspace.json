@@ -19580,5 +19580,109 @@
   "sequence_id": 32.0,
   "shortcuts": [],
   "title": "CRM Dashboard"
+ },
+ {
+  "charts": [],
+  "content": "[{\"id\":\"qw4eNroHVc\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Nexapp LMS</span>\",\"col\":12}},{\"id\":\"vTGDjzo1Jb\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Feasibility Pending\",\"col\":3}},{\"id\":\"kMLTY-ss60\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Feasibility Feasible\",\"col\":3}},{\"id\":\"73-c4e8Lb5\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Feasibility Partial Feasible\",\"col\":3}},{\"id\":\"9jy9wYlINK\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Feasibility High Commercials\",\"col\":3}},{\"id\":\"-WpuIvmgrc\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"mM5z-UBVU8\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"LMS\",\"col\":3}},{\"id\":\"t70bsBw-Sz\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Feasibility\",\"col\":3}},{\"id\":\"eTO5nPSRJg\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"LMS Supplier\",\"col\":3}}]",
+  "custom_blocks": [],
+  "docstatus": 0,
+  "doctype": "Workspace",
+  "for_user": "",
+  "hide_custom": 0,
+  "icon": "folder-open",
+  "indicator_color": "green",
+  "is_hidden": 0,
+  "label": "Nexapp LMS",
+  "links": [],
+  "modified": "2025-01-16 14:59:49.935703",
+  "module": null,
+  "name": "Nexapp LMS",
+  "number_cards": [
+   {
+    "label": "Feasibility Feasible",
+    "number_card_name": "Feasibility Feasible",
+    "parent": "Nexapp LMS",
+    "parentfield": "number_cards",
+    "parenttype": "Workspace"
+   },
+   {
+    "label": "Feasibility Partial Feasible",
+    "number_card_name": "Feasibility Partial Feasible",
+    "parent": "Nexapp LMS",
+    "parentfield": "number_cards",
+    "parenttype": "Workspace"
+   },
+   {
+    "label": "Feasibility Pending",
+    "number_card_name": "Feasibility  Pending",
+    "parent": "Nexapp LMS",
+    "parentfield": "number_cards",
+    "parenttype": "Workspace"
+   },
+   {
+    "label": "Feasibility High Commercials",
+    "number_card_name": "Feasibility High Commercials",
+    "parent": "Nexapp LMS",
+    "parentfield": "number_cards",
+    "parenttype": "Workspace"
+   }
+  ],
+  "parent_page": "",
+  "public": 1,
+  "quick_lists": [],
+  "restrict_to_domain": null,
+  "roles": [],
+  "sequence_id": 34.0,
+  "shortcuts": [
+   {
+    "color": "Grey",
+    "doc_view": "List",
+    "format": null,
+    "icon": null,
+    "kanban_board": null,
+    "label": "LMS Supplier",
+    "link_to": "Supplier",
+    "parent": "Nexapp LMS",
+    "parentfield": "shortcuts",
+    "parenttype": "Workspace",
+    "restrict_to_domain": null,
+    "stats_filter": "[]",
+    "type": "DocType",
+    "url": null
+   },
+   {
+    "color": "Grey",
+    "doc_view": "List",
+    "format": null,
+    "icon": null,
+    "kanban_board": null,
+    "label": "LMS",
+    "link_to": "LMS",
+    "parent": "Nexapp LMS",
+    "parentfield": "shortcuts",
+    "parenttype": "Workspace",
+    "restrict_to_domain": null,
+    "stats_filter": "[]",
+    "type": "DocType",
+    "url": null
+   },
+   {
+    "color": "Grey",
+    "doc_view": "List",
+    "format": null,
+    "icon": null,
+    "kanban_board": null,
+    "label": "Feasibility",
+    "link_to": "Feasibility",
+    "parent": "Nexapp LMS",
+    "parentfield": "shortcuts",
+    "parenttype": "Workspace",
+    "restrict_to_domain": null,
+    "stats_filter": "[]",
+    "type": "DocType",
+    "url": null
+   }
+  ],
+  "title": "Nexapp LMS"
  }
 ]

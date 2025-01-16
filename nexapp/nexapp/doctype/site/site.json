@@ -103,6 +103,7 @@
    "options": "\nService\nShift Address\nUpgrade\nDegrade"
   },
   {
+   "default": "Paid Customer",
    "fieldname": "customer_type",
    "fieldtype": "Select",
    "label": "Customer Type  ",
@@ -598,7 +599,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-15 17:35:17.045543",
+ "modified": "2025-01-16 16:09:07.867811",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

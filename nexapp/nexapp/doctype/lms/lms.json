@@ -1,10 +1,12 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:circuit_id",
  "creation": "2025-01-15 21:18:48.590080",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "circuit_id",
   "lms_supplier",
   "bandwith_type",
   "media",
@@ -24,12 +26,14 @@
   {
    "fieldname": "lms_supplier",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "LMS Supplier",
    "options": "Supplier"
   },
   {
    "fieldname": "bandwith_type",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Bandwith Type",
    "options": "\nILL\nMBB\n4G\n5G"
   },
@@ -38,9 +42,9 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "lms_supplier.mobile_no",
    "fieldname": "supplier_contact",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Supplier Contact"
   },
   {
@@ -98,14 +102,22 @@
    "fieldtype": "Select",
    "label": "Billing Mode",
    "options": "\nMRC\nQRC\nHYRC\nARC"
+  },
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "label": "Circuit ID",
+   "options": "Circuit",
+   "unique": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-15 23:56:40.454441",
+ "modified": "2025-01-16 11:39:08.837229",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "LMS",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
