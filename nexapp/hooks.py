@@ -283,6 +283,7 @@ fixtures = [
     {"dt": "LMS Plan"},     
     {"dt": "Workspace"},
     {"dt": "Role"},
+    {"dt": "Number Card"},
     {"dt": "Holiday List"}
 ]
 
