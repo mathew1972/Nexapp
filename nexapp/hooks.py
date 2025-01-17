@@ -368,13 +368,13 @@ doctype_js = {
     "Feasibility": [
         "doctype/feasibility/feasibility.js",
         "public/js/feasibility_pincode.js",
-        "public/js/feasibility_map.js"
+        #"public/js/feasibility_map.js"
     ],
     "Site": [
         "doctype/site/site.js",
         "public/js/site_feasibility_button.js",
         "public/js/site_stock.js",
-        "public/js/site_map.js",
+        #"public/js/site_map.js",
         "public/js/site_pincode.js"
     ],
     "Project": "public/js/Project_custom_ui.js",

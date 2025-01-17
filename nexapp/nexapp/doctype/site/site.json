@@ -168,8 +168,7 @@
   {
    "fieldname": "street",
    "fieldtype": "Small Text",
-   "label": "Address/ Street  ",
-   "placeholder": "Enter address to check availability in your area"
+   "label": "Address/ Street  "
   },
   {
    "fieldname": "district",
@@ -599,7 +598,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-16 16:09:07.867811",
+ "modified": "2025-01-16 23:58:28.421369",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

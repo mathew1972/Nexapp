@@ -1,10 +1,11 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2024-11-20 15:41:01.543146",
+ "creation": "2025-01-08 21:46:33.856805",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "circuit_id",
   "lms_supplier",
   "bandwith_type",
   "media",
@@ -22,6 +23,7 @@
  ],
  "fields": [
   {
+   "fetch_from": "circuit_id.lms_supplier",
    "fieldname": "lms_supplier",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -29,6 +31,7 @@
    "options": "Supplier"
   },
   {
+   "fetch_from": "circuit_id.lms_bandwith",
    "fieldname": "lms_bandwith",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -36,6 +39,7 @@
    "options": "LMS Plan"
   },
   {
+   "fetch_from": "circuit_id.bandwith_type",
    "fieldname": "bandwith_type",
    "fieldtype": "Select",
    "in_list_view": 1,
@@ -43,6 +47,7 @@
    "options": "\nILL\nMBB\n4G\n5G"
   },
   {
+   "fetch_from": "circuit_id.media",
    "fieldname": "media",
    "fieldtype": "Select",
    "in_list_view": 1,
@@ -54,61 +59,75 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "lms_supplier.mobile_no",
+   "fetch_from": "circuit_id.supplier_contact",
    "fieldname": "supplier_contact",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Supplier Contact"
   },
   {
+   "fetch_from": "circuit_id.static_ip",
    "fieldname": "static_ip",
    "fieldtype": "Select",
    "label": "Static IP",
    "options": "\nAvailable\nNot Available"
   },
   {
+   "fetch_from": "circuit_id.otc",
    "fieldname": "otc",
    "fieldtype": "Currency",
    "label": "OTC"
   },
   {
+   "fetch_from": "circuit_id.static_ip_cost",
    "fieldname": "static_ip_cost",
    "fieldtype": "Currency",
    "label": "Static IP Cost"
   },
   {
+   "fetch_from": "circuit_id.billing_terms",
    "fieldname": "billing_terms",
    "fieldtype": "Select",
    "label": "Billing Terms",
    "options": "\nPre-Paid\nPost-Paid"
   },
   {
+   "fetch_from": "circuit_id.mrc",
    "fieldname": "mrc",
    "fieldtype": "Currency",
    "label": "MRC"
   },
   {
+   "fetch_from": "circuit_id.security_deposit",
    "fieldname": "security_deposit",
    "fieldtype": "Currency",
    "label": "Security Deposit"
   },
   {
+   "fetch_from": "circuit_id.billing_mode",
    "fieldname": "billing_mode",
    "fieldtype": "Select",
    "label": "Billing Mode",
    "options": "\nMRC\nQRC\nHYRC\nARC"
   },
   {
+   "fetch_from": "circuit_id.support_mode",
    "fieldname": "support_mode",
    "fieldtype": "Select",
    "label": "Support Mode",
    "options": "\nEmail\nSupport Potal\nHelpdesk No"
+  },
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "label": "Circuit ID",
+   "options": "LMS"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-12-06 00:16:28.017449",
+ "modified": "2025-01-16 18:48:07.501092",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "LMS Feasibility",

@@ -19583,8 +19583,16 @@
  },
  {
   "charts": [],
-  "content": "[{\"id\":\"qw4eNroHVc\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Nexapp LMS</span>\",\"col\":12}},{\"id\":\"vTGDjzo1Jb\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Feasibility Pending\",\"col\":3}},{\"id\":\"kMLTY-ss60\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Feasibility Feasible\",\"col\":3}},{\"id\":\"73-c4e8Lb5\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Feasibility Partial Feasible\",\"col\":3}},{\"id\":\"9jy9wYlINK\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Feasibility High Commercials\",\"col\":3}},{\"id\":\"-WpuIvmgrc\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"mM5z-UBVU8\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"LMS\",\"col\":3}},{\"id\":\"t70bsBw-Sz\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Feasibility\",\"col\":3}},{\"id\":\"eTO5nPSRJg\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"LMS Supplier\",\"col\":3}}]",
-  "custom_blocks": [],
+  "content": "[{\"id\":\"SkRWjPYb8W\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"LMS\",\"col\":12}},{\"id\":\"PzISQ-BVfW\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"vTGDjzo1Jb\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Feasibility Pending\",\"col\":3}},{\"id\":\"kMLTY-ss60\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Feasibility Feasible\",\"col\":3}},{\"id\":\"73-c4e8Lb5\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Feasibility Partial Feasible\",\"col\":3}},{\"id\":\"9jy9wYlINK\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Feasibility High Commercials\",\"col\":3}},{\"id\":\"-WpuIvmgrc\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"mM5z-UBVU8\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"LMS\",\"col\":3}},{\"id\":\"t70bsBw-Sz\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Feasibility\",\"col\":3}},{\"id\":\"eTO5nPSRJg\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"LMS Supplier\",\"col\":3}}]",
+  "custom_blocks": [
+   {
+    "custom_block_name": "LMS",
+    "label": "LMS",
+    "parent": "Nexapp LMS",
+    "parentfield": "custom_blocks",
+    "parenttype": "Workspace"
+   }
+  ],
   "docstatus": 0,
   "doctype": "Workspace",
   "for_user": "",
@@ -19594,7 +19602,7 @@
   "is_hidden": 0,
   "label": "Nexapp LMS",
   "links": [],
-  "modified": "2025-01-16 14:59:49.935703",
+  "modified": "2025-01-17 00:12:25.320282",
   "module": null,
   "name": "Nexapp LMS",
   "number_cards": [

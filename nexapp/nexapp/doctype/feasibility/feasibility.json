@@ -97,11 +97,9 @@
    "label": "Longitude"
   },
   {
-   "bold": 1,
    "fieldname": "street",
    "fieldtype": "Small Text",
    "label": "Address/ Street",
-   "placeholder": "Enter address to check availability in your area and give some time to fetch the address.",
    "reqd": 1
   },
   {
@@ -440,7 +438,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2025-01-16 17:41:08.440949",
+ "modified": "2025-01-16 23:22:59.164163",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",
