@@ -10,7 +10,10 @@
   "site_information_tab",
   "section_break_xvmk",
   "column_break_yehx",
+  "provisioning_request",
+  "shipment_request",
   "column_break_lbut",
+  "inventory_request",
   "column_break_pfpp",
   "feasibility_information",
   "feasibility_section",
@@ -602,6 +605,21 @@
    "fieldtype": "Link",
    "label": "DC",
    "options": "Delivery Note"
+  },
+  {
+   "fieldname": "inventory_request",
+   "fieldtype": "Button",
+   "label": "Inventory Request"
+  },
+  {
+   "fieldname": "provisioning_request",
+   "fieldtype": "Button",
+   "label": "Provisioning Request"
+  },
+  {
+   "fieldname": "shipment_request",
+   "fieldtype": "Button",
+   "label": "Shipment Request"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -620,9 +638,24 @@
    "group": "Site Address",
    "link_doctype": "Feasibility",
    "link_fieldname": "circuit_id"
+  },
+  {
+   "group": "Product Assigment",
+   "link_doctype": "Product Assigment",
+   "link_fieldname": "circuit_id"
+  },
+  {
+   "group": "LMS",
+   "link_doctype": "LMS",
+   "link_fieldname": "circuit_id"
+  },
+  {
+   "group": "Delivery Challan",
+   "link_doctype": "Delivery Note",
+   "link_fieldname": "customer"
   }
  ],
- "modified": "2025-01-18 11:11:04.114682",
+ "modified": "2025-01-18 18:49:54.747547",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

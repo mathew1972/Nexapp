@@ -284,6 +284,7 @@ fixtures = [
     {"dt": "Workspace"},
     {"dt": "Role"},
     {"dt": "Number Card"},
+    {"dt": "Item Group"},
     {"dt": "Holiday List"}
 ]
 

@@ -6,8 +6,33 @@
  "engine": "InnoDB",
  "field_order": [
   "circuit_id",
+  "site_name",
+  "solution",
   "column_break_xhdz",
-  "customer"
+  "status",
+  "customer",
+  "section_break_chlm",
+  "router_sno",
+  "anteena_1",
+  "column_break_upfn",
+  "model_no",
+  "anteena_2",
+  "primary_sim_section",
+  "sim_no_1",
+  "moble_no_1",
+  "tariff_plan_1",
+  "column_break_zwvt",
+  "supplier_1",
+  "data_plan_1",
+  "actavation_date_1",
+  "section_break_rzfe",
+  "sim_no_2",
+  "mobile_no_2",
+  "tariff_plan2",
+  "column_break_pptl",
+  "supplier_2",
+  "data_plan_2",
+  "activation_date_1"
  ],
  "fields": [
   {
@@ -21,15 +46,155 @@
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "circuit_id.customer",
    "fieldname": "customer",
    "fieldtype": "Link",
    "label": "Customer",
    "options": "Customer"
+  },
+  {
+   "fieldname": "section_break_chlm",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "router_sno",
+   "fieldtype": "Link",
+   "label": "Router SNo",
+   "link_filters": "[[\"Serial No\",\"item_group\",\"=\",\"Router\"]]",
+   "options": "Serial No"
+  },
+  {
+   "fieldname": "column_break_upfn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "model_no",
+   "fieldtype": "Link",
+   "label": "Model No",
+   "options": "Item"
+  },
+  {
+   "fieldname": "anteena_1",
+   "fieldtype": "Link",
+   "label": "Anteena 1",
+   "options": "Serial No"
+  },
+  {
+   "fieldname": "anteena_2",
+   "fieldtype": "Link",
+   "label": "Anteena 2",
+   "options": "Serial No"
+  },
+  {
+   "fieldname": "primary_sim_section",
+   "fieldtype": "Section Break",
+   "label": "Primary SIM"
+  },
+  {
+   "fieldname": "column_break_zwvt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sim_no_1",
+   "fieldtype": "Link",
+   "label": "SIM No 1",
+   "options": "Serial No"
+  },
+  {
+   "fieldname": "moble_no_1",
+   "fieldtype": "Link",
+   "label": "Moble No 1",
+   "options": "Serial No"
+  },
+  {
+   "fieldname": "tariff_plan_1",
+   "fieldtype": "Currency",
+   "label": "Tariff Plan 1"
+  },
+  {
+   "fieldname": "supplier_1",
+   "fieldtype": "Link",
+   "label": "Supplier 1",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "data_plan_1",
+   "fieldtype": "Link",
+   "label": "Data Plan 1",
+   "options": "Data Plan"
+  },
+  {
+   "fetch_from": "router_sno.custom_activation_date",
+   "fieldname": "actavation_date_1",
+   "fieldtype": "Link",
+   "label": "Activation Date 1",
+   "options": "Serial No"
+  },
+  {
+   "fieldname": "site_name",
+   "fieldtype": "Link",
+   "label": "Site Name",
+   "options": "Site"
+  },
+  {
+   "fieldname": "solution",
+   "fieldtype": "Link",
+   "label": "Solution",
+   "options": "Solution"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nPending\nCompleted"
+  },
+  {
+   "fieldname": "section_break_rzfe",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "sim_no_2",
+   "fieldtype": "Link",
+   "label": "SIM No 2",
+   "options": "Serial No"
+  },
+  {
+   "fieldname": "mobile_no_2",
+   "fieldtype": "Link",
+   "label": "Mobile No 2",
+   "options": "Serial No"
+  },
+  {
+   "fieldname": "tariff_plan2",
+   "fieldtype": "Currency",
+   "label": "Tariff Plan2"
+  },
+  {
+   "fieldname": "column_break_pptl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "supplier_2",
+   "fieldtype": "Link",
+   "label": "Supplier 2",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "data_plan_2",
+   "fieldtype": "Link",
+   "label": "Data Plan 2",
+   "options": "Data Plan"
+  },
+  {
+   "fieldname": "activation_date_1",
+   "fieldtype": "Link",
+   "label": "Activation Date 1",
+   "options": "Serial No"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-17 16:38:03.817080",
+ "modified": "2025-01-18 19:31:08.935299",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Product Assigment",
