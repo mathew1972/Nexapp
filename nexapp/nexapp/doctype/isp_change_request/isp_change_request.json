@@ -1,0 +1,81 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-01-17 16:53:16.543423",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "serial_no",
+  "request_type",
+  "add_new_data_plan",
+  "add_reacharge_amount",
+  "column_break_kzzs",
+  "mobile_no",
+  "add_new_sim_no"
+ ],
+ "fields": [
+  {
+   "fieldname": "serial_no",
+   "fieldtype": "Link",
+   "label": "Serial No",
+   "options": "Serial No"
+  },
+  {
+   "fieldname": "column_break_kzzs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "serial_no.custom_mobile_no",
+   "fieldname": "mobile_no",
+   "fieldtype": "Link",
+   "label": "Mobile No",
+   "options": "Serial No"
+  },
+  {
+   "fieldname": "request_type",
+   "fieldtype": "Select",
+   "label": "Request Type",
+   "options": "\nSIM Change\nData Plan Change\nRecharge"
+  },
+  {
+   "fieldname": "add_new_data_plan",
+   "fieldtype": "Link",
+   "label": "Add New Data Plan",
+   "options": "Data Plan"
+  },
+  {
+   "fieldname": "add_new_sim_no",
+   "fieldtype": "Data",
+   "label": "Add New SIM No"
+  },
+  {
+   "fieldname": "add_reacharge_amount",
+   "fieldtype": "Currency",
+   "label": "Add reacharge amount"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-01-17 17:12:49.970024",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "ISP Change Request",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

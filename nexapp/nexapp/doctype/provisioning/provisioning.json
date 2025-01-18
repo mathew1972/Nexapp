@@ -1,0 +1,345 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-01-17 15:57:12.056174",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "provisioning_information_section",
+  "circuit_id",
+  "status",
+  "site_name",
+  "column_break_lxtj",
+  "customer",
+  "site_type",
+  "ip_information_section",
+  "atm_ip",
+  "branch_natted_ip",
+  "column_break_ipvv",
+  "branch_router_ip",
+  "branch_lane_series",
+  "dc_ip_information_section",
+  "dc_static_ip",
+  "dc_router_ip",
+  "dc_secondary_static_ip",
+  "column_break_rotp",
+  "dc_server_gateway_ip",
+  "dc_server_ip",
+  "dc_server_ip_2",
+  "dr_ip_information_section",
+  "dr_static_ip",
+  "dr_router_ip",
+  "dr_secondary_static_ip",
+  "column_break_gtlz",
+  "dr_server_gateway_ip",
+  "dr_server_ip",
+  "dr_server_ip_2",
+  "wan_ip_info_primary_section",
+  "wan_static_ip_1",
+  "wan_gateway_ip_1",
+  "wan_user_name_1",
+  "wan_password_1",
+  "column_break_lple",
+  "subnet_mask_1",
+  "wan_1_dns",
+  "wan_2_dns",
+  "lms_id_1",
+  "wan_ip_info_secondary_section",
+  "wan_static_ip_2",
+  "wan_gateway_ip_2",
+  "wan_user_name_2",
+  "wan_password_2",
+  "column_break_ejjx",
+  "subnet_mask_2",
+  "wan_dns_1",
+  "wan_dns_2",
+  "lms_id_2",
+  "description_information_section",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "provisioning_information_section",
+   "fieldtype": "Section Break",
+   "label": "Provisioning Information"
+  },
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "label": "Circuit ID",
+   "options": "Site"
+  },
+  {
+   "fieldname": "column_break_lxtj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "default": "Pending",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nPending\nCompleted"
+  },
+  {
+   "fieldname": "ip_information_section",
+   "fieldtype": "Section Break",
+   "label": "Branch IP Information"
+  },
+  {
+   "fieldname": "atm_ip",
+   "fieldtype": "Data",
+   "label": "ATM IP"
+  },
+  {
+   "fieldname": "column_break_ipvv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "branch_router_ip",
+   "fieldtype": "Data",
+   "label": "Branch Router IP"
+  },
+  {
+   "fieldname": "branch_natted_ip",
+   "fieldtype": "Data",
+   "label": "Branch Natted IP"
+  },
+  {
+   "fieldname": "branch_lane_series",
+   "fieldtype": "Data",
+   "label": "Branch Lane Series"
+  },
+  {
+   "fetch_from": "circuit_id.site_name",
+   "fieldname": "site_name",
+   "fieldtype": "Link",
+   "label": "Site Name",
+   "options": "Site"
+  },
+  {
+   "fetch_from": "circuit_id.site_type",
+   "fieldname": "site_type",
+   "fieldtype": "Link",
+   "label": "Site Type",
+   "options": "Site"
+  },
+  {
+   "fieldname": "dc_ip_information_section",
+   "fieldtype": "Section Break",
+   "label": "DC IP Information"
+  },
+  {
+   "fieldname": "dc_static_ip",
+   "fieldtype": "Data",
+   "label": "DC Static IP"
+  },
+  {
+   "fieldname": "dc_router_ip",
+   "fieldtype": "Data",
+   "label": "DC Router IP"
+  },
+  {
+   "fieldname": "dc_secondary_static_ip",
+   "fieldtype": "Data",
+   "label": "DC Secondary Static IP"
+  },
+  {
+   "fieldname": "column_break_rotp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "dc_server_gateway_ip",
+   "fieldtype": "Data",
+   "label": "DC Server Gateway IP"
+  },
+  {
+   "fieldname": "dc_server_ip",
+   "fieldtype": "Data",
+   "label": "DC Server IP"
+  },
+  {
+   "fieldname": "dc_server_ip_2",
+   "fieldtype": "Data",
+   "label": "DC Server IP 2"
+  },
+  {
+   "fieldname": "dr_ip_information_section",
+   "fieldtype": "Section Break",
+   "label": "DR IP Information"
+  },
+  {
+   "fieldname": "dr_static_ip",
+   "fieldtype": "Data",
+   "label": "DR Static IP"
+  },
+  {
+   "fieldname": "dr_router_ip",
+   "fieldtype": "Data",
+   "label": "DR Router IP"
+  },
+  {
+   "fieldname": "dr_secondary_static_ip",
+   "fieldtype": "Data",
+   "label": "DR Secondary Static IP"
+  },
+  {
+   "fieldname": "column_break_gtlz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "dr_server_gateway_ip",
+   "fieldtype": "Data",
+   "label": "DR Server Gateway IP"
+  },
+  {
+   "fieldname": "dr_server_ip",
+   "fieldtype": "Data",
+   "label": "DR Server IP"
+  },
+  {
+   "fieldname": "dr_server_ip_2",
+   "fieldtype": "Data",
+   "label": "DR Server IP 2"
+  },
+  {
+   "fieldname": "wan_ip_info_primary_section",
+   "fieldtype": "Section Break",
+   "label": "WAN IP Info Primary"
+  },
+  {
+   "fieldname": "wan_static_ip_1",
+   "fieldtype": "Data",
+   "label": "WAN Static IP 1"
+  },
+  {
+   "fieldname": "wan_gateway_ip_1",
+   "fieldtype": "Data",
+   "label": "WAN Gateway IP 1"
+  },
+  {
+   "fieldname": "wan_user_name_1",
+   "fieldtype": "Data",
+   "label": "WAN User Name 1"
+  },
+  {
+   "fieldname": "wan_password_1",
+   "fieldtype": "Data",
+   "label": "WAN Password 1"
+  },
+  {
+   "fieldname": "column_break_lple",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "subnet_mask_1",
+   "fieldtype": "Data",
+   "label": "Subnet Mask 1"
+  },
+  {
+   "fieldname": "wan_1_dns",
+   "fieldtype": "Data",
+   "label": "WAN 1 DNS"
+  },
+  {
+   "fieldname": "wan_2_dns",
+   "fieldtype": "Data",
+   "label": "WAN 2 DNS"
+  },
+  {
+   "fieldname": "lms_id_1",
+   "fieldtype": "Link",
+   "label": "LMS ID 1",
+   "options": "LMS"
+  },
+  {
+   "fieldname": "wan_ip_info_secondary_section",
+   "fieldtype": "Section Break",
+   "label": "WAN IP Info Secondary"
+  },
+  {
+   "fieldname": "wan_static_ip_2",
+   "fieldtype": "Data",
+   "label": "WAN Static IP 2"
+  },
+  {
+   "fieldname": "wan_gateway_ip_2",
+   "fieldtype": "Data",
+   "label": "WAN Gateway IP 2"
+  },
+  {
+   "fieldname": "wan_user_name_2",
+   "fieldtype": "Data",
+   "label": "WAN User Name 2"
+  },
+  {
+   "fieldname": "wan_password_2",
+   "fieldtype": "Data",
+   "label": "WAN Password 2"
+  },
+  {
+   "fieldname": "column_break_ejjx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "subnet_mask_2",
+   "fieldtype": "Data",
+   "label": "Subnet Mask 2"
+  },
+  {
+   "fieldname": "wan_dns_1",
+   "fieldtype": "Data",
+   "label": "WAN DNS 1"
+  },
+  {
+   "fieldname": "wan_dns_2",
+   "fieldtype": "Data",
+   "label": "WAN DNS 2"
+  },
+  {
+   "fieldname": "lms_id_2",
+   "fieldtype": "Link",
+   "label": "LMS ID 2",
+   "options": "LMS"
+  },
+  {
+   "fieldname": "description_information_section",
+   "fieldtype": "Section Break",
+   "label": "Description Information"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-01-17 16:34:42.845804",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Provisioning",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

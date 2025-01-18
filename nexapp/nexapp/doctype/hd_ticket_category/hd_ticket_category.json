@@ -1,25 +1,25 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2025-01-10 19:23:19.826480",
+ "creation": "2024-11-20 21:23:33.411062",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "name1"
+  "category"
  ],
  "fields": [
   {
-   "fieldname": "name1",
+   "fieldname": "category",
    "fieldtype": "Data",
-   "label": "Name"
+   "label": "Category"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-10 19:23:40.732544",
+ "modified": "2024-11-20 21:24:01.509889",
  "modified_by": "Administrator",
  "module": "Nexapp",
- "name": "Change Management",
+ "name": "HD Ticket Category",
  "owner": "Administrator",
  "permissions": [
   {

@@ -4,7 +4,8 @@ frappe.ui.form.on('LMS', {
         const fields = [
             'lms_supplier', 'bandwith_type', 'media', 'otc', 'static_ip_cost',
             'billing_terms', 'support_mode', 'column_break_ctob', 'supplier_contact',
-            'lms_bandwith', 'static_ip', 'mrc', 'security_deposit', 'billing_mode', 'circuit_id'
+            'lms_bandwith', 'static_ip', 'mrc', 'security_deposit', 'billing_mode', 
+            'circuit_id', 'lms_supplier_status', 'description'
         ];
 
         // Apply custom styles and interactions to each field

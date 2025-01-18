@@ -1,25 +1,38 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2024-11-20 21:23:33.411062",
+ "creation": "2025-01-17 16:35:51.521564",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "category"
+  "circuit_id",
+  "column_break_xhdz",
+  "customer"
  ],
  "fields": [
   {
-   "fieldname": "category",
-   "fieldtype": "Data",
-   "label": "Category"
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "label": "Circuit ID",
+   "options": "Site"
+  },
+  {
+   "fieldname": "column_break_xhdz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-20 21:24:01.509889",
+ "modified": "2025-01-17 16:38:03.817080",
  "modified_by": "Administrator",
  "module": "Nexapp",
- "name": "Ticket Category",
+ "name": "Product Assigment",
  "owner": "Administrator",
  "permissions": [
   {

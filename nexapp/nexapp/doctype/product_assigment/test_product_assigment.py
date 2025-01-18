@@ -5,5 +5,5 @@
 from frappe.tests.utils import FrappeTestCase
 
 
-class TestChangeManagement(FrappeTestCase):
+class TestProductAssigment(FrappeTestCase):
 	pass

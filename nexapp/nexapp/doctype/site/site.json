@@ -24,6 +24,7 @@
   "column_break_dlsw",
   "circuit_id",
   "site_status",
+  "stage",
   "customer_type",
   "project_manager",
   "order_type",
@@ -91,6 +92,12 @@
   "shipping_tab",
   "shipping_information_section",
   "shiping",
+  "provisioning_tab",
+  "provisioning_information_section",
+  "provision_id",
+  "tab_12_tab",
+  "delivery_challan_section",
+  "dc",
   "installation_tab",
   "installation_information_section",
   "installation"
@@ -273,7 +280,7 @@
    "in_preview": 1,
    "in_standard_filter": 1,
    "label": "Site Status  ",
-   "options": "Pending\nDelivered"
+   "options": "Pending\nInprocess\nDelivered & Live"
   },
   {
    "fieldname": "site_item",
@@ -571,7 +578,7 @@
   {
    "fieldname": "installation_tab",
    "fieldtype": "Tab Break",
-   "label": "Installation"
+   "label": "IR Report"
   },
   {
    "fieldname": "installation_information_section",
@@ -594,11 +601,49 @@
    "in_standard_filter": 1,
    "label": "Project Manager ",
    "options": "Employee"
+  },
+  {
+   "fieldname": "stage",
+   "fieldtype": "Select",
+   "label": "Stage",
+   "options": "\nProject Initiated\nLastmile Procurement\nInventory allocation\nShipment Intransit\nUnder Provisioning\nPartially Delivered\nDelivered and Live"
+  },
+  {
+   "fieldname": "provisioning_tab",
+   "fieldtype": "Tab Break",
+   "label": "Provisioning"
+  },
+  {
+   "fieldname": "provisioning_information_section",
+   "fieldtype": "Section Break",
+   "label": "Provisioning Information"
+  },
+  {
+   "fieldname": "provision_id",
+   "fieldtype": "Link",
+   "label": "Provision ID",
+   "options": "Provisioning"
+  },
+  {
+   "fieldname": "tab_12_tab",
+   "fieldtype": "Tab Break",
+   "label": "Delivery Challan"
+  },
+  {
+   "fieldname": "delivery_challan_section",
+   "fieldtype": "Section Break",
+   "label": "Delivery Challan Information"
+  },
+  {
+   "fieldname": "dc",
+   "fieldtype": "Link",
+   "label": "DC",
+   "options": "Delivery Note"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-16 23:58:28.421369",
+ "modified": "2025-01-18 09:50:56.858052",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",
