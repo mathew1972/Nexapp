@@ -89,12 +89,6 @@
   "provisioning_item",
   "lms_tab",
   "lms_vendor",
-  "shipping_tab",
-  "shipping_information_section",
-  "shiping",
-  "provisioning_tab",
-  "provisioning_information_section",
-  "provision_id",
   "tab_12_tab",
   "delivery_challan_section",
   "dc",
@@ -561,21 +555,6 @@
    "label": "Assigned Product"
   },
   {
-   "fieldname": "shipping_tab",
-   "fieldtype": "Tab Break",
-   "label": "Shipping"
-  },
-  {
-   "fieldname": "shipping_information_section",
-   "fieldtype": "Section Break",
-   "label": "Shipping Information"
-  },
-  {
-   "fieldname": "shiping",
-   "fieldtype": "Data",
-   "label": "Shiping"
-  },
-  {
    "fieldname": "installation_tab",
    "fieldtype": "Tab Break",
    "label": "IR Report"
@@ -609,22 +588,6 @@
    "options": "\nProject Initiated\nLastmile Procurement\nInventory allocation\nShipment Intransit\nUnder Provisioning\nPartially Delivered\nDelivered and Live"
   },
   {
-   "fieldname": "provisioning_tab",
-   "fieldtype": "Tab Break",
-   "label": "Provisioning"
-  },
-  {
-   "fieldname": "provisioning_information_section",
-   "fieldtype": "Section Break",
-   "label": "Provisioning Information"
-  },
-  {
-   "fieldname": "provision_id",
-   "fieldtype": "Link",
-   "label": "Provision ID",
-   "options": "Provisioning"
-  },
-  {
    "fieldname": "tab_12_tab",
    "fieldtype": "Tab Break",
    "label": "Delivery Challan"
@@ -642,8 +605,24 @@
   }
  ],
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2025-01-18 09:50:56.858052",
+ "links": [
+  {
+   "group": "Provisioning",
+   "link_doctype": "Provisioning",
+   "link_fieldname": "circuit_id"
+  },
+  {
+   "group": "Shipment",
+   "link_doctype": "Shipment",
+   "link_fieldname": "custom_circuit_id"
+  },
+  {
+   "group": "Site Address",
+   "link_doctype": "Feasibility",
+   "link_fieldname": "circuit_id"
+  }
+ ],
+ "modified": "2025-01-18 11:11:04.114682",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",
