@@ -41,7 +41,8 @@ frappe.ui.form.on('Item Price', {
             'uom', 'packing_unit', 'item_description', 'price_list_details', 
             'price_list', 'customer', 'supplier', 'batch_no', 'buying', 
             'selling', 'item_details', 'currency', 'price_list_rate', 
-            'valid_from', 'lead_time_days', 'valid_upto', 'note', 'reference'
+            'valid_from', 'lead_time_days', 'valid_upto', 'note', 'reference', 'custom_validity',
+            'custom_data_plan', 'custom_billing_terms'
         ];
 
         fields.forEach(function(field) {

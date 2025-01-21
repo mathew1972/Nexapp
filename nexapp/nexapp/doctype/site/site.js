@@ -25,7 +25,7 @@ frappe.ui.form.on('Site', {
             'customer_po_no', 'customer_po_date', 'site_name', 'customer_po_date', 'project',
             'project_name', 'expected_start_date', 'expected_end_date', 'sales_order', 'sales_order_amount',
             'sales_order_date', 'customer_po_no', 'customer_po_date', 'customer_po_amount',
-            'mbb_bandwidth'
+            'mbb_bandwidth', 'stage'
         ];
 
         // Apply custom styles and interactions to each field

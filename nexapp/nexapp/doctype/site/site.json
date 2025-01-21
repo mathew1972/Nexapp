@@ -13,7 +13,7 @@
   "provisioning_request",
   "shipment_request",
   "column_break_lbut",
-  "inventory_request",
+  "product_assigment",
   "column_break_pfpp",
   "feasibility_information",
   "feasibility_section",
@@ -21,7 +21,6 @@
   "customer",
   "site_type",
   "region",
-  "phase",
   "existing_circuit_id",
   "delivery_date",
   "column_break_dlsw",
@@ -29,11 +28,12 @@
   "site_status",
   "stage",
   "customer_type",
-  "project_manager",
   "order_type",
+  "site_information_section",
   "site_remark",
   "section_break_pixr",
   "product_in_service",
+  "product_assigment_created",
   "site_address_tab",
   "street",
   "city",
@@ -277,7 +277,7 @@
    "in_preview": 1,
    "in_standard_filter": 1,
    "label": "Site Status  ",
-   "options": "Pending\nInprocess\nDelivered & Live"
+   "options": "Pending\nInprocess\nDelivered"
   },
   {
    "fieldname": "site_item",
@@ -351,12 +351,6 @@
    "fieldname": "other_email_id",
    "fieldtype": "Data",
    "label": "Email ID"
-  },
-  {
-   "fieldname": "phase",
-   "fieldtype": "Select",
-   "label": "Phase",
-   "options": "\nPhase 1\nPhase 2\nPhase 3\nPhase 4\nPhase 5"
   },
   {
    "fieldname": "feasibility_section",
@@ -504,7 +498,7 @@
   {
    "fieldname": "site_remark",
    "fieldtype": "Small Text",
-   "label": "Site Remark",
+   "label": "Description ",
    "max_height": "80px"
   },
   {
@@ -573,18 +567,6 @@
    "label": "Installation"
   },
   {
-   "bold": 1,
-   "fetch_from": "sales_order.custom_assign_owner",
-   "fieldname": "project_manager",
-   "fieldtype": "Link",
-   "in_filter": 1,
-   "in_list_view": 1,
-   "in_preview": 1,
-   "in_standard_filter": 1,
-   "label": "Project Manager ",
-   "options": "Employee"
-  },
-  {
    "fieldname": "stage",
    "fieldtype": "Select",
    "label": "Stage",
@@ -607,11 +589,6 @@
    "options": "Delivery Note"
   },
   {
-   "fieldname": "inventory_request",
-   "fieldtype": "Button",
-   "label": "Inventory Request"
-  },
-  {
    "fieldname": "provisioning_request",
    "fieldtype": "Button",
    "label": "Provisioning Request"
@@ -620,6 +597,22 @@
    "fieldname": "shipment_request",
    "fieldtype": "Button",
    "label": "Shipment Request"
+  },
+  {
+   "fieldname": "site_information_section",
+   "fieldtype": "Section Break",
+   "label": "Description Information"
+  },
+  {
+   "bold": 1,
+   "fieldname": "product_assigment",
+   "fieldtype": "Button",
+   "label": "Product Request"
+  },
+  {
+   "fieldname": "product_assigment_created",
+   "fieldtype": "Data",
+   "label": "Product Assigment Created"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -655,7 +648,7 @@
    "link_fieldname": "customer"
   }
  ],
- "modified": "2025-01-18 18:49:54.747547",
+ "modified": "2025-01-21 11:18:06.635469",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

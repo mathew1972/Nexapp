@@ -26,5 +26,12 @@
   "modified": "2025-01-01 00:42:52.127486",
   "name": "Hardware Appliance",
   "product_category": "Hardware Appliance"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Product Category",
+  "modified": "2025-01-19 16:02:00.212459",
+  "name": "LMS",
+  "product_category": "LMS"
  }
 ]

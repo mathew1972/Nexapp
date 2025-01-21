@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "PA-.#####",
  "creation": "2025-01-17 16:35:51.521564",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -32,14 +33,17 @@
   "column_break_pptl",
   "supplier_2",
   "data_plan_2",
-  "activation_date_1"
+  "activation_date_1",
+  "product_assigment_created"
  ],
  "fields": [
   {
    "fieldname": "circuit_id",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Circuit ID",
-   "options": "Site"
+   "options": "Feasibility"
   },
   {
    "fieldname": "column_break_xhdz",
@@ -49,6 +53,8 @@
    "fetch_from": "circuit_id.customer",
    "fieldname": "customer",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Customer",
    "options": "Customer"
   },
@@ -132,21 +138,26 @@
   },
   {
    "fieldname": "site_name",
-   "fieldtype": "Link",
-   "label": "Site Name",
-   "options": "Site"
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Site Name"
   },
   {
    "fieldname": "solution",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Solution",
    "options": "Solution"
   },
   {
+   "default": "Requested",
    "fieldname": "status",
    "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Status",
-   "options": "\nPending\nCompleted"
+   "options": "Requested\nAssigned\nDelivered"
   },
   {
    "fieldname": "section_break_rzfe",
@@ -190,14 +201,21 @@
    "fieldtype": "Link",
    "label": "Activation Date 1",
    "options": "Serial No"
+  },
+  {
+   "fieldname": "product_assigment_created",
+   "fieldtype": "Data",
+   "label": "Product Assignment Created"
   }
  ],
+ "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-18 19:31:08.935299",
+ "modified": "2025-01-21 01:00:12.249044",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Product Assigment",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
@@ -215,5 +233,18 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [
+  {
+   "color": "Purple",
+   "title": "Requested"
+  },
+  {
+   "color": "Yellow",
+   "title": "Assigned"
+  },
+  {
+   "color": "Green",
+   "title": "Delivered"
+  }
+ ]
 }

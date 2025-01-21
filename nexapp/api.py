@@ -57,7 +57,7 @@ def handle_ticket_master(ticket_master):
 
     return "Processed Successfully"
 
-###########################################################3
+###########################################################
 import frappe
 from frappe.utils import now
 
@@ -88,7 +88,6 @@ def sales_order_to_site(sales_order):
             "item_code": item.item_code,
             "qty": item.qty,
             "item_name": item.item_name
-            
         })
     
     # Fetch the associated Project details, if any
@@ -177,6 +176,15 @@ def sales_order_to_site(sales_order):
         site_doc.insert(ignore_permissions=True)
         frappe.db.commit()
 
+    # Add items to the Product Request Doctype
+    for item in so_doc.items:
+        product_request = frappe.new_doc("Product Request")
+        product_request.circuit_id = item.custom_feasibility  # Map circuit_id
+        product_request.item_code = item.item_code  # Map item_code
+        product_request.sales_order = so_doc.name  # Map sales_order
+        product_request.insert(ignore_permissions=True)
+        frappe.db.commit()
+
     # Return a success message
     return {"status": "success"}
 
@@ -227,7 +235,7 @@ def get_filtered_feasibility(customer):
         'customer': customer,
         'feasibility_status': ['in', feasibility_statuses],
         'sales_order': ['in', [None, '', 'null']],  # Ensure the sales_order is empty or null
-        'docstatus': 1  # Ensure the document is 'Submitted'
+        #'docstatus': 1  # Ensure the document is 'Submitted'
     }, fields=['circuit_id'])
 
     # Extract the circuit_ids from the feasibility records
@@ -382,3 +390,38 @@ def update_serial_and_batch_entry(serial_and_batch_bundle, custom_circuit_id):
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "Error in update_serial_and_batch_entry")
         return f"error: {str(e)}"
+#################################################################
+import frappe
+
+@frappe.whitelist()
+def update_product_request_status(item_code, voucher_no, custom_circuits):
+    frappe.logger().info(f"API called with item_code: {item_code}, voucher_no: {voucher_no}, custom_circuits: {custom_circuits}")
+    
+    # Convert custom_circuits from JSON string to Python list if needed
+    if isinstance(custom_circuits, str):
+        custom_circuits = frappe.parse_json(custom_circuits)
+        frappe.logger().info(f"Parsed custom_circuits: {custom_circuits}")
+    
+    # Query the Product Request Doctype to find matching records
+    product_requests = frappe.get_all('Product Request', 
+                                      filters={
+                                          'item_code': item_code,
+                                          'sales_order': voucher_no,
+                                          'circuit_id': ['in', custom_circuits]
+                                      },
+                                      fields=['name', 'status'])
+    frappe.logger().info(f"Found Product Requests: {product_requests}")
+    
+    # If matching records are found, update their status
+    updated_count = 0
+    for pr in product_requests:
+        if pr['status'] != 'Assigned':
+            frappe.db.set_value('Product Request', pr['name'], 'status', 'Assigned')
+            updated_count += 1
+            frappe.logger().info(f"Updated Product Request {pr['name']} to Assigned")
+    
+    frappe.db.commit()
+    
+    # Return a message if updates were made
+    frappe.logger().info(f"Total updated Product Requests: {updated_count}")
+    return updated_count > 0

@@ -116,13 +116,7 @@ frappe.ui.form.on('Feasibility', {
         }
     },
 
-    after_save: function (frm) {
-        if (frm.doc.name) {
-            frm.set_value('circuit_id', frm.doc.name);
-            frm.save();
-        }
-    },
-
+    
     customer_request: function (frm) {
         if (frm.doc.customer_request) {
             const today = frappe.datetime.now_date(); // Get today's date

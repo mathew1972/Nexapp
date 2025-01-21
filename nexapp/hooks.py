@@ -376,11 +376,15 @@ doctype_js = {
         "public/js/site_feasibility_button.js",
         "public/js/site_stock.js",
         #"public/js/site_map.js",
+        "public/js/site_product_request.js",
         "public/js/site_pincode.js"
     ],
     "Project": "public/js/Project_custom_ui.js",
     "CCR": "public/js/ccr_custom.js",
-    "LMS": "public/js/lms.js"    
+    "LMS": "public/js/lms.js",    
+    "Stock Reservation Entry": "public/js/stock_reservation_entry.js",
+    "Product Assigment": "doctype/product_assigment/product_assigment.js"
+       
 }
 
 
