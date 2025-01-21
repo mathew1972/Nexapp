@@ -233,7 +233,9 @@
    "bold": 1,
    "fieldname": "feasibility_completed_date",
    "fieldtype": "Datetime",
-   "label": "Feasibility Completed Date & Time"
+   "hidden": 1,
+   "label": "Feasibility Completed Date & Time",
+   "read_only": 1
   },
   {
    "fieldname": "region",
@@ -419,7 +421,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Feasibility Status",
-   "options": "Pending\nFeasible\nPartial Feasible\nHigh Commercials\nNot Feasible"
+   "options": "\nPending\nFeasible\nPartial Feasible\nHigh Commercials\nNot Feasible"
   }
  ],
  "icon": "fa fa-file-text",
@@ -427,7 +429,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2025-01-21 10:44:24.478440",
+ "modified": "2025-01-21 16:37:58.097700",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",

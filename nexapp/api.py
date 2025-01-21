@@ -88,6 +88,7 @@ def sales_order_to_site(sales_order):
             "item_code": item.item_code,
             "qty": item.qty,
             "item_name": item.item_name
+            
         })
     
     # Fetch the associated Project details, if any
@@ -174,15 +175,6 @@ def sales_order_to_site(sales_order):
 
         # Save the new Site document
         site_doc.insert(ignore_permissions=True)
-        frappe.db.commit()
-
-    # Add items to the Product Request Doctype
-    for item in so_doc.items:
-        product_request = frappe.new_doc("Product Request")
-        product_request.circuit_id = item.custom_feasibility  # Map circuit_id
-        product_request.item_code = item.item_code  # Map item_code
-        product_request.sales_order = so_doc.name  # Map sales_order
-        product_request.insert(ignore_permissions=True)
         frappe.db.commit()
 
     # Return a success message

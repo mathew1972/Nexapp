@@ -1,22 +1,80 @@
 frappe.ui.form.on('Site', {
-    product_assigment: function(frm) {
-        // Check if product_assigment_created is already set to 1
-        if (frm.doc.product_assigment_created) {
-            // If already created, show confirmation dialog
-            frappe.confirm(
-                __('Product Assignment already exists. Do you want to create a new one?'),
-                () => {
-                    createProductAssignment(frm);  // If user clicks Yes, create new record
-                },
-                () => {
-                    // If user clicks No, show cancellation message
-                    frappe.msgprint(__('Product Assignment creation cancelled.'));
+    onload: function(frm) {
+        // Check if a Product Assignment already exists for the given circuit_id
+        frappe.db.get_list('Product Assigment', {
+            fields: ['name'],
+            filters: {'circuit_id': frm.doc.circuit_id},
+            limit_page_length: 1
+        }).then(records => {
+            if (records.length > 0) {
+                // If a record exists, change the button color to red (for both button and input field)
+                if (frm.fields_dict['product_assigment'].$input) {
+                    // For input fields
+                    frm.fields_dict['product_assigment'].$input.css('background-color', 'red');
+                } else if (frm.fields_dict['product_assigment'].$button) {
+                    // For buttons
+                    frm.fields_dict['product_assigment'].$button.css('background-color', 'red');
                 }
-            );
-        } else {
-            // If product assignment is not created yet, create it
-            createProductAssignment(frm);
+            } else {
+                // If no record exists, reset the color or leave it unchanged
+                if (frm.fields_dict['product_assigment'].$input) {
+                    // Reset color for input field
+                    frm.fields_dict['product_assigment'].$input.css('background-color', '');
+                } else if (frm.fields_dict['product_assigment'].$button) {
+                    // Reset color for button
+                    frm.fields_dict['product_assigment'].$button.css('background-color', '');
+                }
+            }
+        }).catch(err => {
+            frappe.msgprint(__('An error occurred while checking for existing Product Assignment.'));
+        });
+    }
+});
+
+
+
+frappe.ui.form.on('Site', {
+    onload: function(frm) {
+        // Check if a Product Assignment already exists for the given circuit_id
+        if (frm.doc.circuit_id) {
+            frappe.db.get_list('Product Assigment', {
+                fields: ['name'],
+                filters: { 'circuit_id': frm.doc.circuit_id },
+                limit_page_length: 1
+            }).then(records => {
+                if (records.length > 0) {
+                    // Change the color of the button to red
+                    frm.page.set_primary_action(__('Product Assignment Exists'), null, 'btn-danger');
+                    
+                } else {
+                    // Reset the button to its default state
+                    frm.page.set_primary_action(__('Check Product Assignment'), () => {
+                        frm.trigger('product_assigment');
+                    });
+                }
+            }).catch(err => {
+                frappe.msgprint(__('An error occurred while checking for existing Product Assignment.'));
+            });
         }
+    },
+
+    product_assigment: function(frm) {
+        // Check if a Product Assignment already exists for the given circuit_id
+        frappe.db.get_list('Product Assigment', {
+            fields: ['name'],
+            filters: { 'circuit_id': frm.doc.circuit_id },
+            limit_page_length: 1
+        }).then(records => {
+            if (records.length > 0) {
+                // If a record exists, show a message
+                frappe.msgprint(__('Product Assignment already exists for Circuit ID: ') + frm.doc.circuit_id);
+            } else {
+                // If no record exists, create a new Product Assignment
+                createProductAssignment(frm);
+            }
+        }).catch(err => {
+            frappe.msgprint(__('An error occurred while checking for existing Product Assignment.'));
+        });
     }
 });
 
@@ -27,59 +85,32 @@ function createProductAssignment(frm) {
         return;
     }
 
-    // Check if Site Name exists in the database
-    frappe.db.get_value('Site', {'site_name': frm.doc.site_name}, 'name')
-        .then(r => {
-            if (!r.message) {
-                frappe.msgprint(__('Could not find Site Name: ') + frm.doc.site_name);
-                return;
+    // Insert Product Assignment record
+    frappe.call({
+        method: 'frappe.client.insert',
+        args: {
+            doc: {
+                doctype: 'Product Assigment',
+                circuit_id: frm.doc.circuit_id,
+                site_name: frm.doc.site_name,
+                customer: frm.doc.customer,
+                solution: frm.doc.solution
             }
+        },
+        callback: function(response) {
+            if (response.message) {
+                const productAssignmentId = response.message.name;
 
-            // Insert Product Assignment record
-            frappe.call({
-                method: 'frappe.client.insert',
-                args: {
-                    doc: {
-                        doctype: 'Product Assigment',
-                        circuit_id: frm.doc.circuit_id,
-                        site_name: frm.doc.site_name,
-                        customer: frm.doc.customer,
-                        solution: frm.doc.solution
-                    }
-                },
-                callback: function(response) {
-                    if (response.message) {
-                        const productAssignmentId = response.message.name;
-
-                        // Show success message with the product assignment ID
-                        frappe.msgprint(__('Product Assignment created successfully with ID: ') + productAssignmentId);
-
-                        // Set product_assigment_created field to 1
-                        frm.set_value('product_assigment_created', 1);
-
-                        // Disable the button after record creation
-                        frm.fields_dict['product_assigment'].$button.prop('disabled', true);
-
-                        // Save the document after product assignment creation
-                        frm.save();
-                    } else {
-                        // Show error message if something went wrong
-                        frappe.msgprint(__('An unexpected error occurred while creating Product Assignment.'));
-                    }
-                },
-                error: function(error) {
-                    // Handle errors during the product assignment creation
-                    if (error && error.message) {
-                        frappe.msgprint(__('An error occurred while creating Product Assignment: ') + error.message);
-                    } else if (error && error.exc) {
-                        frappe.msgprint(__('An unexpected error occurred: ') + error.exc);
-                    } else {
-                        frappe.msgprint(__('An unexpected error occurred.'));
-                    }
-                }
-            });
-        })
-        .catch(err => {
-            frappe.msgprint(__('An unexpected error occurred while checking Site Name.'));
-        });
-}
+                // Show success message with the product assignment ID
+                frappe.msgprint(__('Product Assignment created successfully with ID: ') + productAssignmentId);
+            } else {
+                // Show error message if something went wrong
+                frappe.msgprint(__('An unexpected error occurred while creating Product Assignment.'));
+            }
+        },
+        error: function(error) {
+            // Handle errors during the product assignment creation
+            frappe.msgprint(__('An error occurred while creating Product Assignment.'));
+        }
+    });
+} 
