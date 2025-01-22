@@ -18,6 +18,8 @@
   "feasibility_completed_date",
   "column_break_zthd",
   "circuit_id",
+  "feasibility_type",
+  "exiting_circuit_id",
   "feasibility_status",
   "region",
   "feasibility_remark",
@@ -66,7 +68,8 @@
   "sales_order",
   "column_break_jitn",
   "sales_order_date",
-  "amended_from"
+  "amended_from",
+  "old_circuit_id_tab"
  ],
  "fields": [
   {
@@ -422,6 +425,24 @@
    "in_standard_filter": 1,
    "label": "Feasibility Status",
    "options": "\nPending\nFeasible\nPartial Feasible\nHigh Commercials\nNot Feasible"
+  },
+  {
+   "default": "Service",
+   "fieldname": "feasibility_type",
+   "fieldtype": "Select",
+   "label": "Feasibility Type",
+   "options": "\nService\nUpgrade\nDegrade\nShifting"
+  },
+  {
+   "fieldname": "exiting_circuit_id",
+   "fieldtype": "Link",
+   "label": "Exiting Circuit ID",
+   "options": "Feasibility"
+  },
+  {
+   "fieldname": "old_circuit_id_tab",
+   "fieldtype": "Tab Break",
+   "label": "Old Circuit ID"
   }
  ],
  "icon": "fa fa-file-text",
@@ -429,7 +450,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2025-01-21 16:37:58.097700",
+ "modified": "2025-01-22 17:02:30.653119",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",

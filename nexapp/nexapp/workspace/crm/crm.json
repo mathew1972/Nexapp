@@ -543,13 +543,13 @@
    "type": "Link"
   }
  ],
- "modified": "2025-01-12 23:38:48.177378",
+ "modified": "2025-01-22 19:26:12.986865",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "CRM",
  "number_cards": [],
  "owner": "Administrator",
- "parent_page": "CRM Dashboard",
+ "parent_page": "",
  "public": 1,
  "quick_lists": [],
  "restrict_to_domain": "",
@@ -558,7 +558,7 @@
    "role": "Nexapp Sales Manager"
   }
  ],
- "sequence_id": 33.0,
+ "sequence_id": 2.0,
  "shortcuts": [
   {
    "color": "Blue",

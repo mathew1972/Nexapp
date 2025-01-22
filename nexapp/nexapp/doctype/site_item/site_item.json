@@ -14,7 +14,8 @@
   "stock_reserved",
   "column_break_qkfm",
   "warehouse",
-  "stock_balance"
+  "stock_balance",
+  "description"
  ],
  "fields": [
   {
@@ -69,12 +70,18 @@
   {
    "fieldname": "stock_live_update_section",
    "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "warehouse.is_group",
+   "fieldname": "description",
+   "fieldtype": "Text",
+   "label": "Description"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-21 11:24:05.978568",
+ "modified": "2025-01-22 14:49:52.981839",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site Item",

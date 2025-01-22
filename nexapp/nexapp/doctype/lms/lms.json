@@ -7,6 +7,8 @@
  "engine": "InnoDB",
  "field_order": [
   "circuit_id",
+  "purchase_order",
+  "purchase_order_date",
   "lms_supplier",
   "bandwith_type",
   "media",
@@ -22,7 +24,21 @@
   "mrc",
   "security_deposit",
   "billing_mode",
-  "description"
+  "description",
+  "lms_support_information_section",
+  "support_email",
+  "tollfree_number",
+  "portal_user_name",
+  "portal_user_name_password",
+  "column_break_gffv",
+  "support_phone",
+  "support_other_phone",
+  "payment_mode",
+  "lms_configuration_section",
+  "mode",
+  "column_break_uxmp",
+  "modem_user_id",
+  "modem_password"
  ],
  "fields": [
   {
@@ -126,12 +142,94 @@
    "in_standard_filter": 1,
    "label": "LMS Status",
    "options": "\nPO Pending\nInprogress\nDelivered"
+  },
+  {
+   "fieldname": "lms_support_information_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Support Information"
+  },
+  {
+   "fieldname": "support_email",
+   "fieldtype": "Data",
+   "label": "Support Email"
+  },
+  {
+   "fieldname": "tollfree_number",
+   "fieldtype": "Data",
+   "label": "Tollfree Number"
+  },
+  {
+   "fieldname": "column_break_gffv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "support_phone",
+   "fieldtype": "Data",
+   "label": "Support Phone"
+  },
+  {
+   "fieldname": "support_other_phone",
+   "fieldtype": "Data",
+   "label": "Support Other Phone"
+  },
+  {
+   "fieldname": "payment_mode",
+   "fieldtype": "Select",
+   "label": "Payment Mode",
+   "options": "\nBank Trasfer\nWebportal"
+  },
+  {
+   "fieldname": "lms_configuration_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Configuration"
+  },
+  {
+   "fieldname": "mode",
+   "fieldtype": "Select",
+   "label": "Mode",
+   "options": "\nPPPoE\nDHCP"
+  },
+  {
+   "fieldname": "column_break_uxmp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "modem_user_id",
+   "fieldtype": "Data",
+   "label": "Modem User ID"
+  },
+  {
+   "fieldname": "modem_password",
+   "fieldtype": "Password",
+   "label": "Modem Password"
+  },
+  {
+   "fieldname": "portal_user_name",
+   "fieldtype": "Data",
+   "label": "Portal User Name"
+  },
+  {
+   "fieldname": "portal_user_name_password",
+   "fieldtype": "Data",
+   "label": "Portal User Name Password"
+  },
+  {
+   "fieldname": "purchase_order",
+   "fieldtype": "Link",
+   "label": "Purchase Order",
+   "options": "Purchase Order"
+  },
+  {
+   "fetch_from": "purchase_order.transaction_date",
+   "fieldname": "purchase_order_date",
+   "fieldtype": "Date",
+   "label": "Purchase Order Date"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-17 14:53:27.142845",
+ "modified": "2025-01-22 18:54:22.824702",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "LMS",

@@ -14,6 +14,7 @@
   "shipment_request",
   "column_break_lbut",
   "product_assigment",
+  "lms_request",
   "column_break_pfpp",
   "feasibility_information",
   "feasibility_section",
@@ -613,6 +614,11 @@
    "fieldname": "product_assigment_created",
    "fieldtype": "Data",
    "label": "Product Assigment Created"
+  },
+  {
+   "fieldname": "lms_request",
+   "fieldtype": "Button",
+   "label": "LMS Request"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -648,7 +654,7 @@
    "link_fieldname": "customer"
   }
  ],
- "modified": "2025-01-21 11:18:06.635469",
+ "modified": "2025-01-22 18:38:16.574419",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",
