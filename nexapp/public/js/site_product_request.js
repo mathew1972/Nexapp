@@ -10,10 +10,10 @@ frappe.ui.form.on('Site', {
                 // If a record exists, change the button color to red (for both button and input field)
                 if (frm.fields_dict['product_assigment'].$input) {
                     // For input fields
-                    frm.fields_dict['product_assigment'].$input.css('background-color', 'red');
+                    frm.fields_dict['product_assigment'].$input.css('background-color', '#ffcccc');
                 } else if (frm.fields_dict['product_assigment'].$button) {
                     // For buttons
-                    frm.fields_dict['product_assigment'].$button.css('background-color', 'red');
+                    frm.fields_dict['product_assigment'].$button.css('background-color', '#ffcccc');
                 }
             } else {
                 // If no record exists, reset the color or leave it unchanged
