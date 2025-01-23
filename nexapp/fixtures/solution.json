@@ -1,5 +1,6 @@
 [
  {
+  "description": null,
   "docstatus": 0,
   "doctype": "Solution",
   "modified": "2025-01-01 22:12:49.948674",
@@ -7,6 +8,7 @@
   "solution": "Nexapp ILL+MBB"
  },
  {
+  "description": null,
   "docstatus": 0,
   "doctype": "Solution",
   "modified": "2025-01-01 22:13:25.986114",
@@ -14,6 +16,7 @@
   "solution": "IR-1100 MBB + MBB"
  },
  {
+  "description": null,
   "docstatus": 0,
   "doctype": "Solution",
   "modified": "2025-01-01 22:13:44.606992",
@@ -21,6 +24,7 @@
   "solution": "4G D MBB + MBB"
  },
  {
+  "description": null,
   "docstatus": 0,
   "doctype": "Solution",
   "modified": "2025-01-01 22:14:15.778345",
@@ -28,6 +32,7 @@
   "solution": "IR-7100 Core Series"
  },
  {
+  "description": null,
   "docstatus": 0,
   "doctype": "Solution",
   "modified": "2025-01-01 22:14:36.258995",
@@ -35,6 +40,7 @@
   "solution": "IR-6100 Core Series"
  },
  {
+  "description": null,
   "docstatus": 0,
   "doctype": "Solution",
   "modified": "2025-01-01 22:15:11.750459",
@@ -42,6 +48,7 @@
   "solution": "IR-5100 Core Series"
  },
  {
+  "description": null,
   "docstatus": 0,
   "doctype": "Solution",
   "modified": "2025-01-01 22:15:34.874040",
@@ -49,6 +56,7 @@
   "solution": "IR-4100 Core Series"
  },
  {
+  "description": null,
   "docstatus": 0,
   "doctype": "Solution",
   "modified": "2025-01-01 22:15:51.661606",
@@ -56,6 +64,7 @@
   "solution": "IR-3100 Core Series"
  },
  {
+  "description": null,
   "docstatus": 0,
   "doctype": "Solution",
   "modified": "2025-01-01 22:16:05.734204",
@@ -63,6 +72,7 @@
   "solution": "IR-2100 Branch Series"
  },
  {
+  "description": null,
   "docstatus": 0,
   "doctype": "Solution",
   "modified": "2025-01-01 22:16:23.476043",
@@ -70,6 +80,7 @@
   "solution": "IR-1100 Branch Series"
  },
  {
+  "description": null,
   "docstatus": 0,
   "doctype": "Solution",
   "modified": "2025-01-01 22:16:50.490846",
@@ -77,6 +88,7 @@
   "solution": "IR-1100-USB"
  },
  {
+  "description": null,
   "docstatus": 0,
   "doctype": "Solution",
   "modified": "2025-01-01 22:17:10.922164",
@@ -84,6 +96,7 @@
   "solution": "IR-1100-MBB"
  },
  {
+  "description": null,
   "docstatus": 0,
   "doctype": "Solution",
   "modified": "2025-01-01 22:17:27.988503",
@@ -91,6 +104,7 @@
   "solution": "IR-1100-MBB+USB"
  },
  {
+  "description": null,
   "docstatus": 0,
   "doctype": "Solution",
   "modified": "2025-01-01 22:17:48.137266",
@@ -98,6 +112,7 @@
   "solution": "IPv6 Solution"
  },
  {
+  "description": null,
   "docstatus": 0,
   "doctype": "Solution",
   "modified": "2025-01-01 22:18:49.043559",
@@ -105,6 +120,7 @@
   "solution": "IR-1100-4G-S MBB+Sim"
  },
  {
+  "description": null,
   "docstatus": 0,
   "doctype": "Solution",
   "modified": "2025-01-01 22:19:12.519574",
@@ -112,6 +128,7 @@
   "solution": "Instawireless"
  },
  {
+  "description": null,
   "docstatus": 0,
   "doctype": "Solution",
   "modified": "2025-01-01 22:19:29.243707",
@@ -119,6 +136,7 @@
   "solution": "IR-1100-4G-S Single Sim"
  },
  {
+  "description": null,
   "docstatus": 0,
   "doctype": "Solution",
   "modified": "2025-01-01 22:19:46.213706",
@@ -126,9 +144,10 @@
   "solution": "IR11004GSW"
  },
  {
+  "description": "<div class=\"ql-editor read-mode\"><p><strong style=\"background-color: transparent;\"><u>IR-1100-4G-D Dual Sim</u></strong></p><p> 1 <font>Single sim router</font></p><p><font> 2 Power Adapter</font></p><p><font> 3 Lan cable </font></p><p><font> 4 Wifi Antenna </font></p><p><font> 5 3 dBI Antenna </font></p><p><font> 6 Sim card qty-2</font></p></div>",
   "docstatus": 0,
   "doctype": "Solution",
-  "modified": "2025-01-01 22:20:13.036344",
+  "modified": "2025-01-23 01:06:15.808252",
   "name": "IR-1100-4G-D Dual Sim",
   "solution": "IR-1100-4G-D Dual Sim"
  }

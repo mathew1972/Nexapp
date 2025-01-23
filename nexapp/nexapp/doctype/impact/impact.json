@@ -1,35 +1,46 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:ticket_sub_category",
- "creation": "2025-01-08 21:46:34.280542",
+ "creation": "2025-01-23 14:12:37.398424",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "ticket_category",
   "ticket_sub_category",
-  "ticket_category"
+  "impact",
+  "description"
  ],
  "fields": [
   {
-   "fieldname": "ticket_sub_category",
+   "allow_in_quick_entry": 1,
+   "fieldname": "impact",
    "fieldtype": "Data",
-   "label": "Ticket Sub Category",
-   "unique": 1
+   "label": "Impact"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
   },
   {
    "fieldname": "ticket_category",
    "fieldtype": "Link",
    "label": "Ticket Category",
    "options": "HD Ticket Category"
+  },
+  {
+   "fieldname": "ticket_sub_category",
+   "fieldtype": "Link",
+   "label": "Ticket Sub Category",
+   "options": "HD Ticket Sub Category"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-23 13:37:10.498495",
+ "modified": "2025-01-23 14:44:14.384122",
  "modified_by": "Administrator",
  "module": "Nexapp",
- "name": "HD Ticket Sub Category",
- "naming_rule": "By fieldname",
+ "name": "Impact",
  "owner": "Administrator",
  "permissions": [
   {
@@ -45,6 +56,7 @@
    "write": 1
   }
  ],
+ "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []
