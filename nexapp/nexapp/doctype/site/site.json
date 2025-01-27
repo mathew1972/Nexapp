@@ -8,14 +8,15 @@
  "engine": "InnoDB",
  "field_order": [
   "site_information_tab",
-  "section_break_xvmk",
+  "project_request_section",
   "column_break_yehx",
   "provisioning_request",
   "shipment_request",
   "column_break_lbut",
   "product_assigment",
-  "lms_request",
   "column_break_pfpp",
+  "lms_request",
+  "column_break_gtzy",
   "feasibility_information",
   "feasibility_section",
   "site_name",
@@ -30,12 +31,14 @@
   "stage",
   "customer_type",
   "order_type",
+  "site_id__legal_code",
   "site_information_section",
   "site_remark",
   "section_break_pixr",
   "product_in_service",
   "product_assigment_created",
-  "site_address_tab",
+  "contact_address",
+  "site_address_section",
   "street",
   "city",
   "country",
@@ -45,12 +48,17 @@
   "district",
   "state",
   "latitude",
-  "site_id__legal_code",
+  "site_contact_section",
+  "primary_contact",
+  "contact_html",
+  "column_break_fvvn",
+  "alternate_contact",
+  "contact_html2",
   "services_tab",
   "stock_live_update_section",
   "site_item",
   "tab_3_tab",
-  "section_break_wnfg",
+  "project_section",
   "column_break_frik",
   "project",
   "project_name",
@@ -67,20 +75,8 @@
   "column_break_uonu",
   "invoice_no",
   "invoice_date",
-  "contact_information_tab",
-  "primary_contact_column",
-  "contact_person",
-  "contact_mobile",
-  "email_id",
-  "designation",
-  "department",
-  "column_break_myyx",
-  "other_person",
-  "other_mobile",
-  "other_email_id",
-  "other_designation",
-  "other_department",
   "solution_tab",
+  "solution_section",
   "managed_service",
   "config_type",
   "column_break_dtxu",
@@ -89,9 +85,10 @@
   "secondary_plan",
   "mbb_bandwidth",
   "assigned_product_tab",
-  "section_break_czqw",
+  "assigned_product_section",
   "provisioning_item",
   "lms_tab",
+  "lms_section",
   "lms_vendor",
   "tab_12_tab",
   "delivery_challan_section",
@@ -100,7 +97,9 @@
   "installation_information_section",
   "installation",
   "product_tab",
-  "product"
+  "product_section",
+  "product",
+  "address"
  ],
  "fields": [
   {
@@ -143,8 +142,7 @@
    "in_list_view": 1,
    "in_preview": 1,
    "in_standard_filter": 1,
-   "label": "Site Name  ",
-   "read_only": 1
+   "label": "Site Name  "
   },
   {
    "allow_in_quick_entry": 1,
@@ -161,16 +159,6 @@
    "in_standard_filter": 1,
    "label": "Region",
    "options": "Territory"
-  },
-  {
-   "fieldname": "designation",
-   "fieldtype": "Data",
-   "label": "Designation  "
-  },
-  {
-   "fieldname": "department",
-   "fieldtype": "Data",
-   "label": "Department  "
   },
   {
    "fieldname": "street",
@@ -215,16 +203,6 @@
    "options": "Solution"
   },
   {
-   "fieldname": "other_designation",
-   "fieldtype": "Data",
-   "label": "Designation  "
-  },
-  {
-   "fieldname": "other_department",
-   "fieldtype": "Data",
-   "label": "Department  "
-  },
-  {
    "depends_on": "eval:doc.choose_product_type==\"Multi Line\"",
    "fieldname": "section_break_pixr",
    "fieldtype": "Section Break",
@@ -238,14 +216,16 @@
   {
    "depends_on": "eval:doc.solution==\"IR-1100-4G-D Dual Sim\" || doc.solution==\"IR-1100 Branch Series\" || doc.solution==\"IR-2100 Branch Series\" || doc.solution==\"IR-1100-USB\" || doc.solution==\"IR-1100-4G-S Single Sim\"\n",
    "fieldname": "primary_plan",
-   "fieldtype": "Data",
-   "label": "Primary Plan  "
+   "fieldtype": "Link",
+   "label": "Primary Plan  ",
+   "options": "Data Plan"
   },
   {
    "depends_on": "eval:doc.solution==\"4G D MBB + MBB\" || doc.solution==\"IR-1100 MBB + MBB\" || doc.solution==\"Nexapp ILL+MBB\" || doc.solution==\"IR-1100-4G-D Dual Sim\" || doc.solution==\"IR-1100-MBB+USB\" || doc.solution==\"IR-1100-4G-S MBB+Sim\"\n",
    "fieldname": "secondary_plan",
-   "fieldtype": "Data",
-   "label": "Secondary Plan  "
+   "fieldtype": "Link",
+   "label": "Secondary Plan  ",
+   "options": "Data Plan"
   },
   {
    "bold": 1,
@@ -316,48 +296,19 @@
   {
    "fieldname": "longitude",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Longitude"
   },
   {
    "fieldname": "latitude",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Latitude"
   },
   {
-   "fieldname": "contact_person",
-   "fieldtype": "Data",
-   "label": "Contact Person"
-  },
-  {
-   "fieldname": "other_person",
-   "fieldtype": "Data",
-   "label": "Contact Person"
-  },
-  {
-   "default": "+91-",
-   "fieldname": "contact_mobile",
-   "fieldtype": "Data",
-   "label": "Contact Mobile"
-  },
-  {
-   "default": "+91-",
-   "fieldname": "other_mobile",
-   "fieldtype": "Data",
-   "label": "Contact Mobile"
-  },
-  {
-   "fieldname": "email_id",
-   "fieldtype": "Data",
-   "label": "Email ID"
-  },
-  {
-   "fieldname": "other_email_id",
-   "fieldtype": "Data",
-   "label": "Email ID"
-  },
-  {
    "fieldname": "feasibility_section",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Site Information"
   },
   {
    "fieldname": "column_break_dlsw",
@@ -394,20 +345,9 @@
    "label": "Sales Order"
   },
   {
-   "fieldname": "contact_information_tab",
-   "fieldtype": "Tab Break",
-   "label": "Site Contact"
-  },
-  {
-   "fieldname": "column_break_myyx",
-   "fieldtype": "Column Break",
-   "label": "Alternate Contact"
-  },
-  {
    "fieldname": "feasibility_information",
    "fieldtype": "Button",
-   "label": "Feasibility Information",
-   "placeholder": "Click the button to view the Feasibility details"
+   "label": "Feasibility Information"
   },
   {
    "fieldname": "lms_tab",
@@ -456,15 +396,6 @@
    "options": "LMS Site"
   },
   {
-   "fieldname": "site_address_tab",
-   "fieldtype": "Tab Break",
-   "label": "Site Address"
-  },
-  {
-   "fieldname": "section_break_xvmk",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "column_break_yehx",
    "fieldtype": "Column Break"
   },
@@ -495,19 +426,10 @@
    "label": "Site Information"
   },
   {
-   "fieldname": "section_break_wnfg",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "site_remark",
    "fieldtype": "Small Text",
    "label": "Description ",
    "max_height": "80px"
-  },
-  {
-   "fieldname": "primary_contact_column",
-   "fieldtype": "Column Break",
-   "label": "Primary Contact"
   },
   {
    "fieldname": "column_break_uonu",
@@ -525,10 +447,6 @@
    "fieldtype": "Date",
    "label": "Invoice Date",
    "read_only": 1
-  },
-  {
-   "fieldname": "section_break_czqw",
-   "fieldtype": "Section Break"
   },
   {
    "fieldname": "column_break_pfpp",
@@ -632,8 +550,91 @@
    "fieldname": "product_tab",
    "fieldtype": "Tab Break",
    "label": "Product"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "HTML",
+   "label": "Address"
+  },
+  {
+   "fieldname": "contact_html",
+   "fieldtype": "HTML",
+   "label": "Contact HTML"
+  },
+  {
+   "bold": 1,
+   "fieldname": "alternate_contact",
+   "fieldtype": "Link",
+   "label": "Alternate Contact",
+   "options": "Contact"
+  },
+  {
+   "fieldname": "contact_html2",
+   "fieldtype": "HTML",
+   "label": "Contact HTML2"
+  },
+  {
+   "fieldname": "site_address_section",
+   "fieldtype": "Section Break",
+   "label": "Site Address"
+  },
+  {
+   "fieldname": "site_contact_section",
+   "fieldtype": "Section Break",
+   "label": "Site Contact"
+  },
+  {
+   "fieldname": "column_break_fvvn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "contact_address",
+   "fieldtype": "Tab Break",
+   "label": "Address & Contact "
+  },
+  {
+   "fieldname": "solution_section",
+   "fieldtype": "Section Break",
+   "label": "Solution"
+  },
+  {
+   "fieldname": "project_section",
+   "fieldtype": "Section Break",
+   "label": "Project"
+  },
+  {
+   "fieldname": "assigned_product_section",
+   "fieldtype": "Section Break",
+   "label": "Assigned Product"
+  },
+  {
+   "fieldname": "lms_section",
+   "fieldtype": "Section Break",
+   "label": "LMS"
+  },
+  {
+   "fieldname": "product_section",
+   "fieldtype": "Section Break",
+   "label": "Product"
+  },
+  {
+   "bold": 1,
+   "fieldname": "primary_contact",
+   "fieldtype": "Link",
+   "label": "Primary Contact",
+   "options": "Contact"
+  },
+  {
+   "fieldname": "project_request_section",
+   "fieldtype": "Section Break",
+   "label": "Project Request"
+  },
+  {
+   "fieldname": "column_break_gtzy",
+   "fieldtype": "Column Break"
   }
  ],
+ "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [
   {
@@ -667,7 +668,7 @@
    "link_fieldname": "customer"
   }
  ],
- "modified": "2025-01-23 13:28:00.078881",
+ "modified": "2025-01-26 23:58:28.535191",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

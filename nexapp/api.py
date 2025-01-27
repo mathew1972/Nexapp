@@ -136,16 +136,16 @@ def sales_order_to_site(sales_order):
         site_doc.latitude = feasibility_doc.latitude
 
         # Map additional fields from Feasibility to Site
-        site_doc.contact_person = feasibility_doc.contact_person
-        site_doc.contact_mobile = feasibility_doc.contact_mobile
-        site_doc.email_id = feasibility_doc.email_id
-        site_doc.designation = feasibility_doc.designation
-        site_doc.department = feasibility_doc.department
-        site_doc.other_person = feasibility_doc.other_person
-        site_doc.other_mobile = feasibility_doc.other_mobile
-        site_doc.other_email_id = feasibility_doc.other_email_id
-        site_doc.other_designation = feasibility_doc.other_designation
-        site_doc.other_department = feasibility_doc.other_department
+        #site_doc.contact_person = feasibility_doc.contact_person
+        #site_doc.contact_mobile = feasibility_doc.contact_mobile
+        #site_doc.email_id = feasibility_doc.email_id
+        # site_doc.designation = feasibility_doc.designation
+        #site_doc.department = feasibility_doc.department
+        #site_doc.other_person = feasibility_doc.other_person
+        #site_doc.other_mobile = feasibility_doc.other_mobile
+        #site_doc.other_email_id = feasibility_doc.other_email_id
+        site_doc.primary_contact = feasibility_doc.primary_contact
+        site_doc.alternate_contact = feasibility_doc.alternate_contact
 
         site_doc.site_id__legal_code = feasibility_doc.site_id__legal_code
         site_doc.site_type = feasibility_doc.site_type

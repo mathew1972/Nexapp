@@ -1,37 +1,34 @@
-// Copyright (c) 2024, Nexapp Technologies Private Limited and contributors
-// For license information, please see license.txt
 frappe.ui.form.on('Site', {
     refresh: function (frm) {
-        // List of fields to apply custom styles to
+        /* 
+        =============================
+        1. Styling Input Fields
+        =============================
+        */
         const fields = [
-            'section_break_qawd', 'parent_project', 'child_project', 'project_manager',
-            'column_break_sbty', 'site_status', 'circuit_id', 'project_coordinator',
-            'order_information_section', 'order_type', 'customer_type', 'existing_circuit_id',
-            'site_name', 'customer_request', 'phases', 'column_break_nghj', 'sales_order',
-            'customer_name', 'customer_po_no', 'customer_po_date', 'region',
-            'site_information_section', 'site_item', 'address_information_section',
-            'site_type', 'street', 'city', 'country', 'column_break_ypqk',
-            'site_id__legal_code', 'pincode', 'district', 'state', 'site_phone',
-            'service_requirement_section', 'managed_service', 'config_type',
-            'column_break_syhb', 'solution', 'primary_plan', 'secondary_plan',
-            'contact_information_section', 'contact_person1', 'contact_number1', 'email',
-            'designation', 'department', 'column_break_lldf', 'contact_person2',
-            'contact_number2', 'secondary_email', 'other_designation', 'other_department',
-            'section_break_ovsj', 'billing_status', 'column_break_ctsh',
-            'section_break_pixr', 'product_in_service', 'description_section',
-            'site_remark', 'site_project_manager', 'feasibility_project_manager','longitude',
-            'latitude', 'contact_person', 'contact_mobile', 'email_id', 'other_person', 
-            'other_mobile', 'other_email_id', 'customer', 'phase', 'delivery_date', 'sales_order',
-            'customer_po_no', 'customer_po_date', 'site_name', 'customer_po_date', 'project',
-            'project_name', 'expected_start_date', 'expected_end_date', 'sales_order', 'sales_order_amount',
-            'sales_order_date', 'customer_po_no', 'customer_po_date', 'customer_po_amount',
-            'mbb_bandwidth', 'stage'
+            'site_information_tab', 'project_request_section', 'column_break_yehx', 'provisioning_request',
+            'shipment_request', 'column_break_lbut', 'product_assigment', 'column_break_pfpp', 'lms_request',
+            'column_break_gtzy', 'feasibility_information', 'feasibility_section', 'site_name', 'customer',
+            'site_type', 'region', 'existing_circuit_id', 'delivery_date', 'column_break_dlsw', 'circuit_id',
+            'site_status', 'stage', 'customer_type', 'order_type', 'site_id__legal_code', 'site_information_section',
+            'site_remark', 'section_break_pixr', 'product_in_service', 'product_assigment_created', 'contact_address',
+            'site_address_section', 'street', 'city', 'country', 'longitude', 'column_break_xbyr', 'pincode',
+            'district', 'state', 'latitude', 'site_contact_section', 'primary_contact', 'contact_html',
+            'column_break_fvvn', 'alternate_contact', 'contact_html2', 'services_tab', 'stock_live_update_section',
+            'site_item', 'tab_3_tab', 'project_section', 'column_break_frik', 'project', 'project_name',
+            'expected_start_date', 'expected_end_date', 'column_break_xqbv', 'sales_order', 'sales_order_date',
+            'sales_order_amount', 'column_break_aujv', 'customer_po_no', 'customer_po_date', 'customer_po_amount',
+            'column_break_uonu', 'invoice_no', 'invoice_date', 'solution_tab', 'solution_section', 'managed_service',
+            'config_type', 'column_break_dtxu', 'solution', 'primary_plan', 'secondary_plan', 'mbb_bandwidth',
+            'assigned_product_tab', 'assigned_product_section', 'provisioning_item', 'lms_tab', 'lms_section',
+            'lms_vendor', 'tab_12_tab', 'delivery_challan_section', 'dc', 'installation_tab', 
+            'installation_information_section', 'installation', 'product_tab', 'product_section', 'product', 'address'
         ];
 
-        // Apply custom styles and interactions to each field
+        // Apply custom styles to input fields
         fields.forEach(function (field) {
             const fieldWrapper = frm.fields_dict[field]?.wrapper;
-            if (!fieldWrapper) return; // Skip if the field does not exist
+            if (!fieldWrapper) return;
 
             const fieldElement = $(fieldWrapper).find('input, textarea, select');
             const isDropdown = frm.fields_dict[field].df.fieldtype === 'Select';
@@ -39,16 +36,31 @@ frappe.ui.form.on('Site', {
 
             // Base styles
             fieldElement.css({
+                //'border': '1px solid #ccc',
+                //'border-radius': '7px',
+                //'padding': isDropdown ? '5px 10px' : '5px',
+                //'outline': 'none',
+                //'background-color': '#ffffff',
+                //'transition': '0.3s ease-in-out',
+                //'height': isDropdown ? 'auto' : 'initial'
+
                 'border': '1px solid #ccc',
                 'border-radius': '7px',
-                'padding': isDropdown ? '5px 10px' : '5px',
+                'padding': '10px',         // Increased padding for more height
                 'outline': 'none',
                 'background-color': '#ffffff',
                 'transition': '0.3s ease-in-out',
-                'height': isDropdown ? 'auto' : 'initial'
+                'height': '40px',          // Increased height explicitly
+                'white-space': 'nowrap',   // Prevent text wrapping
+                'min-width': '200px',      // Ensure minimum width for readability
+                'max-width': '100%',       // Allow responsiveness
+                'overflow': 'hidden',      // Hide overflowing text
+                'text-overflow': 'ellipsis' // Display ellipsis for long text
+
+
             });
 
-            // Required field style
+            // Required field styling
             if (isRequired) {
                 fieldElement.css({ 'border-left': '4px solid red' });
             }
@@ -60,7 +72,6 @@ frappe.ui.form.on('Site', {
                     'box-shadow': '0 0 8px 0 rgba(0, 123, 255, 0.5)',
                     'background-color': '#ffffff'
                 });
-
                 if (isRequired) {
                     $(this).css({ 'border-left': '5px solid red' });
                 }
@@ -73,66 +84,27 @@ frappe.ui.form.on('Site', {
                     'box-shadow': 'none',
                     'background-color': '#ffffff'
                 });
-
                 if (isRequired) {
                     $(this).css({ 'border-left': '5px solid red' });
                 }
             });
         });
 
-        // Style the "feasibility_information" button
-        const feasibilityButton = frm.fields_dict['feasibility_information']?.wrapper;
-        if (feasibilityButton) {
-            const buttonElement = $(feasibilityButton).find('button');
-
-            buttonElement.css({
-                'background-color': '#008CBA', // Stable blue background
-                'border': 'none',
-                'color': 'white',
-                'padding': '10px 20px',
-                'text-align': 'center',
-                'text-decoration': 'none',
-                'font-size': '14px',
-                'margin': '4px 2px',
-                'cursor': 'pointer',
-                'border-radius': '12px', // Rounded corners
-                'transition': 'background-color 0.3s ease, box-shadow 0.3s ease',
-                'box-shadow': '0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06)', // Subtle shadow
-                'float': 'right', // Align button to the right
-                'margin-top': '-20px' // Moves the button slightly upwards
-            });
-
-            // Add hover effect
-            buttonElement.hover(
-                function () {
-                    // On hover: Use a lighter color
-                    $(this).css({
-                        'background-color': '#5ABBE8', // Light blue color
-                        'box-shadow': '0 6px 8px rgba(0,0,0,0.15), 0 4px 6px rgba(0,0,0,0.1)' // Slightly stronger shadow
-                    });
-                },
-                function () {
-                    // On hover out: Reset to the original color
-                    $(this).css({
-                        'background-color': '#008CBA',
-                        'box-shadow': '0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06)'
-                    });
-                }
-            );
-        }
-
-        // New Feature: Adding icons to specified fields
+        /* 
+        =============================
+        2. Adding Icons to Fields
+        =============================
+        */
         const fieldsWithIcons = [
-            { field: 'site_project_manager', icon: 'fa-user-o', topPosition: '70%' },
+            { field: 'site_name', icon: 'fa-user-o', topPosition: '70%' },
             { field: 'delivery_date', icon: 'fa-calendar', topPosition: '70%' },
-            { field: 'department', icon: 'fa-building-o', topPosition: '70%' },
-            { field: 'other_department', icon: 'fa-building-o', topPosition: '70%' },
-            { field: 'email_id', icon: 'fa-envelope-o', topPosition: '70%' },
-            { field: 'other_email_id', icon: 'fa-envelope-o', topPosition: '70%' },
-            { field: 'contact_mobile', icon: 'fa-mobile', topPosition: '70%' },
-            { field: 'other_mobile', icon: 'fa-mobile', topPosition: '70%' },
-            { field: 'contact_person', icon: 'fa-user-o', topPosition: '70%' },
-            { field: 'other_person', icon: 'fa-user-o', topPosition: '70%' }
+            { field: 'region', icon: 'fa-map-marker', topPosition: '70%' },
+            { field: 'customer', icon: 'fa-building-o', topPosition: '70%' },
+            { field: 'email', icon: 'fa-envelope-o', topPosition: '70%' },
+            { field: 'longitude', icon: 'fa-globe', topPosition: '70%' },
+            { field: 'latitude', icon: 'fa-globe', topPosition: '70%' },
+            { field: 'primary_contact', icon: 'fa-phone', topPosition: '70%' },
+            { field: 'alternate_contact', icon: 'fa-phone', topPosition: '70%' },
         ];
 
         fieldsWithIcons.forEach(function (config) {
@@ -150,5 +122,78 @@ frappe.ui.form.on('Site', {
                 `);
             }
         });
+
+        /* 
+        =============================
+        3. Styling Buttons
+        =============================
+        */
+        const buttons = ['provisioning_request', 'shipment_request', 'product_assigment', 'lms_request', 'feasibility_information'];
+        buttons.forEach(function (button) {
+            const buttonInput = frm.fields_dict[button]?.input;
+            if (!buttonInput) return;
+
+            $(buttonInput).css({
+                'background-color': '#FBA910',
+                'border-color': '#FBA910',
+                'color': 'white',
+                'border-radius': '5px',
+                'padding': '5px 15px',
+                'cursor': 'pointer',
+                'transition': '0.3s ease-in-out'
+            });
+
+            // Hover effect for buttons
+            $(buttonInput).hover(
+                function () {
+                    $(this).css({
+                        'background-color': '#e09b0c',
+                        'border-color': '#e09b0c'
+                    });
+                },
+                function () {
+                    $(this).css({
+                        'background-color': '#FBA910',
+                        'border-color': '#FBA910'
+                    });
+                }
+            );
+        });
+
+        /* 
+        =============================
+        4. Styling Sections
+        =============================
+        */
+        function styleSection(fieldname) {
+            const sectionWrapper = $(`[data-fieldname="${fieldname}"]`).closest('.form-section');
+            if (sectionWrapper.length) {
+                sectionWrapper.css({
+                    'background-color': '#f9f9f9',
+                    'border': '1px solid #007BFF',
+                    'border-radius': '8px',
+                    'padding': '15px',
+                    'margin-bottom': '20px',
+                });
+
+                sectionWrapper.find('.section-head').css({
+                    'background-color': '#1EBEF9',
+                    'color': '#fff',
+                    'padding': '10px',
+                    'font-weight': 'bold',
+                    'border-radius': '5px',
+                });
+            }
+        }
+
+        const sections = [
+            'project_request_section', 'site_address_section', 'site_contact_section', 'feasibility_section',
+            'site_information_section', 'section_break_xvmk', 'stock_live_update_section', 'project_section',
+            'solution_section', 'assigned_product_section', 'lms_section', 'delivery_challan_section',
+            'installation_information_section', 'product_section'
+        ];
+
+        // Apply styling to all sections
+        sections.forEach(styleSection);
     }
 });

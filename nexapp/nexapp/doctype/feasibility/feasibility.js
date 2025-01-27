@@ -1,27 +1,21 @@
-// Copyright (c) 2024, Nexapp Technologies Private Limited and contributors
-// For license information, please see license.txt
 frappe.ui.form.on('Feasibility', {
     refresh: function (frm) {
         const fields = [
             'site_information_tab', 'site_information_section', 'column_break_vfai', 
-            'site_name', 'customer', 'customer_request', 'please_rate_the_site', 
-            'feasibility_completed_date', 'column_break_zthd', 'circuit_id', 
-            'feasibility_project_manager', 'region', 'feasibility_status', 
-            'feasibility_remark', 'reason_for_partial_feasible', 
-            'reason_for_high_commercials', 'reason_for_not_feasible', 
-            'site_address_tab', 'site_adress_section', 'street', 'city', 
-            'country', 'longitude', 'column_break_owdc', 'pincode', 'district', 
-            'state', 'latitude', 'site_contact_tab', 'site_contact_section', 
-            'primary_contact', 'contact_person', 'contact_mobile', 'email_id', 
-            'designation', 'department', 'column_break_sqwp', 'alternate_contact', 
-            'other_person', 'other_mobile', 'other_email_id', 'other_designation', 
-            'other_department', 'solution_requiremnt_tab', 'solution_section', 
-            'order_type', 'solution', 'static_ip', 'lms_plan', 
+            'site_name', 'customer', 'customer_request', 'feasibility_completed_date', 
+            'region', 'column_break_zthd', 'circuit_id', 'feasibility_type', 
+            'exiting_circuit_id', 'feasibility_status', 'feasibility_remark', 
+            'reason_for_partial_feasible', 'reason_for_high_commercials', 'reason_for_not_feasible', 
+            'solution_section', 'solution', 'static_ip', 'no_of_static_ip_required', 
             'column_break_jyvg', 'primary_data_plan', 'secondary_data_plan', 
-            'phase', 'lms_plan_2', 'lms_provider_information_tab', 'lms_section', 
-            'lms_provider', 'amended_from', 'billing_information_tab', 
-            'sales_order', 'sales_order_date', 'column_break_jitn', 'bill_no', 
-            'bill_date', 'description'
+            'site_adress_section', 'site_type', 'street', 'city', 'country', 
+            'longitude', 'column_break_owdc', 'site_id__legal_code', 'pincode', 
+            'district', 'state', 'latitude', 'site_contact_section', 'primary_contact', 
+            'contact_html', 'column_break_vmnv', 'alternate_contact', 'contact_html2', 
+            'description_information_section', 'description', 'lms_provider_information_tab', 
+            'lms_provider_information_section', 'lms_provider', 'billing_information_ta', 
+            'sales_order_information_section', 'sales_order', 'column_break_jitn', 
+            'sales_order_date', 'amended_from', 'old_circuit_id_tab'
         ];
 
         fields.forEach(function (field) {
@@ -30,14 +24,19 @@ frappe.ui.form.on('Feasibility', {
 
                 const isDropdown = frm.fields_dict[field].df.fieldtype === 'Select';
 
-                fieldElement.css({
+                fieldElement.css({                  
                     'border': '1px solid #ccc',
                     'border-radius': '7px',
-                    'padding': isDropdown ? '5px 10px' : '5px',
+                    'padding': '10px',
                     'outline': 'none',
                     'background-color': '#ffffff',
                     'transition': '0.3s ease-in-out',
-                    'height': isDropdown ? 'auto' : 'initial'
+                    'height': '40px',
+                    'white-space': 'nowrap',
+                    'min-width': '200px',
+                    'max-width': '100%',
+                    'overflow': 'hidden',
+                    'text-overflow': 'ellipsis'
                 });
 
                 if (frm.fields_dict[field].df.reqd) {
@@ -80,15 +79,7 @@ frappe.ui.form.on('Feasibility', {
             const iconFields = [
                 { field: 'customer_request', icon: 'fa-calendar', topPosition: '70%' },
                 { field: 'feasibility_completed_date', icon: 'fa-calendar', topPosition: '70%' },
-                { field: 'feasibility_project_manager', icon: 'fa-user-o', topPosition: '50%' },
-                { field: 'contact_person', icon: 'fa-user-o', topPosition: '50%' },
-                { field: 'other_person', icon: 'fa-user-o', topPosition: '50%' },
-                { field: 'contact_mobile', icon: 'fa-mobile', topPosition: '50%' }, // Added for 'contact_mobile' field
-                { field: 'other_mobile', icon: 'fa-mobile', topPosition: '50%' }, // Added for 'other_mobile' field
-                { field: 'email_id', icon: 'fa-envelope-o', topPosition: '50%' }, // Added for 'email_id' field
-                { field: 'other_email_id', icon: 'fa-envelope-o', topPosition: '50%' }, // Added for 'other_email_id' field
-                { field: 'department', icon: 'fa-building-o', topPosition: '50%' }, // Added for 'department' field
-                { field: 'other_department', icon: 'fa-building-o', topPosition: '50%' } // Added for 'other_department' field
+                { field: 'feasibility_project_manager', icon: 'fa-user-o', topPosition: '50%' }
             ];
 
             iconFields.forEach(({ field, icon, topPosition }) => {
@@ -97,11 +88,11 @@ frappe.ui.form.on('Feasibility', {
 
                 // Wrap the input field and add the icon inside the input box
                 inputField.wrap('<div class="input-icon-right-wrapper"></div>');
-                inputField.after(`
-                    <span class="input-icon-right" style="position: absolute; right: 10px; top: ${topPosition}; transform: translateY(-50%);">
+                inputField.after(
+                    `<span class="input-icon-right" style="position: absolute; right: 10px; top: ${topPosition}; transform: translateY(-50%);">
                         <i class="fa ${icon}" aria-hidden="true"></i>
-                    </span>
-                `);
+                    </span>`
+                );
             });
         }, 500);
     },
@@ -116,7 +107,6 @@ frappe.ui.form.on('Feasibility', {
         }
     },
 
-    
     customer_request: function (frm) {
         if (frm.doc.customer_request) {
             const today = frappe.datetime.now_date(); // Get today's date

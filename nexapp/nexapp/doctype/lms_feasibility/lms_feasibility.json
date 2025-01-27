@@ -3,6 +3,7 @@
  "allow_rename": 1,
  "creation": "2025-01-08 21:46:33.856805",
  "doctype": "DocType",
+ "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "circuit_id",
@@ -34,7 +35,6 @@
    "fetch_from": "circuit_id.lms_bandwith",
    "fieldname": "lms_bandwith",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "label": "LMS Bandwith",
    "options": "LMS Plan"
   },
@@ -50,7 +50,6 @@
    "fetch_from": "circuit_id.media",
    "fieldname": "media",
    "fieldtype": "Select",
-   "in_list_view": 1,
    "label": "Media",
    "options": "\nWired\nRF\n4G\n5G"
   },
@@ -120,6 +119,7 @@
   {
    "fieldname": "circuit_id",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Circuit ID",
    "options": "LMS"
   }
@@ -127,7 +127,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-16 18:48:07.501092",
+ "modified": "2025-01-26 22:56:42.090197",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "LMS Feasibility",

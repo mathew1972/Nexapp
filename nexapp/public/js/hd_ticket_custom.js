@@ -1,4 +1,4 @@
-frappe.ui.form.on('Sales Order', {
+frappe.ui.form.on('HD Ticket', {
     refresh: function(frm) {
         const fields = [
             'subject_section', 'custom_circuit_id', 'custom_ticket_category', 
@@ -18,10 +18,7 @@ frappe.ui.form.on('Sales Order', {
             'reference_tab', 'feedback_tab', 'customer_feedback_section', 'feedback_rating', 
             'feedback_text', 'feedback', 'feedback_extra', 'custom_finance_issue', '',
             'custom__finance_expected_end_date_', 'custom_department', 'custom_finance_task_details',
-            'meta_tab', 'po_no', 'po_date', 'custom_customer_purchase_amount', 'delivery_date',
-            'order_type', 'transaction_date', 'cost_center', 'project', 'custom_project_name',
-            'total_qty', 'tax_category', 'taxes_and_charges', 'apply_discount_on', 'base_discount_amount',
-            'additional_discount_percentage', 'discount_amount', 'coupon_code', 'payment_terms_template'
+            'meta_tab'
         ];
 
         // Style individual fields
@@ -63,62 +60,5 @@ frappe.ui.form.on('Sales Order', {
                 });
             }
         });
-
-        // Function to style sections
-        function styleSection(fieldname) {
-            const section_wrapper = $(`[data-fieldname="${fieldname}"]`).closest('.form-section');
-            if (section_wrapper.length) {
-                section_wrapper.css({
-                    'background-color': '#f9f9f9',
-                    'border': '1px solid #007BFF',
-                    'border-radius': '8px',
-                    'padding': '15px',
-                    'margin-bottom': '20px',
-                });
-
-                section_wrapper.find('.section-head').css({
-                    'background-color': '#1EBEF9',
-                    'color': '#fff',
-                    'padding': '10px',
-                    'font-weight': 'bold',
-                    'border-radius': '5px',
-                });
-            }
-        }
-
-        // Sections to style
-        const sections = [
-            'customer_section',
-            'accounting_dimensions_section',
-            'currency_and_price_list',
-            'sec_warehouse',
-            'items_section',
-            'section_break_31',
-            'taxes_section',
-            'section_break_40',
-            'section_break_43',
-            'totals',
-            'section_break_48',
-            'sec_tax_breakup',
-            'section_gst_breakup',
-            'packing_list',
-            'pricing_rule_details',
-            'billing_address_column',
-            'shipping_address_column',
-            'col_break46',
-            'payment_terms_section',
-            'terms_section_break',
-            'section_break_78',
-            'sales_team_section_break',
-            'section_break1',
-            'loyalty_points_redemption',
-            'subscription_section',
-            'printing_details',
-            'additional_info_section',
-            'gst_section'
-        ];
-
-        // Apply styling to sections
-        sections.forEach(styleSection);
     },
 });

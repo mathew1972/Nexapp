@@ -16,16 +16,18 @@
   "customer",
   "customer_request",
   "feasibility_completed_date",
+  "region",
+  "site_type",
   "column_break_zthd",
   "circuit_id",
   "feasibility_type",
   "exiting_circuit_id",
   "feasibility_status",
-  "region",
   "feasibility_remark",
   "reason_for_partial_feasible",
   "reason_for_high_commercials",
   "reason_for_not_feasible",
+  "site_id__legal_code",
   "solution_section",
   "solution",
   "static_ip",
@@ -34,37 +36,28 @@
   "primary_data_plan",
   "secondary_data_plan",
   "site_adress_section",
-  "site_type",
   "street",
   "city",
   "country",
   "longitude",
   "column_break_owdc",
-  "site_id__legal_code",
   "pincode",
   "district",
   "state",
   "latitude",
   "site_contact_section",
   "primary_contact",
-  "contact_person",
-  "contact_mobile",
-  "email_id",
-  "designation",
-  "department",
-  "column_break_sqwp",
+  "contact_html",
+  "column_break_vmnv",
   "alternate_contact",
-  "other_person",
-  "other_mobile",
-  "other_email_id",
-  "other_designation",
-  "other_department",
+  "contact_html2",
   "description_information_section",
   "description",
   "lms_provider_information_tab",
-  "lms_section",
+  "lms_provider_information_section",
   "lms_provider",
   "billing_information_ta",
+  "sales_order_information_section",
   "sales_order",
   "column_break_jitn",
   "sales_order_date",
@@ -127,35 +120,6 @@
    "label": "Solution",
    "options": "Solution",
    "reqd": 1
-  },
-  {
-   "fieldname": "contact_person",
-   "fieldtype": "Data",
-   "label": "Contact Person",
-   "reqd": 1
-  },
-  {
-   "default": "+91-",
-   "fieldname": "contact_mobile",
-   "fieldtype": "Data",
-   "label": "Contact Mobile",
-   "reqd": 1
-  },
-  {
-   "fieldname": "email_id",
-   "fieldtype": "Data",
-   "label": "Email ID"
-  },
-  {
-   "fieldname": "other_person",
-   "fieldtype": "Data",
-   "label": "Contact Person"
-  },
-  {
-   "default": "+91-",
-   "fieldname": "other_mobile",
-   "fieldtype": "Data",
-   "label": "Contact Mobile"
   },
   {
    "fieldname": "primary_data_plan",
@@ -221,11 +185,6 @@
    "reqd": 1
   },
   {
-   "fieldname": "other_email_id",
-   "fieldtype": "Data",
-   "label": "Email ID"
-  },
-  {
    "fieldname": "customer_request",
    "fieldtype": "Date",
    "label": "Customer request",
@@ -250,30 +209,6 @@
    "reqd": 1
   },
   {
-   "fieldname": "designation",
-   "fieldtype": "Link",
-   "label": "Designation",
-   "options": "Designation"
-  },
-  {
-   "fieldname": "other_designation",
-   "fieldtype": "Link",
-   "label": "Designation",
-   "options": "Designation"
-  },
-  {
-   "fieldname": "department",
-   "fieldtype": "Link",
-   "label": "Department",
-   "options": "Department"
-  },
-  {
-   "fieldname": "other_department",
-   "fieldtype": "Link",
-   "label": "Department",
-   "options": "Department"
-  },
-  {
    "depends_on": "eval:doc.feasibility_status==\"Feasible\"",
    "fieldname": "feasibility_remark",
    "fieldtype": "Small Text",
@@ -282,10 +217,6 @@
   },
   {
    "fieldname": "column_break_owdc",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_sqwp",
    "fieldtype": "Column Break"
   },
   {
@@ -298,12 +229,9 @@
    "label": "LMS Provider "
   },
   {
-   "fieldname": "lms_section",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "site_contact_section",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Contact Information"
   },
   {
    "fieldname": "solution_section",
@@ -350,14 +278,17 @@
    "max_height": "80px"
   },
   {
+   "bold": 1,
    "fieldname": "primary_contact",
-   "fieldtype": "Heading",
-   "label": "Primary Contact"
+   "fieldtype": "Link",
+   "label": "Primary Contact",
+   "options": "Contact"
   },
   {
    "fieldname": "alternate_contact",
-   "fieldtype": "Heading",
-   "label": "Alternate Contact"
+   "fieldtype": "Link",
+   "label": "Alternate Contact",
+   "options": "Contact"
   },
   {
    "fieldname": "site_information_tab",
@@ -443,6 +374,30 @@
    "fieldname": "old_circuit_id_tab",
    "fieldtype": "Tab Break",
    "label": "Old Circuit ID"
+  },
+  {
+   "fieldname": "contact_html",
+   "fieldtype": "HTML",
+   "label": "Contact HTML"
+  },
+  {
+   "fieldname": "column_break_vmnv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "contact_html2",
+   "fieldtype": "HTML",
+   "label": "Contact HTML2"
+  },
+  {
+   "fieldname": "sales_order_information_section",
+   "fieldtype": "Section Break",
+   "label": "Sales Order Information"
+  },
+  {
+   "fieldname": "lms_provider_information_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Provider Information"
   }
  ],
  "icon": "fa fa-file-text",
@@ -450,7 +405,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2025-01-23 16:33:23.621707",
+ "modified": "2025-01-26 22:50:46.111223",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",

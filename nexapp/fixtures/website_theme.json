@@ -16,14 +16,14 @@
   "ignored_apps": [],
   "js": null,
   "light_color": null,
-  "modified": "2025-01-09 12:35:00.530319",
+  "modified": "2025-01-25 13:01:44.439183",
   "module": "Nexapp",
   "name": "Nexapp",
   "primary_color": null,
   "text_color": null,
   "theme": "Nexapp",
   "theme_scss": "\n@import url(\"https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;500;600;700;800&display=swap\");\n// backward compatibility. deprecated in v15\n$font-family-sans-serif: \"Merriweather\", \"InterVariable\", \"Inter\", -apple-system, BlinkMacSystemFont,\n\t\"Segoe UI\", \"Roboto\", \"Oxygen\", \"Ubuntu\", \"Cantarell\", \"Fira Sans\",\n\t\"Droid Sans\", \"Helvetica Neue\", sans-serif;\n\n// override font stack if custom font is set in website theme\n:root {\n\t--font-stack: \"Merriweather\", \"InterVariable\", \"Inter\", -apple-system, BlinkMacSystemFont,\n\t\"Segoe UI\", \"Roboto\", \"Oxygen\", \"Ubuntu\", \"Cantarell\", \"Fira Sans\",\n\t\"Droid Sans\", \"Helvetica Neue\", sans-serif !important;\n}\n$enable-shadows: false;\n$enable-gradients: false;\n$enable-rounded: true;\n\n// Bootstrap Variable Overrides\n\n\n// Import themes from installed apps\n@import \"frappe/public/scss/website.bundle\";\n@import \"erpnext/public/scss/website\";\n\n\n\n// Custom Theme\n.navbar-light {\n    border-bottom: 1px solid #e2e2e2;\n    background: #313949;\n}\n\n.navbar-light .navbar-nav .nav-link {\n    color: #FFFFFF;\n    font-size: .875rem;\n    font-weight: 500;\n}\n\n.btn.btn-primary {\n    background-color: #F39D17;\n    color: var(--neutral);\n    white-space: nowrap;\n    --icon-stroke: currentColor;\n    --icon-fill-bg: var(--btn-primary);\n}\n\n.web-footer {\n    padding: 3rem 0;\n    min-height: 140px;\n    background-color: #313949;\n    border-top: 1px solid #e2e2e2;\n    margin-top: auto;\n}\n\n.footer-info {\n    color: #FFFFFF;\n    font-size: .875rem;\n}\n\n\n:root {\n\t}\n",
-  "theme_url": "/files/website_theme/nexapp_9778e4f6.css"
+  "theme_url": "/files/website_theme/nexapp_e545caec.css"
  },
  {
   "background_color": null,
