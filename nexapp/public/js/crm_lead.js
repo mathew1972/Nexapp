@@ -1,20 +1,13 @@
-frappe.ui.form.on('Feasibility', {
+frappe.ui.form.on('CRM Lead', {
     refresh: function(frm) {
         const fields = [
-            'site_name', 'customer', 'customer_request', 'feasibility_completed_date', 
-            'region', 'circuit_id', 'feasibility_type', 
-            'exiting_circuit_id', 'feasibility_status', 'feasibility_remark', 
-            'reason_for_partial_feasible', 'reason_for_high_commercials', 'reason_for_not_feasible', 
-            'solution', 'static_ip', 'no_of_static_ip_required', 
-            'primary_data_plan', 'secondary_data_plan', 
-            'site_type', 'street', 'city', 'country', 
-            'longitude', 'site_id__legal_code', 'pincode', 
-            'district', 'state', 'latitude', 'primary_contact', 
-            'contact_html', 'alternate_contact', 'contact_html2', 
-            'description',  
-            'lms_provider',  
-            'sales_order', 
-            'sales_order_date', 'amended_from'
+            'details', 'lead_owner', 'organization', 'website', 'source', 'custom_qualified_on',
+            'status', 'job_title', 'territory', 'industry', 'custom_linkedin_possible_profile',
+            'first_name', 'last_name', 'mobile_no', 'salutation', 'email',
+            'lead_name', 'naming_series', 'gender', 'phone', 'middle_name',
+            'no_of_employees', 'annual_revenue', 'image', 'converted',
+            'sla', 'sla_creation', 'sla_status', 'communication_status',
+            'response_by', 'first_response_time', 'first_responded_on'
         ];
 
         fields.forEach(function(field) {
@@ -80,22 +73,25 @@ frappe.ui.form.on('Feasibility', {
     }
 });
 
-//before_save: function (frm) {
-  //  const statuses = ['Feasible', 'Partial Feasible', 'Not Feasible', 'High Commercials'];
-   // if (statuses.includes(frm.doc.feasibility_status)) {
-        // Update the feasibility_completed_date to the current date and time
-    //    frm.set_value('feasibility_completed_date', frappe.datetime.now_datetime());
-    //} else if (frm.doc.feasibility_status === 'Pending') {
-      //  frappe.throw(__('The document cannot be submitted as the status is "Pending".'));
-    //}
-//},
+frappe.ui.form.on('CRM Deal', {
+    custom_stage: function(frm) {
+        update_probability_and_revenue(frm);
+    },
+    custom_deal_amount: function(frm) {
+        update_probability_and_revenue(frm);
+    }
+});
 
-//customer_request: function (frm) {
-  //  if (frm.doc.customer_request) {
-  //      const today = frappe.datetime.now_date(); // Get today's date
-  //      if (frm.doc.customer_request > today) {
-  //          frappe.msgprint(__('The Customer Request date cannot be greater than today.'));
-  //          frm.set_value('customer_request', null); // Clear the field
-   //     }
-  //  }
-//}
+function update_probability_and_revenue(frm) {
+    let probability_map = {
+        "Qualification": 10,
+        "Needs Analysis": 20,
+        "Value Proposition": 40,
+        "Identifying Decision Makers": 60,
+        "Proposal/Price Quote": 75,
+        "Negotiation/Review": 90,
+        "Close Won": 100,
+        "Close Drop": 0,
+        "Close Loss to Competition": 0
+    };
+}

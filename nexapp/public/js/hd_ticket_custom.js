@@ -7,7 +7,7 @@ frappe.ui.form.on('HD Ticket', {
             'custom_ticket_for', 'status', 'ticket_type', 'raised_by', 'ticket_split_from', 
             'custom_impact_details', 'custom_channel', 'custom_lms', 
             'custom_provisioning', 'additional_info', 'contact', 'email_account', 
-            'column_break_16', 'via_customer_portal', 'attachment', 'content_type', 
+            'column_break_16', 'attachment', 'content_type', 
             'sb_details', 'subject', 'description', 'template', 'sla_tab', 
             'service_level_section', 'sla', 'response_by', 'cb', 'agreement_status', 
             'resolution_by', 'service_level_agreement_creation', 'on_hold_since', 

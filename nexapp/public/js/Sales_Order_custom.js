@@ -1,124 +1,88 @@
 frappe.ui.form.on('Sales Order', {
     refresh: function(frm) {
         const fields = [
-            'subject_section', 'custom_circuit_id', 'custom_ticket_category', 
-            'custom_ticket_sub_category', 'custom_ticket_owner', 'custom_impact', 
-            'customer', 'priority', 'agent_group', 'custom_lms_ticket_id', 'cb00', 
-            'custom_ticket_for', 'status', 'ticket_type', 'raised_by', 'ticket_split_from', 
-            'custom_impact_details', 'custom_channel', 'custom_lms', 
-            'custom_provisioning', 'additional_info', 'contact', 'email_account', 
-            'column_break_16', 'via_customer_portal', 'attachment', 'content_type', 
-            'sb_details', 'subject', 'description', 'template', 'sla_tab', 
-            'service_level_section', 'sla', 'response_by', 'cb', 'agreement_status', 
-            'resolution_by', 'service_level_agreement_creation', 'on_hold_since', 
-            'total_hold_time', 'response_tab', 'response', 'first_response_time', 
-            'first_responded_on', 'column_break_26', 'avg_response_time', 'resolution_tab', 
-            'section_break_19', 'resolution_details', 'column_break1', 'opening_date', 
-            'opening_time', 'resolution_date', 'resolution_time', 'user_resolution_time', 
-            'reference_tab', 'feedback_tab', 'customer_feedback_section', 'feedback_rating', 
-            'feedback_text', 'feedback', 'feedback_extra', 'custom_finance_issue', '',
-            'custom__finance_expected_end_date_', 'custom_department', 'custom_finance_task_details',
-            'meta_tab', 'po_no', 'po_date', 'custom_customer_purchase_amount', 'delivery_date',
-            'order_type', 'transaction_date', 'cost_center', 'project', 'custom_project_name',
-            'total_qty', 'tax_category', 'taxes_and_charges', 'apply_discount_on', 'base_discount_amount',
-            'additional_discount_percentage', 'discount_amount', 'coupon_code', 'payment_terms_template'
+            'title', 'customer', 'customer_name', 'tax_id', 'order_type', 'transaction_date',
+            'po_no', 'po_date', 'custom_customer_purchase_amount', 'company', 'skip_delivery_note', 'is_reverse_charge', 
+            'is_export_with_gst', 'amended_from', 'delivery_date', 'cost_center', 'project', 'custom_project_name', 
+            'currency_and_price_list', 'currency', 'conversion_rate', 'selling_price_list', 'price_list_currency', 
+            'plc_conversion_rate', 'ignore_pricing_rule', 'sec_warehouse', 'naming_series', 'scan_barcode', 'set_warehouse', 
+            'reserve_stock', 'items', 'total_qty', 'total_net_weight', 'base_total', 'base_net_total', 'total', 'net_total', 
+            'tax_category', 'taxes_and_charges', 'shipping_rule', 'incoterm', 'named_place', 'taxes', 'base_total_taxes_and_charges', 
+            'total_taxes_and_charges', 'totals', 'base_grand_total', 'base_rounding_adjustment', 'base_rounded_total', 'base_in_words', 
+            'grand_total', 'rounding_adjustment', 'rounded_total', 'in_words', 'advance_paid', 'disable_rounded_total', 
+            'apply_discount_on', 'base_discount_amount', 'coupon_code', 'additional_discount_percentage', 'discount_amount', 
+            'other_charges_calculation', 'packing_list', 'packed_items', 'pricing_rule_details', 'pricing_rules', 'contact_info', 
+            'billing_address_column', 'customer_address', 'address_display', 'billing_address_gstin', 'gst_category', 'place_of_supply', 
+            'customer_group', 'territory', 'contact_person', 'contact_display', 'contact_phone', 'contact_mobile', 'contact_email', 
+            'shipping_address_column', 'shipping_address_name', 'shipping_address', 'dispatch_address_name', 'dispatch_address', 
+            'company_address', 'company_gstin', 'company_address_display', 'company_contact_person', 'payment_terms_template', 
+            'payment_schedule', 'tc_name', 'terms', 'more_info', 'status', 'delivery_status', 'per_delivered', 'per_billed', 'per_picked', 
+            'billing_status', 'sales_partner', 'amount_eligible_for_commission', 'commission_rate', 'total_commission', 'sales_team', 
+            'loyalty_points_redemption', 'loyalty_points', 'loyalty_amount', 'from_date', 'to_date', 'auto_repeat', 'update_auto_repeat_reference', 
+            'printing_details', 'letter_head', 'group_same_items', 'select_print_heading', 'language', 'is_internal_customer', 
+            'represents_company', 'source', 'inter_company_order_reference', 'campaign', 'party_account_currency', 
+            'ecommerce_supply_type', 'ecommerce_gstin'
         ];
 
-        // Style individual fields
         fields.forEach(function(field) {
             if (frm.fields_dict[field]) {
                 const fieldElement = $(frm.fields_dict[field].wrapper).find('input, textarea, select');
 
-                // Apply styles to increase height
-                fieldElement.css({
-                    'border': '1px solid #ccc',
-                    'border-radius': '7px',
-                    'padding': '10px',         // Increased padding for more height
-                    'outline': 'none',
-                    'background-color': '#ffffff',
-                    'transition': '0.3s ease-in-out',
-                    'height': '40px',          // Increased height explicitly
-                    'white-space': 'nowrap',   // Prevent text wrapping
-                    'min-width': '200px',      // Ensure minimum width for readability
-                    'max-width': '100%',       // Allow responsiveness
-                    'overflow': 'hidden',      // Hide overflowing text
-                    'text-overflow': 'ellipsis' // Display ellipsis for long text
-                });
-
-                // Apply focus and blur effects
-                fieldElement.on('focus', function() {
-                    $(this).css({
-                        'border': '1px solid #80bdff',
-                        'box-shadow': '0 0 8px 0 rgba(0, 123, 255, 0.5)',
-                        'background-color': '#ffffff'
+                if (frm.fields_dict[field].df.reqd) {
+                    fieldElement.css({
+                        'border': '1px solid #ccc',
+                        'border-left': '4px solid red',
+                        'border-radius': '7px',
+                        'padding': '5px',
+                        'outline': 'none',
+                        'background-color': '#ffffff',
+                        'transition': '0.3s ease-in-out'
                     });
+                } else {
+                    fieldElement.css({
+                        'border': '1px solid #ccc',
+                        'border-radius': '7px',
+                        'padding': '5px',
+                        'outline': 'none',
+                        'background-color': '#ffffff',
+                        'transition': '0.3s ease-in-out'
+                    });
+                }
+
+                fieldElement.on('focus', function() {
+                    if (frm.fields_dict[field].df.reqd) {
+                        $(this).css({
+                            'border': '1px solid #80bdff',
+                            'border-left': '5px solid red',
+                            'box-shadow': '0 0 8px 0 rgba(0, 123, 255, 0.5)',
+                            'background-color': '#ffffff'
+                        });
+                    } else {
+                        $(this).css({
+                            'border': '1px solid #80bdff',
+                            'box-shadow': '0 0 8px 0 rgba(0, 123, 255, 0.5)',
+                            'background-color': '#ffffff'
+                        });
+                    }
                 });
 
                 fieldElement.on('blur', function() {
-                    $(this).css({
-                        'border': '1px solid #ccc',
-                        'box-shadow': 'none',
-                        'background-color': '#ffffff'
-                    });
+                    if (frm.fields_dict[field].df.reqd) {
+                        $(this).css({
+                            'border': '1px solid #ccc',
+                            'border-left': '5px solid red',
+                            'box-shadow': 'none',
+                            'background-color': '#ffffff'
+                        });
+                    } else {
+                        $(this).css({
+                            'border': '1px solid #ccc',
+                            'box-shadow': 'none',
+                            'background-color': '#ffffff'
+                        });
+                    }
                 });
             }
         });
-
-        // Function to style sections
-        function styleSection(fieldname) {
-            const section_wrapper = $(`[data-fieldname="${fieldname}"]`).closest('.form-section');
-            if (section_wrapper.length) {
-                section_wrapper.css({
-                    'background-color': '#f9f9f9',
-                    'border': '1px solid #007BFF',
-                    'border-radius': '8px',
-                    'padding': '15px',
-                    'margin-bottom': '20px',
-                });
-
-                section_wrapper.find('.section-head').css({
-                    'background-color': '#1EBEF9',
-                    'color': '#fff',
-                    'padding': '10px',
-                    'font-weight': 'bold',
-                    'border-radius': '5px',
-                });
-            }
-        }
-
-        // Sections to style
-        const sections = [
-            'customer_section',
-            'accounting_dimensions_section',
-            'currency_and_price_list',
-            'sec_warehouse',
-            'items_section',
-            'section_break_31',
-            'taxes_section',
-            'section_break_40',
-            'section_break_43',
-            'totals',
-            'section_break_48',
-            'sec_tax_breakup',
-            'section_gst_breakup',
-            'packing_list',
-            'pricing_rule_details',
-            'billing_address_column',
-            'shipping_address_column',
-            'col_break46',
-            'payment_terms_section',
-            'terms_section_break',
-            'section_break_78',
-            'sales_team_section_break',
-            'section_break1',
-            'loyalty_points_redemption',
-            'subscription_section',
-            'printing_details',
-            'additional_info_section',
-            'gst_section'
-        ];
-
-        // Apply styling to sections
-        sections.forEach(styleSection);
-    },
+    }
 });

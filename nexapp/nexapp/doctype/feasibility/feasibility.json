@@ -38,12 +38,12 @@
   "site_adress_section",
   "street",
   "city",
-  "country",
   "longitude",
   "column_break_owdc",
   "pincode",
   "district",
   "state",
+  "country",
   "latitude",
   "site_contact_section",
   "primary_contact",
@@ -89,6 +89,7 @@
   {
    "fieldname": "longitude",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Longitude"
   },
   {
@@ -112,6 +113,7 @@
   {
    "fieldname": "latitude",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Latitude"
   },
   {
@@ -405,7 +407,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2025-01-26 22:50:46.111223",
+ "modified": "2025-02-02 22:34:46.446318",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",
