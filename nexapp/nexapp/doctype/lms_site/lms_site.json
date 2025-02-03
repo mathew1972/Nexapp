@@ -30,7 +30,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "LMS Supplier",
-   "options": "LMS"
+   "options": "Lastmile Services"
   },
   {
    "columns": 2,
@@ -131,13 +131,13 @@
    "fieldname": "circuit_id",
    "fieldtype": "Link",
    "label": "Circuit ID",
-   "options": "LMS"
+   "options": "Lastmile Services"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-16 11:58:53.092028",
+ "modified": "2025-02-03 16:32:02.518955",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "LMS Site",

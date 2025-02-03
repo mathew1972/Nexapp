@@ -1,0 +1,58 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-02-03 18:08:08.434972",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "circuit_id",
+  "site_name",
+  "solution",
+  "sales_order_no"
+ ],
+ "fields": [
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Circuit ID ",
+   "link_filters": "[[\"Feasibility\",\"feasibility_status\",\"=\",\"Feasible\"]]",
+   "options": "Feasibility"
+  },
+  {
+   "fetch_from": "circuit_id.site_name",
+   "fieldname": "site_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Site Name"
+  },
+  {
+   "fetch_from": "circuit_id.solution2",
+   "fieldname": "solution",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Solution"
+  },
+  {
+   "fetch_from": "circuit_id.sales_order",
+   "fieldname": "sales_order_no",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Sales Order No",
+   "options": "Sales Order"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-02-03 18:35:09.625683",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Task Circuit ID",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

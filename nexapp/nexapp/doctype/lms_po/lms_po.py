@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class LMS(Document):
+class LMSPO(Document):
 	pass

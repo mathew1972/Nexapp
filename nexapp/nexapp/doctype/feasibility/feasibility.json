@@ -30,11 +30,14 @@
   "site_id__legal_code",
   "solution_section",
   "solution",
+  "solution2",
   "static_ip",
   "no_of_static_ip_required",
   "column_break_jyvg",
   "primary_data_plan",
   "secondary_data_plan",
+  "managed_services",
+  "config_type",
   "site_adress_section",
   "street",
   "city",
@@ -56,6 +59,38 @@
   "lms_provider_information_tab",
   "lms_provider_information_section",
   "lms_provider",
+  "wireless_feasibility_tab",
+  "operator_1",
+  "column_break_egtn",
+  "3g1",
+  "column_break_clqn",
+  "4g1",
+  "column_break_vqeh",
+  "5g1",
+  "section_break_psyg",
+  "operator_2",
+  "column_break_yoat",
+  "3g2",
+  "column_break_idcq",
+  "4g2",
+  "column_break_jxgc",
+  "5g2",
+  "section_break_onqb",
+  "operator_3",
+  "column_break_poqj",
+  "3g3",
+  "column_break_rlpl",
+  "4g3",
+  "column_break_aytl",
+  "5g3",
+  "section_break_gedy",
+  "operator_4",
+  "column_break_yfzh",
+  "3g4",
+  "column_break_xffk",
+  "4g4",
+  "column_break_qhxd",
+  "5g4",
   "billing_information_ta",
   "sales_order_information_section",
   "sales_order",
@@ -127,13 +162,13 @@
    "fieldname": "primary_data_plan",
    "fieldtype": "Link",
    "label": "Primary Data Plan",
-   "options": "Data Plan"
+   "options": "Item"
   },
   {
    "fieldname": "secondary_data_plan",
    "fieldtype": "Link",
    "label": "Secondary Data Plan",
-   "options": "Data Plan"
+   "options": "Item"
   },
   {
    "fieldname": "static_ip",
@@ -228,7 +263,7 @@
   {
    "fieldname": "lms_provider_information_tab",
    "fieldtype": "Tab Break",
-   "label": "LMS Provider "
+   "label": "LMS Feasibility"
   },
   {
    "fieldname": "site_contact_section",
@@ -284,7 +319,8 @@
    "fieldname": "primary_contact",
    "fieldtype": "Link",
    "label": "Primary Contact",
-   "options": "Contact"
+   "options": "Contact",
+   "reqd": 1
   },
   {
    "fieldname": "alternate_contact",
@@ -337,13 +373,14 @@
    "depends_on": "eval:doc.static_ip==\"Yes\"",
    "fieldname": "no_of_static_ip_required",
    "fieldtype": "Data",
-   "label": "No of Static IP Required"
+   "label": "Nos of Static IP Required"
   },
   {
    "fieldname": "site_type",
    "fieldtype": "Link",
    "label": "Site Type",
-   "options": "Site Type"
+   "options": "Site Type",
+   "reqd": 1
   },
   {
    "fieldname": "site_id__legal_code",
@@ -363,14 +400,17 @@
    "default": "Service",
    "fieldname": "feasibility_type",
    "fieldtype": "Select",
-   "label": "Feasibility Type",
-   "options": "\nService\nUpgrade\nDegrade\nShifting"
+   "label": "Order Type",
+   "options": "\nService\nUpgrade\nDegrade\nShifting",
+   "reqd": 1
   },
   {
+   "depends_on": "eval:doc.feasibility_type!=\"Service\"",
    "fieldname": "exiting_circuit_id",
    "fieldtype": "Link",
    "label": "Exiting Circuit ID",
-   "options": "Feasibility"
+   "link_filters": "[[\"Site\",\"site_status\",\"=\",\"Delivered\"],[\"Site\",\"customer\",\"=\",\"eval:doc.customer\"],[\"Site\",\"customer_type\",\"=\",\"Paid Customer\"]]",
+   "options": "Site"
   },
   {
    "fieldname": "old_circuit_id_tab",
@@ -400,6 +440,190 @@
    "fieldname": "lms_provider_information_section",
    "fieldtype": "Section Break",
    "label": "LMS Provider Information"
+  },
+  {
+   "fieldname": "wireless_feasibility_tab",
+   "fieldtype": "Tab Break",
+   "label": "Wireless Feasibility"
+  },
+  {
+   "fieldname": "operator_1",
+   "fieldtype": "Link",
+   "label": "Operator 1",
+   "link_filters": "[[\"Supplier\",\"supplier_group\",\"=\",\"Simcard\"]]",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "column_break_egtn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "3g1",
+   "fieldtype": "Check",
+   "label": "3G"
+  },
+  {
+   "fieldname": "column_break_clqn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "4g1",
+   "fieldtype": "Check",
+   "label": "4G"
+  },
+  {
+   "fieldname": "column_break_vqeh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "5g1",
+   "fieldtype": "Check",
+   "label": "5G"
+  },
+  {
+   "fieldname": "section_break_psyg",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "operator_2",
+   "fieldtype": "Link",
+   "label": "Operator 2",
+   "link_filters": "[[\"Supplier\",\"supplier_group\",\"=\",\"Simcard\"]]",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "column_break_yoat",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_idcq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "4g2",
+   "fieldtype": "Check",
+   "label": "4G"
+  },
+  {
+   "fieldname": "column_break_jxgc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "5g2",
+   "fieldtype": "Check",
+   "label": "5G "
+  },
+  {
+   "fieldname": "section_break_onqb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "operator_3",
+   "fieldtype": "Link",
+   "label": "Operator 3",
+   "link_filters": "[[\"Supplier\",\"supplier_group\",\"=\",\"Simcard\"]]",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "column_break_poqj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "3g3",
+   "fieldtype": "Check",
+   "label": "3G"
+  },
+  {
+   "fieldname": "column_break_rlpl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "4g3",
+   "fieldtype": "Check",
+   "label": "4G"
+  },
+  {
+   "fieldname": "column_break_aytl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "5g3",
+   "fieldtype": "Check",
+   "label": "5G"
+  },
+  {
+   "fieldname": "section_break_gedy",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "operator_4",
+   "fieldtype": "Link",
+   "label": "Operator 4",
+   "link_filters": "[[\"Supplier\",\"supplier_group\",\"=\",\"Simcard\"]]",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "column_break_yfzh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "3g4",
+   "fieldtype": "Check",
+   "label": "3G "
+  },
+  {
+   "fieldname": "column_break_xffk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "4g4",
+   "fieldtype": "Check",
+   "label": "4G"
+  },
+  {
+   "fieldname": "column_break_qhxd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "5g4",
+   "fieldtype": "Check",
+   "label": "5G"
+  },
+  {
+   "default": "0",
+   "fieldname": "3g2",
+   "fieldtype": "Check",
+   "label": "3G"
+  },
+  {
+   "fieldname": "solution2",
+   "fieldtype": "Link",
+   "label": "Solution2",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "managed_services",
+   "fieldtype": "Select",
+   "label": "Managed Services",
+   "options": "\nProactive\nReactive"
+  },
+  {
+   "fieldname": "config_type",
+   "fieldtype": "Select",
+   "label": "Config Type",
+   "options": "\nOnsite Installation\nRemote Config"
   }
  ],
  "icon": "fa fa-file-text",
@@ -407,7 +631,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2025-02-02 22:34:46.446318",
+ "modified": "2025-02-03 20:38:26.686108",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",

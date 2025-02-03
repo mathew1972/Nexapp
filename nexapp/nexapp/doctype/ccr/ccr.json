@@ -8,15 +8,16 @@
  "field_order": [
   "meeting",
   "customer_name",
-  "start_date_and_time",
   "contact",
+  "other_travellers",
+  "opportunity",
   "transport_type",
   "column_break_jjiq",
   "ccr_owner",
   "customer_type",
+  "start_date_and_time",
   "end_date_and_time",
-  "other_travellers",
-  "opportunity",
+  "deal",
   "section_break_jxcn",
   "remarks_and_description"
  ],
@@ -37,6 +38,7 @@
    "options": "User"
   },
   {
+   "fetch_from": "contact.company_name",
    "fieldname": "customer_name",
    "fieldtype": "Link",
    "label": "Customer Name",
@@ -58,8 +60,10 @@
   },
   {
    "fieldname": "contact",
-   "fieldtype": "Data",
-   "label": "Contact "
+   "fieldtype": "Link",
+   "label": "Contact ",
+   "link_filters": "[[\"Contact\",\"link_name\",\"=\",\"Customer\"]]",
+   "options": "Contact"
   },
   {
    "fieldname": "opportunity",
@@ -83,9 +87,9 @@
   {
    "fieldname": "transport_type",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Transport Type ",
-   "options": "\nBike\nCar\nMetro\nTaxi\nAuto",
-   "reqd": 1
+   "options": "\nBike\nCar\nMetro\nTaxi\nAuto"
   },
   {
    "fieldname": "remarks_and_description",
@@ -99,12 +103,19 @@
   {
    "fieldname": "section_break_jxcn",
    "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.opportunity==\"Yes\"",
+   "fieldname": "deal",
+   "fieldtype": "Link",
+   "label": "Deal",
+   "options": "CRM Deal"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-12 23:40:08.265884",
+ "modified": "2025-02-03 14:30:49.179673",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "CCR",

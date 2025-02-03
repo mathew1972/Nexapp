@@ -8,17 +8,8 @@
  "engine": "InnoDB",
  "field_order": [
   "site_information_tab",
-  "project_request_section",
-  "column_break_yehx",
-  "provisioning_request",
-  "shipment_request",
-  "column_break_lbut",
-  "product_assigment",
-  "column_break_pfpp",
-  "lms_request",
-  "column_break_gtzy",
-  "feasibility_information",
   "feasibility_section",
+  "circuit_id",
   "site_name",
   "customer",
   "site_type",
@@ -26,7 +17,6 @@
   "existing_circuit_id",
   "delivery_date",
   "column_break_dlsw",
-  "circuit_id",
   "site_status",
   "stage",
   "customer_type",
@@ -62,6 +52,7 @@
   "column_break_frik",
   "project",
   "project_name",
+  "child_project",
   "expected_start_date",
   "expected_end_date",
   "column_break_xqbv",
@@ -77,13 +68,12 @@
   "invoice_date",
   "solution_tab",
   "solution_section",
-  "managed_service",
+  "managed_services",
   "config_type",
   "column_break_dtxu",
   "solution",
   "primary_plan",
   "secondary_plan",
-  "mbb_bandwidth",
   "assigned_product_tab",
   "assigned_product_section",
   "provisioning_item",
@@ -96,6 +86,17 @@
   "installation_tab",
   "installation_information_section",
   "installation",
+  "request_tab",
+  "project_request_section",
+  "column_break_yehx",
+  "provisioning_request",
+  "shipment_request",
+  "column_break_lbut",
+  "product_assigment",
+  "column_break_pfpp",
+  "lms_request",
+  "column_break_gtzy",
+  "feasibility_information",
   "product_tab",
   "product_section",
   "product",
@@ -123,13 +124,7 @@
   },
   {
    "default": "-None-",
-   "fieldname": "managed_service",
-   "fieldtype": "Select",
-   "label": "Managed Service ",
-   "options": "-None-\nProactive\nReactive"
-  },
-  {
-   "default": "-None-",
+   "fetch_from": "circuit_id.config_type",
    "fieldname": "config_type",
    "fieldtype": "Select",
    "label": "Config Type",
@@ -197,6 +192,7 @@
   },
   {
    "allow_in_quick_entry": 1,
+   "fetch_from": "circuit_id.solution2",
    "fieldname": "solution",
    "fieldtype": "Link",
    "label": "Solution  ",
@@ -215,26 +211,29 @@
   },
   {
    "depends_on": "eval:doc.solution==\"IR-1100-4G-D Dual Sim\" || doc.solution==\"IR-1100 Branch Series\" || doc.solution==\"IR-2100 Branch Series\" || doc.solution==\"IR-1100-USB\" || doc.solution==\"IR-1100-4G-S Single Sim\"\n",
+   "fetch_from": "circuit_id.primary_data_plan",
    "fieldname": "primary_plan",
    "fieldtype": "Link",
    "label": "Primary Plan  ",
-   "options": "Data Plan"
+   "options": "Item"
   },
   {
    "depends_on": "eval:doc.solution==\"4G D MBB + MBB\" || doc.solution==\"IR-1100 MBB + MBB\" || doc.solution==\"Nexapp ILL+MBB\" || doc.solution==\"IR-1100-4G-D Dual Sim\" || doc.solution==\"IR-1100-MBB+USB\" || doc.solution==\"IR-1100-4G-S MBB+Sim\"\n",
+   "fetch_from": "circuit_id.secondary_data_plan",
    "fieldname": "secondary_plan",
    "fieldtype": "Link",
    "label": "Secondary Plan  ",
-   "options": "Data Plan"
+   "options": "Item"
   },
   {
    "bold": 1,
    "fieldname": "circuit_id",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_list_view": 1,
    "in_preview": 1,
    "in_standard_filter": 1,
    "label": "Circuit ID",
+   "options": "Feasibility",
    "unique": 1
   },
   {
@@ -281,12 +280,6 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:doc.solution==\"4G D MBB + MBB\" || doc.solution==\"IR-1100 Branch Series\" || doc.solution==\"IR-1100 MBB + MBB\" || doc.solution==\"IR-2100 Branch Series\" || doc.solution==\"IR-3100 Core Series\" || doc.solution==\"IR-4100 Core Series\" || doc.solution==\"IR-5100 Core Series\" || doc.solution==\"IR-6100 Core Series\" || doc.solution==\"IR-7100 Core Series\" || doc.solution==\"Nexapp ILL+MBB\" || doc.solution==\"IR-1100-USB\" || doc.solution==\"IR-1100-MBB\" || doc.solution==\"IR-1100-MBB+USB\" || doc.solution==\"IR-1100-4G-S MBB+Sim\" || doc.solution==\"IR-1100-4G-S Single Sim\"\n",
-   "fieldname": "mbb_bandwidth",
-   "fieldtype": "Data",
-   "label": "MBB Bandwidth "
-  },
-  {
    "fieldname": "customer",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -317,7 +310,7 @@
   {
    "fieldname": "project",
    "fieldtype": "Link",
-   "label": "Project No",
+   "label": "Parent Project No",
    "options": "Project",
    "read_only": 1
   },
@@ -632,6 +625,25 @@
   {
    "fieldname": "column_break_gtzy",
    "fieldtype": "Column Break"
+  },
+  {
+   "default": "-None-",
+   "fetch_from": "circuit_id.managed_services",
+   "fieldname": "managed_services",
+   "fieldtype": "Select",
+   "label": "Managed Services",
+   "options": "-None-\nProactive\nReactive"
+  },
+  {
+   "fieldname": "request_tab",
+   "fieldtype": "Tab Break",
+   "label": "Request"
+  },
+  {
+   "fieldname": "child_project",
+   "fieldtype": "Link",
+   "label": "Child Project",
+   "options": "Project"
   }
  ],
  "hide_toolbar": 1,
@@ -658,17 +670,52 @@
    "link_fieldname": "circuit_id"
   },
   {
-   "group": "LMS",
-   "link_doctype": "LMS",
+   "group": "LMS Feasibility",
+   "link_doctype": "Lastmile Services",
    "link_fieldname": "circuit_id"
   },
   {
    "group": "Delivery Challan",
    "link_doctype": "Delivery Note",
    "link_fieldname": "customer"
+  },
+  {
+   "group": "LMS PO Request",
+   "link_doctype": "LMS PO",
+   "link_fieldname": "name"
+  },
+  {
+   "group": "Installation Note",
+   "link_doctype": "Installation Note",
+   "link_fieldname": "customer"
+  },
+  {
+   "group": "Maintenance Visit",
+   "link_doctype": "Maintenance Visit",
+   "link_fieldname": "customer"
+  },
+  {
+   "group": "Maintenance Visit",
+   "link_doctype": "Maintenance Schedule",
+   "link_fieldname": "customer"
+  },
+  {
+   "group": "Invoice",
+   "link_doctype": "Sales Invoice",
+   "link_fieldname": "customer"
+  },
+  {
+   "group": "Invoice",
+   "link_doctype": "e-Waybill Log",
+   "link_fieldname": "e_waybill_number"
+  },
+  {
+   "group": "Task",
+   "link_doctype": "Task",
+   "link_fieldname": "name"
   }
  ],
- "modified": "2025-01-26 23:58:28.535191",
+ "modified": "2025-02-03 20:53:23.154795",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

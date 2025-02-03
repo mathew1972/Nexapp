@@ -5,5 +5,5 @@
 from frappe.tests.utils import FrappeTestCase
 
 
-class TestLMS(FrappeTestCase):
+class TestTaskCircuitID(FrappeTestCase):
 	pass

@@ -6,39 +6,31 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "circuit_information_section",
   "circuit_id",
-  "purchase_order",
-  "purchase_order_date",
+  "site",
+  "solution",
+  "column_break_uwil",
+  "customer",
+  "site_type",
+  "primary_plan",
+  "secondary_plan",
+  "section_break_hlgt",
+  "lms_po_request_id",
+  "lms_po_request_date",
   "lms_supplier",
   "bandwith_type",
   "media",
-  "otc",
-  "static_ip_cost",
   "billing_terms",
-  "support_mode",
   "column_break_ctob",
   "lms_status",
   "supplier_contact",
   "lms_bandwith",
-  "static_ip",
-  "mrc",
   "security_deposit",
   "billing_mode",
   "description",
-  "lms_support_information_section",
-  "support_email",
-  "tollfree_number",
-  "portal_user_name",
-  "portal_user_name_password",
-  "column_break_gffv",
-  "support_phone",
-  "support_other_phone",
-  "payment_mode",
-  "lms_configuration_section",
-  "mode",
-  "column_break_uxmp",
-  "modem_user_id",
-  "modem_password"
+  "section_break_ydis",
+  "item"
  ],
  "fields": [
   {
@@ -78,37 +70,10 @@
    "options": "\nWired\nRF\n4G\n5G"
   },
   {
-   "fieldname": "static_ip",
-   "fieldtype": "Select",
-   "label": "Static IP",
-   "options": "\nAvailable\nNot Available"
-  },
-  {
-   "fieldname": "otc",
-   "fieldtype": "Currency",
-   "label": "OTC"
-  },
-  {
-   "fieldname": "static_ip_cost",
-   "fieldtype": "Currency",
-   "label": "Static IP Cost"
-  },
-  {
-   "fieldname": "mrc",
-   "fieldtype": "Currency",
-   "label": "MRC"
-  },
-  {
    "fieldname": "billing_terms",
    "fieldtype": "Select",
    "label": "Billing Terms",
    "options": "\nPre-Paid\nPost-Paid"
-  },
-  {
-   "fieldname": "support_mode",
-   "fieldtype": "Select",
-   "label": "Support Mode",
-   "options": "\nEmail\nSupport Potal\nHelpdesk No"
   },
   {
    "fieldname": "security_deposit",
@@ -144,95 +109,86 @@
    "options": "\nPO Pending\nInprogress\nDelivered"
   },
   {
-   "fieldname": "lms_support_information_section",
-   "fieldtype": "Section Break",
-   "label": "LMS Support Information"
+   "fieldname": "section_break_ydis",
+   "fieldtype": "Section Break"
   },
   {
-   "fieldname": "support_email",
-   "fieldtype": "Data",
-   "label": "Support Email"
+   "fieldname": "item",
+   "fieldtype": "Table",
+   "label": "Item",
+   "options": "LMS Item"
   },
   {
-   "fieldname": "tollfree_number",
-   "fieldtype": "Data",
-   "label": "Tollfree Number"
-  },
-  {
-   "fieldname": "column_break_gffv",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "support_phone",
-   "fieldtype": "Data",
-   "label": "Support Phone"
-  },
-  {
-   "fieldname": "support_other_phone",
-   "fieldtype": "Data",
-   "label": "Support Other Phone"
-  },
-  {
-   "fieldname": "payment_mode",
-   "fieldtype": "Select",
-   "label": "Payment Mode",
-   "options": "\nBank Trasfer\nWebportal"
-  },
-  {
-   "fieldname": "lms_configuration_section",
-   "fieldtype": "Section Break",
-   "label": "LMS Configuration"
-  },
-  {
-   "fieldname": "mode",
-   "fieldtype": "Select",
-   "label": "Mode",
-   "options": "\nPPPoE\nDHCP"
-  },
-  {
-   "fieldname": "column_break_uxmp",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "modem_user_id",
-   "fieldtype": "Data",
-   "label": "Modem User ID"
-  },
-  {
-   "fieldname": "modem_password",
-   "fieldtype": "Password",
-   "label": "Modem Password"
-  },
-  {
-   "fieldname": "portal_user_name",
-   "fieldtype": "Data",
-   "label": "Portal User Name"
-  },
-  {
-   "fieldname": "portal_user_name_password",
-   "fieldtype": "Data",
-   "label": "Portal User Name Password"
-  },
-  {
-   "fieldname": "purchase_order",
+   "fieldname": "lms_po_request_id",
    "fieldtype": "Link",
-   "label": "Purchase Order",
-   "options": "Purchase Order"
+   "label": "LMS PO Request ID",
+   "options": "LMS PO"
   },
   {
-   "fetch_from": "purchase_order.transaction_date",
-   "fieldname": "purchase_order_date",
+   "fetch_from": "lms_po_request_id.po_request_date",
+   "fieldname": "lms_po_request_date",
    "fieldtype": "Date",
-   "label": "Purchase Order Date"
+   "label": "LMS PO Request Date"
+  },
+  {
+   "fieldname": "column_break_uwil",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "circuit_id.customer",
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "section_break_hlgt",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "circuit_id.site_name",
+   "fieldname": "site",
+   "fieldtype": "Link",
+   "label": "Site",
+   "options": "Site"
+  },
+  {
+   "fetch_from": "circuit_id.site_type",
+   "fieldname": "site_type",
+   "fieldtype": "Data",
+   "label": "Site Type"
+  },
+  {
+   "fetch_from": "circuit_id.solution",
+   "fieldname": "solution",
+   "fieldtype": "Data",
+   "label": "Solution"
+  },
+  {
+   "fetch_from": "circuit_id.primary_data_plan",
+   "fieldname": "primary_plan",
+   "fieldtype": "Data",
+   "label": "Primary Plan"
+  },
+  {
+   "fetch_from": "circuit_id.secondary_data_plan",
+   "fieldname": "secondary_plan",
+   "fieldtype": "Data",
+   "label": "Secondary Plan"
+  },
+  {
+   "fieldname": "circuit_information_section",
+   "fieldtype": "Section Break",
+   "label": "Circuit Information"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-22 18:54:22.824702",
+ "modified": "2025-02-03 17:46:47.835408",
  "modified_by": "Administrator",
  "module": "Nexapp",
- "name": "LMS",
+ "name": "Lastmile Services",
  "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
