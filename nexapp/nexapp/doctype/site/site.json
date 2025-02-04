@@ -246,7 +246,7 @@
   {
    "fieldname": "sales_order",
    "fieldtype": "Link",
-   "label": "Sales Order Np",
+   "label": "Sales Order No",
    "options": "Sales Order",
    "read_only": 1
   },
@@ -715,7 +715,7 @@
    "link_fieldname": "name"
   }
  ],
- "modified": "2025-02-03 20:53:23.154795",
+ "modified": "2025-02-04 12:43:42.870251",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

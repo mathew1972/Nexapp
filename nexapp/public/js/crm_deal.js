@@ -7,7 +7,9 @@ frappe.ui.form.on('CRM Deal', {
             'lead_name', 'organization_name', 'website', 'no_of_employees', 'job_title', 'territory', 'currency', 
             'annual_revenue', 'salutation', 'first_name', 'last_name', 'email', 'mobile_no', 'phone', 'gender', 
             'sla', 'sla_creation', 'sla_status', 'communication_status', 'response_by', 'first_response_time', 
-            'first_responded_on', 'status_change_log', 'deal_owner', 'custom_market_segment'
+            'first_responded_on', 'status_change_log', 'deal_owner', 'custom_market_segment',
+            'custom_reason', 'custom_po_number', 'custom_po_date', 'custom_address'
+            
         ];
 
         fields.forEach(function(field) {
@@ -74,7 +76,7 @@ frappe.ui.form.on('CRM Deal', {
 });
 
 frappe.ui.form.on('CRM Deal', {
-    custom_stage: function(frm) {
+    status: function(frm) {
         update_probability_and_revenue(frm);
     },
     custom_deal_amount: function(frm) {
@@ -86,18 +88,18 @@ function update_probability_and_revenue(frm) {
     let probability_map = {
         "Qualification": 10,
         "Needs Analysis": 20,
-        "Value Proposition": 40,
-        "Identifying Decision Makers": 60,
+        "Demo/Value Proposition": 40,
+        "Id.Decision Makers": 60,
         "Proposal/Price Quote": 75,
         "Negotiation/Review": 90,
-        "Close Won": 100,
-        "Close Drop": 0,
-        "Close Loss to Competition": 0
+        "Closed Won": 100,
+        "Closed Drop": 0,
+        "Closed Loss to Competition": 0
     };
 
-    // Ensure that custom_stage exists
-    if (frm.doc.custom_stage && probability_map[frm.doc.custom_stage] !== undefined) {
-        let probability_value = probability_map[frm.doc.custom_stage];
+    // Ensure that status exists
+    if (frm.doc.status && probability_map[frm.doc.status] !== undefined) {
+        let probability_value = probability_map[frm.doc.status];
 
         // Set probability value
         frm.set_value('probability', probability_value);

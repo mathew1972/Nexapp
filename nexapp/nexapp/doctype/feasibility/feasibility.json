@@ -30,7 +30,8 @@
   "site_id__legal_code",
   "solution_section",
   "solution",
-  "solution2",
+  "solution_code",
+  "solution_name",
   "static_ip",
   "no_of_static_ip_required",
   "column_break_jyvg",
@@ -154,9 +155,9 @@
   {
    "fieldname": "solution",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Solution",
-   "options": "Solution",
-   "reqd": 1
+   "options": "Solution"
   },
   {
    "fieldname": "primary_data_plan",
@@ -607,13 +608,6 @@
    "label": "3G"
   },
   {
-   "fieldname": "solution2",
-   "fieldtype": "Link",
-   "label": "Solution2",
-   "options": "Item",
-   "reqd": 1
-  },
-  {
    "fieldname": "managed_services",
    "fieldtype": "Select",
    "label": "Managed Services",
@@ -624,6 +618,20 @@
    "fieldtype": "Select",
    "label": "Config Type",
    "options": "\nOnsite Installation\nRemote Config"
+  },
+  {
+   "bold": 1,
+   "fetch_from": "solution_code.item_name",
+   "fieldname": "solution_name",
+   "fieldtype": "Data",
+   "label": "Solution Name"
+  },
+  {
+   "fieldname": "solution_code",
+   "fieldtype": "Link",
+   "label": "Solution Code",
+   "options": "Item",
+   "reqd": 1
   }
  ],
  "icon": "fa fa-file-text",
@@ -631,7 +639,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2025-02-03 20:38:26.686108",
+ "modified": "2025-02-04 14:45:50.733400",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",

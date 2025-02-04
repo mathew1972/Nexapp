@@ -1,13 +1,15 @@
 frappe.ui.form.on('CRM Lead', {
     refresh: function(frm) {
         const fields = [
-            'details', 'lead_owner', 'organization', 'website', 'source', 'custom_qualified_on',
-            'status', 'job_title', 'territory', 'industry', 'custom_linkedin_possible_profile',
-            'first_name', 'last_name', 'mobile_no', 'salutation', 'email',
-            'lead_name', 'naming_series', 'gender', 'phone', 'middle_name',
-            'no_of_employees', 'annual_revenue', 'image', 'converted',
-            'sla', 'sla_creation', 'sla_status', 'communication_status',
-            'response_by', 'first_response_time', 'first_responded_on'
+            'status', 'territory', 'custom_subindustry', 'industry', 'custom_linkedin_possible_profile',
+            'custom_street', 'custom_state', 'custom_pin_code', 'custom_country', 'custom_description',
+            'first_name', 'last_name', 'mobile_no', 'email', 'salutation', 'job_title',
+            'custom_alternative_mobile', 'custom_secondary_email', 'lead_name', 'naming_series',
+            'gender', 'phone', 'middle_name', 'no_of_employees', 'annual_revenue', 'image', 'converted',
+            'sla', 'sla_creation', 'sla_status', 'communication_status', 'response_by',
+            'first_response_time', 'first_responded_on', 'status_change_log', 'lead_owner',
+            'organization', 'website', 'source', 'custom_qualified_on', 'custom_district',
+            'custom_city', 'custom_reason', 'custom_add_contact', 'custom_address'
         ];
 
         fields.forEach(function(field) {
@@ -95,3 +97,4 @@ function update_probability_and_revenue(frm) {
         "Close Loss to Competition": 0
     };
 }
+
