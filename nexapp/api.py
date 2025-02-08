@@ -417,3 +417,50 @@ def update_product_request_status(item_code, voucher_no, custom_circuits):
     # Return a message if updates were made
     frappe.logger().info(f"Total updated Product Requests: {updated_count}")
     return updated_count > 0
+#########################################################################################
+import frappe
+import re
+from bs4 import BeautifulSoup
+
+def validate_circuit_id(doc, method):
+    """
+    Automatically extracts and validates the Circuit ID from the subject or description
+    when a new HD Ticket is created via email.
+    """
+    
+    # Extract Circuit ID from subject or description
+    extracted_circuit_id = extract_circuit_id(doc.subject) or extract_circuit_id(strip_html_tags(doc.description))
+    
+    if extracted_circuit_id:
+        # Check if Circuit ID exists in the Site doctype
+        if frappe.db.exists("Site", extracted_circuit_id):
+            doc.custom_circuit_id = extracted_circuit_id
+            doc.status = "Open"
+            frappe.msgprint(f"Circuit ID {extracted_circuit_id} validated. Status set to Open.", alert=True)
+        else:
+            doc.status = "Wrong Circuit"
+            frappe.msgprint("Invalid or missing Circuit ID. Status set to Wrong Circuit.", alert=True)
+    else:
+        doc.status = "Wrong Circuit"
+        frappe.msgprint("No valid Circuit ID found. Status set to Wrong Circuit.", alert=True)
+
+    doc.save(ignore_permissions=True)  # Save the changes
+
+def extract_circuit_id(text):
+    """Extracts a 5-digit Circuit ID while ignoring 10-digit mobile numbers"""
+    if not text:
+        return None
+
+    all_numbers = re.findall(r'\b\d+\b', text)
+
+    circuit_ids = [num for num in all_numbers if len(num) == 5]
+    mobile_numbers = [num for num in all_numbers if len(num) == 10]
+
+    if mobile_numbers:
+        return None  # Ignore if a mobile number is found
+
+    return circuit_ids[0] if circuit_ids else None
+
+def strip_html_tags(html):
+    """Removes HTML tags from the description"""
+    return BeautifulSoup(html, "html.parser").get_text()

@@ -1,7 +1,7 @@
 frappe.ui.form.on('HD Ticket', {
     refresh: function(frm) {
         const fields = [
-            'subject_section', 'custom_circuit_id', 'custom_ticket_category', 
+            'custom_circuit_id', 'custom_ticket_category', 
             'custom_ticket_sub_category', 'custom_ticket_owner', 'custom_impact', 
             'customer', 'priority', 'agent_group', 'custom_lms_ticket_id', 'cb00', 
             'custom_ticket_for', 'status', 'ticket_type', 'raised_by', 'ticket_split_from', 

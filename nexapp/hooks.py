@@ -262,6 +262,13 @@ doc_events = {
     }
 }
 
+doc_events = {
+    "HD Ticket": {
+        "after_insert": "nexapp.api.validate_circuit_id"
+    }
+}
+
+
 fixtures = [
     {"dt": "Product Type"},
     {"dt": "Product Category"},

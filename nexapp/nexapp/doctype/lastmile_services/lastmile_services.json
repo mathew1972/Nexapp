@@ -61,7 +61,7 @@
    "fieldname": "lms_bandwith",
    "fieldtype": "Link",
    "label": "LMS Bandwith",
-   "options": "LMS Plan"
+   "options": "Item"
   },
   {
    "fieldname": "media",
@@ -185,7 +185,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-03 17:46:47.835408",
+ "modified": "2025-02-05 00:21:07.686730",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Lastmile Services",
