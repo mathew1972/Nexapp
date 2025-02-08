@@ -418,3 +418,62 @@ def update_product_request_status(item_code, voucher_no, custom_circuits):
     frappe.logger().info(f"Total updated Product Requests: {updated_count}")
     return updated_count > 0
 #########################################################################################
+import re
+import frappe
+
+def extract_circuit_id(text):
+    """Extracts the first 5-digit number (including leading zeros) from the text."""
+    if not text:
+        return None
+
+    # Use regex to find all 5-digit numbers in the text
+    matches = re.findall(r'\d{5}', text)
+    return matches[0] if matches else None
+
+def validate_hd_ticket(doc, method=None):
+    """Validates and updates the HD Ticket based on the extracted Circuit ID."""
+    # Avoid recursion during autoname or other events
+    if frappe.flags.in_import or frappe.flags.in_migrate:
+        return
+
+    extracted_circuit_id = None
+
+    # Extract Circuit ID from subject or description
+    if doc.subject:
+        extracted_circuit_id = extract_circuit_id(doc.subject)
+    if not extracted_circuit_id and doc.description:
+        extracted_circuit_id = extract_circuit_id(doc.description)
+
+    # Log extracted ID for debugging
+    frappe.logger().info(f"Extracted Circuit ID: {extracted_circuit_id}")
+
+    if extracted_circuit_id:
+        # Pad with leading zeros to ensure 5 digits
+        extracted_circuit_id = extracted_circuit_id.zfill(5)
+
+        # Check if the circuit exists in the Site doctype
+        site = frappe.db.get_value(
+            "Site",
+            {"circuit_id": extracted_circuit_id, "stage": "Delivered and Live"},
+            ["circuit_id"],
+            as_dict=True
+        )
+
+        if site:
+            # Update fields directly
+            doc.custom_circuit_id = extracted_circuit_id  # Use site["circuit_id"] if needed
+            doc.status = "Open"
+            frappe.msgprint(f"✅ Valid Circuit ID: {extracted_circuit_id}")
+        else:
+            doc.status = "Wrong Circuit"
+            frappe.msgprint(f"❌ Invalid Circuit ID: {extracted_circuit_id}")
+    else:
+        doc.status = "Wrong Circuit"
+        frappe.msgprint("❌ No valid Circuit ID found.")
+
+# Hook
+doc_events = {
+    "HD Ticket": {
+        "before_save": "nexapp.api.validate_hd_ticket"
+    }
+}

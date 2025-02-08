@@ -262,6 +262,12 @@ doc_events = {
     }
 }
 
+doc_events = {
+    "HD Ticket": {
+        "before_insert": "nexapp.api.validate_hd_ticket",
+        "before_save": "nexapp.api.validate_hd_ticket"
+    }
+}
 
 fixtures = [
     {"dt": "Product Type"},
