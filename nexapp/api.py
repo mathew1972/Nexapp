@@ -424,81 +424,76 @@ from bs4 import BeautifulSoup
 import frappe
 
 def clean_email_content(text):
-    """Remove HTML tags, entities, and normalize whitespace."""
+    """Remove HTML tags and clean text for extraction."""
     if not text:
         return ""
     try:
-        # Strip HTML tags
         text = BeautifulSoup(text, "html.parser").get_text()
-        # Decode HTML entities (e.g., &nbsp; -> " ")
         text = html.unescape(text)
-        # Replace non-breaking spaces and normalize whitespace
         text = text.replace('\xa0', ' ').strip()
-        text = " ".join(text.split())
-        return text
+        return " ".join(text.split())
     except Exception as e:
-        frappe.logger().error(f"Error cleaning email content: {e}")
+        frappe.logger().error(f"Cleaning error: {e}")
         return text
 
 def extract_circuit_id(text):
-    """Extract the first 5-digit number (including leading zeros)."""
-    if not text:
-        return None
+    """Extract 5-digit numbers (including leading zeros) with flexible matching."""
     try:
-        # Match 5-digit numbers even if surrounded by non-digits
-        matches = re.findall(r'(?:^|\D)(\d{5})(?:\D|$)', text)
-        return matches[0] if matches else None
+        matches = re.findall(r'(?<!\d)(\d{5})(?!\d)', text)
+        return matches
     except Exception as e:
-        frappe.logger().error(f"Error extracting circuit ID: {e}")
-        return None
+        frappe.logger().error(f"Extraction error: {e}")
+        return []
 
 def validate_hd_ticket(doc, method=None):
-    """Validate and update HD Ticket with Circuit ID."""
+    """Validate HD Ticket with improved extraction logic."""
     if frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
-    frappe.logger().info(f"🔥 Raw Subject: {doc.subject}")
-    frappe.logger().info(f"🔥 Raw Description: {doc.description}")
+    # Debug raw inputs
+    frappe.logger().debug(f"Raw Subject: {doc.subject}")
+    frappe.logger().debug(f"Raw Description: {doc.description}")
 
-    extracted_circuit_id = None
-
-    # Step 1: Clean and extract from SUBJECT
+    # Clean and extract from both fields
+    extracted_ids = []
+    
     if doc.subject:
-        cleaned_subject = clean_email_content(doc.subject)
-        frappe.logger().info(f"🔥 Cleaned Subject: {cleaned_subject}")
-        extracted_circuit_id = extract_circuit_id(cleaned_subject)
-        frappe.logger().info(f"🔥 Subject Extraction: {extracted_circuit_id}")
+        clean_subject = clean_email_content(doc.subject)
+        extracted_ids += extract_circuit_id(clean_subject)
+        
+    if doc.description:
+        clean_description = clean_email_content(doc.description)
+        extracted_ids += extract_circuit_id(clean_description)
 
-    # Step 2: Clean and extract from DESCRIPTION if needed
-    if not extracted_circuit_id and doc.description:
-        cleaned_description = clean_email_content(doc.description)
-        frappe.logger().info(f"🔥 Cleaned Description: {cleaned_description}")
-        extracted_circuit_id = extract_circuit_id(cleaned_description)
-        frappe.logger().info(f"🔥 Description Extraction: {extracted_circuit_id}")
+    # Add manual input fallback
+    manual_id = doc.custom_circuit_id  # Replace with your manual input field
+    if manual_id and str(manual_id).strip():
+        extracted_ids.append(str(manual_id).strip())
 
-    # Step 3: Validate and update
-    if extracted_circuit_id:
-        extracted_circuit_id = extracted_circuit_id.zfill(5)
-        site = frappe.db.get_value(
-            "Site",
-            {"circuit_id": extracted_circuit_id, "stage": "Delivered and Live"},
-            ["circuit_id"],
-            as_dict=True
-        )
-        if site:
-            doc.custom_circuit_id = extracted_circuit_id
-            doc.status = "Open"
-            frappe.msgprint(f"✅ Valid Circuit ID: {extracted_circuit_id}")
-        else:
-            doc.status = "Wrong Circuit"
-            frappe.msgprint(f"❌ Invalid Circuit ID: {extracted_circuit_id}")
+    frappe.logger().info(f"All extracted IDs: {extracted_ids}")
+
+    valid_id = None
+    for candidate in extracted_ids:
+        candidate = candidate.zfill(5)
+        if frappe.db.exists("Site", {
+            "circuit_id": candidate,
+            "stage": "Delivered and Live"
+        }):
+            valid_id = candidate
+            break
+
+    if valid_id:
+        doc.custom_circuit_id = valid_id
+        doc.status = "Open"
+        frappe.msgprint(f"Valid Circuit ID: {valid_id}")
     else:
         doc.status = "Wrong Circuit"
-        frappe.msgprint("❌ No valid Circuit ID found.")
+        msg = "No valid Circuit ID found."
+        if extracted_ids:
+            msg = f"Invalid IDs: {', '.join(extracted_ids)}"
+        frappe.msgprint(msg)
 
-    # No need to call doc.save() here as it will be handled by the before_save hook
-
-# Hook
+# Hook configuration
 doc_events = {
     "HD Ticket": {
         "before_save": "nexapp.api.validate_hd_ticket"
