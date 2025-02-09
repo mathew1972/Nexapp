@@ -419,6 +419,7 @@ def update_product_request_status(item_code, voucher_no, custom_circuits):
     return updated_count > 0
 #########################################################################################
 import re
+import html
 import frappe
 
 def extract_circuit_id(text):
@@ -435,6 +436,16 @@ def validate_hd_ticket(doc, method=None):
     # Avoid recursion during autoname or other events
     if frappe.flags.in_import or frappe.flags.in_migrate:
         return
+
+    # Log the subject and description for debugging
+    frappe.logger().info(f"Subject: {doc.subject}")
+    frappe.logger().info(f"Description: {doc.description}")
+
+    # Trim whitespace and decode HTML entities
+    if doc.subject:
+        doc.subject = html.unescape(doc.subject.strip())
+    if doc.description:
+        doc.description = html.unescape(doc.description.strip())
 
     extracted_circuit_id = None
 
