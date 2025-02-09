@@ -419,14 +419,23 @@ def update_product_request_status(item_code, voucher_no, custom_circuits):
     return updated_count > 0
 #########################################################################################
 import re
-import html
+from bs4 import BeautifulSoup
 import frappe
+
+def clean_email_content(text):
+    """Remove HTML tags and normalize whitespace."""
+    if not text:
+        return text
+    # Strip HTML tags using BeautifulSoup
+    text = BeautifulSoup(text, "html.parser").get_text()
+    # Normalize whitespace
+    text = " ".join(text.split())
+    return text
 
 def extract_circuit_id(text):
     """Extracts the first 5-digit number (including leading zeros) from the text."""
     if not text:
         return None
-
     # Use regex to find all 5-digit numbers in the text, even if they are part of a word
     matches = re.findall(r'(?<!\d)\d{5}(?!\d)', text)
     return matches[0] if matches else None
@@ -437,15 +446,15 @@ def validate_hd_ticket(doc, method=None):
     if frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
-    # Log the subject and description for debugging
-    frappe.logger().info(f"Subject: {doc.subject}")
-    frappe.logger().info(f"Description: {doc.description}")
-
-    # Trim whitespace and decode HTML entities
+    # Clean email content
     if doc.subject:
-        doc.subject = html.unescape(doc.subject.strip())
+        doc.subject = clean_email_content(doc.subject)
     if doc.description:
-        doc.description = html.unescape(doc.description.strip())
+        doc.description = clean_email_content(doc.description)
+
+    # Log the cleaned subject and description for debugging
+    frappe.logger().info(f"Subject (Cleaned): {doc.subject}")
+    frappe.logger().info(f"Description (Cleaned): {doc.description}")
 
     extracted_circuit_id = None
 
