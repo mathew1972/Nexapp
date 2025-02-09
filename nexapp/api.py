@@ -426,8 +426,8 @@ def extract_circuit_id(text):
     if not text:
         return None
 
-    # Use regex to find all 5-digit numbers in the text
-    matches = re.findall(r'\b\d{5}\b', text)
+    # Use regex to find all 5-digit numbers in the text, even if they are part of a word
+    matches = re.findall(r'(?<!\d)\d{5}(?!\d)', text)
     return matches[0] if matches else None
 
 def validate_hd_ticket(doc, method=None):
