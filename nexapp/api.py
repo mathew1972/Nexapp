@@ -419,64 +419,74 @@ def update_product_request_status(item_code, voucher_no, custom_circuits):
     return updated_count > 0
 #########################################################################################
 import re
+import html
 from bs4 import BeautifulSoup
 import frappe
 
 def clean_email_content(text):
-    """Remove HTML tags and normalize whitespace."""
+    """Remove HTML tags, entities, and normalize whitespace."""
     if not text:
+        return ""
+    try:
+        # Strip HTML tags
+        text = BeautifulSoup(text, "html.parser").get_text()
+        # Decode HTML entities (e.g., &nbsp; -> " ")
+        text = html.unescape(text)
+        # Replace non-breaking spaces and normalize whitespace
+        text = text.replace('\xa0', ' ').strip()
+        text = " ".join(text.split())
         return text
-    # Strip HTML tags using BeautifulSoup
-    text = BeautifulSoup(text, "html.parser").get_text()
-    # Normalize whitespace
-    text = " ".join(text.split())
-    return text
+    except Exception as e:
+        frappe.logger().error(f"Error cleaning email content: {e}")
+        return text
 
 def extract_circuit_id(text):
-    """Extracts the first 5-digit number (including leading zeros) from the text."""
+    """Extract the first 5-digit number (including leading zeros)."""
     if not text:
         return None
-    # Use regex to find all 5-digit numbers in the text, even if they are part of a word
-    matches = re.findall(r'(?<!\d)\d{5}(?!\d)', text)
-    return matches[0] if matches else None
+    try:
+        # Match 5-digit numbers even if surrounded by non-digits
+        matches = re.findall(r'(?:^|\D)(\d{5})(?:\D|$)', text)
+        return matches[0] if matches else None
+    except Exception as e:
+        frappe.logger().error(f"Error extracting circuit ID: {e}")
+        return None
 
 def validate_hd_ticket(doc, method=None):
-    """Validates and updates the HD Ticket based on the extracted Circuit ID."""
-    # Avoid recursion during autoname or other events
+    """Validate and update HD Ticket with Circuit ID."""
     if frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
-    # Clean email content (remove HTML tags)
-    if doc.description:
-        doc.description = clean_email_content(doc.description)
-
-    # Log the cleaned description for debugging
-    frappe.logger().info(f"Description (Cleaned): {doc.description}")
+    frappe.logger().info(f"🔥 Raw Subject: {doc.subject}")
+    frappe.logger().info(f"🔥 Raw Description: {doc.description}")
 
     extracted_circuit_id = None
 
-    # Extract Circuit ID from description
-    if doc.description:
-        extracted_circuit_id = extract_circuit_id(doc.description)
+    # Step 1: Clean and extract from SUBJECT
+    if doc.subject:
+        cleaned_subject = clean_email_content(doc.subject)
+        frappe.logger().info(f"🔥 Cleaned Subject: {cleaned_subject}")
+        extracted_circuit_id = extract_circuit_id(cleaned_subject)
+        frappe.logger().info(f"🔥 Subject Extraction: {extracted_circuit_id}")
 
-    # Log extracted ID for debugging
-    frappe.logger().info(f"Extracted Circuit ID: {extracted_circuit_id}")
+    # Step 2: Clean and extract from DESCRIPTION if needed
+    if not extracted_circuit_id and doc.description:
+        cleaned_description = clean_email_content(doc.description)
+        frappe.logger().info(f"🔥 Cleaned Description: {cleaned_description}")
+        extracted_circuit_id = extract_circuit_id(cleaned_description)
+        frappe.logger().info(f"🔥 Description Extraction: {extracted_circuit_id}")
 
+    # Step 3: Validate and update
     if extracted_circuit_id:
-        # Pad with leading zeros to ensure 5 digits
         extracted_circuit_id = extracted_circuit_id.zfill(5)
-
-        # Check if the circuit exists in the Site doctype
         site = frappe.db.get_value(
             "Site",
             {"circuit_id": extracted_circuit_id, "stage": "Delivered and Live"},
             ["circuit_id"],
             as_dict=True
         )
-
         if site:
-            # Update fields directly
-            doc.custom_circuit_id = extracted_circuit_id  # Use site["circuit_id"] if needed
+            doc.custom_circuit_id = extracted_circuit_id
             doc.status = "Open"
             frappe.msgprint(f"✅ Valid Circuit ID: {extracted_circuit_id}")
         else:
