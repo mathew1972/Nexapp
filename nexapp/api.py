@@ -424,72 +424,44 @@ from bs4 import BeautifulSoup
 import frappe
 
 def clean_email_content(text):
-    """Clean HTML content while preserving numeric patterns."""
+    """Clean HTML content without logging"""
     try:
         text = str(text) if text else ""
         text = BeautifulSoup(text, "html.parser").get_text()
         text = html.unescape(text)
         text = text.replace('\xa0', ' ').replace('\n', ' ').strip()
         return re.sub(r'\s+', ' ', text)
-    except Exception as e:
-        frappe.logger().error(f"Cleaning error: {e}")
+    except Exception:
         return text
 
 def extract_circuit_id(text):
-    """Robust extraction of 5-digit codes including edge cases."""
+    """Silent extraction of 5-digit codes"""
     try:
         return re.findall(r'(?<!\d)(\d{5})(?!\d)', text)
-    except Exception as e:
-        frappe.logger().error(f"Extraction error: {e}")
+    except Exception:
         return []
 
 def validate_hd_ticket(doc, method=None):
-    """Unified validation for both email and manual tickets."""
+    """Silent validation for email-generated tickets only"""
     if frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
-    frappe.logger().debug(f"🔥 Validation started for {doc.name}")
+    # Run only if ticket was created via email (has 'raised_by' value)
+    if not doc.raised_by:  # <- Add this condition
+        return
 
-    # Temporary testing mode - treat all tickets as email-generated
-    TESTING_MODE = True  # Set False when ready for production
-
-    # ====================
-    # 1. Manual Input Check
-    # ====================
-    manual_id = str(doc.custom_circuit_id).strip() if doc.custom_circuit_id else None
-    if manual_id and not TESTING_MODE:
-        manual_id = manual_id.zfill(5)
-        if frappe.db.exists("Site", {
-            "circuit_id": manual_id,
-            "stage": "Delivered and Live"
-        }):
-            doc.status = "Open"
-            frappe.msgprint(f"✅ Valid Manual ID: {manual_id}")
-            return
-        else:
-            doc.status = "Wrong Circuit"
-            frappe.msgprint(f"❌ Invalid Manual ID: {manual_id}")
-            return
-
-    # ======================
-    # 2. Email Ticket Processing
-    # ======================
+    # Extraction process
     extracted_ids = []
-    
-    # Process both subject and description
     for field in ['subject', 'description']:
         if content := getattr(doc, field, None):
             clean_text = clean_email_content(content)
-            frappe.logger().info(f"Clean {field}: {clean_text}")
             extracted_ids += extract_circuit_id(clean_text)
 
-    # Remove duplicates while preserving order
+    # Remove duplicates
     seen = set()
     extracted_ids = [x for x in extracted_ids if not (x in seen or seen.add(x))]
-    
-    frappe.logger().info(f"🔍 All extracted IDs: {extracted_ids}")
 
-    # Validation logic
+    # Validation
     valid_id = None
     for candidate in extracted_ids:
         candidate = candidate.zfill(5)
@@ -500,19 +472,14 @@ def validate_hd_ticket(doc, method=None):
             valid_id = candidate
             break
 
-    # Update document state
+    # Silent update
     if valid_id:
         doc.custom_circuit_id = valid_id
         doc.status = "Open"
-        frappe.msgprint(f"✅ Valid Email ID: {valid_id}")
     else:
         doc.status = "Wrong Circuit"
-        msg = "❌ No valid ID found in email content."
-        if extracted_ids:
-            msg = f"❌ Invalid Email IDs: {', '.join(extracted_ids)}"
-        frappe.msgprint(msg)
 
-# Hook configuration
+# Hook remains the same
 doc_events = {
     "HD Ticket": {
         "before_save": "nexapp.api.validate_hd_ticket"
