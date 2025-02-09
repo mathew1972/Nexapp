@@ -496,6 +496,8 @@ def validate_hd_ticket(doc, method=None):
         doc.status = "Wrong Circuit"
         frappe.msgprint("❌ No valid Circuit ID found.")
 
+    # No need to call doc.save() here as it will be handled by the before_save hook
+
 # Hook
 doc_events = {
     "HD Ticket": {
