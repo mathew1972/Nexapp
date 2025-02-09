@@ -423,13 +423,11 @@ from bs4 import BeautifulSoup
 import frappe
 
 def clean_email_content(text):
-    """Remove HTML tags, line breaks, and normalize whitespace."""
+    """Remove HTML tags and normalize whitespace."""
     if not text:
         return text
     # Strip HTML tags using BeautifulSoup
     text = BeautifulSoup(text, "html.parser").get_text()
-    # Remove line breaks and special characters
-    text = text.replace("\n", " ").replace("\r", " ")
     # Normalize whitespace
     text = " ".join(text.split())
     return text
@@ -448,22 +446,17 @@ def validate_hd_ticket(doc, method=None):
     if frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
-    # Clean email content
-    if doc.subject:
-        doc.subject = clean_email_content(doc.subject)
+    # Clean email content (remove HTML tags)
     if doc.description:
         doc.description = clean_email_content(doc.description)
 
-    # Log the cleaned subject and description for debugging
-    frappe.logger().info(f"Subject (Cleaned): {doc.subject}")
+    # Log the cleaned description for debugging
     frappe.logger().info(f"Description (Cleaned): {doc.description}")
 
     extracted_circuit_id = None
 
-    # Extract Circuit ID from subject or description
-    if doc.subject:
-        extracted_circuit_id = extract_circuit_id(doc.subject)
-    if not extracted_circuit_id and doc.description:
+    # Extract Circuit ID from description
+    if doc.description:
         extracted_circuit_id = extract_circuit_id(doc.description)
 
     # Log extracted ID for debugging
