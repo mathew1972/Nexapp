@@ -442,12 +442,12 @@ def extract_circuit_id(text):
         return []
 
 def validate_hd_ticket(doc, method=None):
-    """Strict validation for email ticket creation only"""
+    """Silent validation for email-generated tickets only"""
     if frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
-    # Only run for NEW tickets created via email
-    if not (doc.is_new() and doc.raised_by):  # ← Critical change here
+    # Run only if ticket was created via email (has 'raised_by' value)
+    if not doc.raised_by:  # <- Add this condition
         return
 
     # Extraction process
