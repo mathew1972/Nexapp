@@ -418,93 +418,76 @@ def update_product_request_status(item_code, voucher_no, custom_circuits):
     frappe.logger().info(f"Total updated Product Requests: {updated_count}")
     return updated_count > 0
 #########################################################################################
-import re
-import html
-from bs4 import BeautifulSoup
-import frappe
-
-def clean_email_content(text):
-    """Clean HTML content while preserving numeric patterns."""
-    try:
-        text = str(text) if text else ""
-        soup = BeautifulSoup(text, "html.parser")
-        # Remove script and style elements
-        for element in soup(["script", "style", "head", "title", "meta"]):
-            element.decompose()
-        text = soup.get_text(separator=' ', strip=True)
-        text = html.unescape(text)
-        # Replace all non-breaking spaces and whitespace characters
-        text = text.replace('\xa0', ' ').replace('\r', ' ').replace('\t', ' ')
-        # Collapse multiple spaces into a single space
-        return re.sub(r'\s+', ' ', text)
-    except Exception as e:
-        frappe.logger().error(f"Cleaning error: {e}")
-        return text
-
-def extract_circuit_id(text):
-    """Robust extraction of 5-digit codes including edge cases."""
-    try:
-        # Find all non-overlapping 5-digit sequences not part of longer numbers
-        return re.findall(r'\b\d{5}\b', text)
-    except Exception as e:
-        frappe.logger().error(f"Extraction error: {e}")
-        return []
-
 def validate_hd_ticket(doc, method=None):
     """Unified validation for both email and manual tickets."""
     if frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
-    frappe.logger().debug(f"Validation started for {doc.name}")
+    frappe.logger().debug(f"🔥 Validation started for {doc.name}")
 
     # Temporary testing mode - treat all tickets as email-generated
-    TESTING_MODE = False  # Set based on your environment
+    TESTING_MODE = True  # Set False when ready for production
 
+    # ====================
     # 1. Manual Input Check
-    manual_id = None
-    if not TESTING_MODE and doc.custom_circuit_id:
-        manual_id = str(doc.custom_circuit_id).strip().zfill(5)
-        if frappe.db.exists("Site", {"circuit_id": manual_id, "stage": "Delivered and Live"}):
+    # ====================
+    manual_id = str(doc.custom_circuit_id).strip() if doc.custom_circuit_id else None
+    if manual_id and not TESTING_MODE:
+        manual_id = manual_id.zfill(5)
+        if frappe.db.exists("Site", {
+            "circuit_id": manual_id,
+            "stage": "Delivered and Live"
+        }):
             doc.status = "Open"
             frappe.msgprint(f"✅ Valid Manual ID: {manual_id}")
-            return
         else:
             doc.status = "Wrong Circuit"
             frappe.msgprint(f"❌ Invalid Manual ID: {manual_id}")
-            return  # Assuming manual input should return here
 
+        # **Ensure the document is saved**
+        doc.save(ignore_permissions=True)
+        return
+
+    # ======================
     # 2. Email Ticket Processing
+    # ======================
     extracted_ids = []
+    
+    # Process both subject and description
     for field in ['subject', 'description']:
-        content = getattr(doc, field, '')
-        clean_text = clean_email_content(content)
-        frappe.logger().info(f"Clean {field}: {clean_text}")
-        ids = extract_circuit_id(clean_text)
-        extracted_ids.extend(ids)
+        if content := getattr(doc, field, None):
+            clean_text = clean_email_content(content)
+            frappe.logger().info(f"Clean {field}: {clean_text}")
+            extracted_ids += extract_circuit_id(clean_text)
 
-    # Deduplicate while preserving order
+    # Remove duplicates while preserving order
     seen = set()
     extracted_ids = [x for x in extracted_ids if not (x in seen or seen.add(x))]
-    frappe.logger().info(f"Extracted IDs: {extracted_ids}")
+    
+    frappe.logger().info(f"🔍 All extracted IDs: {extracted_ids}")
 
-    # Validation Logic
+    # Validation logic
     valid_id = None
     for candidate in extracted_ids:
         candidate = candidate.zfill(5)
-        if frappe.db.exists("Site", {"circuit_id": candidate, "stage": "Delivered and Live"}):
+        if frappe.db.exists("Site", {
+            "circuit_id": candidate,
+            "stage": "Delivered and Live"
+        }):
             valid_id = candidate
             break
 
-    # Update Document
+    # Update document state
     if valid_id:
         doc.custom_circuit_id = valid_id
         doc.status = "Open"
         frappe.msgprint(f"✅ Valid Email ID: {valid_id}")
     else:
         doc.status = "Wrong Circuit"
-        # Set custom_circuit_id to first extracted ID if any
-        doc.custom_circuit_id = extracted_ids[0] if extracted_ids else None
-        msg = "❌ No valid Circuit ID found."
+        msg = "❌ No valid ID found in email content."
         if extracted_ids:
             msg = f"❌ Invalid Email IDs: {', '.join(extracted_ids)}"
         frappe.msgprint(msg)
+
+    # **Ensure the document is saved in all cases**
+    doc.save(ignore_permissions=True)
