@@ -352,67 +352,56 @@ def update_site_status_on_delivery_note_save(doc, method):
                 site_doc.save(ignore_permissions=True)
 
 ############################################################################3
-import re
-import html
-from bs4 import BeautifulSoup
 import frappe
+import re
+from frappe.utils import validate_email_address
 
-def clean_email_content(text):
-    """Clean HTML content without logging"""
+def validate_email(email):
     try:
-        text = str(text) if text else ""
-        text = BeautifulSoup(text, "html.parser").get_text()
-        text = html.unescape(text)
-        text = text.replace('\xa0', ' ').replace('\n', ' ').strip()
-        return re.sub(r'\s+', ' ', text)
-    except Exception:
-        return text
+        validate_email_address(email.strip(), throw=True)
+        return True
+    except frappe.exceptions.ValidationError:
+        return False
 
-def extract_circuit_id(text):
-    """Silent extraction of 5-digit codes"""
-    try:
-        return re.findall(r'(?<!\d)(\d{5})(?!\d)', text)
-    except Exception:
-        return []
-
-def validate_hd_ticket(doc, method=None):
-    """Strict validation for email ticket creation only"""
-    if frappe.flags.in_import or frappe.flags.in_migrate:
+def before_insert(doc, method):
+    # Step 1: Email Validation & Channel Assignment
+    if not doc.raised_by or not validate_email(doc.raised_by):
         return
 
-    # Only run for NEW tickets created via email
-    if not (doc.is_new() and doc.raised_by and doc.raised_by.strip()):  # ← Critical change here
+    # Set custom_channel based on raised_by email
+    if doc.raised_by.strip() == "sambakeshop@gmail.com":
+        doc.custom_channel = "NMS"
+    else:
+        doc.custom_channel = "Email"
+
+    # Step 2: Check if subject and description are populated
+    if not (doc.subject and doc.description):
         return
 
-    # Extraction process
-    extracted_ids = []
-    for field in ['subject', 'description']:
-        if content := getattr(doc, field, None):
-            clean_text = clean_email_content(content)
-            extracted_ids += extract_circuit_id(clean_text)
+    # Extract 5-digit Circuit ID using regex
+    circuit_id = None
+    regex_pattern = r'(?<!\d)\d{5}(?!\d)'  # Matches exactly 5 digits not part of longer number
 
-    # Remove duplicates
-    seen = set()
-    extracted_ids = [x for x in extracted_ids if not (x in seen or seen.add(x))]
+    # Search subject and description for Circuit ID
+    for text in [doc.subject, doc.description]:
+        if text:
+            match = re.search(regex_pattern, text)
+            if match:
+                circuit_id = match.group()
+                break
 
-    # Validation
-    valid_id = None
-    for candidate in extracted_ids:
-        candidate = candidate.zfill(5)
-        if frappe.db.exists("Site", {
-            "circuit_id": candidate,
-            "stage": "Delivered and Live"
-        }):
-            valid_id = candidate
-            break
+    if not circuit_id:
+        doc.status = "Wrong Circuit"
+        return
 
-    # Update status and custom_circuit_id
-    if valid_id:
-        doc.custom_circuit_id = valid_id
+    # Step 3: Validate Circuit ID against Site Doctype
+    site_exists = frappe.db.exists("Site", {
+        "name": circuit_id,
+        "stage": "Delivered and Live"
+    })
+
+    if site_exists:
+        doc.custom_circuit_id = circuit_id
         doc.status = "Open"
     else:
         doc.status = "Wrong Circuit"
-
-    # Ensure the document is saved
-    doc.save()
-

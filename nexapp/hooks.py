@@ -264,7 +264,7 @@ doc_events = {
 
 doc_events = {
     "HD Ticket": {
-        "before_save": "nexapp.api.validate_hd_ticket"
+        "before_insert": "nexapp.api.before_insert"
     }
 }
 
