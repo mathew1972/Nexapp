@@ -418,6 +418,20 @@ def update_product_request_status(item_code, voucher_no, custom_circuits):
     frappe.logger().info(f"Total updated Product Requests: {updated_count}")
     return updated_count > 0
 #########################################################################################
+import frappe
+import re
+
+def clean_email_content(content):
+    """Removes HTML tags and unnecessary spaces from email content."""
+    clean_text = re.sub(r'<.*?>', '', content)  # Remove HTML tags
+    clean_text = re.sub(r'\s+', ' ', clean_text).strip()  # Normalize spaces
+    return clean_text
+
+def extract_circuit_id(text):
+    """Extracts possible circuit IDs from the given text."""
+    pattern = r'\b\d{4,6}\b'  # Example: Matches 4-6 digit numbers
+    return re.findall(pattern, text)
+
 def validate_hd_ticket(doc, method=None):
     """Unified validation for both email and manual tickets."""
     if frappe.flags.in_import or frappe.flags.in_migrate:
@@ -425,8 +439,8 @@ def validate_hd_ticket(doc, method=None):
 
     frappe.logger().debug(f"🔥 Validation started for {doc.name}")
 
-    # Temporary testing mode - treat all tickets as email-generated
-    TESTING_MODE = True  # Set False when ready for production
+    # Enable TESTING_MODE for debugging; set to False in production
+    TESTING_MODE = False  
 
     # ====================
     # 1. Manual Input Check
@@ -434,46 +448,34 @@ def validate_hd_ticket(doc, method=None):
     manual_id = str(doc.custom_circuit_id).strip() if doc.custom_circuit_id else None
     if manual_id and not TESTING_MODE:
         manual_id = manual_id.zfill(5)
-        if frappe.db.exists("Site", {
-            "circuit_id": manual_id,
-            "stage": "Delivered and Live"
-        }):
+        if frappe.db.exists("Site", {"circuit_id": manual_id, "stage": "Delivered and Live"}):
             doc.status = "Open"
             frappe.msgprint(f"✅ Valid Manual ID: {manual_id}")
         else:
             doc.status = "Wrong Circuit"
             frappe.msgprint(f"❌ Invalid Manual ID: {manual_id}")
 
-        # **Ensure the document is saved**
-        doc.save(ignore_permissions=True)
-        return
+        return  # Stop further processing if manual input is provided
 
     # ======================
     # 2. Email Ticket Processing
     # ======================
-    extracted_ids = []
+    extracted_ids = set()  # Use a set to avoid duplicates
     
-    # Process both subject and description
     for field in ['subject', 'description']:
-        if content := getattr(doc, field, None):
+        content = getattr(doc, field, None)
+        if content:
             clean_text = clean_email_content(content)
-            frappe.logger().info(f"Clean {field}: {clean_text}")
-            extracted_ids += extract_circuit_id(clean_text)
+            frappe.logger().info(f"🔍 Cleaned {field}: {clean_text}")
+            extracted_ids.update(extract_circuit_id(clean_text))
 
-    # Remove duplicates while preserving order
-    seen = set()
-    extracted_ids = [x for x in extracted_ids if not (x in seen or seen.add(x))]
-    
-    frappe.logger().info(f"🔍 All extracted IDs: {extracted_ids}")
+    frappe.logger().info(f"🔍 Extracted Circuit IDs: {extracted_ids}")
 
     # Validation logic
     valid_id = None
-    for candidate in extracted_ids:
+    for candidate in sorted(extracted_ids, key=len, reverse=True):  # Prioritize longer matches
         candidate = candidate.zfill(5)
-        if frappe.db.exists("Site", {
-            "circuit_id": candidate,
-            "stage": "Delivered and Live"
-        }):
+        if frappe.db.exists("Site", {"circuit_id": candidate, "stage": "Delivered and Live"}):
             valid_id = candidate
             break
 
@@ -481,13 +483,13 @@ def validate_hd_ticket(doc, method=None):
     if valid_id:
         doc.custom_circuit_id = valid_id
         doc.status = "Open"
-        frappe.msgprint(f"✅ Valid Email ID: {valid_id}")
+        frappe.msgprint(f"✅ Valid Circuit ID Found: {valid_id}")
     else:
         doc.status = "Wrong Circuit"
         msg = "❌ No valid ID found in email content."
         if extracted_ids:
-            msg = f"❌ Invalid Email IDs: {', '.join(extracted_ids)}"
+            msg = f"❌ Invalid Extracted IDs: {', '.join(extracted_ids)}"
         frappe.msgprint(msg)
 
-    # **Ensure the document is saved in all cases**
+    # Ensure the document is saved
     doc.save(ignore_permissions=True)
