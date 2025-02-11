@@ -380,7 +380,7 @@ def before_insert(doc, method):
 
     # Extract 5-digit Circuit ID using regex
     circuit_id = None
-    regex_pattern = r'\b\d{5}\b'  # Matches exactly 5 digits as a standalone number
+    regex_pattern = r'(?<!\d)\d{5}(?!\d)'  # Match exactly 5 digits, not part of longer numbers
 
     # Search subject and description for Circuit ID
     for text in [doc.subject, doc.description]:
@@ -388,12 +388,11 @@ def before_insert(doc, method):
             match = re.search(regex_pattern, text)
             if match:
                 circuit_id = match.group()
-                break
+                break  # Exit loop if found
 
-    # If no valid Circuit ID is found, set status to "Wrong Circuit"
     if not circuit_id:
         doc.status = "Wrong Circuit"
-        return
+        return  # Exit early if no valid Circuit ID
 
     # Step 3: Validate Circuit ID against Site Doctype
     site_exists = frappe.db.exists("Site", {
@@ -402,7 +401,7 @@ def before_insert(doc, method):
     })
 
     if site_exists:
-        doc.custom_circuit_id = circuit_id
+        doc.custom_circuit_id = circuit_id  # Ensure field name matches doctype
         doc.status = "Open"
     else:
         doc.status = "Wrong Circuit"
