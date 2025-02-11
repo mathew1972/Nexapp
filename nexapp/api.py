@@ -356,44 +356,47 @@ import re
 import html
 from bs4 import BeautifulSoup
 import frappe
-from frappe.utils import validate_email_address  # Import Frappe's email validator
+from frappe.utils import validate_email_address
 
-def clean_email_content(text):
-    """Clean HTML content while preserving numeric patterns."""
+def clean_content(text):
+    """Clean HTML while preserving numeric patterns"""
     try:
         text = str(text) if text else ""
-        text = BeautifulSoup(text, "html.parser").get_text()
+        soup = BeautifulSoup(text, "html.parser")
+        text = soup.get_text(separator=" ", strip=True)
         text = html.unescape(text)
-        text = text.replace('\xa0', ' ').replace('\n', ' ').strip()
         return re.sub(r'\s+', ' ', text)
     except Exception as e:
         frappe.log_error(f"Content cleaning error: {e}")
         return text
 
 def extract_circuit_id(text):
-    """Robust extraction of 5-digit codes including edge cases."""
+    """Advanced pattern matching for 5-digit codes"""
     try:
-        return re.findall(r'(?<!\d)(\d{5})(?!\d)', text)
+        # Match 5-digit numbers not part of longer sequences
+        return re.finditer(r'(?<!\d)\d{5}(?!\d)', text)
     except Exception as e:
         frappe.log_error(f"Extraction error: {e}")
         return []
 
 def validate_hd_ticket(doc, method=None):
-    """Unified validation for both email and manual tickets."""
+    """Enhanced validation with proper status handling"""
     if frappe.flags.in_import or frappe.flags.in_migrate:
         return
+
+    # Initialize default values
+    doc.status = "Wrong Circuit"
+    doc.custom_circuit_id = None
 
     # ====================
     # 1. Email Validation
     # ====================
-    if not doc.raised_by:
-        return
-    
     try:
-        # Use Frappe's built-in email validator
+        if not doc.raised_by:
+            return
         validate_email_address(doc.raised_by.strip(), throw=True)
-    except frappe.exceptions.ValidationError:
-        return  # Skip processing if invalid email
+    except Exception:
+        return
 
     # ====================
     # 2. Channel Assignment
@@ -403,34 +406,23 @@ def validate_hd_ticket(doc, method=None):
     # ====================
     # 3. Circuit ID Processing
     # ====================
-    extracted_ids = []
+    found_ids = set()
     for field in ['subject', 'description']:
-        if content := getattr(doc, field, None):
-            clean_text = clean_email_content(content)
-            extracted_ids += extract_circuit_id(clean_text)
+        if content := clean_content(getattr(doc, field, "")):
+            for match in extract_circuit_id(content):
+                found_ids.add(match.group())
 
-    # Remove duplicates while preserving order
-    seen = set()
-    unique_ids = [x for x in extracted_ids if not (x in seen or seen.add(x))]
-    
     # ====================
     # 4. Validation Logic
     # ====================
-    valid_id = None
-    for candidate in unique_ids:
+    for circuit_id in found_ids:
         if frappe.db.exists("Site", {
-            "name": candidate,
+            "name": circuit_id,
             "stage": "Delivered and Live"
         }):
-            valid_id = candidate
-            break
-
-    # Update document state
-    if valid_id:
-        doc.custom_circuit_id = valid_id
-        doc.status = "Open"
-    else:
-        doc.status = "Wrong Circuit"
+            doc.custom_circuit_id = circuit_id
+            doc.status = "Open"
+            return  # Exit on first valid match
 
 # Hook configuration
 doc_events = {
