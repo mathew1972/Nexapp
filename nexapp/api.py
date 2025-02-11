@@ -352,56 +352,38 @@ def update_site_status_on_delivery_note_save(doc, method):
                 site_doc.save(ignore_permissions=True)
 
 ############################################################################3
-import frappe
-from frappe.utils import validate_email_address
 import re
-
-def validate_email(email):
-    try:
-        validate_email_address(email.strip(), throw=True)
-        return True
-    except frappe.exceptions.ValidationError:
-        return False
+import frappe
 
 def before_insert(doc, method):
-    # Step 1: Email Validation & Channel Assignment
-    if not doc.raised_by or not validate_email(doc.raised_by):
-        return
+    # Step 1: Validate Email & Assign custom_channel
+    if doc.raised_by and "@" in doc.raised_by:
+        if doc.raised_by == "sambakeshop@gmail.com":
+            doc.custom_channel = "NMS"
+        else:
+            doc.custom_channel = "Email"
 
-    # Set custom_channel based on raised_by email
-    if doc.raised_by.strip() == "sambakeshop@gmail.com":
-        doc.custom_channel = "NMS"
-    else:
-        doc.custom_channel = "Email"
-
-    # Step 2: Check if subject and description are populated
-    if not (doc.subject and doc.description):
-        return
-
-    # Extract 5-digit Circuit ID using regex
-    circuit_id = None
-    regex_pattern = r'(?<!\d)\d{5}(?!\d)'  # Match exactly 5 digits, not part of longer numbers
-
-    # Search subject and description for Circuit ID
-    for text in [doc.subject, doc.description]:
-        if text:
-            match = re.search(regex_pattern, text)
-            if match:
-                circuit_id = match.group()
-                break  # Exit loop if found
+    # Step 2: Extract Circuit ID
+    circuit_id = extract_circuit_id(doc.subject, doc.description)
 
     if not circuit_id:
         doc.status = "Wrong Circuit"
-        return  # Exit early if no valid Circuit ID
+        return  # Stop further processing
 
-    # Step 3: Validate Circuit ID against Site Doctype
-    site_exists = frappe.db.exists("Site", {
-        "name": circuit_id,
-        "stage": "Delivered and Live"
-    })
+    # Step 3: Validate Circuit ID with Site Doctype
+    site_exists = frappe.db.exists("Site", {"name": circuit_id, "stage": "Delivered and Live"})
 
     if site_exists:
-        doc.custom_circuit_id = circuit_id  # Ensure field name matches doctype
+        doc.custom_circuit_id = circuit_id
         doc.status = "Open"
     else:
         doc.status = "Wrong Circuit"
+
+
+def extract_circuit_id(subject, description):
+    """ Extracts a 5-digit Circuit ID from subject or description. """
+    pattern = r"\b\d{5}\b"  # Matches exactly 5-digit numbers
+    text = f"{subject} {description}" if subject and description else subject or description or ""
+    
+    match = re.search(pattern, text)
+    return match.group(0) if match else None
