@@ -353,37 +353,83 @@ def update_site_status_on_delivery_note_save(doc, method):
 
 ############################################################################3
 import re
+import html
+from bs4 import BeautifulSoup
 import frappe
+from frappe.utils import validate_email_address
 
-def before_insert(doc, method):
-    # Step 1: Validate Email & Assign custom_channel
-    if doc.raised_by and "@" in doc.raised_by:
-        if doc.raised_by == "sambakeshop@gmail.com":
-            doc.custom_channel = "NMS"
-        else:
-            doc.custom_channel = "Email"
+def clean_content(text):
+    """Clean HTML content while preserving numeric patterns."""
+    try:
+        text = str(text) if text else ""
+        text = BeautifulSoup(text, "html.parser").get_text()
+        text = html.unescape(text)
+        text = text.replace('\xa0', ' ').replace('\n', ' ').strip()
+        return re.sub(r'\s+', ' ', text)
+    except Exception as e:
+        frappe.log_error(f"Content cleaning error: {e}")
+        return text
 
-    # Step 2: Extract Circuit ID
-    circuit_id = extract_circuit_id(doc.subject, doc.description)
+def extract_circuit_id(text):
+    """Improved extraction with boundary checks."""
+    try:
+        matches = re.findall(r'(?<!\d)\d{5}(?!\d)', text)
+        return [match.zfill(5) for match in matches]  # Ensure 5-digit format
+    except Exception as e:
+        frappe.log_error(f"Circuit ID extraction error: {e}")
+        return []
 
-    if not circuit_id:
-        doc.status = "Wrong Circuit"
-        return  # Stop further processing
+def validate_hd_ticket(doc, method=None):
+    """Main validation handler with enhanced logic"""
+    if frappe.flags.in_import or frappe.flags.in_migrate:
+        return
 
-    # Step 3: Validate Circuit ID with Site Doctype
-    site_exists = frappe.db.exists("Site", {"name": circuit_id, "stage": "Delivered and Live"})
+    frappe.log_error("🔥 Validation started", f"Ticket {doc.name}")
 
-    if site_exists:
-        doc.custom_circuit_id = circuit_id
+    # ====================
+    # 1. Email Validation
+    # ====================
+    if not doc.raised_by or not validate_email(doc.raised_by):
+        frappe.log_error("Skipping processing", "Invalid/no email")
+        return
+
+    # ====================
+    # 2. Channel Assignment
+    # ====================
+    doc.custom_channel = "NMS" if "sambakeshop@gmail.com" in doc.raised_by else "Email"
+    
+    # ====================
+    # 3. Circuit ID Processing
+    # ====================
+    circuit_ids = []
+    for field in ['subject', 'description']:
+        if content := getattr(doc, field, None):
+            cleaned = clean_content(content)
+            circuit_ids += extract_circuit_id(cleaned)
+
+    # Remove duplicates while preserving order
+    seen = set()
+    unique_ids = [x for x in circuit_ids if not (x in seen or seen.add(x))]
+    
+    frappe.log_error("Extracted IDs", f"All IDs: {unique_ids}")
+
+    # ====================
+    # 4. Validation Logic
+    # ====================
+    valid_id = None
+    for candidate in unique_ids:
+        if frappe.db.exists("Site", {
+            "name": candidate,  # Changed to match your original field mapping
+            "stage": "Delivered and Live"
+        }):
+            valid_id = candidate
+            break
+
+    if valid_id:
+        doc.custom_circuit_id = valid_id
         doc.status = "Open"
+        frappe.log_error("Validation success", f"Valid ID: {valid_id}")
     else:
         doc.status = "Wrong Circuit"
+        frappe.log_error("Validation failed", "No valid ID found")
 
-
-def extract_circuit_id(subject, description):
-    """ Extracts a 5-digit Circuit ID from subject or description. """
-    pattern = r"\b\d{5}\b"  # Matches exactly 5-digit numbers
-    text = f"{subject} {description}" if subject and description else subject or description or ""
-    
-    match = re.search(pattern, text)
-    return match.group(0) if match else None
