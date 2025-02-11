@@ -352,144 +352,64 @@ def update_site_status_on_delivery_note_save(doc, method):
                 site_doc.save(ignore_permissions=True)
 
 ############################################################################3
-import frappe
-
-@frappe.whitelist()
-def update_serial_and_batch_entry(serial_and_batch_bundle, custom_circuit_id):
-    """
-    Updates the custom_circuit field in Serial and Batch Entry based on the Serial and Batch Bundle.
-    """
-    try:
-        # Check if Serial and Batch Bundle exists
-        serial_and_batch_bundle_doc = frappe.get_doc("Serial and Batch Bundle", serial_and_batch_bundle)
-        if not serial_and_batch_bundle_doc:
-            message = f"Serial and Batch Bundle '{serial_and_batch_bundle}' not found."
-            frappe.log_error(message, "Serial and Batch Entry Update")
-            return message
-
-        # Update the custom_circuit field in Serial and Batch Entry
-        for entry in serial_and_batch_bundle_doc.entries:
-            frappe.db.set_value(
-                "Serial and Batch Entry",
-                entry.name,  # Entry name in Serial and Batch Entry table
-                "custom_circuit",
-                custom_circuit_id
-            )
-        
-        frappe.db.commit()  # Commit the transaction
-        return "success"
-
-    except Exception as e:
-        frappe.log_error(frappe.get_traceback(), "Error in update_serial_and_batch_entry")
-        return f"error: {str(e)}"
-#################################################################
-import frappe
-
-@frappe.whitelist()
-def update_product_request_status(item_code, voucher_no, custom_circuits):
-    frappe.logger().info(f"API called with item_code: {item_code}, voucher_no: {voucher_no}, custom_circuits: {custom_circuits}")
-    
-    # Convert custom_circuits from JSON string to Python list if needed
-    if isinstance(custom_circuits, str):
-        custom_circuits = frappe.parse_json(custom_circuits)
-        frappe.logger().info(f"Parsed custom_circuits: {custom_circuits}")
-    
-    # Query the Product Request Doctype to find matching records
-    product_requests = frappe.get_all('Product Request', 
-                                      filters={
-                                          'item_code': item_code,
-                                          'sales_order': voucher_no,
-                                          'circuit_id': ['in', custom_circuits]
-                                      },
-                                      fields=['name', 'status'])
-    frappe.logger().info(f"Found Product Requests: {product_requests}")
-    
-    # If matching records are found, update their status
-    updated_count = 0
-    for pr in product_requests:
-        if pr['status'] != 'Assigned':
-            frappe.db.set_value('Product Request', pr['name'], 'status', 'Assigned')
-            updated_count += 1
-            frappe.logger().info(f"Updated Product Request {pr['name']} to Assigned")
-    
-    frappe.db.commit()
-    
-    # Return a message if updates were made
-    frappe.logger().info(f"Total updated Product Requests: {updated_count}")
-    return updated_count > 0
-#########################################################################################
-import frappe
 import re
+import html
+from bs4 import BeautifulSoup
+import frappe
 
-def clean_email_content(content):
-    """Removes HTML tags and unnecessary spaces from email content."""
-    clean_text = re.sub(r'<.*?>', '', content)  # Remove HTML tags
-    clean_text = re.sub(r'\s+', ' ', clean_text).strip()  # Normalize spaces
-    return clean_text
+def clean_email_content(text):
+    """Clean HTML content without logging"""
+    try:
+        text = str(text) if text else ""
+        text = BeautifulSoup(text, "html.parser").get_text()
+        text = html.unescape(text)
+        text = text.replace('\xa0', ' ').replace('\n', ' ').strip()
+        return re.sub(r'\s+', ' ', text)
+    except Exception:
+        return text
 
 def extract_circuit_id(text):
-    """Extracts possible circuit IDs from the given text."""
-    pattern = r'\b\d{4,6}\b'  # Example: Matches 4-6 digit numbers
-    return re.findall(pattern, text)
+    """Silent extraction of 5-digit codes"""
+    try:
+        return re.findall(r'(?<!\d)(\d{5})(?!\d)', text)
+    except Exception:
+        return []
 
 def validate_hd_ticket(doc, method=None):
-    """Unified validation for both email and manual tickets."""
+    """Strict validation for email ticket creation only"""
     if frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
-    frappe.logger().debug(f"🔥 Validation started for {doc.name}")
+    # Only run for NEW tickets created via email
+    if not (doc.is_new() and doc.raised_by):  # ← Critical change here
+        return
 
-    # Enable TESTING_MODE for debugging; set to False in production
-    TESTING_MODE = False  
-
-    # ====================
-    # 1. Manual Input Check
-    # ====================
-    manual_id = str(doc.custom_circuit_id).strip() if doc.custom_circuit_id else None
-    if manual_id and not TESTING_MODE:
-        manual_id = manual_id.zfill(5)
-        if frappe.db.exists("Site", {"circuit_id": manual_id, "stage": "Delivered and Live"}):
-            doc.status = "Open"
-            frappe.msgprint(f"✅ Valid Manual ID: {manual_id}")
-        else:
-            doc.status = "Wrong Circuit"
-            frappe.msgprint(f"❌ Invalid Manual ID: {manual_id}")
-
-        return  # Stop further processing if manual input is provided
-
-    # ======================
-    # 2. Email Ticket Processing
-    # ======================
-    extracted_ids = set()  # Use a set to avoid duplicates
-    
+    # Extraction process
+    extracted_ids = []
     for field in ['subject', 'description']:
-        content = getattr(doc, field, None)
-        if content:
+        if content := getattr(doc, field, None):
             clean_text = clean_email_content(content)
-            frappe.logger().info(f"🔍 Cleaned {field}: {clean_text}")
-            extracted_ids.update(extract_circuit_id(clean_text))
+            extracted_ids += extract_circuit_id(clean_text)
 
-    frappe.logger().info(f"🔍 Extracted Circuit IDs: {extracted_ids}")
+    # Remove duplicates
+    seen = set()
+    extracted_ids = [x for x in extracted_ids if not (x in seen or seen.add(x))]
 
-    # Validation logic
+    # Validation
     valid_id = None
-    for candidate in sorted(extracted_ids, key=len, reverse=True):  # Prioritize longer matches
+    for candidate in extracted_ids:
         candidate = candidate.zfill(5)
-        if frappe.db.exists("Site", {"circuit_id": candidate, "stage": "Delivered and Live"}):
+        if frappe.db.exists("Site", {
+            "circuit_id": candidate,
+            "stage": "Delivered and Live"
+        }):
             valid_id = candidate
             break
 
-    # Update document state
+    # Silent update
     if valid_id:
         doc.custom_circuit_id = valid_id
         doc.status = "Open"
-        frappe.msgprint(f"✅ Valid Circuit ID Found: {valid_id}")
     else:
         doc.status = "Wrong Circuit"
-        msg = "❌ No valid ID found in email content."
-        if extracted_ids:
-            msg = f"❌ Invalid Extracted IDs: {', '.join(extracted_ids)}"
-        frappe.msgprint(msg)
 
-    # Ensure the document is saved
-    doc.save(ignore_permissions=True)
