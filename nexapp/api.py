@@ -381,7 +381,7 @@ def validate_hd_ticket(doc, method=None):
         return
 
     # Only run for NEW tickets created via email
-    if not (doc.is_new() and doc.raised_by):  # ← Critical change here
+    if not (doc.is_new() and doc.raised_by and doc.raised_by.strip()):  # ← Critical change here
         return
 
     # Extraction process
@@ -406,10 +406,13 @@ def validate_hd_ticket(doc, method=None):
             valid_id = candidate
             break
 
-    # Silent update
+    # Update status and custom_circuit_id
     if valid_id:
         doc.custom_circuit_id = valid_id
         doc.status = "Open"
     else:
         doc.status = "Wrong Circuit"
+
+    # Ensure the document is saved
+    doc.save()
 
