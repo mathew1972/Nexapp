@@ -353,8 +353,8 @@ def update_site_status_on_delivery_note_save(doc, method):
 
 ############################################################################3
 import frappe
-import re
 from frappe.utils import validate_email_address
+import re
 
 def validate_email(email):
     try:
@@ -380,7 +380,7 @@ def before_insert(doc, method):
 
     # Extract 5-digit Circuit ID using regex
     circuit_id = None
-    regex_pattern = r'(?<!\d)\d{5}(?!\d)'  # Matches exactly 5 digits not part of longer number
+    regex_pattern = r'\b\d{5}\b'  # Matches exactly 5 digits as a standalone number
 
     # Search subject and description for Circuit ID
     for text in [doc.subject, doc.description]:
@@ -390,6 +390,7 @@ def before_insert(doc, method):
                 circuit_id = match.group()
                 break
 
+    # If no valid Circuit ID is found, set status to "Wrong Circuit"
     if not circuit_id:
         doc.status = "Wrong Circuit"
         return
