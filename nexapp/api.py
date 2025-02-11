@@ -356,9 +356,9 @@ import re
 import html
 from bs4 import BeautifulSoup
 import frappe
-from frappe.utils import validate_email_address
+from frappe.utils import validate_email_address  # Import Frappe's email validator
 
-def clean_content(text):
+def clean_email_content(text):
     """Clean HTML content while preserving numeric patterns."""
     try:
         text = str(text) if text else ""
@@ -371,65 +371,71 @@ def clean_content(text):
         return text
 
 def extract_circuit_id(text):
-    """Improved extraction with boundary checks."""
+    """Robust extraction of 5-digit codes including edge cases."""
     try:
-        matches = re.findall(r'(?<!\d)\d{5}(?!\d)', text)
-        return [match.zfill(5) for match in matches]  # Ensure 5-digit format
+        return re.findall(r'(?<!\d)(\d{5})(?!\d)', text)
     except Exception as e:
-        frappe.log_error(f"Circuit ID extraction error: {e}")
+        frappe.log_error(f"Extraction error: {e}")
         return []
 
 def validate_hd_ticket(doc, method=None):
-    """Main validation handler with enhanced logic"""
+    """Unified validation for both email and manual tickets."""
     if frappe.flags.in_import or frappe.flags.in_migrate:
         return
-
-    frappe.log_error("🔥 Validation started", f"Ticket {doc.name}")
 
     # ====================
     # 1. Email Validation
     # ====================
-    if not doc.raised_by or not validate_email(doc.raised_by):
-        frappe.log_error("Skipping processing", "Invalid/no email")
+    if not doc.raised_by:
         return
+    
+    try:
+        # Use Frappe's built-in email validator
+        validate_email_address(doc.raised_by.strip(), throw=True)
+    except frappe.exceptions.ValidationError:
+        return  # Skip processing if invalid email
 
     # ====================
     # 2. Channel Assignment
     # ====================
     doc.custom_channel = "NMS" if "sambakeshop@gmail.com" in doc.raised_by else "Email"
-    
+
     # ====================
     # 3. Circuit ID Processing
     # ====================
-    circuit_ids = []
+    extracted_ids = []
     for field in ['subject', 'description']:
         if content := getattr(doc, field, None):
-            cleaned = clean_content(content)
-            circuit_ids += extract_circuit_id(cleaned)
+            clean_text = clean_email_content(content)
+            extracted_ids += extract_circuit_id(clean_text)
 
     # Remove duplicates while preserving order
     seen = set()
-    unique_ids = [x for x in circuit_ids if not (x in seen or seen.add(x))]
+    unique_ids = [x for x in extracted_ids if not (x in seen or seen.add(x))]
     
-    frappe.log_error("Extracted IDs", f"All IDs: {unique_ids}")
-
     # ====================
     # 4. Validation Logic
     # ====================
     valid_id = None
     for candidate in unique_ids:
         if frappe.db.exists("Site", {
-            "name": candidate,  # Changed to match your original field mapping
+            "name": candidate,
             "stage": "Delivered and Live"
         }):
             valid_id = candidate
             break
 
+    # Update document state
     if valid_id:
         doc.custom_circuit_id = valid_id
         doc.status = "Open"
-        frappe.log_error("Validation success", f"Valid ID: {valid_id}")
     else:
         doc.status = "Wrong Circuit"
-        frappe.log_error("Validation failed", "No valid ID found")
 
+# Hook configuration
+doc_events = {
+    "HD Ticket": {
+        "before_save": "nexapp.api.validate_hd_ticket",
+        "before_insert": "nexapp.api.validate_hd_ticket"
+    }
+}
