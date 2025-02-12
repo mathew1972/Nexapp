@@ -380,7 +380,7 @@ def extract_circuit_id(text):
         return []
 
 def validate_hd_ticket(doc, method=None):
-    """Main validation handler with enhanced safety checks"""
+    """Main validation handler with proper existing record updates"""
     if not doc.is_new() or frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
@@ -399,31 +399,31 @@ def validate_hd_ticket(doc, method=None):
         if not found_ids:
             return
 
-        circuit_id = found_ids[0]  # Use first match only
+        circuit_id = found_ids[0]
 
-        # Case 2: Restored Handling (Priority)
+        # Case 2: Restored Handling
         if 'restored' in subject:
-            # Find existing NMS tickets in Open state
+            # Find existing tickets with matching circuit ID and NMS channel
             tickets = frappe.get_all("HD Ticket",
                 filters={
                     "custom_circuit_id": circuit_id,
-                    "custom_channel": "NMS",
-                    "status": "Open"  # New condition added
+                    "custom_channel": "NMS"
                 },
                 pluck="name"
             )
             
             if not tickets:
                 frappe.throw(
-                    _("No open NMS ticket found for Circuit ID: {0}").format(circuit_id),
+                    _("No existing NMS ticket found for Circuit ID: {0}").format(circuit_id),
                     exc=frappe.ValidationError
                 )
                 return
 
-            # Update all matching tickets and prevent new creation
+            # Update all matching tickets
             for ticket in tickets:
                 frappe.db.set_value("HD Ticket", ticket, "status", "Resolved")
             
+            # Prevent new ticket creation
             frappe.throw(
                 _("Updated {0} ticket(s) to Resolved").format(len(tickets)),
                 exc=frappe.ValidationError
@@ -439,13 +439,13 @@ def validate_hd_ticket(doc, method=None):
                 doc.update({
                     "custom_channel": "NMS",
                     "custom_circuit_id": circuit_id,
-                    "status": "Open"  # Explicitly set initial status
+                    "status": "Open"
                 })
             else:
                 doc.status = "Wrong Circuit"
 
     except frappe.ValidationError:
-        raise  # Re-raise to abort document creation
+        raise  # Abort document creation
     except Exception as e:
         frappe.log_error(f"Ticket validation failed: {str(e)}")
         doc.status = "Wrong Circuit"
