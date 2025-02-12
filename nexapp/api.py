@@ -380,59 +380,77 @@ def extract_circuit_id(text):
         return []
 
 def validate_hd_ticket(doc, method=None):
-    """Main validation handler"""
+    """Main validation handler with enhanced safety checks"""
     if not doc.is_new() or frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
     try:
-        # Validate sender email
-        if not doc.raised_by or "sambakeshop@gmail.com" not in doc.raised_by:
+        # Validate sender and required fields
+        if not (doc.raised_by and "sambakeshop@gmail.com" in doc.raised_by):
             return
             
-        # Clean and prepare data
+        # Clean and analyze content
         subject = clean_content(doc.subject).lower()
         content = clean_content(doc.description or "")
-
+        full_text = f"{subject} {content}"
+        
         # Extract circuit IDs
-        found_ids = extract_circuit_id(subject + " " + content)
+        found_ids = extract_circuit_id(full_text)
         if not found_ids:
             return
 
+        circuit_id = found_ids[0]  # Use first match only
+
         # Case 2: Restored Handling (Priority)
         if 'restored' in subject:
-            existing_tickets = frappe.get_all("HD Ticket",
-                filters={"custom_circuit_id": found_ids[0]},
+            # Find existing NMS tickets in Open state
+            tickets = frappe.get_all("HD Ticket",
+                filters={
+                    "custom_circuit_id": circuit_id,
+                    "custom_channel": "NMS",
+                    "status": "Open"  # New condition added
+                },
                 pluck="name"
             )
             
-            if existing_tickets:
-                for ticket in existing_tickets:
-                    frappe.db.set_value("HD Ticket", ticket, "status", "Resolved")
-                # Prevent new ticket creation
-                frappe.throw(_("Existing tickets updated to Resolved"), exc=frappe.ValidationError)
-            else:
-                frappe.throw(_("No existing ticket found for Circuit ID: {0}").format(found_ids[0]),
-                          exc=frappe.ValidationError)
+            if not tickets:
+                frappe.throw(
+                    _("No open NMS ticket found for Circuit ID: {0}").format(circuit_id),
+                    exc=frappe.ValidationError
+                )
+                return
+
+            # Update all matching tickets and prevent new creation
+            for ticket in tickets:
+                frappe.db.set_value("HD Ticket", ticket, "status", "Resolved")
+            
+            frappe.throw(
+                _("Updated {0} ticket(s) to Resolved").format(len(tickets)),
+                exc=frappe.ValidationError
+            )
             return
 
         # Case 1: Problem Handling
         if 'problem' in subject:
-            circuit_id = found_ids[0]
             if frappe.db.exists("Site", {
                 "name": circuit_id,
                 "stage": "Delivered and Live"
             }):
-                doc.custom_channel = "NMS"
-                doc.custom_circuit_id = circuit_id
-                doc.status = "Open"
+                doc.update({
+                    "custom_channel": "NMS",
+                    "custom_circuit_id": circuit_id,
+                    "status": "Open"  # Explicitly set initial status
+                })
             else:
                 doc.status = "Wrong Circuit"
 
+    except frappe.ValidationError:
+        raise  # Re-raise to abort document creation
     except Exception as e:
         frappe.log_error(f"Ticket validation failed: {str(e)}")
         doc.status = "Wrong Circuit"
 
-# Hook configuration (only on create)
+# Hook configuration
 doc_events = {
     "HD Ticket": {
         "before_insert": "nexapp.api.validate_hd_ticket"
