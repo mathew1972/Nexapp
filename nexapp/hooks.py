@@ -262,13 +262,6 @@ doc_events = {
     }
 }
 
-# Update hook configuration
-doc_events = {
-    "HD Ticket": {
-        #"before_save": "nexapp.api.validate_hd_ticket",
-        "before_insert": "nexapp.api.validate_hd_ticket"
-    }
-}
 fixtures = [
     {"dt": "Product Type"},
     {"dt": "Product Category"},

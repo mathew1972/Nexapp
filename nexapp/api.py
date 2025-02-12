@@ -356,6 +356,7 @@ import re
 import html
 from bs4 import BeautifulSoup
 import frappe
+from frappe import _
 from frappe.utils import validate_email_address
 
 def clean_content(text):
@@ -373,32 +374,10 @@ def clean_content(text):
 def extract_circuit_id(text):
     """Advanced pattern matching for 5-digit codes"""
     try:
-        return re.finditer(r'(?<!\d)\d{5}(?!\d)', text)
+        return re.findall(r'(?<!\d)\d{5}(?!\d)', text)
     except Exception as e:
         frappe.log_error(f"Extraction error: {e}")
         return []
-
-def handle_problem_case(doc, circuit_id):
-    """Case 1: Handle PROBLEM in subject"""
-    if frappe.db.exists("Site", {
-        "name": circuit_id,
-        "stage": "Delivered and Live"
-    }):
-        doc.custom_channel = "NMS"
-        doc.custom_circuit_id = circuit_id
-        doc.status = "Open"
-        return True
-    return False
-
-def handle_restored_case(circuit_id):
-    """Case 2: Handle Restored in subject"""
-    existing_tickets = frappe.get_all("HD Ticket", 
-        filters={"custom_circuit_id": circuit_id},
-        pluck="name"
-    )
-    for ticket in existing_tickets:
-        frappe.db.set_value("HD Ticket", ticket, "status", "Resolved")
-    return bool(existing_tickets)
 
 def validate_hd_ticket(doc, method=None):
     """Main validation handler"""
@@ -407,35 +386,47 @@ def validate_hd_ticket(doc, method=None):
 
     try:
         # Validate sender email
-        if not doc.raised_by or not validate_email_address(doc.raised_by.strip(), throw=True):
+        if not doc.raised_by or "sambakeshop@gmail.com" not in doc.raised_by:
             return
             
-        # Only process emails from sambakeshop
-        if "sambakeshop@gmail.com" not in doc.raised_by:
-            return
-
         # Clean and prepare data
         subject = clean_content(doc.subject).lower()
         content = clean_content(doc.description or "")
 
-        # Extract circuit ID from subject/description
-        found_ids = set()
-        for text in [subject, content]:
-            for match in extract_circuit_id(text):
-                found_ids.add(match.group())
+        # Extract circuit IDs
+        found_ids = extract_circuit_id(subject + " " + content)
+        if not found_ids:
+            return
 
-        # Case handling
-        for circuit_id in found_ids:
-            if 'problem' in subject:
-                if handle_problem_case(doc, circuit_id):
-                    return
-            elif 'restored' in subject:
-                if handle_restored_case(circuit_id):
-                    doc.status = "Resolved"  # Set status for new ticket
-                    return
+        # Case 2: Restored Handling (Priority)
+        if 'restored' in subject:
+            existing_tickets = frappe.get_all("HD Ticket",
+                filters={"custom_circuit_id": found_ids[0]},
+                pluck="name"
+            )
+            
+            if existing_tickets:
+                for ticket in existing_tickets:
+                    frappe.db.set_value("HD Ticket", ticket, "status", "Resolved")
+                # Prevent new ticket creation
+                frappe.throw(_("Existing tickets updated to Resolved"), exc=frappe.ValidationError)
+            else:
+                frappe.throw(_("No existing ticket found for Circuit ID: {0}").format(found_ids[0]),
+                          exc=frappe.ValidationError)
+            return
 
-        # Default failure case
-        doc.status = "Wrong Circuit"
+        # Case 1: Problem Handling
+        if 'problem' in subject:
+            circuit_id = found_ids[0]
+            if frappe.db.exists("Site", {
+                "name": circuit_id,
+                "stage": "Delivered and Live"
+            }):
+                doc.custom_channel = "NMS"
+                doc.custom_circuit_id = circuit_id
+                doc.status = "Open"
+            else:
+                doc.status = "Wrong Circuit"
 
     except Exception as e:
         frappe.log_error(f"Ticket validation failed: {str(e)}")
