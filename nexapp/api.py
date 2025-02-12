@@ -380,7 +380,7 @@ def extract_circuit_id(text):
         return []
 
 def validate_hd_ticket(doc, method=None):
-    """Main validation handler with proper existing record updates"""
+    """Final solution: Strict prevention of new tickets for Restored cases"""
     if not doc.is_new() or frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
@@ -407,16 +407,15 @@ def validate_hd_ticket(doc, method=None):
             tickets = frappe.get_all("HD Ticket",
                 filters={
                     "custom_circuit_id": circuit_id,
-                    "custom_channel": "NMS"
+                    "custom_channel": "NMS",
+                    "status": "Open"
                 },
                 pluck="name"
             )
             
             if not tickets:
-                frappe.throw(
-                    _("No existing NMS ticket found for Circuit ID: {0}").format(circuit_id),
-                    exc=frappe.ValidationError
-                )
+                frappe.msgprint(_("No open NMS ticket found for Circuit ID: {0}").format(circuit_id))
+                frappe.throw("", as_list=True)  # Empty throw to abort silently
                 return
 
             # Update all matching tickets
@@ -424,10 +423,9 @@ def validate_hd_ticket(doc, method=None):
                 frappe.db.set_value("HD Ticket", ticket, "status", "Resolved")
             
             # Prevent new ticket creation
-            frappe.throw(
-                _("Updated {0} ticket(s) to Resolved").format(len(tickets)),
-                exc=frappe.ValidationError
-            )
+            doc.flags.ignore_mandatory = True
+            doc.flags.prevent_insert = True  # Critical addition
+            frappe.throw("", as_list=True)  # Silent abort
             return
 
         # Case 1: Problem Handling
@@ -444,8 +442,6 @@ def validate_hd_ticket(doc, method=None):
             else:
                 doc.status = "Wrong Circuit"
 
-    except frappe.ValidationError:
-        raise  # Abort document creation
     except Exception as e:
         frappe.log_error(f"Ticket validation failed: {str(e)}")
         doc.status = "Wrong Circuit"
@@ -453,6 +449,7 @@ def validate_hd_ticket(doc, method=None):
 # Hook configuration
 doc_events = {
     "HD Ticket": {
-        "before_insert": "nexapp.api.validate_hd_ticket"
+        "before_insert": "nexapp.api.validate_hd_ticket",
+        "before_validate": "nexapp.api.validate_hd_ticket"
     }
 }
