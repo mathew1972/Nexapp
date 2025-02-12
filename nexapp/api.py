@@ -427,7 +427,7 @@ def validate_hd_ticket(doc, method=None):
 # Hook configuration
 doc_events = {
     "HD Ticket": {
-        "before_save": "nexapp.api.validate_hd_ticket",
+        #"before_save": "nexapp.api.validate_hd_ticket",
         "before_insert": "nexapp.api.validate_hd_ticket"
     }
 }
