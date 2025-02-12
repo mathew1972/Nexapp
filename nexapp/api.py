@@ -373,14 +373,18 @@ def clean_content(text):
 def extract_circuit_id(text):
     """Advanced pattern matching for 5-digit codes"""
     try:
-        # Match 5-digit numbers not part of longer sequences
         return re.finditer(r'(?<!\d)\d{5}(?!\d)', text)
     except Exception as e:
         frappe.log_error(f"Extraction error: {e}")
         return []
 
 def validate_hd_ticket(doc, method=None):
-    """Enhanced validation with proper status handling"""
+    """Run only during ticket creation"""
+    # Skip if not a new document
+    if not doc.is_new():
+        return
+
+    # Skip during imports/migrations
     if frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
@@ -388,9 +392,7 @@ def validate_hd_ticket(doc, method=None):
     doc.status = "Wrong Circuit"
     doc.custom_circuit_id = None
 
-    # ====================
-    # 1. Email Validation
-    # ====================
+    # Email validation
     try:
         if not doc.raised_by:
             return
@@ -398,23 +400,17 @@ def validate_hd_ticket(doc, method=None):
     except Exception:
         return
 
-    # ====================
-    # 2. Channel Assignment
-    # ====================
+    # Channel assignment
     doc.custom_channel = "NMS" if "sambakeshop@gmail.com" in doc.raised_by else "Email"
 
-    # ====================
-    # 3. Circuit ID Processing
-    # ====================
+    # Circuit ID extraction
     found_ids = set()
     for field in ['subject', 'description']:
         if content := clean_content(getattr(doc, field, "")):
             for match in extract_circuit_id(content):
                 found_ids.add(match.group())
 
-    # ====================
-    # 4. Validation Logic
-    # ====================
+    # Site validation
     for circuit_id in found_ids:
         if frappe.db.exists("Site", {
             "name": circuit_id,
@@ -422,12 +418,11 @@ def validate_hd_ticket(doc, method=None):
         }):
             doc.custom_circuit_id = circuit_id
             doc.status = "Open"
-            return  # Exit on first valid match
+            return
 
 # Hook configuration
 doc_events = {
     "HD Ticket": {
-        #"before_save": "nexapp.api.validate_hd_ticket",
         "before_insert": "nexapp.api.validate_hd_ticket"
     }
 }
