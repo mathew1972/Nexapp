@@ -11,6 +11,7 @@
   "ticket_category",
   "ticket_sub_category",
   "impact",
+  "resolution",
   "description"
  ],
  "fields": [
@@ -49,11 +50,17 @@
    "fieldtype": "Link",
    "label": "Ticket Priority",
    "options": "HD Ticket Priority"
+  },
+  {
+   "fieldname": "resolution",
+   "fieldtype": "Table",
+   "label": "Resolution",
+   "options": "Resolution"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-25 19:09:36.990818",
+ "modified": "2025-02-12 16:59:24.167371",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Impact",

@@ -378,49 +378,70 @@ def extract_circuit_id(text):
         frappe.log_error(f"Extraction error: {e}")
         return []
 
+def handle_problem_case(doc, circuit_id):
+    """Case 1: Handle PROBLEM in subject"""
+    if frappe.db.exists("Site", {
+        "name": circuit_id,
+        "stage": "Delivered and Live"
+    }):
+        doc.custom_channel = "NMS"
+        doc.custom_circuit_id = circuit_id
+        doc.status = "Open"
+        return True
+    return False
+
+def handle_restored_case(circuit_id):
+    """Case 2: Handle Restored in subject"""
+    existing_tickets = frappe.get_all("HD Ticket", 
+        filters={"custom_circuit_id": circuit_id},
+        pluck="name"
+    )
+    for ticket in existing_tickets:
+        frappe.db.set_value("HD Ticket", ticket, "status", "Resolved")
+    return bool(existing_tickets)
+
 def validate_hd_ticket(doc, method=None):
-    """Run only during ticket creation"""
-    # Skip if not a new document
-    if not doc.is_new():
+    """Main validation handler"""
+    if not doc.is_new() or frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
-    # Skip during imports/migrations
-    if frappe.flags.in_import or frappe.flags.in_migrate:
-        return
-
-    # Initialize default values
-    doc.status = "Wrong Circuit"
-    doc.custom_circuit_id = None
-
-    # Email validation
     try:
-        if not doc.raised_by:
+        # Validate sender email
+        if not doc.raised_by or not validate_email_address(doc.raised_by.strip(), throw=True):
             return
-        validate_email_address(doc.raised_by.strip(), throw=True)
-    except Exception:
-        return
+            
+        # Only process emails from sambakeshop
+        if "sambakeshop@gmail.com" not in doc.raised_by:
+            return
 
-    # Channel assignment
-    doc.custom_channel = "NMS" if "sambakeshop@gmail.com" in doc.raised_by else "Email"
+        # Clean and prepare data
+        subject = clean_content(doc.subject).lower()
+        content = clean_content(doc.description or "")
 
-    # Circuit ID extraction
-    found_ids = set()
-    for field in ['subject', 'description']:
-        if content := clean_content(getattr(doc, field, "")):
-            for match in extract_circuit_id(content):
+        # Extract circuit ID from subject/description
+        found_ids = set()
+        for text in [subject, content]:
+            for match in extract_circuit_id(text):
                 found_ids.add(match.group())
 
-    # Site validation
-    for circuit_id in found_ids:
-        if frappe.db.exists("Site", {
-            "name": circuit_id,
-            "stage": "Delivered and Live"
-        }):
-            doc.custom_circuit_id = circuit_id
-            doc.status = "Open"
-            return
+        # Case handling
+        for circuit_id in found_ids:
+            if 'problem' in subject:
+                if handle_problem_case(doc, circuit_id):
+                    return
+            elif 'restored' in subject:
+                if handle_restored_case(circuit_id):
+                    doc.status = "Resolved"  # Set status for new ticket
+                    return
 
-# Hook configuration
+        # Default failure case
+        doc.status = "Wrong Circuit"
+
+    except Exception as e:
+        frappe.log_error(f"Ticket validation failed: {str(e)}")
+        doc.status = "Wrong Circuit"
+
+# Hook configuration (only on create)
 doc_events = {
     "HD Ticket": {
         "before_insert": "nexapp.api.validate_hd_ticket"
