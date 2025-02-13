@@ -373,7 +373,7 @@ def clean_content(text):
 def extract_circuit_id(text):
     """Find standalone 5-digit codes"""
     try:
-        return re.finditer(r'(?<!\d)\d{5}(?!\d)', text)
+        return re.findall(r'\b\d{5}\b', text)  # Simplified regex
     except Exception as e:
         frappe.log_error(f"Extraction error: {e}")
         return []
@@ -383,48 +383,48 @@ def validate_hd_ticket(doc, method=None):
     if not doc.is_new() or frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
-    # Initialize defaults
-    original_status = doc.status
-    doc.status = "Wrong Circuit"  # Default status
+    # Initialize status
+    doc.status = "Wrong Circuit"
     doc.custom_circuit_id = None
 
-    # Email validation
+    # Validate email format
     try:
         if not doc.raised_by:
             return
         validate_email_address(doc.raised_by.strip(), throw=True)
     except Exception:
-        doc.status = original_status  # Revert if email invalid
-        return
+        return  # Retain "Wrong Circuit" status
 
     # Channel detection
     doc.custom_channel = "NMS" if "sambakeshop@gmail.com" in doc.raised_by else "Email"
 
-    # Process only subject field
-    found_ids = set()
-    content = clean_content(doc.subject)
-    if content:
-        for match in extract_circuit_id(content):
-            found_ids.add(match.group())
+    # Process subject field
+    cleaned_subject = clean_content(doc.subject)
+    found_ids = extract_circuit_id(cleaned_subject)
 
-    # Validation logic (EXACTLY AS BEFORE)
-    circuit_matched = False
+    # Debug logging
+    frappe.log_error(f"Cleaned Subject: {cleaned_subject}")
+    frappe.log_error(f"Found IDs: {found_ids}")
+
+    # Validate against Site doctype
+    valid_circuit = None
     for circuit_id in found_ids:
         if frappe.db.exists("Site", {
             "name": circuit_id,
             "stage": "Delivered and Live"
         }):
-            doc.custom_circuit_id = circuit_id
-            doc.status = "Open"
-            circuit_matched = True
+            valid_circuit = circuit_id
             break
 
-    # EXPLICIT STATUS UPDATE (ONLY ADDITION)
-    if not circuit_matched:
-        doc.status = "Wrong Circuit"
+    # Explicit status update
+    if valid_circuit:
+        doc.custom_circuit_id = valid_circuit
+        doc.status = "Open"
+    else:
         doc.custom_circuit_id = None
+        doc.status = "Wrong Circuit"  # Force update
 
-# Hook configuration remains the same
+# Hook configuration
 doc_events = {
     "HD Ticket": {
         "before_insert": "nexapp.api.validate_hd_ticket"
