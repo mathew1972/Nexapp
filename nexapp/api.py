@@ -383,7 +383,7 @@ def validate_hd_ticket(doc, method=None):
     if not doc.is_new() or frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
-    # Initialize defaults
+    # Initialize with default values
     doc.status = "Wrong Circuit"
     doc.custom_circuit_id = None
 
@@ -405,15 +405,24 @@ def validate_hd_ticket(doc, method=None):
         for match in extract_circuit_id(content):
             found_ids.add(match.group())
 
-    # Original validation logic (using 'name' field)
+    # Validation flag
+    valid_circuit_found = False
+    
+    # Check each found circuit ID
     for circuit_id in found_ids:
         if frappe.db.exists("Site", {
-            "name": circuit_id,  # Validate against Site's name field
+            "name": circuit_id,
             "stage": "Delivered and Live"
         }):
             doc.custom_circuit_id = circuit_id
             doc.status = "Open"
-            return  # Exit after first valid match
+            valid_circuit_found = True
+            break  # Exit after first valid match
+
+    # Explicit status update for invalid cases
+    if not valid_circuit_found:
+        doc.status = "Wrong Circuit"
+        doc.custom_circuit_id = None
 
 # Hook configuration
 doc_events = {
