@@ -352,55 +352,36 @@ def update_site_status_on_delivery_note_save(doc, method):
                 site_doc.save(ignore_permissions=True)
 
 ############################################################################3
-import re
-import html
-from bs4 import BeautifulSoup
-import frappe
-from frappe.utils import validate_email_address
-
-def clean_content(text):
-    """Clean HTML content"""
-    try:
-        text = str(text) if text else ""
-        soup = BeautifulSoup(text, "html.parser")
-        return soup.get_text(separator=" ", strip=True)
-    except Exception as e:
-        frappe.log_error(f"Content cleaning error: {e}")
-        return text
-
-def extract_circuit_id(text):
-    """Extract 5-digit standalone numbers"""
-    try:
-        return re.findall(r'\b\d{5}\b', text)  # Word boundary check
-    except Exception as e:
-        frappe.log_error(f"Extraction error: {e}")
-        return []
-
 def validate_hd_ticket(doc, method=None):
-    """Validate HD Ticket creation"""
-    # Skip during manual creation or updates
+    """Run only during ticket creation"""
     if not doc.is_new() or frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
-    # Exit if manual user input (no email in raised_by)
-    try:
-        if not validate_email_address(doc.raised_by, throw=False):
-            doc.status = "Open"  # Default status for manual tickets
-            return
-    except:
-        return
-
-    # Original validation logic
+    # Initialize defaults
     doc.status = "Wrong Circuit"  # Set default first
     doc.custom_circuit_id = None
+
+    # Email validation
+    try:
+        if not doc.raised_by:
+            return
+        validate_email_address(doc.raised_by.strip(), throw=True)
+    except Exception:
+        return
 
     # Channel detection
     doc.custom_channel = "NMS" if "sambakeshop@gmail.com" in doc.raised_by else "Email"
 
-    # Process subject only
-    found_ids = extract_circuit_id(clean_content(doc.subject))
+    # Process only subject field
+    found_ids = set()
+    content = clean_content(doc.subject)
+    if content:
+        for match in extract_circuit_id(content):
+            found_ids.add(match.group())
 
-    # Check against Site doctype (original validation)
+    # Validation check
+    valid_circuit_found = False
+    
     for circuit_id in found_ids:
         if frappe.db.exists("Site", {
             "name": circuit_id,
@@ -408,15 +389,10 @@ def validate_hd_ticket(doc, method=None):
         }):
             doc.custom_circuit_id = circuit_id
             doc.status = "Open"
-            return  # Exit on first valid match
+            valid_circuit_found = True
+            break  # Exit after first valid match
 
-    # Explicitly set status if no matches found
-    doc.status = "Wrong Circuit"
-    doc.custom_circuit_id = None
-
-# Hook configuration
-doc_events = {
-    "HD Ticket": {
-        "before_insert": "nexapp.api.validate_hd_ticket"
-    }
-}
+    # Explicit status update if no valid circuits
+    if not valid_circuit_found:
+        doc.status = "Wrong Circuit"
+        doc.custom_circuit_id = None
