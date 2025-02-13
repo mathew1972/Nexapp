@@ -371,9 +371,9 @@ def clean_content(text):
         return text
 
 def extract_circuit_id(text):
-    """Your original pattern matching"""
+    """Find standalone 5-digit codes (original regex)"""
     try:
-        return re.finditer(r'(?<!\d)\d{5}(?!\d)', text)  # Original regex
+        return re.finditer(r'(?<!\d)\d{5}(?!\d)', text)
     except Exception as e:
         frappe.log_error(f"Extraction error: {e}")
         return []
@@ -383,16 +383,17 @@ def validate_hd_ticket(doc, method=None):
     if not doc.is_new() or frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
-    # Initialize defaults (status will persist if no changes)
-    doc.status = "Wrong Circuit"
+    # Initialize defaults
+    doc.status = "Wrong Circuit"  # Set first
     doc.custom_circuit_id = None
 
-    # Email validation
+    # Validate email format
     try:
         if not doc.raised_by:
             return
         validate_email_address(doc.raised_by.strip(), throw=True)
     except Exception:
+        doc.status = "Wrong Circuit"  # Force status
         return
 
     # Channel detection
@@ -405,22 +406,23 @@ def validate_hd_ticket(doc, method=None):
         for match in extract_circuit_id(content):
             found_ids.add(match.group())
 
-    # Check for valid circuits
-    valid_circuit_found = False
+    # Check validation
+    valid_circuit = None
     for circuit_id in found_ids:
         if frappe.db.exists("Site", {
             "name": circuit_id,
             "stage": "Delivered and Live"
         }):
-            doc.custom_circuit_id = circuit_id
-            doc.status = "Open"
-            valid_circuit_found = True
-            break
+            valid_circuit = circuit_id
+            break  # Stop after first valid match
 
-    # Explicit status update for non-matches
-    if not valid_circuit_found:
-        doc.status = "Wrong Circuit"  # Force update
+    # Explicit status update
+    if valid_circuit:
+        doc.custom_circuit_id = valid_circuit
+        doc.status = "Open"
+    else:
         doc.custom_circuit_id = None
+        doc.status = "Wrong Circuit"  # Force update
 
 # Hook configuration
 doc_events = {
