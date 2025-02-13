@@ -371,7 +371,7 @@ def clean_content(text):
         return text
 
 def extract_circuit_id(text):
-    """Advanced pattern matching for 5-digit codes"""
+    """Find standalone 5-digit codes"""
     try:
         return re.finditer(r'(?<!\d)\d{5}(?!\d)', text)
     except Exception as e:
@@ -380,16 +380,14 @@ def extract_circuit_id(text):
 
 def validate_hd_ticket(doc, method=None):
     """Run only during ticket creation"""
-    if not doc.is_new():
+    if not doc.is_new() or frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
-    if frappe.flags.in_import or frappe.flags.in_migrate:
-        return
-
-    # Initialize with default status
+    # Initialize defaults
     doc.status = "Wrong Circuit"
     doc.custom_circuit_id = None
 
+    # Email validation
     try:
         if not doc.raised_by:
             return
@@ -397,29 +395,29 @@ def validate_hd_ticket(doc, method=None):
     except Exception:
         return
 
+    # Channel detection
     doc.custom_channel = "NMS" if "sambakeshop@gmail.com" in doc.raised_by else "Email"
 
+    # Process only subject field
     found_ids = set()
-    # Only process subject field
     content = clean_content(doc.subject)
     if content:
         for match in extract_circuit_id(content):
             found_ids.add(match.group())
 
-    # Site validation logic
-    valid_circuit_found = False
+    # Original validation logic (using 'name' field)
     for circuit_id in found_ids:
         if frappe.db.exists("Site", {
-            "custom_circuit_id": circuit_id,  # Changed to correct field
+            "name": circuit_id,  # Validate against Site's name field
             "stage": "Delivered and Live"
         }):
             doc.custom_circuit_id = circuit_id
             doc.status = "Open"
-            valid_circuit_found = True
-            break  # Exit on first valid ID
+            return  # Exit after first valid match
 
-    # Explicitly set status if no valid IDs found
-    if not valid_circuit_found:
-        doc.status = "Wrong Circuit"
-        doc.custom_circuit_id = None
-
+# Hook configuration
+doc_events = {
+    "HD Ticket": {
+        "before_insert": "nexapp.api.validate_hd_ticket"
+    }
+}
