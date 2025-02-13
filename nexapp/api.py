@@ -371,9 +371,9 @@ def clean_content(text):
         return text
 
 def extract_circuit_id(text):
-    """Find standalone 5-digit codes"""
+    """Your original pattern matching"""
     try:
-        return re.findall(r'\b\d{5}\b', text)  # Simplified regex
+        return re.finditer(r'(?<!\d)\d{5}(?!\d)', text)  # Original regex
     except Exception as e:
         frappe.log_error(f"Extraction error: {e}")
         return []
@@ -383,46 +383,44 @@ def validate_hd_ticket(doc, method=None):
     if not doc.is_new() or frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
-    # Initialize status
+    # Initialize defaults (status will persist if no changes)
     doc.status = "Wrong Circuit"
     doc.custom_circuit_id = None
 
-    # Validate email format
+    # Email validation
     try:
         if not doc.raised_by:
             return
         validate_email_address(doc.raised_by.strip(), throw=True)
     except Exception:
-        return  # Retain "Wrong Circuit" status
+        return
 
     # Channel detection
     doc.custom_channel = "NMS" if "sambakeshop@gmail.com" in doc.raised_by else "Email"
 
     # Process subject field
-    cleaned_subject = clean_content(doc.subject)
-    found_ids = extract_circuit_id(cleaned_subject)
+    found_ids = set()
+    content = clean_content(doc.subject)
+    if content:
+        for match in extract_circuit_id(content):
+            found_ids.add(match.group())
 
-    # Debug logging
-    frappe.log_error(f"Cleaned Subject: {cleaned_subject}")
-    frappe.log_error(f"Found IDs: {found_ids}")
-
-    # Validate against Site doctype
-    valid_circuit = None
+    # Check for valid circuits
+    valid_circuit_found = False
     for circuit_id in found_ids:
         if frappe.db.exists("Site", {
             "name": circuit_id,
             "stage": "Delivered and Live"
         }):
-            valid_circuit = circuit_id
+            doc.custom_circuit_id = circuit_id
+            doc.status = "Open"
+            valid_circuit_found = True
             break
 
-    # Explicit status update
-    if valid_circuit:
-        doc.custom_circuit_id = valid_circuit
-        doc.status = "Open"
-    else:
-        doc.custom_circuit_id = None
+    # Explicit status update for non-matches
+    if not valid_circuit_found:
         doc.status = "Wrong Circuit"  # Force update
+        doc.custom_circuit_id = None
 
 # Hook configuration
 doc_events = {
