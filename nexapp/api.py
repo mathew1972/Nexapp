@@ -352,13 +352,40 @@ def update_site_status_on_delivery_note_save(doc, method):
                 site_doc.save(ignore_permissions=True)
 
 ############################################################################3
+import re
+import html
+from bs4 import BeautifulSoup
+import frappe
+from frappe.utils import validate_email_address
+
+def clean_content(text):
+    """Clean HTML while preserving numeric patterns"""
+    try:
+        text = str(text) if text else ""
+        soup = BeautifulSoup(text, "html.parser")
+        text = soup.get_text(separator=" ", strip=True)
+        text = html.unescape(text)
+        return re.sub(r'\s+', ' ', text)
+    except Exception as e:
+        frappe.log_error(f"Content cleaning error: {e}")
+        return text
+
+def extract_circuit_id(text):
+    """Find standalone 5-digit codes"""
+    try:
+        return re.finditer(r'(?<!\d)\d{5}(?!\d)', text)
+    except Exception as e:
+        frappe.log_error(f"Extraction error: {e}")
+        return []
+
 def validate_hd_ticket(doc, method=None):
     """Run only during ticket creation"""
     if not doc.is_new() or frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
     # Initialize defaults
-    doc.status = "Wrong Circuit"  # Set default first
+    original_status = doc.status
+    doc.status = "Wrong Circuit"  # Default status
     doc.custom_circuit_id = None
 
     # Email validation
@@ -367,6 +394,7 @@ def validate_hd_ticket(doc, method=None):
             return
         validate_email_address(doc.raised_by.strip(), throw=True)
     except Exception:
+        doc.status = original_status  # Revert if email invalid
         return
 
     # Channel detection
@@ -379,9 +407,8 @@ def validate_hd_ticket(doc, method=None):
         for match in extract_circuit_id(content):
             found_ids.add(match.group())
 
-    # Validation check
-    valid_circuit_found = False
-    
+    # Validation logic (EXACTLY AS BEFORE)
+    circuit_matched = False
     for circuit_id in found_ids:
         if frappe.db.exists("Site", {
             "name": circuit_id,
@@ -389,10 +416,17 @@ def validate_hd_ticket(doc, method=None):
         }):
             doc.custom_circuit_id = circuit_id
             doc.status = "Open"
-            valid_circuit_found = True
-            break  # Exit after first valid match
+            circuit_matched = True
+            break
 
-    # Explicit status update if no valid circuits
-    if not valid_circuit_found:
+    # EXPLICIT STATUS UPDATE (ONLY ADDITION)
+    if not circuit_matched:
         doc.status = "Wrong Circuit"
         doc.custom_circuit_id = None
+
+# Hook configuration remains the same
+doc_events = {
+    "HD Ticket": {
+        "before_insert": "nexapp.api.validate_hd_ticket"
+    }
+}
