@@ -371,26 +371,23 @@ def clean_content(text):
         return text
 
 def extract_circuit_id(text):
-    """Advanced pattern matching for 5-digit codes"""
+    """Find 5-digit codes even when embedded in text"""
     try:
-        # Match 5-digit numbers not part of longer sequences
-        return re.finditer(r'(?<!\d)\d{5}(?!\d)', text)
+        return re.findall(r'\d{5}', text)  # Simple pattern for any 5-digit sequence
     except Exception as e:
         frappe.log_error(f"Extraction error: {e}")
         return []
 
 def validate_hd_ticket(doc, method=None):
-    """Enhanced validation with proper status handling"""
-    if frappe.flags.in_import or frappe.flags.in_migrate:
+    """Validate during ticket creation"""
+    if not doc.is_new() or frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
-    # Initialize default values
+    # Default status
     doc.status = "Wrong Circuit"
     doc.custom_circuit_id = None
 
-    # ====================
-    # 1. Email Validation
-    # ====================
+    # Email validation
     try:
         if not doc.raised_by:
             return
@@ -398,29 +395,23 @@ def validate_hd_ticket(doc, method=None):
     except Exception:
         return
 
-    # ====================
-    # 2. Channel Assignment
-    # ====================
+    # Channel detection
     doc.custom_channel = "NMS" if "sambakeshop@gmail.com" in doc.raised_by else "Email"
 
-    # ====================
-    # 3. Circuit ID Processing
-    # ====================
+    # Circuit ID extraction
     found_ids = set()
     for field in ['subject', 'description']:
-        if content := clean_content(getattr(doc, field, "")):
-            for match in extract_circuit_id(content):
-                found_ids.add(match.group())
+        content = clean_content(getattr(doc, field, ""))
+        if content:
+            found_ids.update(extract_circuit_id(content))
 
-    # ====================
-    # 4. Validation Logic
-    # ====================
+    # Site validation
     for circuit_id in found_ids:
         if frappe.db.exists("Site", {
-            "name": circuit_id,
+            "custom_circuit_id": circuit_id,  # Critical change: field name
             "stage": "Delivered and Live"
         }):
             doc.custom_circuit_id = circuit_id
             doc.status = "Open"
-            return  # Exit on first valid match
+            return  # Stop after first valid ID
 
