@@ -359,7 +359,7 @@ import frappe
 from frappe.utils import validate_email_address
 
 def clean_content(text):
-    """Clean HTML content from subject field"""
+    """Clean HTML content"""
     try:
         text = str(text) if text else ""
         soup = BeautifulSoup(text, "html.parser")
@@ -371,58 +371,48 @@ def clean_content(text):
 def extract_circuit_id(text):
     """Extract 5-digit standalone numbers"""
     try:
-        return re.findall(r'\b\d{5}\b', text)  # Simple word boundary check
+        return re.findall(r'\b\d{5}\b', text)  # Word boundary check
     except Exception as e:
         frappe.log_error(f"Extraction error: {e}")
         return []
 
 def validate_hd_ticket(doc, method=None):
     """Validate HD Ticket creation"""
+    # Skip during manual creation or updates
     if not doc.is_new() or frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
-    # Initialize default state
-    doc.status = "Wrong Circuit"
-    doc.custom_circuit_id = None
-
-    # Validate email format
+    # Exit if manual user input (no email in raised_by)
     try:
-        if not doc.raised_by:
+        if not validate_email_address(doc.raised_by, throw=False):
+            doc.status = "Open"  # Default status for manual tickets
             return
-        validate_email_address(doc.raised_by.strip(), throw=True)
-    except Exception:
+    except:
         return
 
-    # Set channel
+    # Original validation logic
+    doc.status = "Wrong Circuit"  # Set default first
+    doc.custom_circuit_id = None
+
+    # Channel detection
     doc.custom_channel = "NMS" if "sambakeshop@gmail.com" in doc.raised_by else "Email"
 
-    # Process subject field
-    raw_subject = getattr(doc, 'subject', '')
-    cleaned_subject = html.unescape(clean_content(raw_subject))
-    found_ids = extract_circuit_id(cleaned_subject)
+    # Process subject only
+    found_ids = extract_circuit_id(clean_content(doc.subject))
 
-    # Debug logging
-    frappe.log_error(f"Cleaned subject: {cleaned_subject}")
-    frappe.log_error(f"Found IDs: {found_ids}")
-
-    # Validate against Site doctype
-    valid_circuit = None
+    # Check against Site doctype (original validation)
     for circuit_id in found_ids:
         if frappe.db.exists("Site", {
-            "name": circuit_id,  # Change to "custom_circuit_id" if needed
+            "name": circuit_id,
             "stage": "Delivered and Live"
         }):
-            valid_circuit = circuit_id
-            break
+            doc.custom_circuit_id = circuit_id
+            doc.status = "Open"
+            return  # Exit on first valid match
 
-    # Update document fields
-    if valid_circuit:
-        doc.custom_circuit_id = valid_circuit
-        doc.status = "Open"
-    else:
-        doc.custom_circuit_id = None
-        doc.status = "Wrong Circuit"  # Explicit set
-        frappe.log_error("No valid circuit ID found")
+    # Explicitly set status if no matches found
+    doc.status = "Wrong Circuit"
+    doc.custom_circuit_id = None
 
 # Hook configuration
 doc_events = {
