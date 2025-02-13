@@ -386,7 +386,7 @@ def validate_hd_ticket(doc, method=None):
     if frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
-    # Initialize with default 'Wrong Circuit' status
+    # Initialize with default status
     doc.status = "Wrong Circuit"
     doc.custom_circuit_id = None
 
@@ -400,25 +400,26 @@ def validate_hd_ticket(doc, method=None):
     doc.custom_channel = "NMS" if "sambakeshop@gmail.com" in doc.raised_by else "Email"
 
     found_ids = set()
-    for field in ['subject', 'description']:
-        content = clean_content(getattr(doc, field, ""))
-        if content:
-            for match in extract_circuit_id(content):
-                found_ids.add(match.group())
+    # Only process subject field
+    content = clean_content(doc.subject)
+    if content:
+        for match in extract_circuit_id(content):
+            found_ids.add(match.group())
 
-    # Check each found circuit ID against valid sites
+    # Site validation logic
+    valid_circuit_found = False
     for circuit_id in found_ids:
         if frappe.db.exists("Site", {
-            "name": circuit_id,
-            "stage": "Delivered and Live"  # Corrected stage name
+            "custom_circuit_id": circuit_id,  # Changed to correct field
+            "stage": "Delivered and Live"
         }):
             doc.custom_circuit_id = circuit_id
             doc.status = "Open"
-            return  # Exit on first valid ID
+            valid_circuit_found = True
+            break  # Exit on first valid ID
 
-# Hook configuration remains the same
-doc_events = {
-    "HD Ticket": {
-        "before_insert": "nexapp.api.validate_hd_ticket"
-    }
-}
+    # Explicitly set status if no valid IDs found
+    if not valid_circuit_found:
+        doc.status = "Wrong Circuit"
+        doc.custom_circuit_id = None
+
