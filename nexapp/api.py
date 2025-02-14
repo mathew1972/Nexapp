@@ -371,7 +371,7 @@ def clean_content(text):
         return text
 
 def extract_circuit_id(text):
-    """Find standalone 5-digit codes (original regex)"""
+    """Find standalone 5-digit codes"""
     try:
         return re.finditer(r'(?<!\d)\d{5}(?!\d)', text)
     except Exception as e:
@@ -383,8 +383,8 @@ def validate_hd_ticket(doc, method=None):
     if not doc.is_new() or frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
-    # Initialize defaults
-    doc.status = "Wrong Circuit"  # Set first
+    # Set default values
+    doc.status = "Wrong Circuit"
     doc.custom_circuit_id = None
 
     # Validate email format
@@ -393,20 +393,20 @@ def validate_hd_ticket(doc, method=None):
             return
         validate_email_address(doc.raised_by.strip(), throw=True)
     except Exception:
-        doc.status = "Wrong Circuit"  # Force status
+        doc.status = "Wrong Circuit"
         return
 
-    # Channel detection
+    # Determine channel
     doc.custom_channel = "NMS" if "sambakeshop@gmail.com" in doc.raised_by else "Email"
 
-    # Process subject field
+    # Process subject to extract circuit IDs
     found_ids = set()
     content = clean_content(doc.subject)
     if content:
         for match in extract_circuit_id(content):
             found_ids.add(match.group())
 
-    # Check validation
+    # Check if any extracted ID exists in the Site database
     valid_circuit = None
     for circuit_id in found_ids:
         if frappe.db.exists("Site", {
@@ -416,13 +416,15 @@ def validate_hd_ticket(doc, method=None):
             valid_circuit = circuit_id
             break  # Stop after first valid match
 
-    # Explicit status update
+    # Explicitly set status and circuit ID
     if valid_circuit:
         doc.custom_circuit_id = valid_circuit
         doc.status = "Open"
     else:
-        doc.custom_circuit_id = None
+        doc.custom_circuit_id = None  # Ensure it's reset
         doc.status = "Wrong Circuit"  # Force update
+
+    frappe.log(f"validate_hd_ticket: Ticket {doc.name}, Circuit: {doc.custom_circuit_id}, Status: {doc.status}")
 
 # Hook configuration
 doc_events = {
