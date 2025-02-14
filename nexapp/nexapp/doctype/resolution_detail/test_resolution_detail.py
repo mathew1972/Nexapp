@@ -5,5 +5,5 @@
 from frappe.tests.utils import FrappeTestCase
 
 
-class TestResolution(FrappeTestCase):
+class TestResolutionDetail(FrappeTestCase):
 	pass

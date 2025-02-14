@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class Resolution(Document):
+class RCA(Document):
 	pass

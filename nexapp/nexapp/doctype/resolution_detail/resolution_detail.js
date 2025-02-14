@@ -1,7 +1,7 @@
 // Copyright (c) 2025, Nexapp Technologies Private Limited and contributors
 // For license information, please see license.txt
 
-// frappe.ui.form.on("Resolution", {
+// frappe.ui.form.on("Resolution Detail", {
 // 	refresh(frm) {
 
 // 	},
