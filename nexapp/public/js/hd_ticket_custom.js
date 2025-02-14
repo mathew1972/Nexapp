@@ -10,7 +10,7 @@ frappe.ui.form.on('HD Ticket', {
             'avg_response_time', 'resolution_tab', 'section_break_19', 'resolution_details', 'opening_date', 'opening_time', 
             'resolution_date', 'resolution_time', 'user_resolution_time', 'reference_tab', 'feedback_tab', 'customer_feedback_section', 
             'feedback_rating', 'feedback_text', 'feedback', 'feedback_extra', 'custom_finance_issue', 'custom__finance_expected_end_date_', 
-            'custom_department', 'custom_finance_task_details'
+            'custom_department', 'custom_finance_task_details', 'custom_site_type'
         ];
 
         fields.forEach(function(field) {
