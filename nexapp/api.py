@@ -371,9 +371,10 @@ def clean_content(text):
         return text
 
 def extract_circuit_id(text):
-    """Find standalone 5-digit codes (original regex)"""
+    """Find 5-digit codes not part of longer numbers"""
     try:
-        return re.findall(r'\b\d{5}\b', text)  # Simplified regex using word boundaries
+        # Use lookbehind and lookahead to ensure standalone 5 digits
+        return re.findall(r'(?<!\d)\d{5}(?!\d)', text)
     except Exception as e:
         frappe.log_error(f"Extraction error: {e}")
         return []
