@@ -1,4 +1,4 @@
-frappe.ui.form.on('Lastmile Services', {
+frappe.ui.form.on('Lastmile Services Master', {
     refresh: function (frm) {
         // List of fields to apply custom styles to
         const fields = [

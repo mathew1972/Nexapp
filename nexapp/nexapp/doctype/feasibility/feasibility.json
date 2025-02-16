@@ -440,7 +440,7 @@
   {
    "fieldname": "lms_provider_information_section",
    "fieldtype": "Section Break",
-   "label": "LMS Provider Information"
+   "label": "LMS Feaibility Information"
   },
   {
    "fieldname": "wireless_feasibility_tab",
@@ -639,7 +639,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2025-02-04 14:45:50.733400",
+ "modified": "2025-02-15 17:57:58.153856",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",

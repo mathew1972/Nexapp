@@ -1,0 +1,171 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-02-03 16:29:22.731324",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "lms_supplier_info_section",
+  "lms_id",
+  "payment_cycle",
+  "expected_delivery_date",
+  "security_deposit",
+  "bandwith_type",
+  "column_break_gxkg",
+  "supplier",
+  "contact",
+  "billing_terms",
+  "billing_mode",
+  "section_break_rwku",
+  "table_ohkt",
+  "customer_information_section",
+  "circuit_id",
+  "column_break_sdoz",
+  "customer",
+  "section_break_bhcc",
+  "purchase_order",
+  "column_break_peqc",
+  "purchase_order_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "lms_id",
+   "fieldtype": "Link",
+   "label": "LMS ID",
+   "options": "Lastmile Services Master"
+  },
+  {
+   "fetch_from": "lms_id.circuit_id",
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "label": "Circuit ID",
+   "options": "Site"
+  },
+  {
+   "fieldname": "column_break_gxkg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "lms_id.lms_supplier",
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "section_break_bhcc",
+   "fieldtype": "Section Break",
+   "label": "Issued  LMS PO Information"
+  },
+  {
+   "fieldname": "purchase_order",
+   "fieldtype": "Link",
+   "label": "Purchase Order",
+   "options": "Purchase Order"
+  },
+  {
+   "fieldname": "column_break_peqc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "purchase_order_date",
+   "fieldtype": "Date",
+   "label": "Purchase Order Date"
+  },
+  {
+   "fieldname": "expected_delivery_date",
+   "fieldtype": "Date",
+   "label": "Expected Delivery Date"
+  },
+  {
+   "fieldname": "contact",
+   "fieldtype": "Link",
+   "label": "Contact",
+   "options": "Contact"
+  },
+  {
+   "fieldname": "payment_cycle",
+   "fieldtype": "Select",
+   "label": "Payment Cycle",
+   "options": "\n5th\n15th\n25th"
+  },
+  {
+   "fieldname": "customer_information_section",
+   "fieldtype": "Section Break",
+   "label": "Customer Information"
+  },
+  {
+   "fieldname": "column_break_sdoz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "circuit_id.customer",
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "label": "Customer"
+  },
+  {
+   "fieldname": "lms_supplier_info_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Supplier info"
+  },
+  {
+   "fieldname": "section_break_rwku",
+   "fieldtype": "Section Break",
+   "label": "LMS PO Item"
+  },
+  {
+   "fieldname": "table_ohkt",
+   "fieldtype": "Table",
+   "options": "LMS Item"
+  },
+  {
+   "fieldname": "billing_terms",
+   "fieldtype": "Select",
+   "label": "Billing Terms",
+   "options": "\nPre-Paid\nPost-Paid"
+  },
+  {
+   "fieldname": "billing_mode",
+   "fieldtype": "Select",
+   "label": "Billing Mode",
+   "options": "\nMRC\nQRC\nHYRC\nARC"
+  },
+  {
+   "fieldname": "security_deposit",
+   "fieldtype": "Currency",
+   "label": "Security Deposit"
+  },
+  {
+   "fieldname": "bandwith_type",
+   "fieldtype": "Select",
+   "label": "Bandwith Type",
+   "options": "\nILL\nMBB\n4G\n5G"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-02-15 18:56:03.557065",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "LMS PO Request",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

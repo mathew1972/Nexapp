@@ -1,17 +1,18 @@
 frappe.ui.form.on('HD Ticket', {
     refresh: function(frm) {
         const fields = [
-            'custom_circuit_id', 'custom_ticket_category', 'custom_ticket_sub_category', 'custom_ticket_owner', 'custom_impact', 
-            'customer', 'priority', 'agent_group', 'custom_lms_ticket_id', 'custom_ticket_for', 'status', 'ticket_type', 'raised_by', 
-            'ticket_split_from', 'custom_impact_details', 'custom_channel', 'custom_lms', 'custom_inhouse_escalation', 'custom_provisioning', 
-            'contact', 'email_account', 'attachment', 'content_type', 'subject', 'description', 'template', 'sla_tab', 'sla', 
-            'response_by', 'cb', 'agreement_status', 'resolution_by', 'service_level_agreement_creation', 'on_hold_since', 
-            'total_hold_time', 'response_tab', 'response', 'first_response_time', 'first_responded_on', 'column_break_26', 
-            'avg_response_time', 'resolution_tab', 'section_break_19', 'resolution_details', 'opening_date', 'opening_time', 
-            'resolution_date', 'resolution_time', 'user_resolution_time', 'reference_tab', 'feedback_tab', 'customer_feedback_section', 
-            'feedback_rating', 'feedback_text', 'feedback', 'feedback_extra', 'custom_finance_issue', 'custom__finance_expected_end_date_', 
-            'custom_department', 'custom_finance_task_details', 'custom_site_type'
+            'custom_serial_no', 'custom_model', 'custom_finance_inhouse_escalation', 
+            'custom_finance_issue', 'custom_finance_expected_end_date', 'custom_finance_task_details', 'custom_finance_task_created', 
+            'custom_department', 'additional_info', 'contact', 'via_customer_portal', 'email_account', 'attachment', 'content_type', 
+            'sb_details', 'subject', 'description', 'template', 'sla', 'response_by', 'cb', 'agreement_status', 'resolution_by', 
+            'service_level_agreement_creation', 'on_hold_since', 'total_hold_time', 'response', 'first_response_time', 'first_responded_on', 
+            'avg_response_time', 'custom_agent_responded_on', 'resolution_details', 'opening_date', 'opening_time', 'resolution_date', 
+            'resolution_time', 'user_resolution_time', 'custom_rca', 'feedback_rating', 'feedback_text', 'feedback', 'feedback_extra', 
+            'custom_circuit_id', 'custom_site_type', 'custom_impact', 'custom_ticket_category', 'custom_ticket_sub_category', 'priority', 
+            'customer', 'custom_inhouse_escalation', 'status', 'ticket_type', 'raised_by', 'ticket_split_from', 'custom_channel', 
+            'agent_group', 'custom_impact_details', 'custom_warranty_end__date', 'custom_warranty_expiry_date'
         ];
+       
 
         fields.forEach(function(field) {
             if (frm.fields_dict[field]) {
@@ -71,6 +72,16 @@ frappe.ui.form.on('HD Ticket', {
                         });
                     }
                 });
+
+                // Fix height issue for select dropdowns
+                if (fieldElement.is('select')) {
+                    fieldElement.css({
+                        'height': '36px', // Adjust height
+                        'line-height': '36px',
+                        'padding-top': '4px',
+                        'padding-bottom': '4px'
+                    });
+                }
             }
         });
     }

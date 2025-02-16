@@ -6,6 +6,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "lms_item_information_section",
   "item_code",
   "item_name",
   "item_rate",
@@ -80,12 +81,17 @@
    "fieldtype": "Select",
    "label": "Billing Mode",
    "options": "\nOTC\nMRC\nQRC\nHRC\nARC"
+  },
+  {
+   "fieldname": "lms_item_information_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Item Information"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-02-03 17:14:47.980136",
+ "modified": "2025-02-15 18:04:45.425018",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "LMS Item",

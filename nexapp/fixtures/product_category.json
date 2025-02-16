@@ -33,5 +33,12 @@
   "modified": "2025-01-19 16:02:00.212459",
   "name": "LMS",
   "product_category": "LMS"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Product Category",
+  "modified": "2025-02-15 16:57:35.644833",
+  "name": "Service Plans",
+  "product_category": "Service Plans"
  }
 ]

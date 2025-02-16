@@ -1,0 +1,405 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "LMS-.######",
+ "creation": "2025-01-15 21:18:48.590080",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "circuit_information_section",
+  "lms_stage",
+  "circuit_id",
+  "site",
+  "solution",
+  "column_break_uwil",
+  "customer",
+  "site_type",
+  "primary_plan",
+  "secondary_plan",
+  "lms_feasibility_information_section",
+  "lms_feasibility_id",
+  "column_break_zxfn",
+  "lms_feasibility_status",
+  "lms_information_section",
+  "lms_supplier",
+  "expected_delivery_date",
+  "column_break_mctq",
+  "supplier_contact",
+  "delivery_date",
+  "section_break_okwv",
+  "lms_po_request_id",
+  "lms_po_number",
+  "column_break_ufwq",
+  "lms_po_request_date",
+  "lms_po_date",
+  "section_break_hlgt",
+  "bandwith_type",
+  "media",
+  "billing_terms",
+  "column_break_ctob",
+  "lms_bandwith",
+  "security_deposit",
+  "billing_mode",
+  "description",
+  "lms_support_information_section",
+  "support_email",
+  "tollfree_number",
+  "webportal_user_name",
+  "payment_mode",
+  "modem_user_id",
+  "column_break_xnlq",
+  "support_phone",
+  "support_other_phone",
+  "webportal_password",
+  "mode",
+  "modem_password",
+  "documents_section",
+  "noc",
+  "column_break_xedf",
+  "address_proof"
+ ],
+ "fields": [
+  {
+   "fieldname": "lms_supplier",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "LMS Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "bandwith_type",
+   "fieldtype": "Select",
+   "label": "Bandwith Type",
+   "options": "\nILL\nMBB\n4G\n5G"
+  },
+  {
+   "fieldname": "column_break_ctob",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "supplier_contact",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Supplier Contact"
+  },
+  {
+   "fieldname": "lms_bandwith",
+   "fieldtype": "Link",
+   "label": "LMS Bandwith",
+   "options": "Item"
+  },
+  {
+   "fieldname": "media",
+   "fieldtype": "Select",
+   "label": "Media",
+   "options": "\nWired\nRF\n4G\n5G"
+  },
+  {
+   "fieldname": "billing_terms",
+   "fieldtype": "Select",
+   "label": "Billing Terms",
+   "options": "\nPre-Paid\nPost-Paid"
+  },
+  {
+   "fieldname": "security_deposit",
+   "fieldtype": "Currency",
+   "label": "Security Deposit"
+  },
+  {
+   "fieldname": "billing_mode",
+   "fieldtype": "Select",
+   "label": "Billing Mode",
+   "options": "\nMRC\nQRC\nHYRC\nARC"
+  },
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Circuit ID",
+   "options": "Site",
+   "unique": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "lms_po_request_id",
+   "fieldtype": "Link",
+   "label": "LMS PO Request ID",
+   "options": "LMS PO Request"
+  },
+  {
+   "fetch_from": "lms_po_request_id.po_request_date",
+   "fieldname": "lms_po_request_date",
+   "fieldtype": "Date",
+   "label": "LMS PO Request Date"
+  },
+  {
+   "fieldname": "column_break_uwil",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "circuit_id.customer",
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "section_break_hlgt",
+   "fieldtype": "Section Break",
+   "label": "LMS Other Information"
+  },
+  {
+   "fetch_from": "circuit_id.site_name",
+   "fieldname": "site",
+   "fieldtype": "Link",
+   "label": "Site",
+   "options": "Site"
+  },
+  {
+   "fetch_from": "circuit_id.site_type",
+   "fieldname": "site_type",
+   "fieldtype": "Data",
+   "label": "Site Type"
+  },
+  {
+   "fetch_from": "circuit_id.solution",
+   "fieldname": "solution",
+   "fieldtype": "Data",
+   "label": "Solution"
+  },
+  {
+   "fetch_from": "circuit_id.primary_plan",
+   "fieldname": "primary_plan",
+   "fieldtype": "Data",
+   "label": "Primary Plan"
+  },
+  {
+   "fetch_from": "circuit_id.secondary_plan",
+   "fieldname": "secondary_plan",
+   "fieldtype": "Data",
+   "label": "Secondary Plan"
+  },
+  {
+   "fieldname": "circuit_information_section",
+   "fieldtype": "Section Break",
+   "label": "Circuit Information"
+  },
+  {
+   "fieldname": "lms_support_information_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Support Information"
+  },
+  {
+   "fieldname": "support_email",
+   "fieldtype": "Data",
+   "label": "Support Email"
+  },
+  {
+   "fieldname": "tollfree_number",
+   "fieldtype": "Data",
+   "label": "Tollfree Number"
+  },
+  {
+   "fieldname": "webportal_user_name",
+   "fieldtype": "Data",
+   "label": "Webportal User Name"
+  },
+  {
+   "fieldname": "payment_mode",
+   "fieldtype": "Select",
+   "label": "Payment Mode",
+   "options": "\nBank Transfer\nWebportal"
+  },
+  {
+   "fieldname": "modem_user_id",
+   "fieldtype": "Data",
+   "label": "Modem User ID"
+  },
+  {
+   "fieldname": "column_break_xnlq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "support_phone",
+   "fieldtype": "Data",
+   "label": "Support Phone"
+  },
+  {
+   "fieldname": "support_other_phone",
+   "fieldtype": "Data",
+   "label": "Support Other Phone"
+  },
+  {
+   "fieldname": "webportal_password",
+   "fieldtype": "Data",
+   "label": "Webportal Password"
+  },
+  {
+   "fieldname": "mode",
+   "fieldtype": "Select",
+   "label": "Mode",
+   "options": "\nDHCP\nPPPoE"
+  },
+  {
+   "fieldname": "modem_password",
+   "fieldtype": "Password",
+   "label": "Modem Password"
+  },
+  {
+   "fieldname": "documents_section",
+   "fieldtype": "Section Break",
+   "label": "Documents "
+  },
+  {
+   "fieldname": "noc",
+   "fieldtype": "Attach",
+   "label": "NOC"
+  },
+  {
+   "fieldname": "column_break_xedf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "address_proof",
+   "fieldtype": "Attach",
+   "label": "Address Proof"
+  },
+  {
+   "fieldname": "lms_information_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Supplier Information"
+  },
+  {
+   "default": "PO Pending",
+   "fieldname": "lms_stage",
+   "fieldtype": "Select",
+   "label": "LMS Stage",
+   "options": "\nPO Pending\nApplied\nInprocess\nDelivered\nCancelled\nDisconnected"
+  },
+  {
+   "fieldname": "lms_feasibility_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "LMS Feasibility ID",
+   "options": "LMS Feasibility"
+  },
+  {
+   "fieldname": "column_break_mctq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "delivery_date",
+   "fieldtype": "Date",
+   "label": "Delivery Date"
+  },
+  {
+   "fieldname": "section_break_okwv",
+   "fieldtype": "Section Break",
+   "label": "LMS PO Request Info"
+  },
+  {
+   "fieldname": "column_break_ufwq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "expected_delivery_date",
+   "fieldtype": "Date",
+   "label": "Expected Delivery Date"
+  },
+  {
+   "fetch_from": "lms_feasibility_id.lms_status",
+   "fieldname": "lms_feasibility_status",
+   "fieldtype": "Data",
+   "label": "LMS Feasibility Status"
+  },
+  {
+   "fieldname": "lms_feasibility_information_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Feasibility information"
+  },
+  {
+   "fieldname": "column_break_zxfn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "lms_po_request_id.purchase_order",
+   "fieldname": "lms_po_number",
+   "fieldtype": "Data",
+   "label": "LMS PO Number"
+  },
+  {
+   "fetch_from": "lms_po_request_id.purchase_order_date",
+   "fieldname": "lms_po_date",
+   "fieldtype": "Data",
+   "label": "LMS PO date"
+  }
+ ],
+ "hide_toolbar": 1,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-02-15 19:24:56.614167",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Lastmile Services Master",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Nexapp Sales Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

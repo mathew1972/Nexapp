@@ -8,6 +8,7 @@
  "field_order": [
   "stock_live_update_section",
   "column_break_enhu",
+  "subcription_plan",
   "item_code",
   "item_name",
   "qty",
@@ -76,12 +77,19 @@
    "fieldname": "description",
    "fieldtype": "Text",
    "label": "Description"
+  },
+  {
+   "fieldname": "subcription_plan",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Subcription Plan",
+   "options": "Subscription Plan"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-22 14:49:52.981839",
+ "modified": "2025-02-15 17:27:00.605104",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site Item",

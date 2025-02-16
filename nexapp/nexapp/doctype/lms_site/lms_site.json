@@ -5,22 +5,16 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "circuit_id",
+  "lms_master_information_section",
   "lms_supplier",
+  "lms_id",
   "bandwith_type",
   "media",
-  "otc",
-  "static_ip_cost",
-  "billing_terms",
-  "support_mode",
   "column_break_bben",
   "supplier_contact",
+  "lms_delivery_date",
   "contact_person",
-  "lms_bandwith",
-  "static_ip",
-  "mrc",
-  "security_deposit",
-  "billing_mode"
+  "lms_bandwith"
  ],
  "fields": [
   {
@@ -30,7 +24,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "LMS Supplier",
-   "options": "Lastmile Services"
+   "options": "Lastmile Services Master"
   },
   {
    "columns": 2,
@@ -58,7 +52,7 @@
    "fieldname": "lms_bandwith",
    "fieldtype": "Link",
    "label": "LMS Bandwith",
-   "options": "LMS Plan"
+   "options": "Item"
   },
   {
    "fetch_from": "circuit_id.media",
@@ -66,58 +60,6 @@
    "fieldtype": "Select",
    "label": "Media",
    "options": "\nWired\nRF\n4G\n5G"
-  },
-  {
-   "fetch_from": "circuit_id.static_ip",
-   "fieldname": "static_ip",
-   "fieldtype": "Select",
-   "label": "Static IP",
-   "options": "\nAvailable\nNot Available"
-  },
-  {
-   "fetch_from": "circuit_id.otc",
-   "fieldname": "otc",
-   "fieldtype": "Currency",
-   "label": "OTC"
-  },
-  {
-   "fetch_from": "circuit_id.mrc",
-   "fieldname": "mrc",
-   "fieldtype": "Currency",
-   "label": "MRC"
-  },
-  {
-   "fetch_from": "circuit_id.static_ip_cost",
-   "fieldname": "static_ip_cost",
-   "fieldtype": "Currency",
-   "label": "Static IP Cost"
-  },
-  {
-   "fetch_from": "circuit_id.security_deposit",
-   "fieldname": "security_deposit",
-   "fieldtype": "Currency",
-   "label": "Security Deposit"
-  },
-  {
-   "fetch_from": "circuit_id.billing_terms",
-   "fieldname": "billing_terms",
-   "fieldtype": "Select",
-   "label": "Billing Terms",
-   "options": "\nPre-Paid\nPost-Paid"
-  },
-  {
-   "fetch_from": "circuit_id.billing_mode",
-   "fieldname": "billing_mode",
-   "fieldtype": "Select",
-   "label": "Billing Mode",
-   "options": "\nMRC\nQRC\nHYRC\nARC"
-  },
-  {
-   "fetch_from": "circuit_id.support_mode",
-   "fieldname": "support_mode",
-   "fieldtype": "Select",
-   "label": "Support Mode",
-   "options": "\nEmail\nSupport Potal\nHelpdesk No"
   },
   {
    "columns": 2,
@@ -128,16 +70,28 @@
    "label": "Contact Person"
   },
   {
-   "fieldname": "circuit_id",
+   "fieldname": "lms_id",
    "fieldtype": "Link",
-   "label": "Circuit ID",
-   "options": "Lastmile Services"
+   "label": "LMS ID",
+   "options": "Lastmile Services Master"
+  },
+  {
+   "fetch_from": "lms_id.delivery_date",
+   "fieldname": "lms_delivery_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "LMS Delivery Date"
+  },
+  {
+   "fieldname": "lms_master_information_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Master Information"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-02-03 16:32:02.518955",
+ "modified": "2025-02-15 19:34:22.380344",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "LMS Site",

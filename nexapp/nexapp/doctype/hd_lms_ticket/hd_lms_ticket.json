@@ -1,0 +1,100 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "LMS.TKT.-.#####",
+ "creation": "2025-01-08 21:46:34.886761",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "lms_ticket_information_section",
+  "lms_supplier",
+  "customer_ticket",
+  "lms_id",
+  "column_break_ccpe",
+  "lms_ticket_status",
+  "contact_person",
+  "customer_ticket_status",
+  "circuit_id"
+ ],
+ "fields": [
+  {
+   "columns": 2,
+   "fieldname": "lms_supplier",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "LMS Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "column_break_ccpe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "lms_supplier.supplier_primary_contact",
+   "fieldname": "contact_person",
+   "fieldtype": "Data",
+   "label": "Contact Person"
+  },
+  {
+   "fieldname": "customer_ticket",
+   "fieldtype": "Link",
+   "label": "Customer Ticket",
+   "options": "HD Ticket"
+  },
+  {
+   "fetch_from": "customer_ticket.status",
+   "fieldname": "customer_ticket_status",
+   "fieldtype": "Data",
+   "label": "Customer Ticket status"
+  },
+  {
+   "fieldname": "lms_ticket_information_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Ticket Information"
+  },
+  {
+   "fieldname": "lms_id",
+   "fieldtype": "Link",
+   "label": "LMS ID",
+   "options": "Lastmile Services Master"
+  },
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "label": "Circuit ID",
+   "options": "Site"
+  },
+  {
+   "fieldname": "lms_ticket_status",
+   "fieldtype": "Select",
+   "label": "LMS ticket Status",
+   "options": "Open\nReplied\nResolved\nWrong Circuit\nClosed"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-02-15 20:49:54.389613",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "HD LMS Ticket",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -6,7 +6,8 @@
  "engine": "InnoDB",
  "field_order": [
   "circuit_id",
-  "column_break_ywpv"
+  "column_break_ywpv",
+  "customer"
  ],
  "fields": [
   {
@@ -18,11 +19,17 @@
   {
    "fieldname": "column_break_ywpv",
    "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "circuit_id.customer",
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "label": "Customer"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-17 19:13:31.998214",
+ "modified": "2025-02-15 20:32:23.924235",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "HD Change Management",

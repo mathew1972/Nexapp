@@ -13,6 +13,8 @@
   "column_break_lxtj",
   "customer",
   "site_type",
+  "start_date",
+  "end_date",
   "ip_information_section",
   "atm_ip",
   "branch_natted_ip",
@@ -92,7 +94,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Status",
-   "options": "\nPending\nCompleted"
+   "options": "\nPending\nPartial done\nCompleted"
   },
   {
    "fieldname": "ip_information_section",
@@ -266,7 +268,7 @@
    "fieldname": "lms_id_1",
    "fieldtype": "Link",
    "label": "LMS ID 1",
-   "options": "Lastmile Services"
+   "options": "Lastmile Services Master"
   },
   {
    "fieldname": "wan_ip_info_secondary_section",
@@ -316,7 +318,7 @@
    "fieldname": "lms_id_2",
    "fieldtype": "Link",
    "label": "LMS ID 2",
-   "options": "Lastmile Services"
+   "options": "Lastmile Services Master"
   },
   {
    "fieldname": "description_information_section",
@@ -327,11 +329,21 @@
    "fieldname": "description",
    "fieldtype": "Small Text",
    "label": "Description"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Datetime",
+   "label": "End Date"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Datetime",
+   "label": "Start date"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-03 16:32:02.802123",
+ "modified": "2025-02-15 19:54:20.553097",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Provisioning",
