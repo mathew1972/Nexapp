@@ -271,9 +271,8 @@ doc_events = {
 fixtures = [
     {"dt": "Product Type"},
     {"dt": "Product Category"},
-    {"dt": "Brand"},
-    {"dt": "Site Type"},
-    {"dt": "Solution"},
+    #{"dt": "Brand"},
+    {"dt": "Site Type"},    
     {"dt": "Data Plan"},
     {"dt": "DocType", "filters": [["module", "=", "Nexapp"]]},
     {"dt": "Custom Field"},
@@ -284,13 +283,13 @@ fixtures = [
     {"dt": "Website Theme"},
     {"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},
     #{"dt": "Custom HTML Block", "filters": [["name", "=", "Recruitment Workspace"]]},
-    {"dt": "Workspace"},
+    #{"dt": "Workspace"},
     {"dt": "Service Level Agreement"},               
-    {"dt": "Workspace"},
+    #{"dt": "Workspace"},
     {"dt": "Role"},
-    {"dt": "Number Card"},
+    #{"dt": "Number Card"},
     {"dt": "Item Group"},
-    {"dt": "Holiday List"}
+    #{"dt": "Holiday List"}
 ]
 
 doctype_js = {
