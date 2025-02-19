@@ -12,15 +12,15 @@
   "site_information_tab",
   "site_information_section",
   "column_break_vfai",
-  "site_name",
   "customer",
+  "site_name",
   "customer_request",
   "feasibility_completed_date",
   "region",
   "site_type",
   "column_break_zthd",
-  "circuit_id",
   "feasibility_type",
+  "circuit_id",
   "exiting_circuit_id",
   "feasibility_status",
   "feasibility_remark",
@@ -29,7 +29,6 @@
   "reason_for_not_feasible",
   "site_id__legal_code",
   "solution_section",
-  "solution",
   "solution_code",
   "solution_name",
   "static_ip",
@@ -153,22 +152,17 @@
    "label": "Latitude"
   },
   {
-   "fieldname": "solution",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Solution",
-   "options": "Solution"
-  },
-  {
    "fieldname": "primary_data_plan",
    "fieldtype": "Link",
    "label": "Primary Data Plan",
+   "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"Data Plan\"]]",
    "options": "Item"
   },
   {
    "fieldname": "secondary_data_plan",
    "fieldtype": "Link",
    "label": "Secondary Data Plan",
+   "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"Data Plan\"]]",
    "options": "Item"
   },
   {
@@ -639,7 +633,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2025-02-15 17:57:58.153856",
+ "modified": "2025-02-18 19:31:37.153772",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",

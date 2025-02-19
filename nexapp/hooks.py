@@ -277,12 +277,12 @@ fixtures = [
     {"dt": "Data Plan"},
     {"dt": "DocType", "filters": [["module", "=", "Nexapp"]]},
     {"dt": "Custom Field"},
-    {"dt": "Property Setter", "filters": [["module", "=", "Nexapp"]]},
-    #{"dt": "Website Settings"},    
+    {"dt": "Property Setter"},
+    {"dt": "Website Settings"},    
     #{"dt": "Web Form", "filters": [["module", "=", "Nexapp"]]},
-    #{"dt": "Navbar Settings"},    
-    #{"dt": "Website Theme"},
-    #{"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},
+    {"dt": "Navbar Settings"},    
+    {"dt": "Website Theme"},
+    {"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},
     #{"dt": "Custom HTML Block", "filters": [["name", "=", "Recruitment Workspace"]]},
     {"dt": "Workspace"},
     {"dt": "Service Level Agreement"},               
@@ -384,18 +384,20 @@ doctype_js = {
         #"public/js/site_map.js",
         "public/js/site_product_request.js",
         "public/js/site_pincode.js",
-        "public/js/site_contact.js"
+        "public/js/site_contact.js", 
     ],
     "Project": "public/js/Project_custom_ui.js",
     "CCR": "public/js/ccr_custom.js",
     "LMS": "public/js/lms.js",    
     "Stock Reservation Entry": "public/js/stock_reservation_entry.js",
     "Product Assigment": "doctype/product_assigment/product_assigment.js",
-    "HD Ticket": "public/js/hd_ticket_custom.js",
-    "CRM Deal": "public/js/crm_deal.js",
-    "CRM Lead": "public/js/crm_lead.js"
+    "HD Ticket": "public/js/hd_ticket_custom.js"    
        
 }
+
+
+
+
 
 
        
