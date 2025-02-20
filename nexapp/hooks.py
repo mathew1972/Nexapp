@@ -276,8 +276,7 @@ fixtures = [
     {"dt": "Website Settings"},
     {"dt": "Navbar Settings"},
     {"dt": "Website Theme"},
-    {"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},
-    {"dt": "Service Level Agreement"},
+    {"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},    
     {"dt": "Role"},
     {"dt": "Item Group"}
 ]
