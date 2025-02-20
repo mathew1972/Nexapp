@@ -246,7 +246,7 @@ app_license = "mit"
 # }
 
 app_include_css = [
-    "/assets/nexapp/css/custom.css"    
+    "/assets/nexapp/css/custom.css"
 ]
 
 doctype_list_js = {
@@ -259,10 +259,7 @@ doc_events = {
     },
     "Sales Order": {
         "on_submit": "nexapp.api.update_custom_circuit_id_in_stock_reservation"
-    }
-}
-
-doc_events = {
+    },
     "HD Ticket": {
         "before_insert": "nexapp.api.validate_hd_ticket"
     }
@@ -271,25 +268,18 @@ doc_events = {
 fixtures = [
     {"dt": "Product Type"},
     {"dt": "Product Category"},
-    #{"dt": "Brand"},
-    {"dt": "Site Type"},    
+    {"dt": "Site Type"},
     {"dt": "Data Plan"},
-    {"dt": "DocType", "filters": [["module", "=", "Nexapp"]]},
-    {"dt": "Custom Field"},
-    {"dt": "Property Setter"},
-    {"dt": "Website Settings"},    
-    #{"dt": "Web Form", "filters": [["module", "=", "Nexapp"]]},
-    {"dt": "Navbar Settings"},    
+    {"dt": "DocType", "filters": [["module", "=", "Nexapp"], ["custom", "=", 1]]},  # Fix: Only custom doctypes
+    {"dt": "Custom Field", "filters": [["module", "=", "Nexapp"]]},
+    {"dt": "Property Setter", "filters": [["module", "=", "Nexapp"]]},
+    {"dt": "Website Settings"},
+    {"dt": "Navbar Settings"},
     {"dt": "Website Theme"},
     {"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},
-    #{"dt": "Custom HTML Block", "filters": [["name", "=", "Recruitment Workspace"]]},
-    #{"dt": "Workspace"},
-    {"dt": "Service Level Agreement"},               
-    #{"dt": "Workspace"},
+    {"dt": "Service Level Agreement"},
     {"dt": "Role"},
-    #{"dt": "Number Card"},
-    {"dt": "Item Group"},
-    #{"dt": "Holiday List"}
+    {"dt": "Item Group"}
 ]
 
 doctype_js = {
@@ -316,74 +306,43 @@ doctype_js = {
     "Job Opening": "public/js/Job_opening_custom.js",
     "Job Applicant": "public/js/Job_applicant_custom.js",
     "Job Offer": "public/js/Job_offer_custom.js",
-    "Staffing Plan": "public/js/Staffing_plan_custom.js",
-    "Job Requisition": "public/js/Job_requisition_custom.js",
-    "Employee Referral": "public/js/Employee_referral_custom.js",
-    "Interview Type": "public/js/Interview_type_custom.js",
-    "Interview Round": "public/js/Interview_round_custom.js",
-    "Interview": "public/js/Interview_custom.js",
-    "Interview Feedback": "public/js/Interview_feedback_custom.js",
-    "Appointment Letter Template": "public/js/Appointment_letter_template_custom.js",
-    "Appointment Letter": "public/js/Appointment_letter_custom.js",
     "Employee": "public/js/Employee_custom.js",
     "Leave Application": "public/js/Leave_application_custom.js",
     "Company": "public/js/Company_custom.js",
     "Branch": "public/js/Branch_custom.js",
     "Department": "public/js/Department_custom.js",
     "Designation": "public/js/Designation_custom.js",
-    "Employee Group": "public/js/Employee_group_custom.js",
-    "Employee Grade": "public/js/Employee_grade_custom.js",
-    "Compensatory Leave Request": "public/js/Compensatory_leave_request_custom.js",
-    "HR Settings": "public/js/HR_settings_custom.js",
-    "Daily Work Summary Group": "public/js/Daily_work_summary_group_custom.js",
     "Attendance": "public/js/Attendance_custom.js",
-    "Attendance Request": "public/js/Attendance_request_custom.js",
-    "Employee Checkin": "public/js/Employee_checkin_custom.js",
-    "Expense Claim": "public/js/Expense_claim_custom.js",
-    "Employee Advance": "public/js/Employee_advance_custom.js",
-    "Travel Request": "public/js/Travel_request_custom.js",
     "Delivery Note": [
         "public/js/Stock_custom_ui.js",  
         "public/js/sales_order_delivery_note_id.js",
-        "public/js/delivery_note_serial.js"         
+        "public/js/delivery_note_serial.js"
     ],
     "Material Request": "public/js/Stock_custom_ui.js",
     "Stock Entry": "public/js/Stock_custom_ui.js",
     "Purchase Receipt": "public/js/Stock_custom_ui.js",
     "Item": "public/js/Stock_custom_ui.js",
-    "Item Group": "public/js/Stock_custom_ui.js",
     "Product Bundle": "public/js/Stock_custom_ui.js",
-    "Shipping Rule": "public/js/Stock_custom_ui.js",
-    "Item Alternative": "public/js/Stock_custom_ui.js",
     "Pick List": "public/js/Stock_custom_ui.js",
     "Warehouse": "public/js/Stock_custom_ui.js",
-    "UOM": "public/js/Stock_custom_ui.js",
     "Brand": "public/js/Stock_custom_ui.js",
     "Item Attribute": "public/js/Stock_custom_ui.js",
     "Serial No": "public/js/Stock_custom_ui.js",
     "Batch": "public/js/Stock_custom_ui.js",
-    "Installation Note": "public/js/Stock_custom_ui.js",
     "Stock Reconciliation": "public/js/Stock_custom_ui.js",
-    "Landed Cost Voucher": "public/js/Stock_custom_ui.js",
-    "Packing Slip": "public/js/Stock_custom_ui.js",
     "Quality Inspection": "public/js/Stock_custom_ui.js",
-    "Quality Inspection Template": "public/js/Stock_custom_ui.js",
-    "Quick Stock Balance": "public/js/Stock_custom_ui.js",
-    "Ticket Master": "public/js/Ticket_master_custom.js",
     "Feasibility": [
         "doctype/feasibility/feasibility.js",
         "public/js/feasibility_pincode.js",
-        #"public/js/feasibility_map.js",
         "public/js/feasibility_contact.js"
     ],
     "Site": [
         "doctype/site/site.js",
         "public/js/site_feasibility_button.js",
         "public/js/site_stock.js",
-        #"public/js/site_map.js",
         "public/js/site_product_request.js",
         "public/js/site_pincode.js",
-        "public/js/site_contact.js", 
+        "public/js/site_contact.js"
     ],
     "Project": "public/js/Project_custom_ui.js",
     "CCR": "public/js/ccr_custom.js",
@@ -391,7 +350,6 @@ doctype_js = {
     "Stock Reservation Entry": "public/js/stock_reservation_entry.js",
     "Product Assigment": "doctype/product_assigment/product_assigment.js",
     "HD Ticket": "public/js/hd_ticket_custom.js"    
-       
 }
 
 
