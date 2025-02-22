@@ -2,7 +2,7 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "PA-.#####",
- "creation": "2025-01-17 16:35:51.521564",
+ "creation": "2025-02-19 15:41:28.672214",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -148,7 +148,7 @@
    "fieldtype": "Link",
    "in_standard_filter": 1,
    "label": "Solution",
-   "options": "Solution"
+   "options": "Item"
   },
   {
    "default": "Requested",
@@ -211,7 +211,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-21 01:00:12.249044",
+ "modified": "2025-02-21 14:59:13.173749",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Product Assigment",

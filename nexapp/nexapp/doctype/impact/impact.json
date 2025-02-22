@@ -2,7 +2,7 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "field:impact",
- "creation": "2025-01-23 14:12:37.398424",
+ "creation": "2025-02-19 15:41:29.210133",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -10,9 +10,7 @@
   "ticket_priority",
   "ticket_category",
   "ticket_sub_category",
-  "impact",
-  "resolution",
-  "description"
+  "impact"
  ],
  "fields": [
   {
@@ -21,11 +19,6 @@
    "fieldtype": "Data",
    "label": "Impact",
    "unique": 1
-  },
-  {
-   "fieldname": "description",
-   "fieldtype": "Small Text",
-   "label": "Description"
   },
   {
    "fieldname": "ticket_category",
@@ -50,17 +43,11 @@
    "fieldtype": "Link",
    "label": "Ticket Priority",
    "options": "HD Ticket Priority"
-  },
-  {
-   "fieldname": "resolution",
-   "fieldtype": "Table",
-   "label": "Resolution",
-   "options": "Resolution"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-12 16:59:24.167371",
+ "modified": "2025-02-22 14:42:19.846268",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Impact",

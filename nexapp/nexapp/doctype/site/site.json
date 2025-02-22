@@ -136,12 +136,11 @@
    "label": "Existing Circuit id"
   },
   {
-   "default": "-None-",
    "fetch_from": "circuit_id.config_type",
    "fieldname": "config_type",
    "fieldtype": "Select",
    "label": "Config Type",
-   "options": "-None-\nRemote Config\nOnsite Installation"
+   "options": "\nRemote Config\nOnsite Installation"
   },
   {
    "bold": 1,
@@ -560,7 +559,6 @@
    "label": "Project Request"
   },
   {
-   "default": "-None-",
    "fetch_from": "circuit_id.managed_services",
    "fieldname": "managed_services",
    "fieldtype": "Data",
@@ -798,7 +796,7 @@
    "link_fieldname": "name"
   }
  ],
- "modified": "2025-02-20 17:34:50.451192",
+ "modified": "2025-02-22 15:04:01.163837",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

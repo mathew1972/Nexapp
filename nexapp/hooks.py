@@ -277,8 +277,7 @@ fixtures = [
     {"dt": "Navbar Settings"},
     {"dt": "Website Theme"},
     {"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},    
-    {"dt": "Role"},
-    {"dt": "Item Group"}
+    {"dt": "Role"}    
 ]
 
 doctype_js = {
