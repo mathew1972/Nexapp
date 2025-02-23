@@ -95,7 +95,8 @@
   {
    "fieldname": "task_open_datetime",
    "fieldtype": "Datetime",
-   "label": "Task Open Datetime"
+   "label": "Task Open Datetime",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_bbab",
@@ -104,7 +105,8 @@
   {
    "fieldname": "task_compleated_datetime",
    "fieldtype": "Datetime",
-   "label": "Task Compleated Datetime "
+   "label": "Task Completed Datetime ",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_issc",
@@ -113,7 +115,8 @@
   {
    "fieldname": "task_time_taken",
    "fieldtype": "Duration",
-   "label": "Task Time Taken"
+   "label": "Task Time Taken",
+   "read_only": 1
   },
   {
    "fieldname": "section_break_megt",
@@ -128,7 +131,8 @@
    "fieldname": "completed_by",
    "fieldtype": "Link",
    "label": "Completed By",
-   "options": "Employee"
+   "options": "Employee",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_lmsn",
@@ -138,7 +142,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-02-22 19:58:07.007472",
+ "modified": "2025-02-23 17:53:59.039382",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "In-house Escalation",
