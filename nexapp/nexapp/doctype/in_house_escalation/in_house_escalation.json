@@ -10,11 +10,14 @@
   "task_subject",
   "task_priority",
   "task_id",
+  "partner",
+  "partner_ticket_number",
   "column_break_ojbc",
   "task_status",
   "expected_start_date",
   "expected_end_date",
   "expected_time_in_hours",
+  "partner_ticket_log_date",
   "section_break_megt",
   "task_description",
   "section_break_tlka",
@@ -138,12 +141,32 @@
   {
    "fieldname": "column_break_lmsn",
    "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.task_type == \"ISP Issue\"\n",
+   "fieldname": "partner",
+   "fieldtype": "Link",
+   "label": "Partner",
+   "link_filters": "[[\"Supplier\",\"supplier_group\",\"=\",\"LMS\"]]",
+   "options": "Supplier"
+  },
+  {
+   "depends_on": "eval: doc.task_type == \"ISP Issue\"\n",
+   "fieldname": "partner_ticket_number",
+   "fieldtype": "Data",
+   "label": "Partner Ticket Number"
+  },
+  {
+   "depends_on": "eval: doc.task_type == \"ISP Issue\"\n",
+   "fieldname": "partner_ticket_log_date",
+   "fieldtype": "Datetime",
+   "label": "Partner Ticket Log Date"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-02-24 13:29:34.330739",
+ "modified": "2025-02-24 23:31:27.079315",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "In-house Escalation",
