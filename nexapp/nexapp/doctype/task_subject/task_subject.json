@@ -1,28 +1,38 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:isp_issue",
- "creation": "2025-02-25 17:30:50.392880",
+ "autoname": "field:task_subject",
+ "creation": "2025-02-25 22:33:36.993601",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "isp_issue"
+  "task_subject",
+  "task_type"
  ],
  "fields": [
   {
-   "allow_in_quick_entry": 1,
-   "fieldname": "isp_issue",
+   "fieldname": "task_subject",
    "fieldtype": "Data",
-   "label": "ISP Issue",
+   "in_list_view": 1,
+   "label": "Task Subject",
+   "reqd": 1,
    "unique": 1
+  },
+  {
+   "fieldname": "task_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Task Type",
+   "options": "Task Type",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-25 17:34:13.117944",
+ "modified": "2025-02-25 22:35:00.069403",
  "modified_by": "Administrator",
  "module": "Nexapp",
- "name": "ISP Issue",
+ "name": "Task Subject",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [

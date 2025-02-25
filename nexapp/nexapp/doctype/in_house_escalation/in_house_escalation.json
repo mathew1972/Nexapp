@@ -55,7 +55,8 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Task Subject",
-   "options": "ISP Issue"
+   "link_filters": "[[\"Task Subject\",\"task_type\",\"=\",\"eval: doc.task_type\"]]",
+   "options": "Task Subject"
   },
   {
    "default": "Low",
@@ -168,7 +169,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-02-25 21:06:55.645992",
+ "modified": "2025-02-25 22:40:43.335838",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "In-house Escalation",

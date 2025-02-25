@@ -241,7 +241,8 @@ app_license = "mit"
 # Automatically update python controller files with type annotations for this app.
 # export_python_type_annotations = True
 
-# default_log_clearing_doctypes = {
+# default_log_clearing_doctypes = {Task Subject
+
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
@@ -276,7 +277,9 @@ fixtures = [
     {"dt": "Website Settings"},
     {"dt": "Navbar Settings"},
     {"dt": "Website Theme"},
-    {"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},    
+    {"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},   
+    {"dt": "Task Subject"},
+    {"dt": 'Task Type'},
     {"dt": "Role"}    
 ]
 

@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class ISPIssue(Document):
+class TaskSubject(Document):
 	pass
