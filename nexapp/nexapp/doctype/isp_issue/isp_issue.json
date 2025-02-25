@@ -1,0 +1,45 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:isp_issue",
+ "creation": "2025-02-25 17:30:50.392880",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "isp_issue"
+ ],
+ "fields": [
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "isp_issue",
+   "fieldtype": "Data",
+   "label": "ISP Issue",
+   "unique": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-02-25 17:34:13.117944",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "ISP Issue",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
