@@ -1,6 +1,6 @@
 frappe.ui.form.on('Site', {
     onload: function (frm) {
-        // Apply the filter to the 'customer_primary_contact' field
+        // Set query filters for contacts and address
         frm.set_query('primary_contact', function () {
             return {
                 filters: {
@@ -10,7 +10,6 @@ frappe.ui.form.on('Site', {
             };
         });
 
-        // Apply the filter to the 'alternate_contact' field
         frm.set_query('alternate_contact', function () {
             return {
                 filters: {
@@ -19,9 +18,18 @@ frappe.ui.form.on('Site', {
                 }
             };
         });
+
+        frm.set_query('address', function () {
+            return {
+                filters: [
+                    ['Dynamic Link', 'link_doctype', '=', 'Customer'],
+                    ['Dynamic Link', 'link_name', '=', frm.doc.customer]
+                ]
+            };
+        });
     },
+
     primary_contact: function (frm) {
-        // Fetch and display contact details for 'primary_contact'
         if (frm.doc.primary_contact) {
             frappe.call({
                 method: 'frappe.client.get',
@@ -48,8 +56,6 @@ frappe.ui.form.on('Site', {
                             </div>
                         `;
                         frm.fields_dict.contact_html.$wrapper.html(html_content);
-
-                        // Attach click handler to the "Edit Contact" button
                         frm.fields_dict.contact_html.$wrapper
                             .find('#edit_customer_contact_btn')
                             .on('click', function () {
@@ -59,12 +65,11 @@ frappe.ui.form.on('Site', {
                 }
             });
         } else {
-            // Clear the HTML field if no contact is selected
             frm.fields_dict.contact_html.$wrapper.html('');
         }
     },
+
     alternate_contact: function (frm) {
-        // Fetch and display contact details for 'alternate_contact'
         if (frm.doc.alternate_contact) {
             frappe.call({
                 method: 'frappe.client.get',
@@ -91,8 +96,6 @@ frappe.ui.form.on('Site', {
                             </div>
                         `;
                         frm.fields_dict.contact_html2.$wrapper.html(html_content);
-
-                        // Attach click handler to the "Edit Contact" button
                         frm.fields_dict.contact_html2.$wrapper
                             .find('#edit_alternate_contact_btn')
                             .on('click', function () {
@@ -102,13 +105,55 @@ frappe.ui.form.on('Site', {
                 }
             });
         } else {
-            // Clear the HTML field if no contact is selected
             frm.fields_dict.contact_html2.$wrapper.html('');
         }
     },
+
+    address: function (frm) {
+        if (frm.doc.address) {
+            frappe.call({
+                method: 'frappe.client.get',
+                args: {
+                    doctype: 'Address',
+                    name: frm.doc.address
+                },
+                callback: function (r) {
+                    if (r.message) {
+                        const address = r.message;
+                        const html_content = `
+                            <div style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; background: #f9f9f9;">
+                                <div style="display: flex; justify-content: space-between; align-items: start;">
+                                    <div>
+                                        <p><strong>Address Line 1:</strong> ${address.address_line1 || 'N/A'}</p>
+                                        <p><strong>Address Line 2:</strong> ${address.address_line2 || 'N/A'}</p>
+                                        <p><strong>City:</strong> ${address.city || 'N/A'}</p>
+                                        <p><strong>State:</strong> ${address.state || 'N/A'}</p>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <p><strong>Country:</strong> ${address.country || 'N/A'}</p>
+                                        <p><strong>Pincode:</strong> ${address.pincode || 'N/A'}</p>
+                                        <button class="btn btn-link" id="edit_custom_address_btn">✏️ Edit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        frm.fields_dict.address_html.$wrapper.html(html_content);
+                        frm.fields_dict.address_html.$wrapper
+                            .find('#edit_custom_address_btn')
+                            .on('click', function () {
+                                frappe.set_route('Form', 'Address', address.name);
+                            });
+                    }
+                }
+            });
+        } else {
+            frm.fields_dict.address_html.$wrapper.html('');
+        }
+    },
+
     refresh: function (frm) {
-        // Keep the HTML dynamic and re-render on refresh
         frm.trigger('primary_contact');
         frm.trigger('alternate_contact');
+        frm.trigger('address');
     }
 });

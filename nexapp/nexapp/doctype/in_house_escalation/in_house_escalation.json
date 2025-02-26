@@ -35,7 +35,8 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Task Type",
-   "options": "Task Type"
+   "options": "Task Type",
+   "reqd": 1
   },
   {
    "fetch_from": "task_type.custom_department",
@@ -56,7 +57,8 @@
    "in_list_view": 1,
    "label": "Task Subject",
    "link_filters": "[[\"Task Subject\",\"task_type\",\"=\",\"eval: doc.task_type\"]]",
-   "options": "Task Subject"
+   "options": "Task Subject",
+   "reqd": 1
   },
   {
    "default": "Low",
@@ -76,17 +78,20 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Task Status",
-   "options": "Open\nTask Created\nWorking\nPending Review\nOverdue\nCompleted\nCancelled"
+   "options": "Open\nTask Created\nWorking\nPending Review\nOverdue\nCompleted\nCancelled",
+   "reqd": 1
   },
   {
    "fieldname": "expected_start_date",
    "fieldtype": "Date",
-   "label": "Expected Start Date"
+   "label": "Expected Start Date",
+   "reqd": 1
   },
   {
    "fieldname": "expected_end_date",
    "fieldtype": "Date",
-   "label": "Expected End Date"
+   "label": "Expected End Date",
+   "reqd": 1
   },
   {
    "default": "0",
@@ -132,7 +137,8 @@
   {
    "fieldname": "task_description",
    "fieldtype": "Small Text",
-   "label": "Task Description"
+   "label": "Task Description",
+   "reqd": 1
   },
   {
    "fieldname": "completed_by",
@@ -169,7 +175,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-02-25 22:40:43.335838",
+ "modified": "2025-02-26 00:59:03.186454",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "In-house Escalation",

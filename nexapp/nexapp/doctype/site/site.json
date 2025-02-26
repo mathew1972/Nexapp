@@ -24,16 +24,10 @@
   "site_information_section",
   "site_remark",
   "contact_address",
-  "site_address_section",
-  "street",
-  "city",
-  "longitude",
-  "column_break_xbyr",
-  "pincode",
-  "district",
-  "state",
-  "latitude",
-  "country",
+  "section_break_ddhm",
+  "address",
+  "address_html",
+  "column_break_jnme",
   "site_contact_section",
   "primary_contact",
   "contact_html",
@@ -112,8 +106,7 @@
   "documents",
   "product_tab",
   "product_section",
-  "product",
-  "address"
+  "product"
  ],
  "fields": [
   {
@@ -166,41 +159,6 @@
    "in_standard_filter": 1,
    "label": "Region",
    "options": "Territory"
-  },
-  {
-   "fieldname": "street",
-   "fieldtype": "Small Text",
-   "label": "Address/ Street  "
-  },
-  {
-   "fieldname": "district",
-   "fieldtype": "Data",
-   "label": "District  ",
-   "placeholder": "District update automatically"
-  },
-  {
-   "fieldname": "country",
-   "fieldtype": "Data",
-   "label": "Country ",
-   "placeholder": "Country update automatically"
-  },
-  {
-   "fieldname": "pincode",
-   "fieldtype": "Data",
-   "label": "Pincode  ",
-   "placeholder": "Please add correct Pin Code"
-  },
-  {
-   "fieldname": "city",
-   "fieldtype": "Data",
-   "label": "City  ",
-   "placeholder": "City update automatically"
-  },
-  {
-   "fieldname": "state",
-   "fieldtype": "Data",
-   "label": "State  ",
-   "placeholder": "State update automatically"
   },
   {
    "allow_in_quick_entry": 1,
@@ -287,18 +245,6 @@
    "options": "Customer"
   },
   {
-   "fieldname": "longitude",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Longitude"
-  },
-  {
-   "fieldname": "latitude",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Latitude"
-  },
-  {
    "fieldname": "feasibility_section",
    "fieldtype": "Section Break",
    "label": "Site Information"
@@ -321,10 +267,6 @@
   },
   {
    "fieldname": "column_break_dtxu",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_xbyr",
    "fieldtype": "Column Break"
   },
   {
@@ -477,11 +419,6 @@
    "label": "Product"
   },
   {
-   "fieldname": "address",
-   "fieldtype": "HTML",
-   "label": "Address"
-  },
-  {
    "fieldname": "contact_html",
    "fieldtype": "HTML",
    "label": "Contact HTML"
@@ -499,13 +436,6 @@
    "label": "Contact HTML2"
   },
   {
-   "collapsible": 1,
-   "fieldname": "site_address_section",
-   "fieldtype": "Section Break",
-   "label": "Site Address"
-  },
-  {
-   "collapsible": 1,
    "fieldname": "site_contact_section",
    "fieldtype": "Section Break",
    "label": "Site Contact"
@@ -725,6 +655,26 @@
    "fieldtype": "Link",
    "label": "Product request",
    "options": "Product Assigment"
+  },
+  {
+   "fieldname": "section_break_ddhm",
+   "fieldtype": "Section Break",
+   "label": "Site Address"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Link",
+   "label": "Address",
+   "options": "Address"
+  },
+  {
+   "fieldname": "address_html",
+   "fieldtype": "HTML",
+   "label": "Address HTML"
+  },
+  {
+   "fieldname": "column_break_jnme",
+   "fieldtype": "Column Break"
   }
  ],
  "hide_toolbar": 1,
@@ -796,7 +746,7 @@
    "link_fieldname": "name"
   }
  ],
- "modified": "2025-02-22 15:04:01.163837",
+ "modified": "2025-02-26 23:21:19.585342",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",
