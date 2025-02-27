@@ -280,6 +280,7 @@ fixtures = [
     {"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},   
     {"dt": "Task Subject"},
     {"dt": 'Task Type'},
+    {"dt": "Web Form", "filters": [["module", "=", "Nexapp"]]},   
     {"dt": "Role"}    
 ]
 
