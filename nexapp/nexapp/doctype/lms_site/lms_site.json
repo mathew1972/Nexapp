@@ -1,30 +1,30 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2025-01-08 21:46:34.445553",
+ "creation": "2025-02-19 15:41:26.964906",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "lms_master_information_section",
   "lms_supplier",
-  "lms_id",
   "bandwith_type",
   "media",
+  "support_mode",
   "column_break_bben",
   "supplier_contact",
+  "static_ip",
   "lms_delivery_date",
-  "contact_person",
-  "lms_bandwith"
+  "lms_status"
  ],
  "fields": [
   {
-   "columns": 4,
+   "columns": 2,
    "fetch_from": "circuit_id.lms_supplier",
    "fieldname": "lms_supplier",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "LMS Supplier",
-   "options": "Lastmile Services Master"
+   "options": "Supplier"
   },
   {
    "columns": 2,
@@ -40,19 +40,12 @@
    "fieldtype": "Column Break"
   },
   {
-   "columns": 3,
+   "columns": 2,
    "fetch_from": "circuit_id.supplier_contact",
    "fieldname": "supplier_contact",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Supplier Contact"
-  },
-  {
-   "fetch_from": "circuit_id.lms_bandwith",
-   "fieldname": "lms_bandwith",
-   "fieldtype": "Link",
-   "label": "LMS Bandwith",
-   "options": "Item"
   },
   {
    "fetch_from": "circuit_id.media",
@@ -62,36 +55,42 @@
    "options": "\nWired\nRF\n4G\n5G"
   },
   {
-   "columns": 2,
-   "fetch_from": "lms_supplier.supplier_contact",
-   "fieldname": "contact_person",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Contact Person"
-  },
-  {
-   "fieldname": "lms_id",
-   "fieldtype": "Link",
-   "label": "LMS ID",
-   "options": "Lastmile Services Master"
-  },
-  {
    "fetch_from": "lms_id.delivery_date",
    "fieldname": "lms_delivery_date",
    "fieldtype": "Date",
-   "in_list_view": 1,
    "label": "LMS Delivery Date"
   },
   {
    "fieldname": "lms_master_information_section",
    "fieldtype": "Section Break",
    "label": "LMS Master Information"
+  },
+  {
+   "fieldname": "support_mode",
+   "fieldtype": "Select",
+   "label": "Support Mode",
+   "options": "\nEmail\nSupport Potal\nHelpdesk No"
+  },
+  {
+   "fieldname": "static_ip",
+   "fieldtype": "Select",
+   "label": "Static IP",
+   "options": "\nAvailable\nNot Available"
+  },
+  {
+   "columns": 2,
+   "default": "Not Selected",
+   "fieldname": "lms_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "LMS Status",
+   "options": "Not Selected\nSelected\nRequested\nRejected"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-02-15 19:34:22.380344",
+ "modified": "2025-03-01 01:47:53.560009",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "LMS Site",

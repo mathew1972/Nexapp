@@ -13,21 +13,29 @@
   "site_name",
   "customer",
   "site_type",
-  "region",
+  "territory",
   "column_break_dlsw",
   "order_type",
   "existing_circuit_id",
   "site_status",
   "stage",
-  "customer_type",
   "site_id__legal_code",
+  "customer_type",
   "site_information_section",
-  "site_remark",
+  "description",
   "contact_address",
-  "section_break_ddhm",
-  "address",
+  "section_break_lkzf",
+  "address_street",
+  "city",
+  "column_break_btqz",
+  "pincode",
+  "district",
+  "state",
+  "country",
+  "section_break_swuh",
+  "column_break_pijm",
   "address_html",
-  "column_break_jnme",
+  "address",
   "site_contact_section",
   "primary_contact",
   "contact_html",
@@ -59,12 +67,15 @@
   "provisioning_status",
   "tab_3_tab",
   "solution_section",
+  "solution_code",
+  "solution_name",
+  "static_ip",
+  "nos_of_static_ip_required",
+  "column_break_dtxu",
+  "primary_data_plan",
+  "secondary_plan",
   "managed_services",
   "config_type",
-  "column_break_dtxu",
-  "solution",
-  "primary_plan",
-  "secondary_plan",
   "project_section",
   "column_break_frik",
   "project_name",
@@ -74,7 +85,6 @@
   "child_project",
   "expected_end_date",
   "project_manager",
-  "project_coordinator",
   "sales_order_information_section",
   "sales_order",
   "column_break_xpep",
@@ -93,6 +103,8 @@
   "lms_tab",
   "lms_section",
   "lms_vendor",
+  "wireless_tab",
+  "wireless",
   "tab_12_tab",
   "delivery_challan_section",
   "dc",
@@ -103,10 +115,7 @@
   "column_break_mmql",
   "date",
   "circuits_documents_section",
-  "documents",
-  "product_tab",
-  "product_section",
-  "product"
+  "documents"
  ],
  "fields": [
   {
@@ -152,36 +161,10 @@
    "options": "Site Type"
   },
   {
-   "fieldname": "region",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_preview": 1,
-   "in_standard_filter": 1,
-   "label": "Region",
-   "options": "Territory"
-  },
-  {
-   "allow_in_quick_entry": 1,
-   "fetch_from": "circuit_id.solution_code",
-   "fieldname": "solution",
-   "fieldtype": "Link",
-   "label": "Solution  ",
-   "options": "Item"
-  },
-  {
-   "depends_on": "eval:doc.solution==\"IR-1100-4G-D Dual Sim\" || doc.solution==\"IR-1100 Branch Series\" || doc.solution==\"IR-2100 Branch Series\" || doc.solution==\"IR-1100-USB\" || doc.solution==\"IR-1100-4G-S Single Sim\"\n",
-   "fetch_from": "circuit_id.primary_data_plan",
-   "fieldname": "primary_plan",
-   "fieldtype": "Link",
-   "label": "Primary Plan  ",
-   "options": "Item"
-  },
-  {
-   "depends_on": "eval:doc.solution==\"4G D MBB + MBB\" || doc.solution==\"IR-1100 MBB + MBB\" || doc.solution==\"Nexapp ILL+MBB\" || doc.solution==\"IR-1100-4G-D Dual Sim\" || doc.solution==\"IR-1100-MBB+USB\" || doc.solution==\"IR-1100-4G-S MBB+Sim\"\n",
    "fetch_from": "circuit_id.secondary_data_plan",
    "fieldname": "secondary_plan",
    "fieldtype": "Link",
-   "label": "Secondary Plan  ",
+   "label": "Secondary Data Plan",
    "options": "Item"
   },
   {
@@ -198,8 +181,7 @@
    "fetch_from": "sales_order.po_no",
    "fieldname": "customer_po_no",
    "fieldtype": "Data",
-   "label": "Customer's PO No",
-   "read_only": 1
+   "label": "Customer's PO No"
   },
   {
    "fieldname": "sales_order",
@@ -234,8 +216,7 @@
    "fetch_from": "customer_po_no.customer_po_date",
    "fieldname": "customer_po_date",
    "fieldtype": "Date",
-   "label": "Customer's PO Date",
-   "read_only": 1
+   "label": "Customer's PO Date"
   },
   {
    "fieldname": "customer",
@@ -257,8 +238,7 @@
    "fieldname": "project",
    "fieldtype": "Link",
    "label": "Parent Project No",
-   "options": "Project",
-   "read_only": 1
+   "options": "Project"
   },
   {
    "fieldname": "tab_3_tab",
@@ -283,8 +263,7 @@
   {
    "fieldname": "project_name",
    "fieldtype": "Data",
-   "label": "Project Name",
-   "read_only": 1
+   "label": "Project Name"
   },
   {
    "fieldname": "provisioning_item",
@@ -310,8 +289,7 @@
   {
    "fieldname": "expected_start_date",
    "fieldtype": "Date",
-   "label": "Project Start Date",
-   "read_only": 1
+   "label": "Project Start Date"
   },
   {
    "fieldname": "expected_end_date",
@@ -325,25 +303,16 @@
    "label": "Site Information"
   },
   {
-   "fieldname": "site_remark",
-   "fieldtype": "Small Text",
-   "label": "Description ",
-   "max_height": "80px"
-  },
-  {
    "fieldname": "invoice_no",
    "fieldtype": "Data",
-   "label": "Invoice No",
-   "read_only": 1
+   "label": "Invoice No"
   },
   {
    "fieldname": "invoice_date",
    "fieldtype": "Date",
-   "label": "Invoice Date",
-   "read_only": 1
+   "label": "Invoice Date"
   },
   {
-   "collapsible": 1,
    "fieldname": "stock_live_update_section",
    "fieldtype": "Section Break",
    "label": "Sales Order booked Item"
@@ -391,7 +360,6 @@
    "label": "Shipment Request"
   },
   {
-   "collapsible": 1,
    "fieldname": "site_information_section",
    "fieldtype": "Section Break",
    "label": "Description Information"
@@ -406,17 +374,6 @@
    "fieldname": "lms_request",
    "fieldtype": "Button",
    "label": "LMS Request"
-  },
-  {
-   "fieldname": "product",
-   "fieldtype": "Table",
-   "label": "Product",
-   "options": "Site Items"
-  },
-  {
-   "fieldname": "product_tab",
-   "fieldtype": "Tab Break",
-   "label": "Product"
   },
   {
    "fieldname": "contact_html",
@@ -438,6 +395,7 @@
   {
    "fieldname": "site_contact_section",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Site Contact"
   },
   {
@@ -450,10 +408,9 @@
    "label": "Address & Contact "
   },
   {
-   "collapsible": 1,
    "fieldname": "solution_section",
    "fieldtype": "Section Break",
-   "label": "Solution"
+   "label": "Solution Informtion"
   },
   {
    "collapsible": 1,
@@ -472,11 +429,6 @@
    "label": "LMS"
   },
   {
-   "fieldname": "product_section",
-   "fieldtype": "Section Break",
-   "label": "Product"
-  },
-  {
    "bold": 1,
    "fieldname": "primary_contact",
    "fieldtype": "Link",
@@ -491,8 +443,9 @@
   {
    "fetch_from": "circuit_id.managed_services",
    "fieldname": "managed_services",
-   "fieldtype": "Data",
-   "label": "Managed Services"
+   "fieldtype": "Select",
+   "label": "Managed Services",
+   "options": "\nProactive\nReactive"
   },
   {
    "fieldname": "request_tab",
@@ -565,11 +518,6 @@
    "fieldname": "project_manager",
    "fieldtype": "Data",
    "label": "Project Manager"
-  },
-  {
-   "fieldname": "project_coordinator",
-   "fieldtype": "Data",
-   "label": "Project coordinator"
   },
   {
    "fieldname": "column_break_lryq",
@@ -657,11 +605,6 @@
    "options": "Product Assigment"
   },
   {
-   "fieldname": "section_break_ddhm",
-   "fieldtype": "Section Break",
-   "label": "Site Address"
-  },
-  {
    "fieldname": "address",
    "fieldtype": "Link",
    "label": "Address",
@@ -673,7 +616,108 @@
    "label": "Address HTML"
   },
   {
-   "fieldname": "column_break_jnme",
+   "fieldname": "territory",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Territory",
+   "options": "Territory"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fetch_from": "circuit_id.solution_code",
+   "fieldname": "solution_code",
+   "fieldtype": "Link",
+   "label": "Solution Code",
+   "options": "Item"
+  },
+  {
+   "fetch_from": "solution_code.item_name",
+   "fieldname": "solution_name",
+   "fieldtype": "Data",
+   "label": "Solution Name"
+  },
+  {
+   "fieldname": "static_ip",
+   "fieldtype": "Select",
+   "label": "Static IP",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "nos_of_static_ip_required",
+   "fieldtype": "Data",
+   "label": "Nos of Static IP Required"
+  },
+  {
+   "fetch_from": "circuit_id.primary_data_plan",
+   "fieldname": "primary_data_plan",
+   "fieldtype": "Link",
+   "label": "Primary Data Plan",
+   "options": "Item"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description ",
+   "max_height": "80px"
+  },
+  {
+   "fieldname": "wireless_tab",
+   "fieldtype": "Tab Break",
+   "label": "Wireless "
+  },
+  {
+   "fieldname": "wireless",
+   "fieldtype": "Table",
+   "label": "Wireless",
+   "options": "Wireless Site"
+  },
+  {
+   "fieldname": "section_break_lkzf",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "address_street",
+   "fieldtype": "Small Text",
+   "label": "Address/ Street "
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City "
+  },
+  {
+   "fieldname": "column_break_btqz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pincode",
+   "fieldtype": "Data",
+   "label": "Pincode"
+  },
+  {
+   "fieldname": "district",
+   "fieldtype": "Data",
+   "label": "District "
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "State "
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Data",
+   "label": "Country "
+  },
+  {
+   "fieldname": "section_break_swuh",
+   "fieldtype": "Section Break",
+   "hidden": 1
+  },
+  {
+   "fieldname": "column_break_pijm",
    "fieldtype": "Column Break"
   }
  ],
@@ -746,7 +790,7 @@
    "link_fieldname": "name"
   }
  ],
- "modified": "2025-02-26 23:21:19.585342",
+ "modified": "2025-03-01 11:43:42.193373",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

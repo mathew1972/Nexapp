@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2025-01-08 21:46:34.120603",
+ "creation": "2025-02-19 15:41:26.559423",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -9,9 +9,12 @@
   "stock_live_update_section",
   "column_break_enhu",
   "subcription_plan",
+  "solution_name",
+  "solution",
   "item_code",
   "item_name",
   "qty",
+  "request",
   "stock_reserved",
   "column_break_qkfm",
   "warehouse",
@@ -20,8 +23,10 @@
  ],
  "fields": [
   {
+   "columns": 1,
    "fieldname": "qty",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "Qty"
   },
   {
@@ -38,7 +43,7 @@
    "precision": "0"
   },
   {
-   "columns": 2,
+   "columns": 1,
    "fieldname": "stock_balance",
    "fieldtype": "Int",
    "in_list_view": 1,
@@ -57,7 +62,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "columns": 5,
+   "columns": 2,
    "fetch_from": "item_code.item_name",
    "fieldname": "item_name",
    "fieldtype": "Data",
@@ -81,15 +86,38 @@
   {
    "fieldname": "subcription_plan",
    "fieldtype": "Link",
-   "in_list_view": 1,
+   "hidden": 1,
    "label": "Subcription Plan",
    "options": "Subscription Plan"
+  },
+  {
+   "fieldname": "solution",
+   "fieldtype": "Link",
+   "label": "Solution",
+   "options": "Product Bundle"
+  },
+  {
+   "columns": 2,
+   "fetch_from": "solution.description",
+   "fieldname": "solution_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Solution Name"
+  },
+  {
+   "columns": 1,
+   "default": "Not Requested",
+   "fieldname": "request",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Request",
+   "options": "Not Requested\nRequested\nAssigned\nDelivered"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-02-15 17:27:00.605104",
+ "modified": "2025-03-01 01:15:00.904509",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site Item",

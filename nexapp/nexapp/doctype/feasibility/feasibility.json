@@ -4,7 +4,7 @@
  "allow_import": 1,
  "allow_rename": 1,
  "autoname": ".#####.",
- "creation": "2025-01-08 21:46:32.959270",
+ "creation": "2025-02-19 15:41:25.442834",
  "default_view": "List",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -16,10 +16,10 @@
   "site_name",
   "customer_request",
   "feasibility_completed_date",
-  "region",
-  "site_type",
+  "territory",
+  "customer_type",
   "column_break_zthd",
-  "feasibility_type",
+  "order_type",
   "circuit_id",
   "exiting_circuit_id",
   "feasibility_status",
@@ -27,6 +27,7 @@
   "reason_for_partial_feasible",
   "reason_for_high_commercials",
   "reason_for_not_feasible",
+  "site_type",
   "site_id__legal_code",
   "solution_section",
   "solution_code",
@@ -38,20 +39,22 @@
   "secondary_data_plan",
   "managed_services",
   "config_type",
-  "site_adress_section",
-  "street",
+  "adress_information_section",
+  "address_street",
   "city",
-  "longitude",
-  "column_break_owdc",
+  "column_break_kahz",
   "pincode",
   "district",
   "state",
   "country",
-  "latitude",
-  "site_contact_section",
+  "site_address_section",
+  "address",
+  "address_html",
+  "column_break_iewh",
+  "contact_information_section",
   "primary_contact",
   "contact_html",
-  "column_break_vmnv",
+  "column_break_bpbt",
   "alternate_contact",
   "contact_html2",
   "description_information_section",
@@ -60,37 +63,8 @@
   "lms_provider_information_section",
   "lms_provider",
   "wireless_feasibility_tab",
-  "operator_1",
-  "column_break_egtn",
-  "3g1",
-  "column_break_clqn",
-  "4g1",
-  "column_break_vqeh",
-  "5g1",
-  "section_break_psyg",
-  "operator_2",
-  "column_break_yoat",
-  "3g2",
-  "column_break_idcq",
-  "4g2",
-  "column_break_jxgc",
-  "5g2",
-  "section_break_onqb",
-  "operator_3",
-  "column_break_poqj",
-  "3g3",
-  "column_break_rlpl",
-  "4g3",
-  "column_break_aytl",
-  "5g3",
-  "section_break_gedy",
-  "operator_4",
-  "column_break_yfzh",
-  "3g4",
-  "column_break_xffk",
-  "4g4",
-  "column_break_qhxd",
-  "5g4",
+  "section_break_eokw",
+  "wireless_feasiblity",
   "billing_information_ta",
   "sales_order_information_section",
   "sales_order",
@@ -110,59 +84,17 @@
    "reqd": 1
   },
   {
-   "fieldname": "city",
-   "fieldtype": "Data",
-   "label": "City",
-   "placeholder": "City update automatically"
-  },
-  {
-   "fieldname": "state",
-   "fieldtype": "Data",
-   "label": "State",
-   "placeholder": "State update automatically"
-  },
-  {
-   "fieldname": "longitude",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Longitude"
-  },
-  {
-   "fieldname": "street",
-   "fieldtype": "Small Text",
-   "label": "Address/ Street",
-   "reqd": 1
-  },
-  {
-   "fieldname": "district",
-   "fieldtype": "Data",
-   "label": "District",
-   "placeholder": "District update automatically"
-  },
-  {
-   "fieldname": "country",
-   "fieldtype": "Data",
-   "label": "Country",
-   "placeholder": "Country update automatically"
-  },
-  {
-   "fieldname": "latitude",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Latitude"
-  },
-  {
    "fieldname": "primary_data_plan",
    "fieldtype": "Link",
    "label": "Primary Data Plan",
-   "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"Data Plan\"]]",
+   "link_filters": "[]",
    "options": "Item"
   },
   {
    "fieldname": "secondary_data_plan",
    "fieldtype": "Link",
    "label": "Secondary Data Plan",
-   "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"Data Plan\"]]",
+   "link_filters": "[]",
    "options": "Item"
   },
   {
@@ -177,14 +109,6 @@
    "fieldtype": "Table",
    "label": "LMS Provider ",
    "options": "LMS Feasibility"
-  },
-  {
-   "bold": 1,
-   "fieldname": "pincode",
-   "fieldtype": "Data",
-   "label": "Pin Code",
-   "placeholder": "Please enter the 6-digit Pin Code to fetch the address more accurately.",
-   "reqd": 1
   },
   {
    "fieldname": "column_break_zthd",
@@ -232,24 +156,11 @@
    "read_only": 1
   },
   {
-   "fieldname": "region",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Territory",
-   "options": "Territory",
-   "reqd": 1
-  },
-  {
    "depends_on": "eval:doc.feasibility_status==\"Feasible\"",
    "fieldname": "feasibility_remark",
    "fieldtype": "Small Text",
    "label": "Feasibility Remark",
    "max_height": "80px"
-  },
-  {
-   "fieldname": "column_break_owdc",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "column_break_jyvg",
@@ -261,19 +172,9 @@
    "label": "LMS Feasibility"
   },
   {
-   "fieldname": "site_contact_section",
-   "fieldtype": "Section Break",
-   "label": "Contact Information"
-  },
-  {
    "fieldname": "solution_section",
    "fieldtype": "Section Break",
    "label": "Solution Information"
-  },
-  {
-   "fieldname": "site_adress_section",
-   "fieldtype": "Section Break",
-   "label": "Adress Information"
   },
   {
    "fieldname": "amended_from",
@@ -310,12 +211,10 @@
    "max_height": "80px"
   },
   {
-   "bold": 1,
    "fieldname": "primary_contact",
    "fieldtype": "Link",
    "label": "Primary Contact",
-   "options": "Contact",
-   "reqd": 1
+   "options": "Contact"
   },
   {
    "fieldname": "alternate_contact",
@@ -392,14 +291,6 @@
    "options": "\nPending\nFeasible\nPartial Feasible\nHigh Commercials\nNot Feasible"
   },
   {
-   "default": "Service",
-   "fieldname": "feasibility_type",
-   "fieldtype": "Select",
-   "label": "Order Type",
-   "options": "\nService\nUpgrade\nDegrade\nShifting",
-   "reqd": 1
-  },
-  {
    "depends_on": "eval:doc.feasibility_type!=\"Service\"",
    "fieldname": "exiting_circuit_id",
    "fieldtype": "Link",
@@ -416,10 +307,6 @@
    "fieldname": "contact_html",
    "fieldtype": "HTML",
    "label": "Contact HTML"
-  },
-  {
-   "fieldname": "column_break_vmnv",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "contact_html2",
@@ -442,166 +329,6 @@
    "label": "Wireless Feasibility"
   },
   {
-   "fieldname": "operator_1",
-   "fieldtype": "Link",
-   "label": "Operator 1",
-   "link_filters": "[[\"Supplier\",\"supplier_group\",\"=\",\"Simcard\"]]",
-   "options": "Supplier"
-  },
-  {
-   "fieldname": "column_break_egtn",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "3g1",
-   "fieldtype": "Check",
-   "label": "3G"
-  },
-  {
-   "fieldname": "column_break_clqn",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "4g1",
-   "fieldtype": "Check",
-   "label": "4G"
-  },
-  {
-   "fieldname": "column_break_vqeh",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "5g1",
-   "fieldtype": "Check",
-   "label": "5G"
-  },
-  {
-   "fieldname": "section_break_psyg",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "operator_2",
-   "fieldtype": "Link",
-   "label": "Operator 2",
-   "link_filters": "[[\"Supplier\",\"supplier_group\",\"=\",\"Simcard\"]]",
-   "options": "Supplier"
-  },
-  {
-   "fieldname": "column_break_yoat",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_idcq",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "4g2",
-   "fieldtype": "Check",
-   "label": "4G"
-  },
-  {
-   "fieldname": "column_break_jxgc",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "5g2",
-   "fieldtype": "Check",
-   "label": "5G "
-  },
-  {
-   "fieldname": "section_break_onqb",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "operator_3",
-   "fieldtype": "Link",
-   "label": "Operator 3",
-   "link_filters": "[[\"Supplier\",\"supplier_group\",\"=\",\"Simcard\"]]",
-   "options": "Supplier"
-  },
-  {
-   "fieldname": "column_break_poqj",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "3g3",
-   "fieldtype": "Check",
-   "label": "3G"
-  },
-  {
-   "fieldname": "column_break_rlpl",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "4g3",
-   "fieldtype": "Check",
-   "label": "4G"
-  },
-  {
-   "fieldname": "column_break_aytl",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "5g3",
-   "fieldtype": "Check",
-   "label": "5G"
-  },
-  {
-   "fieldname": "section_break_gedy",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "operator_4",
-   "fieldtype": "Link",
-   "label": "Operator 4",
-   "link_filters": "[[\"Supplier\",\"supplier_group\",\"=\",\"Simcard\"]]",
-   "options": "Supplier"
-  },
-  {
-   "fieldname": "column_break_yfzh",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "3g4",
-   "fieldtype": "Check",
-   "label": "3G "
-  },
-  {
-   "fieldname": "column_break_xffk",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "4g4",
-   "fieldtype": "Check",
-   "label": "4G"
-  },
-  {
-   "fieldname": "column_break_qhxd",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "5g4",
-   "fieldtype": "Check",
-   "label": "5G"
-  },
-  {
-   "default": "0",
-   "fieldname": "3g2",
-   "fieldtype": "Check",
-   "label": "3G"
-  },
-  {
    "fieldname": "managed_services",
    "fieldtype": "Select",
    "label": "Managed Services",
@@ -611,7 +338,7 @@
    "fieldname": "config_type",
    "fieldtype": "Select",
    "label": "Config Type",
-   "options": "\nOnsite Installation\nRemote Config"
+   "options": "\nRemote Config\nOnsite Installation"
   },
   {
    "bold": 1,
@@ -626,6 +353,113 @@
    "label": "Solution Code",
    "options": "Item",
    "reqd": 1
+  },
+  {
+   "fieldname": "site_address_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Address Information"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Link",
+   "label": "Address",
+   "options": "Address"
+  },
+  {
+   "fieldname": "column_break_iewh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "address_html",
+   "fieldtype": "HTML",
+   "label": "Address HTML"
+  },
+  {
+   "fieldname": "contact_information_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Contact Information"
+  },
+  {
+   "fieldname": "column_break_bpbt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_eokw",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "wireless_feasiblity",
+   "fieldtype": "Table",
+   "label": "Wireless Feasiblity",
+   "options": "Wireless Feasiblity"
+  },
+  {
+   "fieldname": "customer_type",
+   "fieldtype": "Select",
+   "label": "Customer Type",
+   "options": "\nPaid Customer\nPOC Customer"
+  },
+  {
+   "fieldname": "territory",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Territory",
+   "options": "Territory",
+   "reqd": 1
+  },
+  {
+   "default": "Service",
+   "fieldname": "order_type",
+   "fieldtype": "Select",
+   "label": "Order Type",
+   "options": "\nService\nUpgrade\nDegrade\nShifting",
+   "reqd": 1
+  },
+  {
+   "fieldname": "address_street",
+   "fieldtype": "Small Text",
+   "label": "Address/ Street "
+  },
+  {
+   "fieldname": "column_break_kahz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pincode",
+   "fieldtype": "Data",
+   "label": "Pincode ",
+   "placeholder": "Please enter the 6-digit Pin Code to fetch the address more accurately."
+  },
+  {
+   "fieldname": "district",
+   "fieldtype": "Data",
+   "label": "District ",
+   "placeholder": "District update automatically"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "State ",
+   "placeholder": "State update automatically"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Data",
+   "label": "Country ",
+   "placeholder": "Country update automatically"
+  },
+  {
+   "fieldname": "adress_information_section",
+   "fieldtype": "Section Break",
+   "label": "Adress Information"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
   }
  ],
  "icon": "fa fa-file-text",
@@ -633,7 +467,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2025-02-18 19:31:37.153772",
+ "modified": "2025-03-01 12:19:47.922338",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",

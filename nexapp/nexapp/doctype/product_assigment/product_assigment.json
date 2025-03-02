@@ -59,6 +59,7 @@
    "options": "Customer"
   },
   {
+   "collapsible": 1,
    "fieldname": "section_break_chlm",
    "fieldtype": "Section Break"
   },
@@ -92,6 +93,7 @@
    "options": "Serial No"
   },
   {
+   "collapsible": 1,
    "fieldname": "primary_sim_section",
    "fieldtype": "Section Break",
    "label": "Primary SIM"
@@ -160,6 +162,7 @@
    "options": "Requested\nAssigned\nDelivered"
   },
   {
+   "collapsible": 1,
    "fieldname": "section_break_rzfe",
    "fieldtype": "Section Break"
   },
@@ -211,7 +214,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-21 14:59:13.173749",
+ "modified": "2025-03-01 22:49:03.627362",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Product Assigment",

@@ -13,7 +13,7 @@ frappe.ui.form.on('Feasibility', {
             'contact_html', 'alternate_contact', 'contact_html2', 
             'description', 'lms_provider','sales_order', 'sales_order_date', 
             'amended_from', 'solution_code', 'managed_services', 'config_type',
-            'solution_name'
+            'solution_name', 'address'
         ];
 
         fields.forEach(function(field) {

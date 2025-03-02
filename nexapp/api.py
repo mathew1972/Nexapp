@@ -63,123 +63,135 @@ from frappe.utils import now
 
 @frappe.whitelist()
 def sales_order_to_site(sales_order):
-    # Fetch the Sales Order Document by its name
     so_doc = frappe.get_doc("Sales Order", sales_order)
     
-    # Check if the PO Number is present in the Sales Order; raise an error if not
     if not so_doc.po_no:
         frappe.throw(_("Client PO Number is missing in the Sales Order"))
     
-    # Dictionary to group items by their custom feasibility
     grouped_sites = {}
 
-    # Group items by custom_feasibility
     for item in so_doc.items:
         feasibility = item.custom_feasibility
         if feasibility not in grouped_sites:
             grouped_sites[feasibility] = {
                 "circuit_id": feasibility,
                 "site_name": item.custom_site_info,
-                "order_type": item.custom_order_type,  # Fetch the custom_order_type here
+                "order_type": item.custom_order_type,
                 "items": []
             }
-        # Add item to the corresponding feasibility group
         grouped_sites[feasibility]["items"].append({
             "item_code": item.item_code,
-            "qty": item.qty,
-            "item_name": item.item_name
-            
+            "item_name": item.item_name,
+            "qty": item.qty
         })
     
-    # Fetch the associated Project details, if any
-    project_doc = None
-    if so_doc.project:
-        project_doc = frappe.get_doc("Project", so_doc.project)
+    project_doc = frappe.get_doc("Project", so_doc.project) if so_doc.project else None
 
-    # Create Site Doctypes for each grouped feasibility
     for feasibility, site_data in grouped_sites.items():
-        # Fetch the Feasibility document using the circuit_id
         feasibility_doc = frappe.get_doc("Feasibility", feasibility)
         
-        # Raise an error if the Feasibility document is not found
         if not feasibility_doc:
             frappe.throw(_("Feasibility with circuit_id {0} not found").format(feasibility))
         
-        # Update the Feasibility document with Sales Order name and transaction date
         feasibility_doc.sales_order = so_doc.name
-        feasibility_doc.sales_order_date = so_doc.transaction_date  # Update the sales_order_date field
+        feasibility_doc.sales_order_date = so_doc.transaction_date
         feasibility_doc.save(ignore_permissions=True)
 
-        # Create a new Site document and populate its fields
         site_doc = frappe.new_doc("Site")
         site_doc.customer = so_doc.customer
         site_doc.customer_po_no = so_doc.po_no
-        site_doc.customer_po_date = so_doc.po_date  # Map PO date to customer_po_date in Site
-        site_doc.sales_order = so_doc.name          # Map Sales Order name to sales_order in Site
-        site_doc.sales_order_amount = so_doc.grand_total  # Map grand_total to sales_order_amount in Site
-        site_doc.customer_po_amount = so_doc.custom_customer_purchase_amount  # Map custom_customer_purchase_amount to customer_po_amount
-        site_doc.sales_order_date = so_doc.transaction_date  # Map transaction_date to sales_order_date in Site
+        site_doc.customer_po_date = so_doc.po_date
+        site_doc.sales_order = so_doc.name
+        site_doc.sales_order_amount = so_doc.grand_total
+        site_doc.customer_po_amount = so_doc.custom_customer_purchase_amount
+        site_doc.sales_order_date = so_doc.transaction_date
         site_doc.delivery_date = so_doc.delivery_date
         site_doc.project = so_doc.project
         site_doc.circuit_id = site_data["circuit_id"]
         site_doc.site_name = site_data["site_name"]
-        site_doc.order_type = site_data["order_type"]  # Assign custom_order_type to order_type
+        site_doc.order_type = site_data["order_type"]
         
-        # Map Feasibility fields to Site fields
-        site_doc.street = feasibility_doc.street
-        site_doc.city = feasibility_doc.city
-        site_doc.country = feasibility_doc.country
-        site_doc.pincode = feasibility_doc.pincode
-        site_doc.district = feasibility_doc.district
-        site_doc.state = feasibility_doc.state
-        site_doc.longitude = feasibility_doc.longitude
-        site_doc.latitude = feasibility_doc.latitude
-
-        # Map additional fields from Feasibility to Site
-        #site_doc.contact_person = feasibility_doc.contact_person
-        #site_doc.contact_mobile = feasibility_doc.contact_mobile
-        #site_doc.email_id = feasibility_doc.email_id
-        # site_doc.designation = feasibility_doc.designation
-        #site_doc.department = feasibility_doc.department
-        #site_doc.other_person = feasibility_doc.other_person
-        #site_doc.other_mobile = feasibility_doc.other_mobile
-        #site_doc.other_email_id = feasibility_doc.other_email_id
         site_doc.primary_contact = feasibility_doc.primary_contact
         site_doc.alternate_contact = feasibility_doc.alternate_contact
-
         site_doc.site_id__legal_code = feasibility_doc.site_id__legal_code
         site_doc.site_type = feasibility_doc.site_type
         site_doc.solution = feasibility_doc.solution
-
-        # Map the 'region' and 'phase' fields from Feasibility to Site
-        site_doc.region = feasibility_doc.region  # Assign region from Feasibility to Site
-        site_doc.phase = feasibility_doc.phase  # Assign phase from Feasibility to Site
-
-        # Map fields from Project to Site (if project exists)
+        site_doc.region = feasibility_doc.region
+        site_doc.phase = feasibility_doc.phase
+        site_doc.territory = feasibility_doc.territory
+        site_doc.customer_type = feasibility_doc.customer_type
+        site_doc.description = feasibility_doc.description
+        site_doc.address = feasibility_doc.address
+        site_doc.solution_code = feasibility_doc.solution_code
+        site_doc.solution_name = feasibility_doc.solution_name
+        site_doc.static_ip = feasibility_doc.static_ip
+        site_doc.nos_of_static_ip_required = feasibility_doc.no_of_static_ip_required
+        site_doc.primary_data_plan = feasibility_doc.primary_data_plan
+        site_doc.secondary_plan = feasibility_doc.secondary_data_plan
+        site_doc.managed_services = feasibility_doc.managed_services
+        site_doc.config_type = feasibility_doc.config_type
+        site_doc.child_project = so_doc.custom_child_project
+        
+        # Newly added fields
+        site_doc.address_street = feasibility_doc.address_street
+        site_doc.pincode = feasibility_doc.pincode
+        site_doc.district = feasibility_doc.district
+        site_doc.state = feasibility_doc.state
+        site_doc.country = feasibility_doc.country
+        site_doc.city = feasibility_doc.city
+        
         if project_doc:
             site_doc.project_name = project_doc.project_name
             site_doc.expected_start_date = project_doc.expected_start_date
             site_doc.expected_end_date = project_doc.expected_end_date
-
-        # Validate that the 'site_item' field exists in the Site Doctype
-        if not hasattr(site_doc, "site_item"):
-            frappe.throw(_("The 'site_item' field is missing in the Site Doctype. Please ensure the field is correctly defined."))
-
-        # Add items to the Site Item child table
+        
         for item in site_data["items"]:
-            site_doc.append("site_item", {
-                "item_code": item["item_code"],
-                "qty": item["qty"],
-                "item_name": item["item_name"]                
+            product_bundle = frappe.get_all("Product Bundle",
+                                            filters={"new_item_code": item["item_code"]},
+                                            fields=["new_item_code"])
+            
+            if product_bundle:
+                product_bundle_doc = frappe.get_doc("Product Bundle", product_bundle[0].new_item_code)
+                
+                for bundle_item in product_bundle_doc.items:
+                    item_doc = frappe.get_doc("Item", bundle_item.item_code) if frappe.db.exists("Item", bundle_item.item_code) else None
+                    
+                    site_doc.append("site_item", {
+                        "solution": product_bundle_doc.new_item_code,
+                        "parent_item": product_bundle_doc.new_item_code,
+                        "item_code": bundle_item.item_code,
+                        "item_name": item_doc.item_name if item_doc else "",
+                        "qty": bundle_item.qty
+                    })
+            else:
+                site_doc.append("site_item", {
+                    "item_code": item["item_code"],
+                    "item_name": item["item_name"],
+                    "qty": item["qty"]
+                })
+        
+        for lms in feasibility_doc.lms_provider:
+            site_doc.append("lms_vendor", {
+                "lms_supplier": lms.lms_supplier,
+                "bandwith_type": lms.bandwith_type,
+                "media": lms.media,
+                "support_mode": lms.support_mode,
+                "supplier_contact": lms.supplier_contact,
+                "static_ip": lms.static_ip
             })
-
-        # Save the new Site document
+        
+        for wireless in feasibility_doc.wireless_feasiblity:
+            site_doc.append("wireless", {
+                "operator": wireless.operator,
+                "3g": wireless.get("3g"),
+                "4g": wireless.get("4g"),
+                "5g": wireless.get("5g")
+            })
+        
         site_doc.insert(ignore_permissions=True)
         frappe.db.commit()
 
-    # Return a success message
     return {"status": "success"}
-
 ###############################################################
 
 import frappe
@@ -419,6 +431,20 @@ def validate_hd_ticket(doc, method=None):
             doc.custom_circuit_id = None
             doc.status = "Wrong Circuit"
 
+            # Create or update 'Wrong Circuit' document
+            try:
+                email_subject = clean_content(doc.subject)
+                description = clean_content(doc.description) if doc.description else ""
+
+                wrong_circuit_doc = frappe.get_doc({
+                    'doctype': 'Wrong Circuit',
+                    'email_subject': email_subject,
+                    'description': description
+                })
+                wrong_circuit_doc.insert(ignore_permissions=True)
+            except Exception as e:
+                frappe.log_error(f"Failed to create Wrong Circuit document: {e}")
+
     except Exception as e:
         frappe.log_error(f"Ticket validation error: {e}")
         doc.status = "Wrong Circuit"
@@ -427,6 +453,6 @@ def validate_hd_ticket(doc, method=None):
 # Hook configuration
 doc_events = {
     "HD Ticket": {
-        "before_insert": validate_hd_ticket  # Ensure the function is correctly referenced
+        "before_insert": validate_hd_ticket
     }
 }

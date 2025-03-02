@@ -1,0 +1,71 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-02-28 15:02:18.590626",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "operator",
+  "column_break_conw",
+  "3g",
+  "column_break_vmkn",
+  "4g",
+  "column_break_pric",
+  "5g"
+ ],
+ "fields": [
+  {
+   "fieldname": "column_break_conw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "3g",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "3G"
+  },
+  {
+   "fieldname": "column_break_vmkn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "4g",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "4G"
+  },
+  {
+   "fieldname": "column_break_pric",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "5g",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "5G"
+  },
+  {
+   "fieldname": "operator",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Operator",
+   "options": "Supplier"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-02-28 21:15:13.283511",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Wireless Feasiblity",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

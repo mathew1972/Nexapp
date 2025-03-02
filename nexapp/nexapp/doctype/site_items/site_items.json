@@ -40,7 +40,7 @@
    "options": "Item"
   },
   {
-   "columns": 3,
+   "columns": 2,
    "fetch_from": "item_code.item_name",
    "fieldname": "item_name",
    "fieldtype": "Data",
@@ -48,8 +48,10 @@
    "label": "Product"
   },
   {
+   "columns": 1,
    "fieldname": "qty",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "Qty"
   },
   {
@@ -95,12 +97,15 @@
    "fetch_from": "parent_item.custom_solution",
    "fieldname": "solution",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Solution",
    "options": "Item"
   },
   {
+   "columns": 2,
    "fieldname": "parent_item",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Parent Item",
    "options": "Product Bundle"
   }
@@ -108,7 +113,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-02-20 12:46:53.365844",
+ "modified": "2025-02-28 23:48:10.439238",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site Items",

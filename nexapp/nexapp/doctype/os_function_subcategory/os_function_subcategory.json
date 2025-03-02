@@ -1,0 +1,49 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-03-01 19:30:59.570302",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "os_function_subcategory",
+  "os_function_category"
+ ],
+ "fields": [
+  {
+   "fieldname": "os_function_subcategory",
+   "fieldtype": "Data",
+   "label": "OS Function SubCategory"
+  },
+  {
+   "fieldname": "os_function_category",
+   "fieldtype": "Link",
+   "label": "OS Function Category",
+   "options": "OS Function Category"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-03-01 20:12:28.203870",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "OS Function SubCategory",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
