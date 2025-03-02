@@ -369,6 +369,7 @@ import html
 from bs4 import BeautifulSoup
 import frappe
 from frappe.utils import validate_email_address
+from frappe.exceptions import Discard  # Key addition for silent cancellation
 
 def clean_content(text):
     """Clean HTML while preserving numeric patterns"""
@@ -385,70 +386,53 @@ def clean_content(text):
 def extract_circuit_id(text):
     """Find 5-digit codes not part of longer numbers"""
     try:
-        # Use lookbehind and lookahead to ensure standalone 5 digits
         return re.findall(r'(?<!\d)\d{5}(?!\d)', text)
     except Exception as e:
         frappe.log_error(f"Extraction error: {e}")
         return []
 
 def validate_hd_ticket(doc, method=None):
-    """Run during ticket creation to validate circuit ID"""
+    """Silently block HD Ticket creation and log in 'Wrong Circuit'"""
     if not doc.is_new() or frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
     try:
-        # Initialize status and circuit ID
-        doc.status = "Wrong Circuit"
-        doc.custom_circuit_id = None
-
-        # Validate email format
         if not doc.raised_by:
             return
         validate_email_address(doc.raised_by.strip(), throw=True)
 
-        # Determine channel
         doc.custom_channel = "NMS" if "sambakeshop@gmail.com" in doc.raised_by else "Email"
-
-        # Extract circuit IDs from cleaned subject
         content = clean_content(doc.subject)
-        found_ids = extract_circuit_id(content) if content else []
+        found_ids = extract_circuit_id(content)
 
-        # Check for valid circuit ID in Site doctype
         valid_circuit = None
         for circuit_id in found_ids:
-            if frappe.db.exists("Site", {
-                "name": circuit_id,  # Replace "name" with the correct field if necessary
-                "stage": "Delivered and Live"
-            }):
+            if frappe.db.exists("Site", {"name": circuit_id, "stage": "Delivered and Live"}):
                 valid_circuit = circuit_id
-                break  # Use the first valid ID found
+                break
 
-        # Update status and circuit ID based on validation
         if valid_circuit:
             doc.custom_circuit_id = valid_circuit
             doc.status = "Open"
         else:
-            doc.custom_circuit_id = None
-            doc.status = "Wrong Circuit"
+            # Create 'Wrong Circuit' document
+            email_subject = clean_content(doc.subject)
+            description = clean_content(doc.description) if doc.description else ""
 
-            # Create or update 'Wrong Circuit' document
-            try:
-                email_subject = clean_content(doc.subject)
-                description = clean_content(doc.description) if doc.description else ""
+            wrong_circuit_doc = frappe.get_doc({
+                'doctype': 'Wrong Circuit',
+                'email_subject': email_subject,
+                'description': description
+            })
+            wrong_circuit_doc.insert(ignore_permissions=True)
+            frappe.db.commit()  # Ensure 'Wrong Circuit' is saved
 
-                wrong_circuit_doc = frappe.get_doc({
-                    'doctype': 'Wrong Circuit',
-                    'email_subject': email_subject,
-                    'description': description
-                })
-                wrong_circuit_doc.insert(ignore_permissions=True)
-            except Exception as e:
-                frappe.log_error(f"Failed to create Wrong Circuit document: {e}")
+            # Silently discard the HD Ticket without saving
+            raise Discard("No valid circuit ID")  # No user-facing message
 
     except Exception as e:
         frappe.log_error(f"Ticket validation error: {e}")
-        doc.status = "Wrong Circuit"
-        doc.custom_circuit_id = None
+        raise Discard("Error processing ticket")  # Fail silently
 
 # Hook configuration
 doc_events = {

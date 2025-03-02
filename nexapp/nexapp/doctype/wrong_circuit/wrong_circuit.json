@@ -16,13 +16,13 @@
   },
   {
    "fieldname": "description",
-   "fieldtype": "Text",
+   "fieldtype": "Text Editor",
    "label": "Description"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-02 11:20:10.480795",
+ "modified": "2025-03-02 12:45:26.467756",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Wrong Circuit",
