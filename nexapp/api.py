@@ -369,7 +369,6 @@ import html
 from bs4 import BeautifulSoup
 import frappe
 from frappe.utils import validate_email_address
-from frappe.exceptions import Discard  # Added for silent cancellation
 
 def clean_content(text):
     """Clean HTML while preserving numeric patterns"""
@@ -386,6 +385,7 @@ def clean_content(text):
 def extract_circuit_id(text):
     """Find 5-digit codes not part of longer numbers"""
     try:
+        # Use lookbehind and lookahead to ensure standalone 5 digits
         return re.findall(r'(?<!\d)\d{5}(?!\d)', text)
     except Exception as e:
         frappe.log_error(f"Extraction error: {e}")
@@ -417,42 +417,28 @@ def validate_hd_ticket(doc, method=None):
         valid_circuit = None
         for circuit_id in found_ids:
             if frappe.db.exists("Site", {
-                "name": circuit_id,  # Keep "name" if correct, else replace with your field
+                "name": circuit_id,  # Replace "name" with the correct field if necessary
                 "stage": "Delivered and Live"
             }):
                 valid_circuit = circuit_id
-                break
+                break  # Use the first valid ID found
 
+        # Update status and circuit ID based on validation
         if valid_circuit:
-            # Valid case: Allow HD Ticket creation
             doc.custom_circuit_id = valid_circuit
             doc.status = "Open"
         else:
-            # Create Wrong Circuit document
-            try:
-                wrong_circuit_doc = frappe.get_doc({
-                    'doctype': 'Wrong Circuit',
-                    'email_subject': clean_content(doc.subject),
-                    'description': clean_content(doc.description) if doc.description else ""
-                })
-                wrong_circuit_doc.insert(ignore_permissions=True)
-                frappe.db.commit()  # Ensure record is saved
-            except Exception as e:
-                frappe.log_error(f"Failed to create Wrong Circuit document: {e}")
-            
-            # Prevent HD Ticket creation
-            raise Discard()
+            doc.custom_circuit_id = None
+            doc.status = "Wrong Circuit"
 
-    except Discard:
-        # Silently cancel HD Ticket creation
-        raise
     except Exception as e:
         frappe.log_error(f"Ticket validation error: {e}")
-        raise Discard()
+        doc.status = "Wrong Circuit"
+        doc.custom_circuit_id = None
 
 # Hook configuration
 doc_events = {
     "HD Ticket": {
-        "before_insert": validate_hd_ticket
+        "before_insert": validate_hd_ticket  # Ensure the function is correctly referenced
     }
 }
