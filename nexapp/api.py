@@ -397,10 +397,13 @@ def validate_hd_ticket(doc, method=None):
         return
 
     try:
+        # Initialize status and circuit ID
+        doc.status = "Wrong Circuit"
+        doc.custom_circuit_id = None
+
         # Validate email format
         if not doc.raised_by:
-            raise Discard()
-            
+            return
         validate_email_address(doc.raised_by.strip(), throw=True)
 
         # Determine channel
@@ -413,9 +416,8 @@ def validate_hd_ticket(doc, method=None):
         # Check for valid circuit ID in Site doctype
         valid_circuit = None
         for circuit_id in found_ids:
-            # Changed from "name" to "custom_circuit_id" - verify field name in your Site doctype
             if frappe.db.exists("Site", {
-                "custom_circuit_id": circuit_id,  # Critical: Verify actual field name
+                "name": circuit_id,  # Keep "name" if correct, else replace with your field
                 "stage": "Delivered and Live"
             }):
                 valid_circuit = circuit_id
@@ -426,14 +428,17 @@ def validate_hd_ticket(doc, method=None):
             doc.custom_circuit_id = valid_circuit
             doc.status = "Open"
         else:
-            # Invalid case: Create Wrong Circuit record
-            wrong_circuit_doc = frappe.get_doc({
-                'doctype': 'Wrong Circuit',
-                'email_subject': clean_content(doc.subject),
-                'description': clean_content(doc.description) if doc.description else ""
-            })
-            wrong_circuit_doc.insert(ignore_permissions=True)
-            frappe.db.commit()  # Ensure Wrong Circuit is saved
+            # Create Wrong Circuit document
+            try:
+                wrong_circuit_doc = frappe.get_doc({
+                    'doctype': 'Wrong Circuit',
+                    'email_subject': clean_content(doc.subject),
+                    'description': clean_content(doc.description) if doc.description else ""
+                })
+                wrong_circuit_doc.insert(ignore_permissions=True)
+                frappe.db.commit()  # Ensure record is saved
+            except Exception as e:
+                frappe.log_error(f"Failed to create Wrong Circuit document: {e}")
             
             # Prevent HD Ticket creation
             raise Discard()
