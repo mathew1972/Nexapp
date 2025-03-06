@@ -78,7 +78,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Task Status",
-   "options": "Open\nTask Created\nWorking\nPending Review\nOverdue\nCompleted\nCancelled",
+   "options": "Open\nTask Created\nCompleted\nCancelled",
    "reqd": 1
   },
   {
@@ -175,7 +175,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-02-26 00:59:03.186454",
+ "modified": "2025-03-03 23:08:33.368620",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "In-house Escalation",

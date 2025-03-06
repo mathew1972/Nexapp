@@ -75,5 +75,12 @@
   "doctype": "Data Plan",
   "modified": "2025-01-01 22:44:53.755717",
   "name": "2 Mbps"
+ },
+ {
+  "data_plan": "10 GB/ Month",
+  "docstatus": 0,
+  "doctype": "Data Plan",
+  "modified": "2025-03-03 18:58:11.826915",
+  "name": "10 GB/ Month"
  }
 ]

@@ -385,14 +385,13 @@ def clean_content(text):
 def extract_circuit_id(text):
     """Find 5-digit codes not part of longer numbers"""
     try:
-        # Use lookbehind and lookahead to ensure standalone 5 digits
         return re.findall(r'(?<!\d)\d{5}(?!\d)', text)
     except Exception as e:
         frappe.log_error(f"Extraction error: {e}")
         return []
 
 def validate_hd_ticket(doc, method=None):
-    """Run during ticket creation to validate circuit ID"""
+    """Run during ticket creation to validate circuit ID and check duplicates"""
     if not doc.is_new() or frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
@@ -407,7 +406,7 @@ def validate_hd_ticket(doc, method=None):
         validate_email_address(doc.raised_by.strip(), throw=True)
 
         # Determine channel
-        doc.custom_channel = "NMS" if "sambakeshop@gmail.com" in doc.raised_by else "Email"
+        doc.custom_channel = "NMS" if "nms@nexapp.co.in" in doc.raised_by else "Email"
 
         # Extract circuit IDs from cleaned subject
         content = clean_content(doc.subject)
@@ -417,14 +416,29 @@ def validate_hd_ticket(doc, method=None):
         valid_circuit = None
         for circuit_id in found_ids:
             if frappe.db.exists("Site", {
-                "name": circuit_id,  # Replace "name" with the correct field if necessary
+                "name": circuit_id,
                 "stage": "Delivered and Live"
             }):
                 valid_circuit = circuit_id
-                break  # Use the first valid ID found
+                break
 
-        # Update status and circuit ID based on validation
+        # Check for existing active tickets if valid circuit found
         if valid_circuit:
+            # Check for existing Open/Replied tickets with same circuit ID
+            existing_tickets = frappe.db.get_all("HD Ticket",
+                filters={
+                    "custom_circuit_id": valid_circuit,
+                    "status": ["in", ["Open", "Replied"]]
+                },
+                limit_page_length=1
+            )
+            
+            if existing_tickets:
+                # Prevent document insertion silently
+                doc.flags.prevent_insert = True
+                return
+            
+            # Set valid circuit and status if no duplicates
             doc.custom_circuit_id = valid_circuit
             doc.status = "Open"
         else:
@@ -439,6 +453,6 @@ def validate_hd_ticket(doc, method=None):
 # Hook configuration
 doc_events = {
     "HD Ticket": {
-        "before_insert": validate_hd_ticket  # Ensure the function is correctly referenced
+        "before_insert": validate_hd_ticket
     }
 }

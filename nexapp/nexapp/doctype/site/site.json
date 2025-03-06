@@ -395,7 +395,6 @@
   {
    "fieldname": "site_contact_section",
    "fieldtype": "Section Break",
-   "hidden": 1,
    "label": "Site Contact"
   },
   {
@@ -790,7 +789,7 @@
    "link_fieldname": "name"
   }
  ],
- "modified": "2025-03-01 11:43:42.193373",
+ "modified": "2025-03-06 10:35:38.329313",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",
