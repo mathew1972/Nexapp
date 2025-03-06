@@ -391,68 +391,52 @@ def extract_circuit_id(text):
         return []
 
 def validate_hd_ticket(doc, method=None):
-    """Run during ticket creation to validate circuit ID and check duplicates"""
+    """Silently prevent duplicate circuit ID tickets"""
     if not doc.is_new() or frappe.flags.in_import or frappe.flags.in_migrate:
         return
 
     try:
-        # Initialize status and circuit ID
-        doc.status = "Wrong Circuit"
-        doc.custom_circuit_id = None
-
-        # Validate email format
+        # Short-circuit if no valid email
         if not doc.raised_by:
             return
         validate_email_address(doc.raised_by.strip(), throw=True)
 
-        # Determine channel
-        doc.custom_channel = "NMS" if "nms@nexapp.co.in" in doc.raised_by else "Email"
-
-        # Extract circuit IDs from cleaned subject
+        # Extract potential circuit IDs
         content = clean_content(doc.subject)
         found_ids = extract_circuit_id(content) if content else []
 
-        # Check for valid circuit ID in Site doctype
+        # Check for valid circuit in Site doctype
         valid_circuit = None
         for circuit_id in found_ids:
             if frappe.db.exists("Site", {
-                "name": circuit_id,
+                "circuit_id": circuit_id,  # Update with actual field name
                 "stage": "Delivered and Live"
             }):
                 valid_circuit = circuit_id
                 break
 
-        # Check for existing active tickets if valid circuit found
+        # Only check duplicates for valid circuits
         if valid_circuit:
-            # Check for existing Open/Replied tickets with same circuit ID
-            existing_tickets = frappe.db.get_all("HD Ticket",
-                filters={
-                    "custom_circuit_id": valid_circuit,
-                    "status": ["in", ["Open", "Replied"]]
-                },
-                limit_page_length=1
-            )
+            # Check for existing active tickets
+            exists = frappe.db.exists("HD Ticket", {
+                "custom_circuit_id": valid_circuit,
+                "status": ["in", ["Open", "Replied"]]
+            })
             
-            if existing_tickets:
-                # Prevent document insertion silently
-                doc.flags.prevent_insert = True
+            if exists:
+                # Cancel the entire document creation
+                frappe.db.rollback()
+                frappe.flags.in_import = True  # Prevent commit
                 return
-            
-            # Set valid circuit and status if no duplicates
+
+            # Proceed with valid ticket
             doc.custom_circuit_id = valid_circuit
             doc.status = "Open"
+            doc.custom_channel = "NMS" if "sambakeshop@gmail.com" in doc.raised_by else "Email"
         else:
-            doc.custom_circuit_id = None
+            # Handle invalid circuit normally
             doc.status = "Wrong Circuit"
 
     except Exception as e:
         frappe.log_error(f"Ticket validation error: {e}")
         doc.status = "Wrong Circuit"
-        doc.custom_circuit_id = None
-
-# Hook configuration
-doc_events = {
-    "HD Ticket": {
-        "before_insert": validate_hd_ticket
-    }
-}
