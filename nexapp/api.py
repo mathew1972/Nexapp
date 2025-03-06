@@ -407,7 +407,7 @@ def validate_hd_ticket(doc, method=None):
         validate_email_address(doc.raised_by.strip(), throw=True)
 
         # Determine channel
-        doc.custom_channel = "NMS" if "sambakeshop@gmail.com" in doc.raised_by else "Email"
+        doc.custom_channel = "NMS" if "nms@nexapp.co.in" in doc.raised_by else "Email"
 
         # Extract circuit IDs from cleaned subject
         content = clean_content(doc.subject)
