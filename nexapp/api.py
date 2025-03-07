@@ -439,11 +439,11 @@ def validate_hd_ticket(doc, method=None):
         doc.custom_circuit_id = None
 
 # Hook configuration
-doc_events = {
-    "HD Ticket": {
-        "before_insert": validate_hd_ticket  # Ensure the function is correctly referenced
-    }
-}
+#doc_events = {
+#    "HD Ticket": {
+#        "before_insert": validate_hd_ticket  # Ensure the function is correctly referenced
+#    }
+#}
 
 ###########################################################################
 import frappe
