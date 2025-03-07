@@ -7,12 +7,14 @@
  "engine": "InnoDB",
  "field_order": [
   "title",
-  "content",
+  "attach_file",
   "column_break_swdo",
   "category",
-  "attach_file",
+  "sub_category",
   "published",
-  "download_pdf"
+  "download_pdf",
+  "section_break_idig",
+  "content"
  ],
  "fields": [
   {
@@ -20,12 +22,14 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Title"
+   "label": "Title",
+   "reqd": 1
   },
   {
    "fieldname": "content",
    "fieldtype": "Text Editor",
-   "label": "Content"
+   "label": "Content",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_swdo",
@@ -37,7 +41,8 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Category",
-   "options": "Getting Started\nFundamentals\nCoding Basics\nBest Practices\nDevelopment Approaches\nTroubleshooting\nAPI Development\nDevOps\nSecurity\nDatabases"
+   "options": "Getting Started\nFundamentals\nCoding Basics\nBest Practices\nDevelopment Approaches\nTroubleshooting\nAPI Development\nDevOps\nSecurity\nDatabases",
+   "reqd": 1
   },
   {
    "fieldname": "attach_file",
@@ -55,11 +60,21 @@
    "fieldname": "download_pdf",
    "fieldtype": "Button",
    "label": "Download PDF"
+  },
+  {
+   "fieldname": "section_break_idig",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "sub_category",
+   "fieldtype": "Select",
+   "label": "Sub Category",
+   "options": "Test-A\nTest-B\nTest-C\nTest-D"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-06 20:41:19.096558",
+ "modified": "2025-03-07 16:35:49.843177",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Document",

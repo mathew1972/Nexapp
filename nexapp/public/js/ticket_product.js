@@ -107,7 +107,7 @@ frappe.ui.form.on('Issue', {
                     'border': '1px solid #80bdff',
                     'box-shadow': '0 0 8px 0 rgba(0, 123, 255, 0.5)',
                     'background-color': '#ffffff'
-                });
+                });validate_hd_ticket
 
                 if (isRequired) {
                     $(this).css({ 'border-left': '5px solid red' });
@@ -128,7 +128,7 @@ frappe.ui.form.on('Issue', {
             });
         });
     }
-});
+});validate_hd_ticket
 
 frappe.ui.form.on('Ticket Product', {
     info: function(frm, cdt, cdn) {

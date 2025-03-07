@@ -2,45 +2,49 @@
  {
   "attach_file": "/files/color-flowchart-simple.jpg",
   "category": "Getting Started",
-  "content": "<div class=\"ql-editor read-mode\"><h3>Introduction</h3><p><br></p><p>Software development is the process of designing, creating, testing, and maintaining applications, frameworks, and other software components.</p><p><br></p><h3>software components.</h3></div>",
+  "content": "<div class=\"ql-editor read-mode\"><p>Software development is the process of designing, creating, testing, and maintaining applications, frameworks, and other software components.</p><p><br></p><h3>software components.</h3></div>",
   "docstatus": 0,
   "doctype": "Document",
-  "modified": "2025-03-07 12:00:17.321881",
+  "modified": "2025-03-07 16:58:32.349611",
   "name": "UM-00001",
   "published": 1,
+  "sub_category": "Test-A",
   "title": "Introduction to Software Development\t"
  },
  {
   "attach_file": null,
-  "category": "Fundamentals",
+  "category": "Getting Started",
   "content": "<div class=\"ql-editor read-mode\"><p>SDLC is a structured process that ensures the quality and correctness of software development. It includes phases such as Planning, Design, Development, Testing, Deployment, and Maintenance.\t</p></div>",
   "docstatus": 0,
   "doctype": "Document",
-  "modified": "2025-03-06 20:45:33.119560",
+  "modified": "2025-03-07 16:59:34.174104",
   "name": "UM-00002",
   "published": 1,
+  "sub_category": "Test-A",
   "title": "Software Development Life Cycle (SDLC)\t"
  },
  {
   "attach_file": null,
-  "category": "Coding Basics",
+  "category": "Getting Started",
   "content": "<div class=\"ql-editor read-mode\"><p>Various programming languages like Python, JavaScript, Java, and C++ are used in software development, each with its strengths and weaknesses.\t</p></div>",
   "docstatus": 0,
   "doctype": "Document",
-  "modified": "2025-03-06 20:45:58.824606",
+  "modified": "2025-03-07 16:36:32.218575",
   "name": "UM-00003",
   "published": 1,
+  "sub_category": "Test-C",
   "title": "Programming Languages Overview\t"
  },
  {
   "attach_file": null,
-  "category": "Best Practices",
+  "category": "Getting Started",
   "content": "<div class=\"ql-editor read-mode\"><p>Version control systems like Git help developers track and manage changes to their code. Tools like GitHub, GitLab, and Bitbucket enhance collaboration.\t</p></div>",
   "docstatus": 0,
   "doctype": "Document",
-  "modified": "2025-03-06 20:46:52.647891",
+  "modified": "2025-03-07 16:36:41.405544",
   "name": "UM-00004",
   "published": 1,
+  "sub_category": "Test-D",
   "title": "Version Control with Git\t"
  },
  {
@@ -52,6 +56,7 @@
   "modified": "2025-03-06 20:47:33.004336",
   "name": "UM-00005",
   "published": 1,
+  "sub_category": null,
   "title": "Agile vs Waterfall Methodologies\t"
  },
  {
@@ -63,6 +68,7 @@
   "modified": "2025-03-06 20:48:35.328955",
   "name": "UM-00006",
   "published": 1,
+  "sub_category": null,
   "title": "Debugging Techniques\t"
  },
  {
@@ -74,6 +80,7 @@
   "modified": "2025-03-06 20:49:15.026618",
   "name": "UM-00007",
   "published": 1,
+  "sub_category": null,
   "title": "Introduction to APIs\t"
  },
  {
@@ -85,6 +92,7 @@
   "modified": "2025-03-06 20:49:42.138771",
   "name": "UM-00008",
   "published": 1,
+  "sub_category": null,
   "title": "Deployment & DevOps Basics\t"
  },
  {
@@ -96,6 +104,7 @@
   "modified": "2025-03-07 10:45:29.297277",
   "name": "UM-00009",
   "published": 1,
+  "sub_category": null,
   "title": "Security in Software Development\t"
  },
  {
@@ -107,6 +116,7 @@
   "modified": "2025-03-06 20:50:42.452948",
   "name": "UM-00010",
   "published": 1,
+  "sub_category": null,
   "title": "Database Management\t"
  }
 ]
