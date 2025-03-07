@@ -370,6 +370,8 @@ from bs4 import BeautifulSoup
 import frappe
 from frappe.utils import validate_email_address
 
+"""Server Code for Ticket api 07/03/2025 12:41"""
+
 def clean_content(text):
     """Clean HTML while preserving numeric patterns"""
     try:
@@ -442,3 +444,28 @@ doc_events = {
         "before_insert": validate_hd_ticket  # Ensure the function is correctly referenced
     }
 }
+
+###########################################################################
+import frappe
+from frappe.utils.pdf import get_pdf
+
+@frappe.whitelist()
+def download_document_pdf(name):
+    doc = frappe.get_doc("Document", name)
+
+    # Check if there is an attached image
+    image_html = f'<img src="{doc.attach_file}" style="max-width:100%; height:auto; margin-top:10px;">' if doc.attach_file else ''
+
+    html = f"""
+    <h1>{doc.title}</h1>
+    <p><strong>Category:</strong> {doc.category}</p>
+    <div>{doc.content}</div>
+    {image_html}  <!-- Include image if available -->
+    """
+
+    pdf_data = get_pdf(html)
+
+    # Set response headers for file download
+    frappe.local.response.filename = f"{doc.title}.pdf"
+    frappe.local.response.filecontent = pdf_data
+    frappe.local.response.type = "pdf"

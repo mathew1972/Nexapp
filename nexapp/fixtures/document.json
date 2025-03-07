@@ -1,0 +1,112 @@
+[
+ {
+  "attach_file": "/files/color-flowchart-simple.jpg",
+  "category": "Getting Started",
+  "content": "<div class=\"ql-editor read-mode\"><h3>Introduction</h3><p><br></p><p>Software development is the process of designing, creating, testing, and maintaining applications, frameworks, and other software components.</p><p><br></p><h3>software components.</h3></div>",
+  "docstatus": 0,
+  "doctype": "Document",
+  "modified": "2025-03-07 12:00:17.321881",
+  "name": "UM-00001",
+  "published": 1,
+  "title": "Introduction to Software Development\t"
+ },
+ {
+  "attach_file": null,
+  "category": "Fundamentals",
+  "content": "<div class=\"ql-editor read-mode\"><p>SDLC is a structured process that ensures the quality and correctness of software development. It includes phases such as Planning, Design, Development, Testing, Deployment, and Maintenance.\t</p></div>",
+  "docstatus": 0,
+  "doctype": "Document",
+  "modified": "2025-03-06 20:45:33.119560",
+  "name": "UM-00002",
+  "published": 1,
+  "title": "Software Development Life Cycle (SDLC)\t"
+ },
+ {
+  "attach_file": null,
+  "category": "Coding Basics",
+  "content": "<div class=\"ql-editor read-mode\"><p>Various programming languages like Python, JavaScript, Java, and C++ are used in software development, each with its strengths and weaknesses.\t</p></div>",
+  "docstatus": 0,
+  "doctype": "Document",
+  "modified": "2025-03-06 20:45:58.824606",
+  "name": "UM-00003",
+  "published": 1,
+  "title": "Programming Languages Overview\t"
+ },
+ {
+  "attach_file": null,
+  "category": "Best Practices",
+  "content": "<div class=\"ql-editor read-mode\"><p>Version control systems like Git help developers track and manage changes to their code. Tools like GitHub, GitLab, and Bitbucket enhance collaboration.\t</p></div>",
+  "docstatus": 0,
+  "doctype": "Document",
+  "modified": "2025-03-06 20:46:52.647891",
+  "name": "UM-00004",
+  "published": 1,
+  "title": "Version Control with Git\t"
+ },
+ {
+  "attach_file": null,
+  "category": "Development Approaches",
+  "content": "<div class=\"ql-editor read-mode\"><p>Agile focuses on iterative development, flexibility, and collaboration, while Waterfall follows a linear and structured approach.\t</p></div>",
+  "docstatus": 0,
+  "doctype": "Document",
+  "modified": "2025-03-06 20:47:33.004336",
+  "name": "UM-00005",
+  "published": 1,
+  "title": "Agile vs Waterfall Methodologies\t"
+ },
+ {
+  "attach_file": null,
+  "category": "Troubleshooting",
+  "content": "<div class=\"ql-editor read-mode\"><p>Debugging is an essential part of software development. Tools like Chrome DevTools, VS Code Debugger, and Postman help developers identify and fix issues.\t</p></div>",
+  "docstatus": 0,
+  "doctype": "Document",
+  "modified": "2025-03-06 20:48:35.328955",
+  "name": "UM-00006",
+  "published": 1,
+  "title": "Debugging Techniques\t"
+ },
+ {
+  "attach_file": null,
+  "category": "API Development",
+  "content": "<div class=\"ql-editor read-mode\"><p>APIs (Application Programming Interfaces) allow software applications to communicate. REST and GraphQL are common API types used in web and mobile apps.\t</p></div>",
+  "docstatus": 0,
+  "doctype": "Document",
+  "modified": "2025-03-06 20:49:15.026618",
+  "name": "UM-00007",
+  "published": 1,
+  "title": "Introduction to APIs\t"
+ },
+ {
+  "attach_file": null,
+  "category": "DevOps",
+  "content": "<div class=\"ql-editor read-mode\"><p>Continuous Integration (CI) and Continuous Deployment (CD) streamline the development lifecycle. DevOps practices improve collaboration between developers and IT teams.\t</p></div>",
+  "docstatus": 0,
+  "doctype": "Document",
+  "modified": "2025-03-06 20:49:42.138771",
+  "name": "UM-00008",
+  "published": 1,
+  "title": "Deployment & DevOps Basics\t"
+ },
+ {
+  "attach_file": null,
+  "category": "Security",
+  "content": "<div class=\"ql-editor read-mode\"><p>Secure coding practices, encryption, authentication, and penetration testing are crucial to protect applications from cyber threats.\t</p></div>",
+  "docstatus": 0,
+  "doctype": "Document",
+  "modified": "2025-03-07 10:45:29.297277",
+  "name": "UM-00009",
+  "published": 1,
+  "title": "Security in Software Development\t"
+ },
+ {
+  "attach_file": null,
+  "category": "Databases",
+  "content": "<div class=\"ql-editor read-mode\"><p>Databases like MySQL, PostgreSQL, and MongoDB store and retrieve data efficiently for applications. SQL and NoSQL are the two main types of databases.\t</p></div>",
+  "docstatus": 0,
+  "doctype": "Document",
+  "modified": "2025-03-06 20:50:42.452948",
+  "name": "UM-00010",
+  "published": 1,
+  "title": "Database Management\t"
+ }
+]

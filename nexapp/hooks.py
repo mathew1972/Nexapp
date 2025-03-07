@@ -281,6 +281,8 @@ fixtures = [
     {"dt": "Task Subject"},
     {"dt": 'Task Type'},
     {"dt": "Web Form", "filters": [["module", "=", "Nexapp"]]},   
+    {"dt": "Document"},
+    {"dt": "Page", "filters": [["module", "=", "Nexapp"]]},  
     {"dt": "Role"}    
 ]
 
@@ -353,8 +355,6 @@ doctype_js = {
     "Product Assigment": "doctype/product_assigment/product_assigment.js",
     "HD Ticket": "public/js/hd_ticket_custom.js"    
 }
-
-
 
 
 

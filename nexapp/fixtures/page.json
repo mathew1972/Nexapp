@@ -1,0 +1,19 @@
+[
+ {
+  "content": null,
+  "docstatus": 0,
+  "doctype": "Page",
+  "icon": null,
+  "modified": "2025-03-06 20:16:21.893808",
+  "module": "Nexapp",
+  "name": "user-manual",
+  "page_name": "user-manual",
+  "restrict_to_domain": null,
+  "roles": [],
+  "script": null,
+  "standard": "Yes",
+  "style": null,
+  "system_page": 0,
+  "title": "User Manual"
+ }
+]
