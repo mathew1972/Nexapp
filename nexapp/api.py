@@ -414,10 +414,10 @@ def validate_hd_ticket(doc, method=None):
             if not frappe.db.exists("Site", {"name": circuit_id, "stage": "Delivered and Live"}):
                 continue
 
-            # Check for existing non-resolved tickets
+            # Check for existing non-Closed tickets
             existing_ticket = frappe.db.exists("HD Ticket", {
                 "custom_circuit_id": circuit_id,
-                "status": ["not in", ["Resolved", "Closed"]]
+                "status": ["not in", ["Closed"]]
             })
             if not existing_ticket:
                 valid_circuit = circuit_id
