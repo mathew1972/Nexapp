@@ -260,9 +260,6 @@ doc_events = {
     },
     "Sales Order": {
         "on_submit": "nexapp.api.update_custom_circuit_id_in_stock_reservation"
-    },
-    "HD Ticket": {
-        "before_insert": "nexapp.api.validate_hd_ticket"
     }
 }
 
