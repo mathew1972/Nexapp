@@ -363,7 +363,59 @@ def update_site_status_on_delivery_note_save(doc, method):
                 # Save the updated Site document
                 site_doc.save(ignore_permissions=True)
 
-############################################################################3
+############################################################################
+# api.py
+import frappe
+import re
+
+def auto_create_hd_ticket(doc, method):
+    try:
+        # Skip if not a received/open email
+        if doc.sent_or_received != "Received" or doc.status != "Open":
+            return
+
+        # Enqueue to avoid blocking email processing
+        frappe.enqueue(
+            method=create_hd_ticket,
+            queue="short",
+            enqueue_after_commit=True,
+            communication_name=doc.name
+        )
+
+    except Exception as e:
+        frappe.log_error(f"Enqueue Error: {str(e)}")
+
+def create_hd_ticket(communication_name):
+    try:
+        comm = frappe.get_doc("Communication", communication_name)
+        
+        # Validate required fields
+        if not (comm.subject and comm.sender):
+            return
+
+        # Extract Circuit ID
+        circuit_id = re.search(r"Circuit#(\d+)", comm.subject).group(1) if re.search(r"Circuit#\d+", comm.subject) else None
+
+        # Create HD Ticket
+        ticket = frappe.new_doc("HD Ticket")
+        ticket.update({
+            "custom_circuit_id": circuit_id,
+            "subject": comm.subject,
+            "description": comm.content or "No content",
+            "raised_by": comm.sender,
+            "status": "Open"
+        })
+        
+        ticket.insert(
+            ignore_permissions=True,
+            ignore_mandatory=True,
+            ignore_validate=True
+        )
+        frappe.db.commit()
+
+    except Exception as e:
+        frappe.log_error(f"HD Ticket Error: {str(e)}")
+        frappe.db.rollback()
 ############################################################################
 import frappe
 from frappe.utils.pdf import get_pdf
