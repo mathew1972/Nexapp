@@ -262,7 +262,7 @@ doc_events = {
         "on_submit": "nexapp.api.update_custom_circuit_id_in_stock_reservation"
     },
     "Communication": {
-        "after_insert": "nexapp.api.auto_create_hd_ticket"
+        "after_insert": "nexapp.api.create_hd_ticket_from_communication"
     }
 }
 
