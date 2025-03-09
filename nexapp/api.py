@@ -366,26 +366,26 @@ def update_site_status_on_delivery_note_save(doc, method):
 ############################################################################
 import frappe
 
-@frappe.whitelist()
-def create_hd_ticket_from_communication(docname):
-    """Creates an HD Ticket from a Communication record"""
+def create_hd_ticket_from_communication(doc, method):
+    """Creates an HD Ticket when a new Communication is received."""
     try:
-        communication = frappe.get_doc("Communication", docname)
+        # Ensure subject exists before creating the ticket
+        if not doc.subject:
+            frappe.log_error("No subject found in Communication", "HD Ticket Creation")
+            return
 
-        # Create HD Ticket with only the subject field (mandatory)
         hd_ticket = frappe.get_doc({
             "doctype": "HD Ticket",
-            "subject": communication.subject
+            "subject": doc.subject
         })
 
         hd_ticket.insert(ignore_permissions=True)
         frappe.db.commit()
 
-        return {"status": "success", "ticket_name": hd_ticket.name}
+        frappe.logger().info(f"HD Ticket {hd_ticket.name} created from Communication {doc.name}")
 
     except Exception as e:
         frappe.log_error(f"Error creating HD Ticket: {str(e)}", "HD Ticket Creation")
-        return {"status": "error", "message": str(e)}
 
 ############################################################################
 import frappe
