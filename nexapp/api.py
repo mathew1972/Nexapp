@@ -422,10 +422,10 @@ def extract_circuit_id(text):
 def create_hd_ticket(circuit_id, status, raised_by, subject, description):
     """Creates a new HD Ticket in the system."""
     # Determine the custom_channel based on the sender's email address
-    if raised_by == "helpdesk@nexapp.co.in":
-        custom_channel = "Email"
-    elif raised_by == "nms@nexapp.co.in":
+    if "nms@nexapp.co.in" in raised_by:
         custom_channel = "NMS"
+    elif "helpdesk@nexapp.co.in" in raised_by:
+        custom_channel = "Email"
     else:
         custom_channel = None  # Default value if sender is not recognized
 
@@ -439,8 +439,7 @@ def create_hd_ticket(circuit_id, status, raised_by, subject, description):
         "custom_channel": custom_channel  # Set the custom_channel field
     })
     hd_ticket.insert(ignore_permissions=True)
-    frappe.db.commit()
-############################################################################
+    frappe.db.commit()############################################################################
 import frappe
 from frappe.utils.pdf import get_pdf
 
