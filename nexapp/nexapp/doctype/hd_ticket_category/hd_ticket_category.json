@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:category",
  "creation": "2024-11-20 21:23:33.411062",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -11,15 +12,17 @@
   {
    "fieldname": "category",
    "fieldtype": "Data",
-   "label": "Category"
+   "label": "Category",
+   "unique": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-20 21:24:01.509889",
+ "modified": "2025-03-10 15:39:06.528601",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "HD Ticket Category",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
