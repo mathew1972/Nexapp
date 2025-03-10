@@ -368,29 +368,29 @@ import frappe
 import re
 
 def create_hd_ticket_from_communication(doc, method):
-    # Step 1: Check if the email is received and conditions match
+    # Step 1: Check if the email is received by helpdesk@nexapp.co.in
     if doc.recipients == "helpdesk@nexapp.co.in" and doc.sent_or_received == "Received" and doc.status == "Open":
         
-        # Step 2: Extract Circuit ID from subject or description
+        # Step 2: Extract Circuit ID from subject or content
         circuit_id = extract_circuit_id(doc.subject) or extract_circuit_id(doc.content)
 
         # Step 3: Validate Circuit ID and determine status
         if circuit_id:
             if len(circuit_id) == 5:
-                # Check if the Circuit ID exists in the "Site" Doctype with "Delivered and Live" stage
-                site = frappe.get_all("Site", filters={"circuit_id": circuit_id}, fields=["name", "circuit_id", "stage"])
+                # Check if Circuit ID exists in Site doctype with "Delivered and Live" stage
+                site = frappe.get_all("Site", filters={"circuit_id": circuit_id}, fields=["name", "stage"])
                 
                 if site and site[0].get("stage") == "Delivered and Live":
-                    # Step 4: Check for existing HD Ticket (excluding Closed tickets)
+                    # Step 4: Check for existing open tickets
                     existing_ticket = frappe.get_all("HD Ticket", filters={
                         "custom_circuit_id": circuit_id,
                         "status": ["in", ["Open", "Replied", "Resolved"]]
                     })
                     
                     if existing_ticket:
-                        return  # Stop process if a valid ticket already exists
+                        return  # Stop if ticket already exists
                     
-                    # Step 5: Reopen Closed Ticket or Create a New One
+                    # Step 5: Create new ticket or reopen closed one
                     closed_ticket = frappe.get_all("HD Ticket", filters={
                         "custom_circuit_id": circuit_id,
                         "status": "Closed"
@@ -401,45 +401,44 @@ def create_hd_ticket_from_communication(doc, method):
                     else:
                         create_hd_ticket(circuit_id, "Open", doc.sender, doc.subject, doc.content)
                 else:
-                    # If Circuit ID exists but stage is not "Delivered and Live"
+                    # Invalid stage
                     create_hd_ticket(circuit_id, "Wrong Circuit", doc.sender, doc.subject, doc.content)
             else:
-                # If Circuit ID is more than 5 digits (e.g., 10 digits)
+                # Invalid Circuit ID length
                 create_hd_ticket(None, "Wrong Circuit", doc.sender, doc.subject, doc.content)
         else:
-            # If no 5-digit Circuit ID is found
+            # No Circuit ID found
             create_hd_ticket(None, "Wrong Circuit", doc.sender, doc.subject, doc.content)
 
 def extract_circuit_id(text):
-    """Extracts a valid 5-digit circuit ID from a given text."""
+    """Extract 5-digit Circuit ID from text"""
     if text:
-        match = re.search(r"\b\d+\b", text)  # Extract any digit sequence
-        if match:
-            circuit_id = match.group(0)
-            return circuit_id if len(circuit_id) == 5 else None  # Return only if exactly 5 digits
-    return None  # Return None if no valid Circuit ID is found
+        match = re.search(r"\b\d{5}\b", text)  # Strict 5-digit match
+        return match.group(0) if match else None
+    return None
 
-def create_hd_ticket(circuit_id, status, raised_by, subject, description):
-    """Creates a new HD Ticket in the system."""
-    # Determine the custom_channel based on the sender's email address
-    if "nms@nexapp.co.in" in raised_by:
-        custom_channel = "NMS"
-    elif "helpdesk@nexapp.co.in" in raised_by:
-        custom_channel = "Email"
-    else:
-        custom_channel = None  # Default value if sender is not recognized
-
-    hd_ticket = frappe.get_doc({
+def create_hd_ticket(circuit_id, status, sender, subject, content):
+    """Create HD Ticket with channel detection"""
+    # Create new ticket doc
+    ticket = frappe.get_doc({
         "doctype": "HD Ticket",
-        "custom_circuit_id": circuit_id,
-        "status": status,
-        "raised_by": raised_by,
         "subject": subject,
-        "description": description,
-        "custom_channel": custom_channel  # Set the custom_channel field
+        "description": content,
+        "raised_by": sender,
+        "status": status,
+        "custom_circuit_id": circuit_id
     })
-    hd_ticket.insert(ignore_permissions=True)
-    frappe.db.commit()############################################################################
+
+    # Set channel exactly like your working sample
+    if not ticket.raised_by:
+        return
+    ticket.custom_channel = "NMS" if "nms@nexapp.co.in" in ticket.raised_by else "Email"
+
+    # Save the ticket
+    ticket.insert(ignore_permissions=True)
+    frappe.db.commit()
+
+############################################################################
 import frappe
 from frappe.utils.pdf import get_pdf
 

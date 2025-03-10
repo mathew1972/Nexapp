@@ -5,20 +5,8 @@ frappe.pages['user-manual'].on_page_load = function(wrapper) {
         single_column: true
     });
 
-    // Hide default sidebar
-    $('.desk-sidebar').remove();
-    $('.layout-side-section').remove();
-
-    // Add toggle button
-    const toggleButton = $(`
-        <button class="sidebar-toggle btn btn-default">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 6h18M3 12h18M3 18h18"/>
-            </svg>
-        </button>
-    `).appendTo(page.main);
-
-    let isSidebarOpen = localStorage.getItem('sidebarOpen') !== 'false';
+    // Clear existing content
+    $(wrapper).find('.layout-main-section').empty();
 
     frappe.call({
         method: 'frappe.client.get_list',
@@ -28,253 +16,96 @@ frappe.pages['user-manual'].on_page_load = function(wrapper) {
             fields: ['name', 'title', 'category', 'sub_category', 'content', 'attach_file']
         },
         callback: function(r) {
-            if (r.message && r.message.length > 0) {
-                // Organize data
+            const container = $(`<div class="container-fluid" style="display: flex; gap: 20px; margin-top: 20px;"></div>`);
+            const leftSidebar = $(`<div class="left-sidebar" style="width: 240px; background: #f8f9fa; padding: 15px;"></div>`);
+            const mainContent = $(`<div class="main-content" style="flex: 1; min-width: 0;"></div>`);
+            const rightSidebar = $(`<div class="right-sidebar" style="width: 240px; background: #f8f9fa; padding: 15px;"></div>`);
+
+            // Build navigation
+            if (r.message && r.message.length) {
                 const categories = {};
-                const anchors = [];
                 
                 // Process documents
                 r.message.forEach(doc => {
-                    if (!categories[doc.category]) {
-                        categories[doc.category] = {};
-                    }
-                    if (!categories[doc.category][doc.sub_category]) {
-                        categories[doc.category][doc.sub_category] = [];
-                    }
-                    const docId = doc.title.toLowerCase().replace(/ /g, '-');
-                    categories[doc.category][doc.sub_category].push({...doc, id: docId});
-                    anchors.push({
-                        title: doc.title,
-                        id: docId
+                    if (!categories[doc.category]) categories[doc.category] = {};
+                    if (!categories[doc.category][doc.sub_category]) categories[doc.category][doc.sub_category] = [];
+                    categories[doc.category][doc.sub_category].push(doc);
+                });
+
+                // Build left sidebar
+                Object.keys(categories).forEach(category => {
+                    leftSidebar.append(`<h3>${category}</h3>`);
+                    Object.keys(categories[category]).forEach(subCat => {
+                        const subCatId = subCat.toLowerCase().replace(/ /g, '-');
+                        leftSidebar.append(`
+                            <div class="subcategory-item" style="margin: 8px 0;">
+                                <a href="#" class="subcat-link" data-subcat="${subCatId}">${subCat}</a>
+                            </div>
+                        `);
                     });
                 });
 
-                // ========== LEFT SIDEBAR ==========
-                const leftSidebar = `
-                    <div class="left-sidebar">
-                        <div class="sidebar-section">
-                            ${Object.keys(categories).map(category => `
-                                <div class="category-group">
-                                    <h3>${category}</h3>
-                                    ${Object.keys(categories[category]).map(subCat => `
-                                        <div class="subcategory-item">
-                                            <a href="#${subCat.toLowerCase().replace(/ /g, '-')}">
-                                                ${subCat}
-                                            </a>
-                                        </div>
-                                    `).join('')}
+                // Build main content
+                Object.entries(categories).forEach(([category, subCats]) => {
+                    Object.entries(subCats).forEach(([subCat, docs]) => {
+                        const subCatId = subCat.toLowerCase().replace(/ /g, '-');
+                        const section = $(`
+                            <section class="main-section" id="${subCatId}" style="display: none; margin-bottom: 30px;">
+                                <div class="category-path" style="font-size: 0.9em; color: #666; margin-bottom: 15px;">
+                                    ${category} » ${subCat}
                                 </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-
-                // ========== MAIN CONTENT ==========
-                const mainContent = `
-                    <div class="main-content">
-                        ${Object.entries(categories).map(([category, subCats]) => `
-                            ${Object.entries(subCats).map(([subCat, docs]) => `
-                                <section class="main-section" id="${subCat.toLowerCase().replace(/ /g, '-')}">
-                                    <div class="category-path">${category} » ${subCat}</div>
-                                    ${docs.map(doc => `
-                                        <div class="document-card" id="${doc.id}">
-                                            <h3>${doc.title}</h3>
-                                            <div class="content">${doc.content}</div>
-                                            ${doc.attach_file ? `
-                                                <div class="image-container">
-                                                    <img src="${doc.attach_file}" 
-                                                         class="attached-image" 
-                                                         alt="${doc.title}">
-                                                </div>
-                                            ` : ''}
-                                            <button class="btn btn-secondary download-pdf" 
-                                                    data-name="${doc.name}"
-                                                    style="margin-top: 15px;">
-                                                Download PDF
-                                            </button>
-                                        </div>
-                                    `).join('')}
-                                </section>
-                            `).join('')}
-                        `).join('')}
-                    </div>
-                `;
-
-                // ========== RIGHT SIDEBAR ==========
-                const rightSidebar = `
-                    <div class="right-sidebar">
-                        <div class="on-this-page">
-                            <h4>On this Page</h4>
-                            <ul class="list-unstyled">
-                                ${anchors.map(anchor => `
-                                    <li class="toc-item">
-                                        <a href="#${anchor.id}">${anchor.title}</a>
-                                    </li>
-                                `).join('')}
-                            </ul>
-                        </div>
-                    </div>
-                `;
-
-                // ========== FINAL LAYOUT ==========
-                const finalHtml = `
-                    <div class="container-fluid">
-                        <div class="three-column-layout ${isSidebarOpen ? '' : 'sidebar-collapsed'}">
-                            ${leftSidebar}
-                            ${mainContent}
-                            ${rightSidebar}
-                        </div>
-                    </div>
-                    <style>
-                        .sidebar-toggle {
-                            position: fixed;
-                            left: 15px;
-                            top: 70px;
-                            z-index: 1000;
-                            padding: 8px;
-                            border-radius: 50%;
-                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                            background: white;
-                            transition: all 0.3s ease;
-                        }
-
-                        .three-column-layout {
-                            display: grid;
-                            grid-template-columns: 240px 1fr 240px;
-                            transition: all 0.3s ease;
-                        }
-
-                        .three-column-layout.sidebar-collapsed {
-                            grid-template-columns: 0 1fr 240px;
-                        }
-
-                        .left-sidebar {
-                            background: #ffffff;
-                            padding: 20px;
-                            border-right: 1px solid #e5e7eb;
-                            position: sticky;
-                            top: 60px;
-                            height: calc(100vh - 60px);
-                            overflow-y: auto;
-                            transition: all 0.3s ease;
-                            overflow-x: hidden;
-                        }
-
-                        .sidebar-collapsed .left-sidebar {
-                            transform: translateX(-100%);
-                            width: 0;
-                        }
-
-                        .main-content {
-                            padding: 30px 40px;
-                            background: #f8f9fa;
-                            transition: margin-left 0.3s ease;
-                        }
-
-                        .category-path {
-                            font-size: 10px;
-                            color: #6c757d;
-                            text-transform: uppercase;
-                            letter-spacing: 0.5px;
-                            margin: 15px 0 5px;
-                        }
-
-                        .document-card {
-                            background: white;
-                            padding: 20px;
-                            margin-bottom: 20px;
-                            border-radius: 8px;
-                            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-                        }
-
-                        .category-group h3 {
-                            color: #2A4B5D;
-                            font-size: 16px;
-                            margin: 15px 0;
-                            padding-bottom: 5px;
-                            border-bottom: 1px solid #e5e7eb;
-                        }
-
-                        .subcategory-item {
-                            margin: 8px 0;
-                        }
-
-                        .subcategory-item a {
-                            color: #6c757d;
-                            text-decoration: none;
-                            font-size: 14px;
-                        }
-
-                        .subcategory-item a:hover {
-                            color: #2A4B5D;
-                        }
-
-                        .toc-item {
-                            margin: 8px 0;
-                            font-size: 14px;
-                        }
-
-                        .toc-item a {
-                            color: #6c757d;
-                            text-decoration: none;
-                        }
-
-                        .image-container {
-                            margin: 20px 0;
-                            text-align: center;
-                        }
-
-                        .attached-image {
-                            max-width: 100%;
-                            height: auto;
-                            max-height: 400px;
-                            object-fit: contain;
-                        }
-
-                        @media (max-width: 1200px) {
-                            .three-column-layout {
-                                grid-template-columns: 0 1fr 240px;
-                            }
-                            
-                            .three-column-layout.sidebar-collapsed {
-                                grid-template-columns: 240px 1fr 240px;
-                            }
-                            
-                            .sidebar-toggle {
-                                display: block;
-                            }
-                        }
-
-                        @media (min-width: 1201px) {
-                            .sidebar-toggle {
-                                display: none;
-                            }
-                        }
-                    </style>
-                `;
-
-                $(wrapper).find('.layout-main-section').html(finalHtml);
-
-                // Toggle functionality
-                toggleButton.off('click').on('click', function() {
-                    isSidebarOpen = !isSidebarOpen;
-                    localStorage.setItem('sidebarOpen', isSidebarOpen);
-                    $('.three-column-layout').toggleClass('sidebar-collapsed', !isSidebarOpen);
+                            </section>
+                        `);
+                        
+                        docs.forEach(doc => {
+                            section.append(`
+                                <div class="document-card" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                                    <h3>${doc.title}</h3>
+                                    <div class="content">${doc.content}</div>
+                                    ${doc.attach_file ? `
+                                        <img src="${doc.attach_file}" style="max-width: 100%; margin-top: 15px;">
+                                    ` : ''}
+                                </div>
+                            `);
+                        });
+                        
+                        mainContent.append(section);
+                    });
                 });
 
-                // Close sidebar on mobile by default
-                if ($(window).width() < 1200) {
-                    isSidebarOpen = false;
-                    localStorage.setItem('sidebarOpen', 'false');
-                    $('.three-column-layout').addClass('sidebar-collapsed');
-                }
+                // Activate first section
+                mainContent.find('.main-section').first().show();
+
+                // Navigation click handler
+                leftSidebar.on('click', '.subcat-link', function(e) {
+                    e.preventDefault();
+                    const subCatId = $(this).data('subcat');
+                    mainContent.find('.main-section').hide();
+                    $(`#${subCatId}`).show();
+                });
+            } else {
+                mainContent.html(`
+                    <div style="text-align: center; padding: 50px;">
+                        <h4>No documents found</h4>
+                        <p>Create documents in the Document doctype to see content here</p>
+                    </div>
+                `);
             }
+
+            // Build right sidebar
+            rightSidebar.html(`
+                <h4>Help Resources</h4>
+                <div style="margin-top: 15px;">
+                    <p>Search or type a command (Ctrl + G)</p>
+                    <button class="btn btn-default btn-block" onclick="alert('Help content')">
+                        Help Documentation
+                    </button>
+                </div>
+            `);
+
+            // Assemble layout
+            container.append(leftSidebar, mainContent, rightSidebar);
+            $(wrapper).find('.layout-main-section').append(container);
         }
     });
 };
-
-// PDF Download Handler
-$(document).on('click', '.download-pdf', function() {
-    let docName = $(this).data('name');
-    window.open('/api/method/nexapp.api.download_document_pdf?name=' + docName);
-});
