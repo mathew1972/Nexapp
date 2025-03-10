@@ -375,29 +375,33 @@ def create_hd_ticket_from_communication(doc, method):
         circuit_id = extract_circuit_id(doc.subject) or extract_circuit_id(doc.content)
         
         if circuit_id:
-            # Step 3: Validate Circuit ID in Site Doctype
+            # Step 3: Validate Circuit ID in Site Doctype (Must be "Delivered and Live")
             site = frappe.get_all("Site", filters={"circuit_id": circuit_id, "stage": "Delivered and Live"}, fields=["name", "circuit_id"])
             
             if site:
                 site_data = site[0]
+
+                # Step 4: Check for existing HD Tickets
+                existing_tickets = frappe.get_all("HD Ticket", filters={"custom_circuit_id": circuit_id}, fields=["name", "status"])
+
+                # Separate existing tickets by status
+                open_tickets = [t for t in existing_tickets if t["status"] in ["Open", "Replied", "Resolved"]]
+                closed_tickets = [t for t in existing_tickets if t["status"] == "Closed"]
+
+                if open_tickets:
+                    return  # Stop process if an active ticket already exists
                 
-                # Step 4: Check for existing HD Ticket
-                existing_ticket = frappe.get_all("HD Ticket", filters={
-                    "custom_circuit_id": circuit_id,
-                    "status": ["in", ["Open", "Replied", "Resolved"]]
-                })
-                
-                if existing_ticket:
-                    return  # Stop process if a valid ticket exists
-                
-                # Step 5: Create a new HD Ticket
-                create_hd_ticket(circuit_id, "Open", doc.sender, doc.subject, doc.content)
+                # Step 5: If a Closed ticket exists, create a new ticket (Reopen logic)
+                if closed_tickets:
+                    create_hd_ticket(circuit_id, "Open", doc.sender, doc.subject, doc.content, site_data["name"])
+                else:
+                    create_hd_ticket(circuit_id, "Open", doc.sender, doc.subject, doc.content, site_data["name"])
             else:
-                # Step 6: Create an HD Ticket with "Wrong Circuit" status
-                create_hd_ticket(None, "Wrong Circuit", doc.sender, doc.subject, doc.content)
+                # Step 6: If Circuit ID is not found in Site Doctype, create HD Ticket with "Wrong Circuit" status
+                create_hd_ticket(None, "Wrong Circuit", doc.sender, doc.subject, doc.content, None)
         else:
-            # No valid Circuit ID found, create an HD Ticket with "Wrong Circuit" status
-            create_hd_ticket(None, "Wrong Circuit", doc.sender, doc.subject, doc.content)
+            # Step 7: No valid Circuit ID found, create HD Ticket with "Wrong Circuit" status
+            create_hd_ticket(None, "Wrong Circuit", doc.sender, doc.subject, doc.content, None)
 
 def extract_circuit_id(text):
     """Extracts a 5-digit circuit ID from a given text."""
@@ -406,7 +410,7 @@ def extract_circuit_id(text):
         return match.group(0) if match else None
     return None
 
-def create_hd_ticket(circuit_id, status, raised_by, subject, description):
+def create_hd_ticket(circuit_id, status, raised_by, subject, description, site_name):
     """Creates a new HD Ticket in the system."""
     hd_ticket = frappe.get_doc({
         "doctype": "HD Ticket",
@@ -414,7 +418,8 @@ def create_hd_ticket(circuit_id, status, raised_by, subject, description):
         "status": status,
         "raised_by": raised_by,
         "subject": subject,
-        "description": description
+        "description": description,
+        "site": site_name  # Link to valid Site if available
     })
     hd_ticket.insert(ignore_permissions=True)
     frappe.db.commit()
