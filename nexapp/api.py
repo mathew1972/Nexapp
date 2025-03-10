@@ -369,27 +369,19 @@ import re
 
 def create_hd_ticket_from_communication(doc, method):
     # Step 1: Check if the email is received and conditions match
-    if doc.sent_or_received == "Received" and doc.status == "Open":
+    if doc.recipients == "helpdesk@nexapp.co.in" and doc.sent_or_received == "Received" and doc.status == "Open":
         
-        # Step 2: Determine the custom_channel based on sender email
-        if doc.sender == "helpdesk@nexapp.co.in":
-            custom_channel = "Email"
-        elif doc.sender == "nms@nexapp.co.in":
-            custom_channel = "NMSl"
-        else:
-            custom_channel = "Unknown"
-
-        # Step 3: Extract Circuit ID from subject or description
+        # Step 2: Extract Circuit ID from subject or description
         circuit_id = extract_circuit_id(doc.subject) or extract_circuit_id(doc.content)
 
-        # Step 4: Validate Circuit ID and determine status
+        # Step 3: Validate Circuit ID and determine status
         if circuit_id:
             if len(circuit_id) == 5:
                 # Check if the Circuit ID exists in the "Site" Doctype with "Delivered and Live" stage
                 site = frappe.get_all("Site", filters={"circuit_id": circuit_id}, fields=["name", "circuit_id", "stage"])
                 
                 if site and site[0].get("stage") == "Delivered and Live":
-                    # Step 5: Check for existing HD Ticket (excluding Closed tickets)
+                    # Step 4: Check for existing HD Ticket (excluding Closed tickets)
                     existing_ticket = frappe.get_all("HD Ticket", filters={
                         "custom_circuit_id": circuit_id,
                         "status": ["in", ["Open", "Replied", "Resolved"]]
@@ -398,25 +390,25 @@ def create_hd_ticket_from_communication(doc, method):
                     if existing_ticket:
                         return  # Stop process if a valid ticket already exists
                     
-                    # Step 6: Reopen Closed Ticket or Create a New One
+                    # Step 5: Reopen Closed Ticket or Create a New One
                     closed_ticket = frappe.get_all("HD Ticket", filters={
                         "custom_circuit_id": circuit_id,
                         "status": "Closed"
                     })
 
                     if closed_ticket:
-                        create_hd_ticket(circuit_id, "Open", doc.sender, doc.subject, doc.content, custom_channel)
+                        create_hd_ticket(circuit_id, "Open", doc.sender, doc.subject, doc.content)
                     else:
-                        create_hd_ticket(circuit_id, "Open", doc.sender, doc.subject, doc.content, custom_channel)
+                        create_hd_ticket(circuit_id, "Open", doc.sender, doc.subject, doc.content)
                 else:
                     # If Circuit ID exists but stage is not "Delivered and Live"
-                    create_hd_ticket(circuit_id, "Wrong Circuit", doc.sender, doc.subject, doc.content, custom_channel)
+                    create_hd_ticket(circuit_id, "Wrong Circuit", doc.sender, doc.subject, doc.content)
             else:
                 # If Circuit ID is more than 5 digits (e.g., 10 digits)
-                create_hd_ticket(None, "Wrong Circuit", doc.sender, doc.subject, doc.content, custom_channel)
+                create_hd_ticket(None, "Wrong Circuit", doc.sender, doc.subject, doc.content)
         else:
             # If no 5-digit Circuit ID is found
-            create_hd_ticket(None, "Wrong Circuit", doc.sender, doc.subject, doc.content, custom_channel)
+            create_hd_ticket(None, "Wrong Circuit", doc.sender, doc.subject, doc.content)
 
 def extract_circuit_id(text):
     """Extracts a valid 5-digit circuit ID from a given text."""
@@ -427,7 +419,7 @@ def extract_circuit_id(text):
             return circuit_id if len(circuit_id) == 5 else None  # Return only if exactly 5 digits
     return None  # Return None if no valid Circuit ID is found
 
-def create_hd_ticket(circuit_id, status, raised_by, subject, description, custom_channel):
+def create_hd_ticket(circuit_id, status, raised_by, subject, description):
     """Creates a new HD Ticket in the system."""
     hd_ticket = frappe.get_doc({
         "doctype": "HD Ticket",
@@ -435,8 +427,7 @@ def create_hd_ticket(circuit_id, status, raised_by, subject, description, custom
         "status": status,
         "raised_by": raised_by,
         "subject": subject,
-        "description": description,
-        "custom_channel": custom_channel  # Setting the custom_channel based on sender
+        "description": description
     })
     hd_ticket.insert(ignore_permissions=True)
     frappe.db.commit()
