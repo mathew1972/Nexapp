@@ -368,9 +368,12 @@ import frappe
 import re
 
 def create_hd_ticket_from_communication(doc, method):
-    # Step 1: Check if the email is received by helpdesk@nexapp.co.in
-    if doc.recipients == "helpdesk@nexapp.co.in" and doc.sent_or_received == "Received" and doc.status == "Open":
-        
+    # Step 1: Check if the email is received by helpdesk@nexapp.co.in OR sent from nms@nexapp.co.in
+    if (
+        (doc.recipients == "helpdesk@nexapp.co.in" or doc.sender == "nms@nexapp.co.in") 
+        and doc.sent_or_received == "Received" 
+        and doc.status == "Open"
+    ):
         # Step 2: Extract Circuit ID from subject or content
         circuit_id = extract_circuit_id(doc.subject) or extract_circuit_id(doc.content)
 
@@ -390,7 +393,7 @@ def create_hd_ticket_from_communication(doc, method):
                     if existing_ticket:
                         return  # Stop if ticket already exists
                     
-                    # Step 5: Create new ticket or reopen closed one
+                    # Step UM-000015: Create new ticket or reopen closed one
                     closed_ticket = frappe.get_all("HD Ticket", filters={
                         "custom_circuit_id": circuit_id,
                         "status": "Closed"
@@ -440,25 +443,170 @@ def create_hd_ticket(circuit_id, status, sender, subject, content):
 
 ############################################################################
 import frappe
+from frappe.utils import get_url
 from frappe.utils.pdf import get_pdf
+import hashlib
 
 @frappe.whitelist()
-def download_document_pdf(name):
-    doc = frappe.get_doc("Document", name)
+def download_subcategory_pdf(subcategory):
+    # Get documents with strict filters
+    docs = frappe.get_all("Document",
+        filters={
+            "sub_category": subcategory,
+            "published": 1
+        },
+        fields=["name", "title", "content", "attach_file"],
+        order_by="creation"
+    )
 
-    # Check if there is an attached image
-    image_html = f'<img src="{doc.attach_file}" style="max-width:100%; height:auto; margin-top:10px;">' if doc.attach_file else ''
+    # Advanced duplicate prevention
+    seen = set()
+    html = """
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        h1 { color: #2d3e50; border-bottom: 2px solid #eee; }
+        .document { margin-bottom: 30px; }
+        img { max-width: 100%%; height: auto; margin: 15px 0; }
+    </style>
+    <h1>%s Documentation</h1>
+    """ % subcategory
 
-    html = f"""
-    <h1>{doc.title}</h1>
-    <p><strong>Category:</strong> {doc.category}</p>
-    <div>{doc.content}</div>
-    {image_html}  <!-- Include image if available -->
-    """
+    for doc in docs:
+        # Create unique hash for content
+        content_hash = hashlib.md5(f"{doc.title}{doc.content}".encode()).hexdigest()
+        if content_hash in seen:
+            continue
+        seen.add(content_hash)
+        
+        image_html = f'<img src="{get_url(doc.attach_file)}">' if doc.attach_file else ''
+        html += f"""
+        <div class="document">
+            <h2>{doc.title}</h2>
+            <div>{doc.content}</div>
+            {image_html}
+        </div>
+        <hr style="margin:20px 0; border-top:1px solid #eee;">
+        """
 
     pdf_data = get_pdf(html)
+    frappe.local.response.filename = f"{subcategory}-documentation.pdf"
+    frappe.local.response.filecontent = pdf_data
+    frappe.local.response.type = "pdf"
 
-    # Set response headers for file download
-    frappe.local.response.filename = f"{doc.title}.pdf"
+######################################################################
+    import frappe
+from frappe.utils import get_url
+from frappe.utils.pdf import get_pdf
+import hashlib
+
+@frappe.whitelist()
+def download_subcategory_pdf(subcategory):
+    docs = frappe.get_all("Document",
+        filters={
+            "sub_category": subcategory,
+            "published": 1
+        },
+        fields=["name", "title", "content", "attach_file"],
+        order_by="creation"
+    )
+
+    seen = set()
+    html = """
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        h1 { color: #2d3e50; border-bottom: 2px solid #eee; }
+        .document { margin-bottom: 30px; }
+        img { max-width: 100%%; height: autoTable of Contents
+Introduction
+1.1 Purpose
+1.2 Intended Audience
+1.3 System Requirements
+1.4 Conventions Used
+
+Getting Started
+2.1 Installation & Setup
+2.2 Logging In
+2.3 User Interface Overview; margin: 15px 0; }
+    </style>
+    <h1>%s Documentation</h1>
+    """ % subcategory
+
+    for doc in docs:
+        content_hash = hashlib.md5(f"{doc.title}{doc.content}".encode()).hexdigest()
+        if content_hash in seen:
+            continue
+        seen.add(content_hash)
+        
+        image_html = f'<img src="{get_url(doc.attach_file)}">' if doc.attach_file else ''
+        html += f"""
+        <div class="document">
+            <h2>{doc.title}</h2>
+            <div>{doc.content}</div>
+            {image_html}
+        </div>
+        <hr style="margin:20px 0; border-top:1px solid #eee;">
+        """
+
+    pdf_data = get_pdf(html)
+    frappe.local.response.filename = f"{subcategory}-documentation.pdf"
+    frappe.local.response.filecontent = pdf_data
+    frappe.local.response.type = "pdf"
+
+@frappe.whitelist()
+def download_full_pdf():
+    docs = frappe.get_all("Document",
+        filters={"published": 1},
+        fields=["name", "title", "content", "attach_file", "category", "sub_category"],
+        order_by="category, sub_category, creation"
+    )
+
+    categories = {}
+    for doc in docs:
+        category = doc.category
+        sub_category = doc.sub_category
+        if category not in categories:
+            categories[category] = {}
+        if sub_category not in categories[category]:
+            categories[category][sub_category] = []
+        categories[category][sub_category].append(doc)
+
+    html = """
+    <style>
+        body { font-family: Arial; margin: 30px; }
+        h1 { color: #2d3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .category { margin: 40px 0; }
+        .subcategory { margin: 30px 0 20px 15px; }
+        .document { margin-bottom: 25px; padding: 20px; background: #f8f9fa; border-radius: 8px; }
+        img { max-width: 100%; height: auto; margin: 15px 0; }
+        h2 { color: #2d3e50; font-size: 1.5em; }
+        h3 { color: #4a5c6b; font-size: 1.3em; margin-bottom: 15px; }
+    </style>
+    <h1>Complete Documentation</h1>
+    """
+
+    seen = set()
+    for category, subcats in categories.items():
+        html += f'<div class="category"><h2>{category}</h2>'
+        for subcat, documents in subcats.items():
+            html += f'<div class="subcategory"><h3>{subcat}</h3>'
+            for doc in documents:
+                content_hash = hashlib.md5(f"{doc.title}{doc.content}".encode()).hexdigest()
+                if content_hash in seen:
+                    continue
+                seen.add(content_hash)
+                
+                image_html = f'<img src="{get_url(doc.attach_file)}">' if doc.attach_file else ''
+                html += f"""
+                <div class="document">
+                    <h4>{doc.title}</h4>
+                    <div>{doc.content}</div>
+                    {image_html}
+                </div>
+                """
+            html += '</div>'
+        html += '</div>'
+
+    pdf_data = get_pdf(html)
+    frappe.local.response.filename = "complete-documentation.pdf"
     frappe.local.response.filecontent = pdf_data
     frappe.local.response.type = "pdf"
