@@ -1,0 +1,71 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"bANZr1KrUt\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Tech Support</span>\",\"col\":12}},{\"id\":\"sRpOMP7nwf\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Open Tickets\",\"col\":3}},{\"id\":\"eCG6GVtlf6\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Resolved Tickets\",\"col\":3}},{\"id\":\"f5X3xwklF9\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Closed Tickets\",\"col\":3}},{\"id\":\"WxzUmIbQxg\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Wrong Tickets\",\"col\":3}},{\"id\":\"dTiHlhD2wr\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"one8P6fWGI\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\" Ticket\",\"col\":3}},{\"id\":\"-fvKAMsm1W\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Site\",\"col\":3}},{\"id\":\"D6VsDeuXkF\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Article\",\"col\":3}}]",
+ "creation": "2025-03-12 17:01:00.561301",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "support",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "Tech Support",
+ "links": [],
+ "modified": "2025-03-12 17:31:29.165267",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Tech Support",
+ "number_cards": [
+  {
+   "label": "Open Tickets",
+   "number_card_name": "Open Tickets"
+  },
+  {
+   "label": "Resolved Tickets",
+   "number_card_name": "Resolved Tickets"
+  },
+  {
+   "label": "Closed Tickets",
+   "number_card_name": "Closed Tickets"
+  },
+  {
+   "label": "Wrong Tickets",
+   "number_card_name": "Wrong Tickets"
+  }
+ ],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 34.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": " Ticket",
+   "link_to": "HD Ticket",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Site",
+   "link_to": "Site",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Article",
+   "link_to": "HD Article",
+   "stats_filter": "[]",
+   "type": "DocType"
+  }
+ ],
+ "title": "Tech Support"
+}
