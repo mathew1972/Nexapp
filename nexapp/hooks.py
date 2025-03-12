@@ -302,7 +302,8 @@ doctype_js = {
     "Sales Order": [
         "public/js/Sales_Order_custom.js",
         "public/js/sales_order_site.js",
-        "public/js/Sales_order_circuit.js"
+        "public/js/Sales_order_circuit.js",
+        "public/js/sales_order_project.js"
     ],
     "Sales Invoice": "public/js/Sales_Invoice_custom.js",
     "Payment Entry": "public/js/Payment_Entry_custom.js",
@@ -348,12 +349,21 @@ doctype_js = {
         "public/js/site_pincode.js",
         "public/js/site_contact.js"
     ],
+    "HD Ticket": [
+        "public/js/hd_ticket_custom.js",
+        "public/js/inhouse_ticket.js",
+        "public/js/sla.js",
+        "public/js/maintenance.js",
+        "public/js/ticket_task.js"        
+    ],
+
     "Project": "public/js/Project_custom_ui.js",
     "CCR": "public/js/ccr_custom.js",
     "LMS": "public/js/lms.js",    
     "Stock Reservation Entry": "public/js/stock_reservation_entry.js",
-    "Product Assigment": "doctype/product_assigment/product_assigment.js",
-    "HD Ticket": "public/js/hd_ticket_custom.js"    
+    "Product Assigment": "doctype/product_assigment/product_assigment.js",   
+    "Task": "public/js/task_to_ticket.js"
+    
 }
 
 
