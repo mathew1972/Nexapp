@@ -368,12 +368,12 @@ import frappe
 import re
 
 def create_hd_ticket_from_communication(doc, method):
-    # Step 1: Check if the email is received by helpdesk@nexapp.co.in (alone or with noreply@nexapp.co.in) OR sent from nms@nexapp.co.in
+    # Step 1: Check if the email is received by helpdesk@nexapp.co.in OR sent from nms@nexapp.co.in
     if (
-        any(email in doc.recipients for email in ["helpdesk@nexapp.co.in", "noreply@nexapp.co.in"])
-        or doc.sender == "nms@nexapp.co.in"
-    ) and doc.sent_or_received == "Received" and doc.status == "Open":
-
+        ("helpdesk@nexapp.co.in" in doc.recipients.split(", ") or doc.sender == "nms@nexapp.co.in") 
+        and doc.sent_or_received == "Received" 
+        and doc.status == "Open"
+    ):
         # Step 2: Extract Circuit ID from subject or content
         circuit_id = extract_circuit_id(doc.subject) or extract_circuit_id(doc.content)
 
@@ -391,15 +391,18 @@ def create_hd_ticket_from_communication(doc, method):
                     })
                     
                     if existing_ticket:
-                        return  # Stop if an active ticket already exists
+                        return  # Stop if ticket already exists
                     
-                    # Step 5: Handle Closed Tickets or Create New Ticket
+                    # Check for closed tickets and reopen if necessary
                     closed_ticket = frappe.get_all("HD Ticket", filters={
                         "custom_circuit_id": circuit_id,
                         "status": "Closed"
                     })
 
-                    create_hd_ticket(circuit_id, "Open", doc.sender, doc.subject, doc.content)
+                    if closed_ticket:
+                        create_hd_ticket(circuit_id, "Open", doc.sender, doc.subject, doc.content)
+                    else:
+                        create_hd_ticket(circuit_id, "Open", doc.sender, doc.subject, doc.content)
                 else:
                     # Invalid stage
                     create_hd_ticket(circuit_id, "Wrong Circuit", doc.sender, doc.subject, doc.content)
@@ -411,14 +414,18 @@ def create_hd_ticket_from_communication(doc, method):
             create_hd_ticket(None, "Wrong Circuit", doc.sender, doc.subject, doc.content)
 
 def extract_circuit_id(text):
-    """Extracts a 5-digit Circuit ID from subject or content, even if embedded in text."""
+    """Extracts a 5-digit Circuit ID even if surrounded by underscores or other characters"""
     if text:
-        match = re.search(r"(?<!\d)(\d{5})(?!\d)", text)  # Matches exactly 5-digit numbers
-        return match.group(1) if match else None
+        match = re.search(r"(?<!\d)\d{5}(?!\d)", text)  # Ensures it's exactly 5 digits, not part of a larger number
+        return match.group(0) if match else None
     return None
 
 def create_hd_ticket(circuit_id, status, sender, subject, content):
-    """Create an HD Ticket with correct channel detection."""
+    """Create HD Ticket with channel detection"""
+    if not sender:
+        return  # Avoid creating tickets without a sender
+
+    # Create new ticket doc
     ticket = frappe.get_doc({
         "doctype": "HD Ticket",
         "subject": subject,
@@ -428,13 +435,12 @@ def create_hd_ticket(circuit_id, status, sender, subject, content):
         "custom_circuit_id": circuit_id
     })
 
-    # Determine the correct channel
-    ticket.custom_channel = "NMS" if "nms@nexapp.co.in" in ticket.raised_by else "Email"
+    # Set channel based on sender email
+    ticket.custom_channel = "NMS" if "nms@nexapp.co.in" in sender else "Email"
 
     # Save the ticket
     ticket.insert(ignore_permissions=True)
     frappe.db.commit()
-
 
 ############################################################################
 import frappe
