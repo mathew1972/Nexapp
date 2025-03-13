@@ -370,7 +370,7 @@ import re
 def create_hd_ticket_from_communication(doc, method):
     # Step 1: Check if the email is received by helpdesk@nexapp.co.in OR sent from nms@nexapp.co.in
     if (
-        ("helpdesk@nexapp.co.in" in doc.recipients or doc.sender == "nms@nexapp.co.in") 
+        (doc.recipients == "helpdesk@nexapp.co.in" or doc.sender == "nms@nexapp.co.in") 
         and doc.sent_or_received == "Received" 
         and doc.status == "Open"
     ):
@@ -393,7 +393,7 @@ def create_hd_ticket_from_communication(doc, method):
                     if existing_ticket:
                         return  # Stop if ticket already exists
                     
-                    # Check for closed tickets and reopen if necessary
+                    # Step UM-000015: Create new ticket or reopen closed one
                     closed_ticket = frappe.get_all("HD Ticket", filters={
                         "custom_circuit_id": circuit_id,
                         "status": "Closed"
@@ -416,15 +416,12 @@ def create_hd_ticket_from_communication(doc, method):
 def extract_circuit_id(text):
     """Extracts a 5-digit Circuit ID even if surrounded by underscores or other characters"""
     if text:
-        match = re.search(r"(?<!\d)\d{5}(?!\d)", text)  # Ensures it's exactly 5 digits, not part of a larger number
+        match = re.search(r"\b\d{5}\b|\d{5}(?=\D)", text)  # Match standalone or before a non-digit
         return match.group(0) if match else None
     return None
 
 def create_hd_ticket(circuit_id, status, sender, subject, content):
     """Create HD Ticket with channel detection"""
-    if not sender:
-        return  # Avoid creating tickets without a sender
-
     # Create new ticket doc
     ticket = frappe.get_doc({
         "doctype": "HD Ticket",
@@ -435,13 +432,14 @@ def create_hd_ticket(circuit_id, status, sender, subject, content):
         "custom_circuit_id": circuit_id
     })
 
-    # Set channel based on sender email
-    ticket.custom_channel = "NMS" if "nms@nexapp.co.in" in sender else "Email"
+    # Set channel exactly like your working sample
+    if not ticket.raised_by:
+        return
+    ticket.custom_channel = "NMS" if "nms@nexapp.co.in" in ticket.raised_by else "Email"
 
     # Save the ticket
     ticket.insert(ignore_permissions=True)
     frappe.db.commit()
-
 ############################################################################
 import frappe
 from frappe.utils import get_url
