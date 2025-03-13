@@ -416,7 +416,7 @@ def create_hd_ticket_from_communication(doc, method):
 def extract_circuit_id(text):
     """Extracts a 5-digit Circuit ID even if surrounded by underscores or other characters"""
     if text:
-        match = re.search(r"\b\d{5}\b|\d{5}(?=\D)", text)  # Match standalone or before a non-digit
+        match = re.search(r"(?<!\d)\d{5}(?!\d)", text)  # Match standalone or before a non-digit
         return match.group(0) if match else None
     return None
 
