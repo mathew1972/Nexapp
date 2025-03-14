@@ -87,3 +87,21 @@ frappe.ui.form.on('HD Ticket', {
     }
 });
 
+frappe.ui.form.on('HD Ticket', {
+    status: function(frm) {
+        if (frm.doc.status == "Closed") {
+            frappe.confirm(
+                'Before closing the ticket, please ensure the client\'s satisfaction and rating have been checked, as this is mandatory.',
+                function() {
+                    // User confirmed, allow status change
+                },
+                function() {
+                    // User canceled, reset status field
+                    frm.set_value('status', '');
+                }
+            );
+        }
+    }
+});
+
+
