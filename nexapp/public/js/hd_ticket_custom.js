@@ -88,20 +88,34 @@ frappe.ui.form.on('HD Ticket', {
 });
 
 frappe.ui.form.on('HD Ticket', {
+    refresh: function(frm) {
+        // Initialize previous status when the form loads
+        frm.prev_status = frm.doc.status;
+    },
     status: function(frm) {
-        if (frm.doc.status == "Closed") {
+        // Check if status is being changed to "Closed"
+        if (frm.doc.status === 'Closed' && frm.prev_status !== 'Closed') {
+            let message;
+            if (frm.doc.custom_channel === 'NMS') {
+                message = __("Before closing the ticket, please ensure that the NMS meets your satisfaction.");
+            } else {
+                message = __("Before closing the ticket, please ensure the client's satisfaction and rating have been checked, as this is mandatory.");
+            }
+            
+            // Show confirmation dialog
             frappe.confirm(
-                'Before closing the ticket, please ensure the client\'s satisfaction and rating have been checked, as this is mandatory.',
-                function() {
-                    // User confirmed, allow status change
+                message,
+                () => {
+                    // User confirmed, update previous status
+                    frm.prev_status = 'Closed';
                 },
-                function() {
-                    // User canceled, reset status field
-                    frm.set_value('status', '');
+                () => {
+                    // User canceled, revert to previous status
+                    frm.set_value('status', frm.prev_status);
                 }
             );
         }
+        // Update previous status after each change
+        frm.prev_status = frm.doc.status;
     }
 });
-
-
