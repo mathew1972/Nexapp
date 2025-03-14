@@ -368,23 +368,30 @@ import frappe
 import re
 
 def create_hd_ticket_from_communication(doc, method):
-    # Step 1: Check if the email is received by helpdesk@nexapp.co.in OR sent from nms@nexapp.co.in
+    # Step 1: Get the dynamically set Helpdesk Email from the 'Helpdesk Email' doctype
+    helpdesk_email = frappe.db.get_value("Helpdesk Email", None, "helpdesk_email_id")
+    
+    # Ensure the helpdesk_email exists
+    if not helpdesk_email:
+        return  # Exit if no Helpdesk Email is configured
+
+    # Step 2: Check if the email is received by the dynamic helpdesk email OR sent from nms@nexapp.co.in
     if (
-        (doc.recipients == "helpdesk@nexapp.co.in" or doc.sender == "nms@nexapp.co.in") 
+        (helpdesk_email in doc.recipients or doc.sender == "nms@nexapp.co.in") 
         and doc.sent_or_received == "Received" 
         and doc.status == "Open"
     ):
-        # Step 2: Extract Circuit ID from subject or content
+        # Step 3: Extract Circuit ID from subject or content
         circuit_id = extract_circuit_id(doc.subject) or extract_circuit_id(doc.content)
 
-        # Step 3: Validate Circuit ID and determine status
+        # Step 4: Validate Circuit ID and determine status
         if circuit_id:
             if len(circuit_id) == 5:
                 # Check if Circuit ID exists in Site doctype with "Delivered and Live" stage
                 site = frappe.get_all("Site", filters={"circuit_id": circuit_id}, fields=["name", "stage"])
                 
                 if site and site[0].get("stage") == "Delivered and Live":
-                    # Step 4: Check for existing open tickets
+                    # Step 5: Check for existing open tickets
                     existing_ticket = frappe.get_all("HD Ticket", filters={
                         "custom_circuit_id": circuit_id,
                         "status": ["in", ["Open", "Replied", "Resolved"]]
@@ -393,16 +400,13 @@ def create_hd_ticket_from_communication(doc, method):
                     if existing_ticket:
                         return  # Stop if ticket already exists
                     
-                    # Step UM-000015: Create new ticket or reopen closed one
+                    # Step 6: Create new ticket or reopen closed one
                     closed_ticket = frappe.get_all("HD Ticket", filters={
                         "custom_circuit_id": circuit_id,
                         "status": "Closed"
                     })
 
-                    if closed_ticket:
-                        create_hd_ticket(circuit_id, "Open", doc.sender, doc.subject, doc.content)
-                    else:
-                        create_hd_ticket(circuit_id, "Open", doc.sender, doc.subject, doc.content)
+                    create_hd_ticket(circuit_id, "Open", doc.sender, doc.subject, doc.content)
                 else:
                     # Invalid stage
                     create_hd_ticket(circuit_id, "Wrong Circuit", doc.sender, doc.subject, doc.content)
@@ -440,6 +444,7 @@ def create_hd_ticket(circuit_id, status, sender, subject, content):
     # Save the ticket
     ticket.insert(ignore_permissions=True)
     frappe.db.commit()
+
 ############################################################################
 import frappe
 from frappe.utils import get_url
@@ -493,3 +498,10 @@ def download_subcategory_pdf(subcategory):
     frappe.local.response.type = "pdf"
 
 ######################################################################
+import frappe
+
+def before_save(doc, method):
+    if doc.status == "Replied":
+        doc.custom_agent_responded_on = frappe.utils.now_datetime()
+######################################################################  
+     

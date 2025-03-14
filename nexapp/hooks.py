@@ -263,6 +263,9 @@ doc_events = {
     },
     "Communication": {
         "after_insert": "nexapp.api.create_hd_ticket_from_communication"
+    },
+    "HD Ticket": {
+        "before_save": "nexapp.api.before_save"
     }
 }
 
