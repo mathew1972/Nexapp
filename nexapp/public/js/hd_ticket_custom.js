@@ -10,7 +10,7 @@ frappe.ui.form.on('HD Ticket', {
             'resolution_time', 'user_resolution_time', 'custom_rca', 'feedback_rating', 'feedback_text', 'feedback', 'feedback_extra', 
             'custom_circuit_id', 'custom_site_type', 'custom_impact', 'custom_ticket_category', 'custom_ticket_sub_category', 'priority', 
             'customer', 'custom_inhouse_escalation', 'status', 'ticket_type', 'raised_by', 'ticket_split_from', 'custom_channel', 
-            'agent_group', 'custom_impact_details', 'custom_warranty_end__date', 'custom_warranty_expiry_date'
+            'agent_group', 'custom_impact_details', 'custom_on_hold_reason'
         ];
        
 
@@ -112,6 +112,7 @@ frappe.ui.form.on('HD Ticket', {
                 () => {
                     // User canceled, revert to previous status
                     frm.set_value('status', frm.prev_status);
+                    frm.refresh();  // <-- Refresh document to get latest data
                 }
             );
         }

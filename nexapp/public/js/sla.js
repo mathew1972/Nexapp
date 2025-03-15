@@ -1,7 +1,18 @@
 frappe.ui.form.on('HD Ticket', {
     status: function(frm) {
+        // Auto-set resolution date when resolved
         if (frm.doc.status === 'Resolved' && !frm.doc.custom_resolution_date_2) {
             frm.set_value('custom_resolution_date_2', frappe.datetime.now_datetime());
+        }
+
+        // Handle hold timing
+        if (frm.doc.status === 'On Hold' && !frm.holdStart) {
+            frm.holdStart = new Date(); // Start tracking hold time
+        } else if (['Open', 'Replied'].includes(frm.doc.status) && frm.holdStart) {
+            // Calculate and accumulate hold duration
+            const holdEnd = new Date();
+            frm.totalHoldDuration = (frm.totalHoldDuration || 0) + (holdEnd - frm.holdStart);
+            frm.holdStart = null;
         }
     },
 
@@ -10,7 +21,11 @@ frappe.ui.form.on('HD Ticket', {
         let l1Completed = false;
         let finalClosedDate = null;
 
-        // Clear any existing interval
+        // Initialize hold tracking
+        frm.totalHoldDuration = frm.totalHoldDuration || 0;
+        frm.holdStart = frm.holdStart || null;
+
+        // Clear existing interval
         if (frm.slaInterval) {
             clearInterval(frm.slaInterval);
             frm.slaInterval = null;
@@ -70,7 +85,6 @@ frappe.ui.form.on('HD Ticket', {
             try {
                 // Handle terminal statuses
                 if (['Wrong Circuit', 'Closed'].includes(frm.doc.status)) {
-                    // Immediately stop all updates
                     if (frm.slaInterval) {
                         clearInterval(frm.slaInterval);
                         frm.slaInterval = null;
@@ -90,7 +104,7 @@ frappe.ui.form.on('HD Ticket', {
                         return;
                     }
 
-                    // Handle Closed status
+                    // Handle Closed
                     if (!finalClosedDate) {
                         finalClosedDate = frm.doc.custom_resolution_date_2 ? 
                             new Date(frm.doc.custom_resolution_date_2) : new Date();
@@ -99,7 +113,7 @@ frappe.ui.form.on('HD Ticket', {
                     const openingDateTime = parseFrappeDateTime(frm.doc.opening_date, frm.doc.opening_time);
                     if (!openingDateTime) return;
 
-                    const elapsedTime = finalClosedDate - openingDateTime;
+                    const elapsedTime = finalClosedDate - openingDateTime - (frm.totalHoldDuration || 0);
                     
                     statusElement.textContent = "⚫ CLOSED";
                     statusElement.style.background = "#6c757d22";
@@ -112,7 +126,7 @@ frappe.ui.form.on('HD Ticket', {
                     const originalHours = PRIORITY_MAP[ticketPriority] || 4;
                     const l1Hours = originalHours < 4 ? originalHours / 2 : 4;
                     const L1_DURATION = l1Hours * 60 * 60 * 1000;
-                    const l1Elapsed = finalClosedDate - openingDateTime;
+                    const l1Elapsed = elapsedTime;
                     const l1Progress = Math.min((l1Elapsed / L1_DURATION) * 100, 100);
 
                     container.find('.l1-progress').css('width', `${l1Progress}%`);
@@ -121,7 +135,47 @@ frappe.ui.form.on('HD Ticket', {
                     return;
                 }
 
-                // Active status handling
+                // Handle On Hold status
+                if (frm.doc.status === 'On Hold') {
+                    container.show();
+                    const statusElement = container.find('.sla-status')[0];
+                    const progressBar = container.find('.progress-bar')[0];
+                    const timerElement = container.find('.timer')[0];
+                    const l1Timeline = container.find('.l1-timeline');
+
+                    const openingDateTime = parseFrappeDateTime(frm.doc.opening_date, frm.doc.opening_time);
+                    const resolutionBy = new Date(frm.doc.resolution_by);
+                    const now = new Date();
+                    
+                    if (!openingDateTime || !resolutionBy) return;
+
+                    // Calculate effective elapsed time (excluding hold duration)
+                    let elapsed = now - openingDateTime - (frm.totalHoldDuration || 0);
+                    if (frm.holdStart) elapsed -= (now - frm.holdStart);
+
+                    const totalExpectedTime = resolutionBy - openingDateTime;
+                    const progress = Math.min((elapsed / totalExpectedTime) * 100, 100);
+
+                    // Update SLA display
+                    statusElement.textContent = "⏸️ ON HOLD";
+                    statusElement.style.background = "#ffc10722";
+                    progressBar.style.width = `${progress}%`;
+                    timerElement.textContent = `Paused: ${formatDuration(elapsed)}`;
+
+                    // Update L1 timeline
+                    const ticketPriority = frm.doc.priority || 'High';
+                    const originalHours = PRIORITY_MAP[ticketPriority] || 4;
+                    const l1Hours = originalHours < 4 ? originalHours / 2 : 4;
+                    const L1_DURATION = l1Hours * 60 * 60 * 1000;
+                    const l1Progress = Math.min((elapsed / L1_DURATION) * 100, 100);
+
+                    container.find('.l1-progress').css('width', `${l1Progress}%`);
+                    container.find('.l1-title').text(`L1 Agent (${l1Hours.toFixed(1)} hours)`);
+                    container.find('.l1-remaining').text("Paused");
+                    return;
+                }
+
+                // Active status handling (Open/Replied)
                 if (!frm.doc.opening_date || !frm.doc.opening_time || !frm.doc.resolution_by) {
                     container.hide();
                     return;
@@ -146,6 +200,9 @@ frappe.ui.form.on('HD Ticket', {
                     return;
                 }
 
+                // Adjust elapsed time for holds
+                let elapsed = now - openingDateTime - (frm.totalHoldDuration || 0);
+                if (frm.holdStart) elapsed -= (now - frm.holdStart);
                 const totalExpectedTime = resolutionBy - openingDateTime;
 
                 if (frm.doc.status === 'Resolved') {
@@ -154,7 +211,7 @@ frappe.ui.form.on('HD Ticket', {
                         return;
                     }
 
-                    const actualResolutionTime = resolutionDate - openingDateTime;
+                    const actualResolutionTime = resolutionDate - openingDateTime - (frm.totalHoldDuration || 0);
                     const isWithinSLA = actualResolutionTime <= totalExpectedTime;
 
                     violationElement.textContent = !isWithinSLA ? 
@@ -166,7 +223,6 @@ frappe.ui.form.on('HD Ticket', {
                     timerElement.textContent = `Resolution Time: ${formatDuration(actualResolutionTime)}`;
 
                 } else {
-                    const elapsed = now - openingDateTime;
                     const progress = Math.min((elapsed / totalExpectedTime) * 100, 100);
                     
                     progressBar.style.display = 'block';
@@ -181,19 +237,19 @@ frappe.ui.form.on('HD Ticket', {
                     } else {
                         statusElement.textContent = "🕒 SLA IN PROGRESS";
                         statusElement.style.background = "#2376f522";
-                        const remaining = resolutionBy - now;
+                        const remaining = resolutionBy - now + (frm.totalHoldDuration || 0);
                         timerElement.textContent = `Remaining: ${formatDuration(remaining)}`;
                         violationElement.textContent = "";
                     }
                 }
 
+                // L1 calculations with hold adjustment
                 if (!l1Completed) {
                     const ticketPriority = frm.doc.priority || 'High';
                     const originalHours = PRIORITY_MAP[ticketPriority] || 4;
                     const l1Hours = originalHours < 4 ? originalHours / 2 : 4;
                     const L1_DURATION = l1Hours * 60 * 60 * 1000;
-                    const currentTime = frm.doc.status === 'Resolved' ? resolutionDate : now;
-                    const l1Elapsed = currentTime - openingDateTime;
+                    const l1Elapsed = elapsed;
                     const l1Progress = Math.min((l1Elapsed / L1_DURATION) * 100, 100);
 
                     container.find('.l1-progress').css('width', `${l1Progress}%`);
@@ -203,7 +259,7 @@ frappe.ui.form.on('HD Ticket', {
                         l1Completed = true;
                         container.find('.l1-remaining').text("Completed");
                     } else {
-                        const remaining = (openingDateTime.getTime() + L1_DURATION) - currentTime;
+                        const remaining = L1_DURATION - l1Elapsed;
                         container.find('.l1-remaining').text(`Remaining: ${formatDuration(remaining)}`);
                     }
                 }
