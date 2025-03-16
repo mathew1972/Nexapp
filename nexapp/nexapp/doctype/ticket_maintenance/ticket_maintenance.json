@@ -3,40 +3,38 @@
  "allow_rename": 1,
  "creation": "2025-02-23 19:47:11.677468",
  "doctype": "DocType",
+ "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "maintenance_date",
+  "work",
+  "status",
   "maintenance_id",
+  "field_mobile",
+  "column_break_uvum",
+  "completed_datetime",
   "service_person",
   "mobile",
   "email",
-  "field_mobile",
-  "column_break_uvum",
-  "status",
-  "completed_datetime",
-  "maintenance_date",
-  "maintenance_time",
-  "engineer_visit_cost",
-  "section_break_lkfo",
-  "description"
+  "item"
  ],
  "fields": [
   {
    "columns": 2,
    "fieldname": "service_person",
    "fieldtype": "Link",
-   "in_standard_filter": 1,
    "label": "Feild Engineer",
    "link_filters": "[[\"Supplier\",\"supplier_group\",\"=\",\"Field Engineer\"]]",
    "options": "Supplier",
-   "reqd": 1
+   "read_only": 1
   },
   {
    "columns": 2,
    "fetch_from": "service_person.email_id",
    "fieldname": "email",
    "fieldtype": "Data",
-   "in_standard_filter": 1,
-   "label": "Email"
+   "label": "Email",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_uvum",
@@ -47,26 +45,15 @@
    "fetch_from": "service_person.mobile_no",
    "fieldname": "mobile",
    "fieldtype": "Data",
-   "in_standard_filter": 1,
    "label": "Mobile ",
-   "reqd": 1
+   "read_only": 1
   },
   {
    "columns": 2,
    "fieldname": "field_mobile",
    "fieldtype": "Data",
-   "in_standard_filter": 1,
-   "label": "Field Mobile"
-  },
-  {
-   "fieldname": "section_break_lkfo",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "description",
-   "fieldtype": "Small Text",
-   "label": "Description",
-   "reqd": 1
+   "label": "Field Mobile",
+   "read_only": 1
   },
   {
    "columns": 2,
@@ -74,45 +61,51 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "\nVisit\nApproval Pending\nApproved\nCompleted\nFully Completed",
-   "reqd": 1
+   "options": "Visit Create\nApproval Pending\nApproved\nJob Completed",
+   "read_only": 1
   },
   {
+   "columns": 2,
    "fieldname": "maintenance_date",
-   "fieldtype": "Date",
-   "label": "Maintenance Date",
-   "reqd": 1
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Maintenance Datetime"
   },
   {
-   "fieldname": "maintenance_time",
-   "fieldtype": "Time",
-   "label": "Maintenance Time",
-   "reqd": 1
-  },
-  {
-   "description": "Cost excludes GST.",
-   "fieldname": "engineer_visit_cost",
-   "fieldtype": "Currency",
-   "label": "Engineer Visit Cost",
-   "reqd": 1
-  },
-  {
+   "columns": 2,
    "fieldname": "maintenance_id",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Maintenance ID",
    "read_only": 1
   },
   {
    "depends_on": "eval:doc.status==\"Completed\" ",
    "fieldname": "completed_datetime",
-   "fieldtype": "Datetime",
-   "label": "Completed Datetime"
+   "fieldtype": "Date",
+   "label": "Completed Datetime",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "work",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Work",
+   "options": "Maintenance\nLine Down"
+  },
+  {
+   "fetch_from": "service_person.image",
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "label": "Item",
+   "options": "Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-03-04 15:46:19.955215",
+ "modified": "2025-03-16 22:37:29.645183",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Ticket Maintenance",

@@ -32,16 +32,12 @@
   "district",
   "state",
   "country",
-  "section_break_swuh",
-  "column_break_pijm",
-  "address_html",
-  "address",
   "site_contact_section",
-  "primary_contact",
-  "contact_html",
+  "contact_person",
+  "primary_contact_mobile",
   "column_break_fvvn",
-  "alternate_contact",
-  "contact_html2",
+  "alternate_contact_person",
+  "alternate_contact_mobile",
   "services_tab",
   "stock_live_update_section",
   "site_item",
@@ -376,23 +372,6 @@
    "label": "LMS Request"
   },
   {
-   "fieldname": "contact_html",
-   "fieldtype": "HTML",
-   "label": "Contact HTML"
-  },
-  {
-   "bold": 1,
-   "fieldname": "alternate_contact",
-   "fieldtype": "Link",
-   "label": "Alternate Contact",
-   "options": "Contact"
-  },
-  {
-   "fieldname": "contact_html2",
-   "fieldtype": "HTML",
-   "label": "Contact HTML2"
-  },
-  {
    "fieldname": "site_contact_section",
    "fieldtype": "Section Break",
    "label": "Site Contact"
@@ -426,13 +405,6 @@
    "fieldname": "lms_section",
    "fieldtype": "Section Break",
    "label": "LMS"
-  },
-  {
-   "bold": 1,
-   "fieldname": "primary_contact",
-   "fieldtype": "Link",
-   "label": "Primary Contact",
-   "options": "Contact"
   },
   {
    "fieldname": "project_request_section",
@@ -604,17 +576,6 @@
    "options": "Product Assigment"
   },
   {
-   "fieldname": "address",
-   "fieldtype": "Link",
-   "label": "Address",
-   "options": "Address"
-  },
-  {
-   "fieldname": "address_html",
-   "fieldtype": "HTML",
-   "label": "Address HTML"
-  },
-  {
    "fieldname": "territory",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -711,13 +672,24 @@
    "label": "Country "
   },
   {
-   "fieldname": "section_break_swuh",
-   "fieldtype": "Section Break",
-   "hidden": 1
+   "fieldname": "contact_person",
+   "fieldtype": "Data",
+   "label": "Contact Person"
   },
   {
-   "fieldname": "column_break_pijm",
-   "fieldtype": "Column Break"
+   "fieldname": "primary_contact_mobile",
+   "fieldtype": "Data",
+   "label": "Primary Contact Mobile"
+  },
+  {
+   "fieldname": "alternate_contact_person",
+   "fieldtype": "Data",
+   "label": "Alternate Contact Person"
+  },
+  {
+   "fieldname": "alternate_contact_mobile",
+   "fieldtype": "Data",
+   "label": "Alternate Contact Mobile"
   }
  ],
  "hide_toolbar": 1,
@@ -789,7 +761,7 @@
    "link_fieldname": "name"
   }
  ],
- "modified": "2025-03-06 10:35:38.329313",
+ "modified": "2025-03-16 21:28:06.170172",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",
