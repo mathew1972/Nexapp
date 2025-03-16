@@ -284,8 +284,7 @@ fixtures = [
     {"dt": "Task Subject"},
     {"dt": 'Task Type'},
     {"dt": "Web Form", "filters": [["module", "=", "Nexapp"]]},   
-    {"dt": "Document"},
-    {"dt": "Page", "filters": [["module", "=", "Nexapp"]]},  
+    {"dt": "Document"},      
     {"dt": "On Hold Reason"},  
     {"dt": "Role"}    
 ]
