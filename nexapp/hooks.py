@@ -355,7 +355,7 @@ doctype_js = {
         "public/js/hd_ticket_custom.js",
         "public/js/inhouse_ticket.js",
         "public/js/sla.js",
-        "public/js/maintenance.js",
+        "public/js/maintenanc.js",
         "public/js/ticket_task.js"        
     ],
 
