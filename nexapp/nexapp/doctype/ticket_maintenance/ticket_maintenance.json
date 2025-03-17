@@ -99,13 +99,14 @@
    "fieldname": "item",
    "fieldtype": "Link",
    "label": "Item",
-   "options": "Item"
+   "options": "Item",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-03-16 22:37:29.645183",
+ "modified": "2025-03-17 22:06:54.321837",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Ticket Maintenance",
