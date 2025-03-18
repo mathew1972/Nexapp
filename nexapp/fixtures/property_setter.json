@@ -4334,5 +4334,21 @@
   "property_type": null,
   "row_name": "opportunity_owner",
   "value": "Sales Person"
+ },
+ {
+  "default_value": null,
+  "doc_type": "HD Ticket",
+  "docstatus": 0,
+  "doctype": "Property Setter",
+  "doctype_or_field": "DocType",
+  "field_name": null,
+  "is_system_generated": 0,
+  "modified": "2025-03-18 23:37:25.304873",
+  "module": "Nexapp",
+  "name": "HD Ticket-main-field_order",
+  "property": "field_order",
+  "property_type": "Data",
+  "row_name": null,
+  "value": "[\"subject_section\", \"custom_circuit_id\", \"customer\", \"custom_site_type\", \"custom_impact\", \"custom_ticket_category\", \"custom_ticket_sub_category\", \"cb00\", \"custom_resolution_update\", \"status\", \"custom_on_hold_reason\", \"ticket_type\", \"raised_by\", \"ticket_split_from\", \"custom_channel\", \"priority\", \"agent_group\", \"custom_section_break_zo617\", \"custom_impact_details\", \"custom_section_break_mvoyc\", \"custom_circuit_idavailable\", \"custom_creatorcrm_status\", \"custom_solution\", \"custom_primary_status\", \"custom_column_break_nysxe\", \"custom_circuit_idavailable_remark\", \"custom_creatorcrm_status_remark\", \"custom_solutionremark\", \"custom_primary_statusremark\", \"custom_column_break_nqihf\", \"custom_secondary_status\", \"custom_vpn_status\", \"custom_monitoring_tool_status\", \"custom_last_sync_details\", \"custom_column_break_okxlo\", \"custom_secondary_statusremarks\", \"custom_vpn_statusremark\", \"custom_monitoring_tool_statusremark\", \"custom_last_sync_details_remark\", \"custom_section_break_hkpeh\", \"custom_primary_status2\", \"custom_secondary_status2\", \"custom_vpn_status2\", \"custom_monitoring_tool_status2\", \"custom_lc_confirmation_name\", \"custom_internet_status\", \"custom_applicationstatus\", \"custom_column_break_svkgx\", \"custom_postchecklist_remark2\", \"custom_secondary_statusremark2\", \"custom_vpn_statusrmark2\", \"custom_monitoring_tool_statusremark2\", \"custom_lc_confirmation_nameremark\", \"custom_internet_statusremark\", \"custom_applicationstatusremark\", \"custom_column_break_gadmi\", \"custom_nmsnagios_screenshot\", \"custom_sdwan_status\", \"custom_is_task_created\", \"custom_antenna_position\", \"custom_all_services_are_working_properly\", \"custom_icmp\", \"custom_autofailover_is_working_or_not\", \"custom_column_break_uoe4r\", \"custom_nmsnagios_screenshotremark\", \"custom_sdwan_statusremark\", \"custom_is_task_createdremark\", \"custom_antenna_positionremark\", \"custom_all_services_are_working_properly_remark\", \"custom_icmpremark\", \"custom_autofailover_is_working_or_not_remark\", \"custom_section_break_giqac\", \"custom_product_information\", \"custom_serial_no\", \"custom_model\", \"custom_column_break_myheo\", \"custom_warranty_expiry_date\", \"additional_info\", \"contact\", \"via_customer_portal\", \"column_break_16\", \"email_account\", \"attachment\", \"content_type\", \"custom_column_break_bthlk\", \"custom_column_break_2g2yh\", \"custom_agent_note\", \"custom_note\", \"sb_details\", \"subject\", \"description\", \"template\", \"sla_tab\", \"service_level_section\", \"sla\", \"response_by\", \"cb\", \"agreement_status\", \"resolution_by\", \"service_level_agreement_creation\", \"on_hold_since\", \"total_hold_time\", \"response_tab\", \"response\", \"first_response_time\", \"first_responded_on\", \"avg_response_time\", \"custom_agent_responded_on\", \"column_break_26\", \"resolution_tab\", \"section_break_19\", \"custom_rca\", \"resolution_details\", \"column_break1\", \"opening_date\", \"opening_time\", \"custom_resolution_date_2\", \"custom_resolution_time_2\", \"resolution_date\", \"resolution_time\", \"user_resolution_time\", \"custom_total_hold_duration\", \"reference_tab\", \"feedback_tab\", \"customer_feedback_section\", \"feedback_rating\", \"feedback_text\", \"feedback\", \"feedback_extra\", \"meta_tab\", \"custom_inhouse_escalation\", \"custom_section_break_jjurk\", \"custom_inhouse_eaclation\", \"custom_mainten\", \"custom_section_break_6jfn7\", \"custom_maintenance_visit\", \"custom_site_information\", \"custom_site_details\"]"
  }
 ]
