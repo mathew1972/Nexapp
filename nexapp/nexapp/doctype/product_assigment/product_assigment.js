@@ -8,8 +8,8 @@ frappe.ui.form.on('Product Assigment', {
             'sim_no_1', 'moble_no_1', 'tariff_plan_1', 'column_break_zwvt',
             'supplier_1', 'data_plan_1', 'actavation_date_1', 'section_break_rzfe',
             'sim_no_2', 'mobile_no_2', 'tariff_plan2', 'column_break_pptl',
-            'supplier_2', 'data_plan_2', 'activation_date_1',
-            'product_assigment_created'
+            'supplier_2', 'data_plan_2', 'activation_date_1', 'sales_order',
+            'product_assigment_created', 'item_group', 'warehouse'
         ];
 
         // Apply custom styles and interactions to each field

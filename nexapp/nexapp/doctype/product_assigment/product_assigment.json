@@ -11,30 +11,35 @@
   "solution",
   "column_break_xhdz",
   "status",
+  "item_group",
   "customer",
-  "section_break_chlm",
+  "router_information_section",
+  "item_code",
   "router_sno",
   "anteena_1",
+  "type_of_transaction",
+  "has_serial_no",
+  "router_stock_balance",
   "column_break_upfn",
+  "item_name",
   "model_no",
   "anteena_2",
-  "primary_sim_section",
-  "sim_no_1",
-  "moble_no_1",
-  "tariff_plan_1",
+  "warehouse",
+  "voucher_type",
+  "sales_order",
+  "sim_information_section",
+  "item_code1",
+  "sim_no",
+  "moble_number",
+  "tariff_plan",
+  "actavation_date",
+  "sim_stock_balance",
   "column_break_zwvt",
-  "supplier_1",
-  "data_plan_1",
-  "actavation_date_1",
-  "section_break_rzfe",
-  "sim_no_2",
-  "mobile_no_2",
-  "tariff_plan2",
-  "column_break_pptl",
-  "supplier_2",
-  "data_plan_2",
-  "activation_date_1",
-  "product_assigment_created"
+  "item_name1",
+  "sim_type",
+  "supplier",
+  "data_plan",
+  "validity"
  ],
  "fields": [
   {
@@ -43,7 +48,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Circuit ID",
-   "options": "Feasibility"
+   "options": "Site"
   },
   {
    "fieldname": "column_break_xhdz",
@@ -59,15 +64,11 @@
    "options": "Customer"
   },
   {
-   "collapsible": 1,
-   "fieldname": "section_break_chlm",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "router_sno",
    "fieldtype": "Link",
    "label": "Router SNo",
    "link_filters": "[[\"Serial No\",\"item_group\",\"=\",\"Router\"]]",
+   "mandatory_depends_on": "eval:doc.item_group==\"Router\" ",
    "options": "Serial No"
   },
   {
@@ -78,6 +79,7 @@
    "fieldname": "model_no",
    "fieldtype": "Link",
    "label": "Model No",
+   "mandatory_depends_on": "eval:doc.item_group==\"Router\" ",
    "options": "Item"
   },
   {
@@ -93,52 +95,11 @@
    "options": "Serial No"
   },
   {
-   "collapsible": 1,
-   "fieldname": "primary_sim_section",
-   "fieldtype": "Section Break",
-   "label": "Primary SIM"
-  },
-  {
    "fieldname": "column_break_zwvt",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "sim_no_1",
-   "fieldtype": "Link",
-   "label": "SIM No 1",
-   "options": "Serial No"
-  },
-  {
-   "fieldname": "moble_no_1",
-   "fieldtype": "Link",
-   "label": "Moble No 1",
-   "options": "Serial No"
-  },
-  {
-   "fieldname": "tariff_plan_1",
-   "fieldtype": "Currency",
-   "label": "Tariff Plan 1"
-  },
-  {
-   "fieldname": "supplier_1",
-   "fieldtype": "Link",
-   "label": "Supplier 1",
-   "options": "Supplier"
-  },
-  {
-   "fieldname": "data_plan_1",
-   "fieldtype": "Link",
-   "label": "Data Plan 1",
-   "options": "Data Plan"
-  },
-  {
-   "fetch_from": "router_sno.custom_activation_date",
-   "fieldname": "actavation_date_1",
-   "fieldtype": "Link",
-   "label": "Activation Date 1",
-   "options": "Serial No"
-  },
-  {
+   "fetch_from": "circuit_id.site_name",
    "fieldname": "site_name",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -146,6 +107,7 @@
    "label": "Site Name"
   },
   {
+   "fetch_from": "circuit_id.solution_code",
    "fieldname": "solution",
    "fieldtype": "Link",
    "in_standard_filter": 1,
@@ -159,62 +121,151 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Status",
-   "options": "Requested\nAssigned\nDelivered"
+   "options": "Requested\nAssigned"
   },
   {
-   "collapsible": 1,
-   "fieldname": "section_break_rzfe",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "sim_no_2",
+   "fieldname": "item_group",
    "fieldtype": "Link",
-   "label": "SIM No 2",
+   "label": "Item Group",
+   "options": "Item Group"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "link_filters": "[[\"Item\",\"item_group\",\"=\",\"Router\"]]",
+   "mandatory_depends_on": "eval:doc.item_group==\"Router\" ",
+   "options": "Item"
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name"
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "mandatory_depends_on": "eval:doc.item_group==\"Router\" ",
+   "options": "Warehouse"
+  },
+  {
+   "default": "1",
+   "fieldname": "has_serial_no",
+   "fieldtype": "Check",
+   "label": " Has Serial No"
+  },
+  {
+   "default": "Outward",
+   "fieldname": "type_of_transaction",
+   "fieldtype": "Select",
+   "label": "Type of Transaction",
+   "mandatory_depends_on": "eval:doc.item_group==\"Router\" ",
+   "options": "\nOutward\nMaintenance\nAsset Repair"
+  },
+  {
+   "fieldname": "voucher_type",
+   "fieldtype": "Select",
+   "label": "Voucher Type",
+   "options": "Sales Order"
+  },
+  {
+   "fetch_from": "circuit_id.sales_order",
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "label": "Sales Order",
+   "mandatory_depends_on": "eval:doc.item_group==\"Router\" ",
+   "options": "Sales Order"
+  },
+  {
+   "fieldname": "sim_type",
+   "fieldtype": "Select",
+   "label": "SIM Type",
+   "options": "\nPrimary\nSecondary"
+  },
+  {
+   "fieldname": "sim_no",
+   "fieldtype": "Link",
+   "label": "SIM No ",
+   "link_filters": "[[\"Serial No\",\"item_group\",\"=\",\"SIMCARD\"]]",
    "options": "Serial No"
   },
   {
-   "fieldname": "mobile_no_2",
-   "fieldtype": "Link",
-   "label": "Mobile No 2",
-   "options": "Serial No"
+   "fetch_from": "sim_no.custom_mobile_no",
+   "fieldname": "moble_number",
+   "fieldtype": "Data",
+   "label": "Moble Number"
   },
   {
-   "fieldname": "tariff_plan2",
+   "fieldname": "tariff_plan",
    "fieldtype": "Currency",
-   "label": "Tariff Plan2"
+   "label": "Tariff Plan"
   },
   {
-   "fieldname": "column_break_pptl",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "supplier_2",
+   "fetch_from": "sim_no.custom_supplier",
+   "fieldname": "supplier",
    "fieldtype": "Link",
-   "label": "Supplier 2",
+   "label": "Supplier",
    "options": "Supplier"
   },
   {
-   "fieldname": "data_plan_2",
+   "fetch_from": "sim_no.custom_activation_date",
+   "fieldname": "actavation_date",
+   "fieldtype": "Date",
+   "label": "Activation Date"
+  },
+  {
+   "fieldname": "item_code1",
    "fieldtype": "Link",
-   "label": "Data Plan 2",
+   "label": "Item Code",
+   "link_filters": "[[\"Item\",\"item_group\",\"=\",\"SIMCARD\"]]",
+   "options": "Item"
+  },
+  {
+   "fieldname": "item_name1",
+   "fieldtype": "Data",
+   "label": "Item Name"
+  },
+  {
+   "fetch_from": "sim_no.custom_data_plan",
+   "fieldname": "data_plan",
+   "fieldtype": "Link",
+   "label": "Data Plan ",
    "options": "Data Plan"
   },
   {
-   "fieldname": "activation_date_1",
-   "fieldtype": "Link",
-   "label": "Activation Date 1",
-   "options": "Serial No"
+   "fetch_from": "sim_no.custom_validity",
+   "fieldname": "validity",
+   "fieldtype": "Int",
+   "label": "Validity"
   },
   {
-   "fieldname": "product_assigment_created",
-   "fieldtype": "Data",
-   "label": "Product Assignment Created"
+   "depends_on": "eval:doc.item_group==\"Router\" ",
+   "fieldname": "router_information_section",
+   "fieldtype": "Section Break",
+   "label": "Router Information"
+  },
+  {
+   "depends_on": "eval:doc.item_group==\"SIMCARD\"",
+   "fieldname": "sim_information_section",
+   "fieldtype": "Section Break",
+   "label": "SIM Information"
+  },
+  {
+   "fieldname": "router_stock_balance",
+   "fieldtype": "Int",
+   "label": "Router Stock Balance"
+  },
+  {
+   "fieldname": "sim_stock_balance",
+   "fieldtype": "Int",
+   "label": "SIM Stock Balance"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-01 22:49:03.627362",
+ "modified": "2025-03-19 02:14:47.621245",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Product Assigment",
