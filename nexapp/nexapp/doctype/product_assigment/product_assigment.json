@@ -13,13 +13,18 @@
   "status",
   "item_group",
   "customer",
-  "router_information_section",
+  "product_nformation_section",
   "item_code",
   "router_sno",
   "anteena_1",
   "type_of_transaction",
   "has_serial_no",
   "router_stock_balance",
+  "sim_no",
+  "moble_number",
+  "tariff_plan",
+  "actavation_date",
+  "sim_stock_balance",
   "column_break_upfn",
   "item_name",
   "model_no",
@@ -27,19 +32,10 @@
   "warehouse",
   "voucher_type",
   "sales_order",
-  "sim_information_section",
-  "item_code1",
-  "sim_no",
-  "moble_number",
-  "tariff_plan",
-  "actavation_date",
-  "sim_stock_balance",
-  "column_break_zwvt",
-  "item_name1",
   "sim_type",
+  "validity",
   "supplier",
-  "data_plan",
-  "validity"
+  "data_plan"
  ],
  "fields": [
   {
@@ -95,10 +91,6 @@
    "options": "Serial No"
   },
   {
-   "fieldname": "column_break_zwvt",
-   "fieldtype": "Column Break"
-  },
-  {
    "fetch_from": "circuit_id.site_name",
    "fieldname": "site_name",
    "fieldtype": "Data",
@@ -138,6 +130,7 @@
    "options": "Item"
   },
   {
+   "fetch_from": "item_code.item_name",
    "fieldname": "item_name",
    "fieldtype": "Data",
    "label": "Item Name"
@@ -215,18 +208,6 @@
    "label": "Activation Date"
   },
   {
-   "fieldname": "item_code1",
-   "fieldtype": "Link",
-   "label": "Item Code",
-   "link_filters": "[[\"Item\",\"item_group\",\"=\",\"SIMCARD\"]]",
-   "options": "Item"
-  },
-  {
-   "fieldname": "item_name1",
-   "fieldtype": "Data",
-   "label": "Item Name"
-  },
-  {
    "fetch_from": "sim_no.custom_data_plan",
    "fieldname": "data_plan",
    "fieldtype": "Link",
@@ -240,18 +221,6 @@
    "label": "Validity"
   },
   {
-   "depends_on": "eval:doc.item_group==\"Router\" ",
-   "fieldname": "router_information_section",
-   "fieldtype": "Section Break",
-   "label": "Router Information"
-  },
-  {
-   "depends_on": "eval:doc.item_group==\"SIMCARD\"",
-   "fieldname": "sim_information_section",
-   "fieldtype": "Section Break",
-   "label": "SIM Information"
-  },
-  {
    "fieldname": "router_stock_balance",
    "fieldtype": "Int",
    "label": "Router Stock Balance"
@@ -260,12 +229,18 @@
    "fieldname": "sim_stock_balance",
    "fieldtype": "Int",
    "label": "SIM Stock Balance"
+  },
+  {
+   "depends_on": "eval:doc.item_group==\"Router\" ",
+   "fieldname": "product_nformation_section",
+   "fieldtype": "Section Break",
+   "label": "Product nformation"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-19 02:14:47.621245",
+ "modified": "2025-03-20 16:49:05.073893",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Product Assigment",

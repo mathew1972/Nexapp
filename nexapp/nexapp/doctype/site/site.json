@@ -42,17 +42,6 @@
   "stock_live_update_section",
   "site_item",
   "request_tab",
-  "project_request_section",
-  "column_break_yehx",
-  "product_assigment",
-  "column_break_luud",
-  "lms_request",
-  "column_break_wpiy",
-  "shipment_request",
-  "column_break_hizp",
-  "provisioning_request",
-  "product_assigment_request_section",
-  "product_request",
   "provisioning_information_section",
   "provisioning_id",
   "column_break_wvja",
@@ -274,10 +263,6 @@
    "options": "LMS Site"
   },
   {
-   "fieldname": "column_break_yehx",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "column_break_frik",
    "fieldtype": "Column Break",
    "label": "Project "
@@ -346,30 +331,9 @@
    "options": "Delivery Note"
   },
   {
-   "fieldname": "provisioning_request",
-   "fieldtype": "Button",
-   "label": "Provisioning Request"
-  },
-  {
-   "fieldname": "shipment_request",
-   "fieldtype": "Button",
-   "label": "Shipment Request"
-  },
-  {
    "fieldname": "site_information_section",
    "fieldtype": "Section Break",
    "label": "Description Information"
-  },
-  {
-   "bold": 1,
-   "fieldname": "product_assigment",
-   "fieldtype": "Button",
-   "label": "Product Request"
-  },
-  {
-   "fieldname": "lms_request",
-   "fieldtype": "Button",
-   "label": "LMS Request"
   },
   {
    "fieldname": "site_contact_section",
@@ -405,11 +369,6 @@
    "fieldname": "lms_section",
    "fieldtype": "Section Break",
    "label": "LMS"
-  },
-  {
-   "fieldname": "project_request_section",
-   "fieldtype": "Section Break",
-   "label": "Project Request"
   },
   {
    "fetch_from": "circuit_id.managed_services",
@@ -501,18 +460,6 @@
    "label": "DC Date"
   },
   {
-   "fieldname": "column_break_luud",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_wpiy",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_hizp",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "column_break_mmql",
    "fieldtype": "Column Break"
   },
@@ -563,17 +510,6 @@
    "fieldname": "provisioning_status",
    "fieldtype": "Data",
    "label": "Provisioning Status"
-  },
-  {
-   "fieldname": "product_assigment_request_section",
-   "fieldtype": "Section Break",
-   "label": "Product Assigment request"
-  },
-  {
-   "fieldname": "product_request",
-   "fieldtype": "Link",
-   "label": "Product request",
-   "options": "Product Assigment"
   },
   {
    "fieldname": "territory",
@@ -761,7 +697,7 @@
    "link_fieldname": "name"
   }
  ],
- "modified": "2025-03-16 21:28:06.170172",
+ "modified": "2025-03-20 15:52:23.972718",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",
