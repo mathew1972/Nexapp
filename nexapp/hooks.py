@@ -273,12 +273,8 @@ fixtures = [
     
     {"dt": "DocType", "filters": [["module", "=", "Nexapp"], ["custom", "=", 1]]},  # Fix: Only custom doctypes
     {"dt": "Custom Field", "filters": [["module", "=", "Nexapp"]]},
-    {"dt": "Property Setter", "filters": [["module", "=", "Nexapp"]]},
-    {"dt": "Website Settings"},
-    {"dt": "Navbar Settings"},
-    {"dt": "Website Theme"},
-    {"dt": "Web Page", "filters": [["module", "=", "Nexapp"]]},            
-    {"dt": "On Hold Reason"}    
+    {"dt": "Property Setter", "filters": [["module", "=", "Nexapp"]]},    
+    {"dt": "Website Theme"}            
 ]
 
 doctype_js = {

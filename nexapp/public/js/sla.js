@@ -7,16 +7,24 @@ frappe.ui.form.on('HD Ticket', {
 
         // Handle hold timing
         if (frm.doc.status === 'On Hold' && !frm.holdStart) {
-            frm.holdStart = new Date(); // Start tracking hold time
+            frm.holdStart = new Date();
         } else if (['Open', 'Replied'].includes(frm.doc.status) && frm.holdStart) {
-            // Calculate and accumulate hold duration
             const holdEnd = new Date();
             frm.totalHoldDuration = (frm.totalHoldDuration || 0) + (holdEnd - frm.holdStart);
             frm.holdStart = null;
         }
     },
 
+    priority: function(frm) {
+        // Refresh SLA when priority changes
+        if (frm.slaInterval) clearInterval(frm.slaInterval);
+        frm.script_manager.trigger('refresh');
+    },
+
     refresh: function(frm) {
+        // Hide SLA for new/unsaved tickets
+        if (frm.is_new()) return;
+
         const container = frm.fields_dict.custom_resolution_update.$wrapper;
         let l1Completed = false;
         let finalClosedDate = null;
@@ -34,8 +42,8 @@ frappe.ui.form.on('HD Ticket', {
         const PRIORITY_MAP = {
             'Urgent': 2,
             'High': 4,
-            'Medium': 8,
-            'Low': 24
+            'Medium': 24,
+            'Low': 72
         };
 
         function initializeDisplay() {
@@ -85,11 +93,8 @@ frappe.ui.form.on('HD Ticket', {
             try {
                 // Handle terminal statuses
                 if (['Wrong Circuit', 'Closed'].includes(frm.doc.status)) {
-                    if (frm.slaInterval) {
-                        clearInterval(frm.slaInterval);
-                        frm.slaInterval = null;
-                    }
-
+                    if (frm.slaInterval) clearInterval(frm.slaInterval);
+                    
                     const statusElement = container.find('.sla-status')[0];
                     const progressBar = container.find('.progress-bar')[0];
                     const timerElement = container.find('.timer')[0];
@@ -149,20 +154,17 @@ frappe.ui.form.on('HD Ticket', {
                     
                     if (!openingDateTime || !resolutionBy) return;
 
-                    // Calculate effective elapsed time (excluding hold duration)
                     let elapsed = now - openingDateTime - (frm.totalHoldDuration || 0);
                     if (frm.holdStart) elapsed -= (now - frm.holdStart);
 
                     const totalExpectedTime = resolutionBy - openingDateTime;
                     const progress = Math.min((elapsed / totalExpectedTime) * 100, 100);
 
-                    // Update SLA display
                     statusElement.textContent = "⏸️ ON HOLD";
                     statusElement.style.background = "#ffc10722";
                     progressBar.style.width = `${progress}%`;
                     timerElement.textContent = `Paused: ${formatDuration(elapsed)}`;
 
-                    // Update L1 timeline
                     const ticketPriority = frm.doc.priority || 'High';
                     const originalHours = PRIORITY_MAP[ticketPriority] || 4;
                     const l1Hours = originalHours < 4 ? originalHours / 2 : 4;
@@ -175,7 +177,7 @@ frappe.ui.form.on('HD Ticket', {
                     return;
                 }
 
-                // Active status handling (Open/Replied)
+                // Active status handling
                 if (!frm.doc.opening_date || !frm.doc.opening_time || !frm.doc.resolution_by) {
                     container.hide();
                     return;
@@ -200,7 +202,6 @@ frappe.ui.form.on('HD Ticket', {
                     return;
                 }
 
-                // Adjust elapsed time for holds
                 let elapsed = now - openingDateTime - (frm.totalHoldDuration || 0);
                 if (frm.holdStart) elapsed -= (now - frm.holdStart);
                 const totalExpectedTime = resolutionBy - openingDateTime;
@@ -243,7 +244,7 @@ frappe.ui.form.on('HD Ticket', {
                     }
                 }
 
-                // L1 calculations with hold adjustment
+                // L1 calculations
                 if (!l1Completed) {
                     const ticketPriority = frm.doc.priority || 'High';
                     const originalHours = PRIORITY_MAP[ticketPriority] || 4;
@@ -270,15 +271,21 @@ frappe.ui.form.on('HD Ticket', {
             }
         }
 
-        // Initialize and start updates
         initializeDisplay();
         calculateSLA();
         frm.slaInterval = setInterval(calculateSLA, 1000);
-        frm.script_manager.cleanup.push(() => {
+
+        // Proper cleanup handler
+        frm.script_manager.on('cleanup', () => {
             if (frm.slaInterval) {
                 clearInterval(frm.slaInterval);
                 frm.slaInterval = null;
             }
         });
+    },
+
+    after_save: function(frm) {
+        // Show SLA after saving
+        frm.script_manager.trigger('refresh');
     }
 });
