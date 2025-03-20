@@ -10,7 +10,6 @@ frappe.ui.form.on('Lead', {
             'custom_secondary_email', 'custom_description', 'qualification_status', 'qualified_by',
             'qualified_on', 'campaign_name', 'company', 'language', 'custom_pin_code', 'custom_district',
             'custom_linkedin_possible_profile__', 'custom_interested_for__', 'custom_street__'
-            
         ];
 
         fields.forEach(function(field) {
@@ -74,6 +73,7 @@ frappe.ui.form.on('Lead', {
             }
         });
 
+        // Add input field icons styling
         let style = `
             .input-icon-right-wrapper {
                 position: relative;
@@ -102,20 +102,7 @@ frappe.ui.form.on('Lead', {
         styleSheet.innerText = style;
         document.head.appendChild(styleSheet);
 
-        frm.fields_dict['lead_owner'].df.options = function() {
-            return frappe.db.get_list('User', {
-                fields: ['name'],
-                order_by: 'name asc',
-            }).then(function(users) {
-                let options = users.map(user => ({
-                    label: user.name,
-                    value: user.name
-                }));
-                return options;
-            });
-        };
-        frm.refresh_field('lead_owner');
-
+        // Add icons to specific fields
         setTimeout(function() {
             const iconFields = [
                 { field: 'lead_owner', icon: 'fa-user-circle' },
@@ -128,17 +115,18 @@ frappe.ui.form.on('Lead', {
             ];
 
             iconFields.forEach(({ field, icon }) => {
-                const fieldWrapper = frm.fields_dict[field].wrapper;
-                const inputField = $(fieldWrapper).find('input');
+                if (frm.fields_dict[field]) {
+                    const fieldWrapper = frm.fields_dict[field].wrapper;
+                    const inputField = $(fieldWrapper).find('input');
 
-                inputField.wrap('<div class="input-icon-right-wrapper"></div>');
-                inputField.after(`
-                    <span class="input-icon-right">
-                        <i class="fa ${icon}" aria-hidden="true"></i>
-                    </span>
-                `);
+                    inputField.wrap('<div class="input-icon-right-wrapper"></div>');
+                    inputField.after(`
+                        <span class="input-icon-right">
+                            <i class="fa ${icon}" aria-hidden="true"></i>
+                        </span>
+                    `);
+                }
             });
         }, 500);
     }
-})
-
+});

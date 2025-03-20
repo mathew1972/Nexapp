@@ -1,50 +1,58 @@
-function debounce(fn, delay) {
-    let timer;
-    return function (...args) {
-        clearTimeout(timer);
-        timer = setTimeout(() => fn.apply(this, args), delay);
-    };
-}
-
 frappe.ui.form.on('Lead', {
     refresh: function(frm) {
-        // Attach a debounced event handler to the custom_pin_code field when the form loads
-        $(frm.fields_dict.custom_pin_code.input).on('input', debounce(function() {
-            const pincode = frm.doc.custom_pin_code.replace(/\D/g, ''); // Remove non-digit characters
+        const fields = [
+            'naming_series', 'salutation', 'first_name', 'middle_name', 'last_name',
+            'lead_name', 'job_title', 'gender', 'source', 'lead_owner', 'status',
+            'customer', 'type', 'request_type', 'email_id', 'website', 
+            'mobile_no', 'whatsapp_no', 'phone', 'phone_ext', 'company_name',
+            'no_of_employees', 'annual_revenue', 'industry', 'market_segment',
+            'territory', 'country', 'city', 'fax', 'state', 'contact_html', 'custom_description_',
+            'custom_secondary_email', 'custom_description', 'qualification_status', 'qualified_by',
+            'qualified_on', 'campaign_name', 'company', 'language', 'custom_pin_code', 'custom_district',
+            'custom_linkedin_possible_profile__', 'custom_interested_for__', 'custom_street__'
+        ];
 
-            if (pincode.length === 6) { // Ensure the pincode is 6 digits for India
-                frappe.show_alert({message: "Fetching location details...", indicator: "blue"});
+        fields.forEach(function(field) {
+            if (frm.fields_dict[field]) {
+                const fieldElement = $(frm.fields_dict[field].wrapper).find('input, textarea, select');
 
-                // Make the external API call
-                fetch("https://api.postalpincode.in/pincode/" + pincode)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data && data[0].Status === "Success" && data[0].PostOffice.length > 0) {
-                            const postOffice = data[0].PostOffice[0]; // Get the first Post Office entry
-
-                            frm.set_value("custom_district", postOffice.District || "");
-                            frm.set_value("country", postOffice.Country || "India");
-                            frm.set_value("city", postOffice.Block || "");
-                            frm.set_value("state", postOffice.State || "");
-                        } else {
-                            frappe.msgprint("Pincode not found or invalid.");
-                        }
-                    })
-                    .catch(error => {
-                        console.error("API Error:", error);
-                        frappe.msgprint("Error fetching data from API.");
+                if (frm.fields_dict[field].df.reqd) {
+                    fieldElement.css({
+                        'border': '1px solid #ccc',
+                        'border-left': '4px solid red',
+                        'border-radius': '7px',
+                        'padding': '5px',
+                        'outline': 'none',
+                        'background-color': '#ffffff',
+                        'transition': '0.3s ease-in-out'
                     });
-            } else if (pincode.length === 0) { // If pincode is cleared, reset the fields
-                frm.set_value("custom_district", "");
-                frm.set_value("country", "");
-                frm.set_value("city", "");
-                frm.set_value("state", "");
-            } else if (pincode.length < 6) {
-                frappe.show_alert({
-                    message: "Please enter a valid 6-digit pincode.",
-                    indicator: "red"
-                }, 5); // Display alert for 5 seconds
+                } else {
+                    fieldElement.css({
+                        'border': '1px solid #ccc',
+                        'border-radius': '7px',
+                        'padding': '5px',
+                        'outline': 'none',
+                        'background-color': '#ffffff',
+                        'transition': '0.3s ease-in-out'
+                    });
+                }
+
+                fieldElement.on('focus', function() {
+                    $(this).css({
+                        'border': '1px solid #80bdff',
+                        'box-shadow': '0 0 8px 0 rgba(0, 123, 255, 0.5)',
+                        'background-color': '#ffffff'
+                    });
+                });
+
+                fieldElement.on('blur', function() {
+                    $(this).css({
+                        'border': '1px solid #ccc',
+                        'box-shadow': 'none',
+                        'background-color': '#ffffff'
+                    });
+                });
             }
-        }, 500)); // 500 ms debounce
+        });
     }
 });

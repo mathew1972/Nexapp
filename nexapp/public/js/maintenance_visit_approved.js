@@ -28,7 +28,12 @@ frappe.ui.form.on('Maintenance Visit', {
                             if (hd_ticket.custom_maintenance_visit) {
                                 hd_ticket.custom_maintenance_visit.forEach(row => {
                                     if (row.maintenance_id === frm.doc.name) {
-                                        row.status = 'Approved';  // Update status
+                                        // **Update status and additional fields**
+                                        row.status = 'Approved';
+                                        row.service_person = frm.doc.custom_engineer;
+                                        row.engineer_mobile = frm.doc.custom_engineer_mobile;
+                                        row.field_engineer_mobile = frm.doc.custom_field_engineer_mobile;
+                                        
                                         updated = true;
                                     }
                                 });
@@ -41,11 +46,11 @@ frappe.ui.form.on('Maintenance Visit', {
                                         },
                                         callback: function() {
                                             frappe.show_alert({
-                                                message: 'Status updated in HD Ticket',
+                                                message: 'HD Ticket updated successfully!',
                                                 indicator: 'green'
                                             });
 
-                                            // **🔹 Ensure the HD Ticket Form Refreshes**
+                                            // **Refresh HD Ticket Form**
                                             frappe.model.clear_doc('HD Ticket', hd_ticket_name);
                                             frappe.model.with_doc('HD Ticket', hd_ticket_name, function() {
                                                 frappe.ui.form.get_open_form('HD Ticket', hd_ticket_name, function(ticket_form) {

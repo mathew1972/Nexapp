@@ -78,71 +78,14 @@ frappe.ui.form.on('Opportunity', {
             }
         });
 
-        let style = `
-            .input-icon-right-wrapper {
-                position: relative;
-                display: inline-block;
-                width: 100%;
-            }
-            .input-icon-right-wrapper input {
-                padding-right: 40px;
-                width: 100%;
-                box-sizing: border-box;
-            }
-            .input-icon-right {
-                position: absolute;
-                right: 4px;
-                top: 50%;
-                transform: translateY(-50%);
-                color: #888;
-                pointer-events: none;
-            }
-            .input-icon-right i {
-                font-size: 18px;
-            }
-        `;
-        let styleSheet = document.createElement("style");
-        styleSheet.type = "text/css";
-        styleSheet.innerText = style;
-        document.head.appendChild(styleSheet);
-
-        // Set query for opportunity_owner to dynamically load user list
         frm.set_query('opportunity_owner', function() {
             return {
                 query: 'frappe.core.doctype.user.user.user_query',
                 filters: { 'enabled': 1 }
             };
         });
-
-        setTimeout(function() {
-            const iconFields = [
-                { field: 'opportunity_owner', icon: 'fa-user-circle' },
-                { field: 'industry', icon: 'fa-industry' },
-                { field: 'opportunity_amount', icon: 'fa-money' },
-                { field: 'annual_revenue', icon: 'fa-money' },
-                { field: 'expected_closing', icon: 'fa-calendar' },
-                { field: 'sales_stage', icon: 'fa-hourglass-start' },
-                { field: 'country', icon: 'fa-globe' },
-                { field: 'phone', icon: 'fa-phone' },
-                { field: 'contact_mobile', icon: 'fa-mobile' },
-                { field: 'market_segment', icon: 'fa-thumb-tack' },
-                { field: 'contact_email', icon: 'fa-envelope-o' } // Added contact_email field
-            ];
-
-            iconFields.forEach(({ field, icon }) => {
-                const fieldWrapper = frm.fields_dict[field].wrapper;
-                const inputField = $(fieldWrapper).find('input');
-
-                inputField.wrap('<div class="input-icon-right-wrapper"></div>');
-                inputField.after(`
-                    <span class="input-icon-right">
-                        <i class="fa ${icon}" aria-hidden="true"></i>
-                    </span>
-                `);
-            });
-        }, 500);
     }
-})
+});
 
 frappe.ui.form.on('Opportunity', {
     opportunity_amount: function(frm) {
@@ -155,10 +98,8 @@ frappe.ui.form.on('Opportunity', {
 
 function calculate_expected_revenue(frm) {
     if (frm.doc.opportunity_amount && frm.doc.probability) {
-        // Calculate custom expected revenue
         frm.set_value('custom_expected_revenue__', frm.doc.opportunity_amount * (frm.doc.probability / 100));
     } else {
-        // Set to zero if fields are empty
         frm.set_value('custom_expected_revenue__', 0);
     }
 }
@@ -173,20 +114,17 @@ function debounce(fn, delay) {
 
 frappe.ui.form.on('Opportunity', {
     refresh: function(frm) {
-        // Attach a debounced event handler to the custom_pin_code field when the form loads
         $(frm.fields_dict.custom_pin_code.input).on('input', debounce(function() {
-            const pincode = frm.doc.custom_pin_code.replace(/\D/g, ''); // Remove non-digit characters
+            const pincode = frm.doc.custom_pin_code.replace(/\D/g, '');
 
-            if (pincode.length === 6) { // Ensure the pincode is 6 digits for India
+            if (pincode.length === 6) {
                 frappe.show_alert({message: "Fetching location details...", indicator: "blue"});
 
-                // Make the external API call
                 fetch("https://api.postalpincode.in/pincode/" + pincode)
                     .then(response => response.json())
                     .then(data => {
                         if (data && data[0].Status === "Success" && data[0].PostOffice.length > 0) {
-                            const postOffice = data[0].PostOffice[0]; // Get the first Post Office entry
-
+                            const postOffice = data[0].PostOffice[0];
                             frm.set_value("custom_district", postOffice.District || "");
                             frm.set_value("country", postOffice.Country || "India");
                             frm.set_value("city", postOffice.Block || "");
@@ -199,7 +137,7 @@ frappe.ui.form.on('Opportunity', {
                         console.error("API Error:", error);
                         frappe.msgprint("Error fetching data from API.");
                     });
-            } else if (pincode.length === 0) { // If pincode is cleared, reset the fields
+            } else if (pincode.length === 0) {
                 frm.set_value("custom_district", "");
                 frm.set_value("country", "");
                 frm.set_value("city", "");
@@ -208,9 +146,9 @@ frappe.ui.form.on('Opportunity', {
                 frappe.show_alert({
                     message: "Please enter a valid 6-digit pincode.",
                     indicator: "red"
-                }, 5); // Display alert for 5 seconds
+                }, 5);
             }
-        }, 500)); // 500 ms debounce
+        }, 500));
     }
 });
 
