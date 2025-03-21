@@ -1,21 +1,27 @@
 frappe.ui.form.on('Lead', {
     refresh: function(frm) {
         const fields = [
-            'naming_series', 'salutation', 'first_name', 'middle_name', 'last_name',
-            'lead_name', 'job_title', 'gender', 'source', 'lead_owner', 'status',
-            'customer', 'type', 'request_type', 'email_id', 'website', 
-            'mobile_no', 'whatsapp_no', 'phone', 'phone_ext', 'company_name',
-            'no_of_employees', 'annual_revenue', 'industry', 'market_segment',
-            'territory', 'country', 'city', 'fax', 'state', 'contact_html', 'custom_description_',
-            'custom_secondary_email', 'custom_description', 'qualification_status', 'qualified_by',
-            'qualified_on', 'campaign_name', 'company', 'language', 'custom_pin_code', 'custom_district',
-            'custom_linkedin_possible_profile__', 'custom_interested_for__', 'custom_street__'
+            'lead_owner', 'first_name', 'job_title', 'type', 'request_type', 'campaign_name',
+            'status', 'last_name', 'qualified_by', 'qualified_on', 'qualification_status', 'custom_linkedin_possible_profile__',
+            'company_name', 'no_of_employees', 'annual_revenue', 'market_segment',
+            'source', 'industry', 'territory', 'customer',
+            'email_id', 'mobile_no', 'website',
+            'whatsapp_no', 'phone', 'phone_ext',
+            'custom_street__', 'city', 'state',
+            'custom_pin_code', 'custom_district', 'country',
+            'address_html', 'contact_html',
+            'custom_description', 'company', 'language',
+            'title', 'disabled', 'unsubscribed', 'blog_subscriber',
+            'lead_name', 'salutation', 'gender', 'naming_series',
+            'middle_name', 'fax', 'open_activities_html',
+            'all_activities_html', 'notes_html', 'notes'
         ];
 
         fields.forEach(function(field) {
             if (frm.fields_dict[field]) {
                 const fieldElement = $(frm.fields_dict[field].wrapper).find('input, textarea, select');
 
+                // Apply styles based on whether the field is required
                 if (frm.fields_dict[field].df.reqd) {
                     fieldElement.css({
                         'border': '1px solid #ccc',
@@ -37,6 +43,7 @@ frappe.ui.form.on('Lead', {
                     });
                 }
 
+                // Apply focus and blur effects
                 fieldElement.on('focus', function() {
                     if (frm.fields_dict[field].df.reqd) {
                         $(this).css({
@@ -73,60 +80,47 @@ frappe.ui.form.on('Lead', {
             }
         });
 
-        // Add input field icons styling
-        let style = `
-            .input-icon-right-wrapper {
-                position: relative;
-                display: inline-block;
-                width: 100%;
-            }
-            .input-icon-right-wrapper input {
-                padding-right: 40px;
-                width: 100%;
-                box-sizing: border-box;
-            }
-            .input-icon-right {
-                position: absolute;
-                right: 4px;
-                top: 50%;
-                transform: translateY(-50%);
-                color: #888;
-                pointer-events: none;
-            }
-            .input-icon-right i {
-                font-size: 18px;
-            }
-        `;
-        let styleSheet = document.createElement("style");
-        styleSheet.type = "text/css";
-        styleSheet.innerText = style;
-        document.head.appendChild(styleSheet);
+        // Fetch location details based on Pincode
+        const pincodeField = frm.fields_dict.custom_pin_code
+            ? $(frm.fields_dict.custom_pin_code.wrapper).find('input')
+            : null;
 
-        // Add icons to specific fields
-        setTimeout(function() {
-            const iconFields = [
-                { field: 'lead_owner', icon: 'fa-user-circle' },
-                { field: 'company_name', icon: 'fa-building' },
-                { field: 'phone', icon: 'fa-phone' },
-                { field: 'industry', icon: 'fa-industry' },
-                { field: 'email_id', icon: 'fa-envelope-o' },
-                { field: 'mobile_no', icon: 'fa-mobile' },
-                { field: 'country', icon: 'fa-globe' }
-            ];
+        if (pincodeField) {
+            pincodeField.on('input', frappe.utils.debounce(function() {
+                const pincode = frm.doc.custom_pin_code.replace(/\D/g, '');
 
-            iconFields.forEach(({ field, icon }) => {
-                if (frm.fields_dict[field]) {
-                    const fieldWrapper = frm.fields_dict[field].wrapper;
-                    const inputField = $(fieldWrapper).find('input');
+                if (pincode.length === 6) {
+                    frappe.show_alert({ message: "Fetching location details...", indicator: "blue" });
 
-                    inputField.wrap('<div class="input-icon-right-wrapper"></div>');
-                    inputField.after(`
-                        <span class="input-icon-right">
-                            <i class="fa ${icon}" aria-hidden="true"></i>
-                        </span>
-                    `);
+                    fetch("https://api.postalpincode.in/pincode/" + pincode)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data && data[0].Status === "Success" && data[0].PostOffice.length > 0) {
+                                const postOffice = data[0].PostOffice[0];
+                                frm.set_value("custom_district", postOffice.District || "");
+                                frm.set_value("country", postOffice.Country || "India");
+                                frm.set_value("city", postOffice.Block || "");
+                                frm.set_value("state", postOffice.State || "");
+                            } else {
+                                frappe.msgprint("Pincode not found or invalid.");
+                            }
+                        })
+                        .catch(error => {
+                            console.error("API Error:", error);
+                            frappe.msgprint("Error fetching data from API.");
+                        });
+                } else if (pincode.length === 0) {
+                    frm.set_value("custom_district", "");
+                    frm.set_value("country", "");
+                    frm.set_value("city", "");
+                    frm.set_value("state", "");
+                } else if (pincode.length < 6) {
+                    frappe.show_alert({
+                        message: "Please enter a valid 6-digit pincode.",
+                        indicator: "red"
+                    }, 5);
                 }
-            });
-        }, 500);
+            }, 500));
+        }
     }
 });
