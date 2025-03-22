@@ -13,6 +13,7 @@
   "site_information_section",
   "column_break_vfai",
   "customer",
+  "organization",
   "site_name",
   "customer_request",
   "feasibility_completed_date",
@@ -87,14 +88,14 @@
    "fieldname": "primary_data_plan",
    "fieldtype": "Link",
    "label": "Primary Data Plan",
-   "link_filters": "[]",
+   "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"Solution\"]]",
    "options": "Item"
   },
   {
    "fieldname": "secondary_data_plan",
    "fieldtype": "Link",
    "label": "Secondary Data Plan",
-   "link_filters": "[]",
+   "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"Solution\"]]",
    "options": "Item"
   },
   {
@@ -351,6 +352,7 @@
    "fieldname": "solution_code",
    "fieldtype": "Link",
    "label": "Solution Code",
+   "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"Solution\"]]",
    "options": "Item",
    "reqd": 1
   },
@@ -460,14 +462,21 @@
    "fieldname": "city",
    "fieldtype": "Data",
    "label": "City"
+  },
+  {
+   "fieldname": "organization",
+   "fieldtype": "Link",
+   "label": "Organization",
+   "options": "Prospect"
   }
  ],
+ "grid_page_length": 50,
  "icon": "fa fa-file-text",
  "index_web_pages_for_search": 1,
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2025-03-01 12:19:47.922338",
+ "modified": "2025-03-22 16:21:21.765346",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",

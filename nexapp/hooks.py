@@ -283,8 +283,8 @@ doctype_js = {
         "public/js/ticket_product.js"
     ],
     "Lead": [
-        "public/js/lead_pincode.js",
-        "public/js/lead_custom.js"
+        #   "public/js/lead_pincode.js",
+        #"public/js/lead_custom.js"
     ],    
     "Opportunity": "public/js/Deal_custom.js",
     "Customer": "public/js/Customer_custom.js",
