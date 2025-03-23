@@ -295,8 +295,7 @@
   },
   {
    "fieldname": "stock_live_update_section",
-   "fieldtype": "Section Break",
-   "label": "Sales Order booked Item"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "services_tab",
@@ -697,7 +696,7 @@
    "link_fieldname": "name"
   }
  ],
- "modified": "2025-03-20 15:52:23.972718",
+ "modified": "2025-03-23 02:41:44.451835",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

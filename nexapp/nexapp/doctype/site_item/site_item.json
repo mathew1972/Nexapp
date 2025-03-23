@@ -10,24 +10,23 @@
   "column_break_enhu",
   "item_code",
   "item_name",
-  "product_request",
-  "status",
-  "stock_reserved",
   "qty",
-  "product_assigment_id",
-  "item_group",
+  "stock_balance",
+  "stock_reserved",
+  "status",
+  "delivery_note_id",
   "column_break_qkfm",
   "warehouse",
-  "stock_balance",
   "solution",
   "solution_name",
-  "description"
+  "stock_management_id"
  ],
  "fields": [
   {
    "columns": 1,
    "fieldname": "qty",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "Qty"
   },
   {
@@ -39,8 +38,10 @@
    "options": "Item"
   },
   {
+   "columns": 1,
    "fieldname": "stock_reserved",
    "fieldtype": "Int",
+   "in_list_view": 1,
    "label": "Stock Reserved",
    "precision": "0"
   },
@@ -64,12 +65,12 @@
    "fieldtype": "Column Break"
   },
   {
-   "columns": 2,
+   "columns": 3,
    "fetch_from": "item_code.item_name",
    "fieldname": "item_name",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Product"
+   "label": "Item Name"
   },
   {
    "fieldname": "column_break_qkfm",
@@ -78,12 +79,6 @@
   {
    "fieldname": "stock_live_update_section",
    "fieldtype": "Section Break"
-  },
-  {
-   "fetch_from": "warehouse.is_group",
-   "fieldname": "description",
-   "fieldtype": "Text",
-   "label": "Description"
   },
   {
    "fieldname": "solution",
@@ -99,37 +94,30 @@
    "label": "Solution Name"
   },
   {
-   "default": "Pending",
+   "columns": 2,
+   "default": "Open",
    "fieldname": "status",
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "Pending\nRequested\nDelivered"
+   "options": "Open\nStock Requested\nStock Reserve Requested\nStock Reserved\nStock Unreserv Requested\nStock Unreserved\nDelivery Requested\nStock Delivered\nCancel Requested\nCancelled"
   },
   {
-   "default": "0",
-   "fieldname": "product_request",
-   "fieldtype": "Check",
-   "in_list_view": 1,
-   "label": "Request"
-  },
-  {
-   "fieldname": "product_assigment_id",
+   "fieldname": "delivery_note_id",
    "fieldtype": "Data",
-   "label": "Product Assigment ID"
+   "label": "Delivery Note ID"
   },
   {
-   "fetch_from": "item_code.item_group",
-   "fieldname": "item_group",
+   "fieldname": "stock_management_id",
    "fieldtype": "Data",
-   "label": "Item Group"
+   "label": "Stock Management ID"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-03-20 16:41:09.796543",
+ "modified": "2025-03-23 22:15:34.818662",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site Item",

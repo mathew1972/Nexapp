@@ -1,0 +1,105 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "SM-.######",
+ "creation": "2025-03-22 23:03:06.707832",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "circuit_id",
+  "customer_name",
+  "solution",
+  "column_break_vsww",
+  "status",
+  "site_name",
+  "site_address",
+  "section_break_unap",
+  "stock_management_item"
+ ],
+ "fields": [
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Circuit ID",
+   "options": "Site"
+  },
+  {
+   "fetch_from": "circuit_id.solution_name",
+   "fieldname": "solution",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Solution"
+  },
+  {
+   "fetch_from": "circuit_id.site_name",
+   "fieldname": "site_name",
+   "fieldtype": "Data",
+   "label": "Site Name"
+  },
+  {
+   "fetch_from": "circuit_id.customer",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer Name"
+  },
+  {
+   "fieldname": "column_break_vsww",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "circuit_id.address_street",
+   "fieldname": "site_address",
+   "fieldtype": "Small Text",
+   "label": "Site Address"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Stock Requested\nStock Reserve Request\nStock Reserved\nStock Delivery Requested\nStock Delivered\nStock Unreserve Requested\nStock Unreserved\nCancel Requested\nCancelled"
+  },
+  {
+   "fieldname": "section_break_unap",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "stock_management_item",
+   "fieldtype": "Table",
+   "label": "Stock Management Item",
+   "options": "Stock Management Item"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-03-23 14:08:20.740509",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Stock Management",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

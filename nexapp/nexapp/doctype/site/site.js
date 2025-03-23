@@ -146,5 +146,93 @@
                 });
             }
         });
+
+
+        frappe.ui.form.on('Site', {
+            refresh: function(frm) {
+                if (!frm.is_new()) {
+                    // Remove existing button if any
+                    if (frm.custom_buttons && frm.custom_buttons['Stock Management']) {
+                        frm.custom_buttons['Stock Management'].remove();
+                        delete frm.custom_buttons['Stock Management'];
+                    }
         
+                    // Get current status from first site item
+                    const site_item = frm.doc.site_item && frm.doc.site_item[0];
+                    const status = site_item ? site_item.status : null;
+        
+                    // Define all possible buttons in order
+                    const button_config = {
+                        'Stock Request': {method: 'create_stock_request', icon: 'fa fa-list'},
+                        'Stock Reserve': {method: 'stock_reserve', icon: 'fa fa-lock'},
+                        'Stock Unreserve': {method: 'stock_unreserve', icon: 'fa fa-unlock'},
+                        'Delivery Request': {method: 'delivery_request', icon: 'fa fa-truck'},
+                        'Cancel Request': {method: 'cancel_stock_request', icon: 'fa fa-times-circle'}
+                    };
+        
+                    // Status-based button visibility rules
+                    const status_rules = {
+                        'Open': ['Stock Request', 'Stock Reserve'],
+                        'Stock Reserve Requested': ['Cancel Request'],
+                        'Stock Requested': ['Stock Reserve', 'Cancel Request'],                    
+                        'Stock Reserved': ['Stock Unreserve', 'Delivery Request', 'Cancel Request'],                        
+                        'Stock Unreserv Requested': ['Cancel Request'],
+                        'Stock Unreserved': ['Stock Reserve', 'Stock Request', 'Cancel Request'],                        
+                        'Delivery Requested': ['Cancel Request'],
+                        'Stock Delivered': ['Cancel Request'],                        
+                        'Cancel Requested': ['Stock Request', 'Stock Reserve'],
+                        'Cancelled': ['Stock Request', 'Stock Reserve']
+                    };
+        
+                    // Get allowed buttons for current status
+                    const allowed_buttons = status_rules[status] || [];
+                    const buttons = allowed_buttons.map(label => ({
+                        label,
+                        ...button_config[label]
+                    }));
+        
+                    if (!buttons.length) return;
+        
+                    // Create main button
+                    const main_btn = frm.add_custom_button(__('Stock Management'), () => {});
+                    frm.custom_buttons = frm.custom_buttons || {};
+                    frm.custom_buttons['Stock Management'] = main_btn;
+        
+                    // Button styling
+                    $(main_btn)
+                        .addClass('dropdown-toggle btn-primary')
+                        .attr('data-toggle', 'dropdown')
+                        .append('<span class="caret"></span>');
+        
+                    // Create dropdown menu
+                    const $dropdown = $(`
+                        <ul class="dropdown-menu" 
+                            style="min-width:240px;max-height:280px;overflow:hidden;padding:5px">
+                        </ul>
+                    `).insertAfter(main_btn);
+        
+                    // Add menu items
+                    buttons.forEach(({label, method, icon}) => {
+                        $('<li>').append(
+                            `<a href="#" class="dropdown-item" style="padding:10px 15px;">
+                                <i class="${icon} mr-2" style="width:20px;"></i>
+                                ${__(label)}
+                            </a>`
+                        ).click(() => {
+                            frappe.confirm(__('Proceed with ${label}?'), () => {
+                                frm.call(method)
+                                    .then((r) => {
+                                        frm.refresh();
+                                        if (['create_stock_request', 'cancel_stock_request'].includes(method)) {
+                                            frappe.publish_realtime('list_refresh', 'Stock Management');
+                                        }
+                                        frappe.show_alert(__('Action completed successfully'), 'green');
+                                    })
+                                    .catch(() => frappe.show_alert(__('Operation failed'), 'red'));
+                            });
+                        }).appendTo($dropdown);
+                    });
+                }
+            }
+        });
         

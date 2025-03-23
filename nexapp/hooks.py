@@ -274,7 +274,9 @@ fixtures = [
     {"dt": "DocType", "filters": [["module", "=", "Nexapp"], ["custom", "=", 1]]},  # Fix: Only custom doctypes
     {"dt": "Custom Field", "filters": [["module", "=", "Nexapp"]]},
     {"dt": "Property Setter", "filters": [["module", "=", "Nexapp"]]},    
-    {"dt": "Website Theme"}            
+    {"dt": "Website Theme"},
+    {"dt": "Email Domain"},
+    {"dt": "Email Account"}           
 ]
 
 doctype_js = {
@@ -283,8 +285,8 @@ doctype_js = {
         "public/js/ticket_product.js"
     ],
     "Lead": [
-        #   "public/js/lead_pincode.js",
-        #"public/js/lead_custom.js"
+        "public/js/lead_pincode.js",
+        "public/js/lead_custom.js"
     ],    
     "Opportunity": "public/js/Deal_custom.js",
     "Customer": "public/js/Customer_custom.js",

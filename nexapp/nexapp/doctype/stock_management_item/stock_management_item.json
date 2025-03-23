@@ -1,0 +1,86 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-03-22 23:57:52.312838",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "item_code",
+  "item_name",
+  "qty",
+  "stock_balance",
+  "stock_reserved",
+  "column_break_radl",
+  "warehouse",
+  "delivery_note_id",
+  "deliver_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "column_break_radl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Qty"
+  },
+  {
+   "fieldname": "stock_balance",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "stock_balance"
+  },
+  {
+   "fieldname": "stock_reserved",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Stock Reserved"
+  },
+  {
+   "fieldname": "delivery_note_id",
+   "fieldtype": "Data",
+   "label": "Delivery Note ID"
+  },
+  {
+   "fieldname": "deliver_date",
+   "fieldtype": "Date",
+   "label": "Deliver Date"
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Code",
+   "options": "Item"
+  },
+  {
+   "fetch_from": "item_code.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Name"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-03-23 00:22:21.161553",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Stock Management Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
