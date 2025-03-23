@@ -274,8 +274,7 @@ fixtures = [
     {"dt": "DocType", "filters": [["module", "=", "Nexapp"], ["custom", "=", 1]]},  # Fix: Only custom doctypes
     {"dt": "Custom Field", "filters": [["module", "=", "Nexapp"]]},
     {"dt": "Property Setter", "filters": [["module", "=", "Nexapp"]]},    
-    {"dt": "Website Theme"},
-    {"dt": "Email Domain"},
+    {"dt": "Website Theme"},    
     {"dt": "Email Account"}           
 ]
 
