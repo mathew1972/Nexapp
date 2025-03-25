@@ -9,62 +9,81 @@ from frappe.model.document import Document
 class Site(Document):
     @frappe.whitelist()
     def create_stock_request(self):
-        """Create Stock Management document only if not already linked"""
-        if not self.get("site_item"):
-            frappe.throw(_("No items found in Site Items table"))
-
-        # Check for existing stock management links
-        existing_links = []
-        for site_item in self.site_item:
-            if site_item.stock_management_id:
-                if frappe.db.exists("Stock Management", site_item.stock_management_id):
-                    existing_links.append(site_item.stock_management_id)
-
-        if existing_links:
-            frappe.throw(_(
-                "Stock Management already exists for these items: {0}. "
-                "Please delete existing links first."
-            ).format(", ".join(existing_links)))
-            return
-
-        # Create new Stock Management
-        stock_mgmt = frappe.get_doc({
-            "doctype": "Stock Management",
-            "status": "Stock Request",
-            "site": self.name,
-            "circuit_id": self.circuit_id,
-            "stock_management_item": []
-        }).insert(ignore_permissions=True)
-
-        # Update references
-        for site_item in self.site_item:
-            site_item.stock_management_id = stock_mgmt.name
-            site_item.status = "Stock Requested"
-            
-            stock_mgmt.append("stock_management_item", {
-                "item_code": site_item.item_code,
-                "qty": site_item.qty,
-                "warehouse": site_item.warehouse,
-                "site_item": site_item.name
-            })
-
-        stock_mgmt.save(ignore_permissions=True)
-        self.save(ignore_permissions=True)
-        
-        frappe.msgprint(_("Stock Request created: {0}").format(stock_mgmt.name))
-        return stock_mgmt.name
+        """Handle Stock Request creation/update"""
+        return self.handle_status_update(
+            site_status="Stock Requested",
+            sm_status="Stock Requested"
+        )
 
     @frappe.whitelist()
     def stock_reserve(self):
-        """Reserve stock for this site"""
-        frappe.msgprint(_("Stock reserved successfully"))
+        """Handle Stock Reserve action"""
+        return self.handle_status_update(
+            site_status="Stock Reserve Requested",
+            sm_status="Stock Reserve Requested"
+        )
 
     @frappe.whitelist()
     def stock_unreserve(self):
-        """Unreserve stock for this site"""
-        frappe.msgprint(_("Stock unreserved successfully"))
+        """Handle Stock Unreserve action"""
+        return self.handle_status_update(
+            site_status="Stock Unreserve Requested",
+            sm_status="Stock Unreserve Requested"
+        )
 
     @frappe.whitelist()
     def delivery_request(self):
-        """Initiate delivery process"""
-        frappe.msgprint(_("Delivery request initiated"))
+        """Handle Delivery Request action"""
+        return self.handle_status_update(
+            site_status="Stock Delivery Requested",
+            sm_status="Stock Delivery Requested"
+        )
+    
+    
+    def handle_status_update(self, site_status, sm_status):
+        """Common method to handle status updates"""
+        # Update Site and Site Item statuses
+        self.status = site_status
+        for site_item in self.site_item:
+            site_item.status = site_status
+
+        existing_sm = None
+        for site_item in self.site_item:
+            if site_item.stock_management_id:
+                existing_sm = site_item.stock_management_id
+                break
+
+        if existing_sm and frappe.db.exists("Stock Management", existing_sm):
+            # Update existing Stock Management
+            sm = frappe.get_doc("Stock Management", existing_sm)
+            sm.status = sm_status
+            sm.save()
+            frappe.publish_realtime('list_refresh', 'Stock Management')
+            msg = _("Updated Stock Management: {0}").format(existing_sm)
+        else:
+            # Create new Stock Management
+            sm = frappe.get_doc({
+                "doctype": "Stock Management",
+                "status": sm_status,
+                "site": self.name,
+                "circuit_id": self.circuit_id,
+                "stock_management_item": []
+            }).insert(ignore_permissions=True)
+
+            # Link items
+            for site_item in self.site_item:
+                site_item.stock_management_id = sm.name
+                sm.append("stock_management_item", {
+                    "item_code": site_item.item_code,
+                    "qty": site_item.qty,
+                    "warehouse": site_item.warehouse,
+                    "site_item": site_item.name
+                })
+
+            sm.save(ignore_permissions=True)
+            frappe.publish_realtime('list_refresh', 'Stock Management')
+            msg = _("Created Stock Management: {0}").format(sm.name)
+
+        self.save(ignore_permissions=True)
+        frappe.msgprint(msg)
+        return sm.name

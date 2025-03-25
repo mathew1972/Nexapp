@@ -354,9 +354,7 @@ doctype_js = {
     "Stock Reservation Entry": "public/js/stock_reservation_entry.js",
     "Product Assigment": "doctype/product_assigment/product_assigment.js",   
     "Task": "public/js/task_to_ticket.js",
-    "Maintenance Visit": "public/js/maintenance_visit_approved.js"
-
-    
+    "Maintenance Visit": "public/js/maintenance_visit_approved.js"    
 }
 
 

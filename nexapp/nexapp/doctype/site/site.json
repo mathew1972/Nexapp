@@ -150,7 +150,7 @@
    "fieldname": "secondary_plan",
    "fieldtype": "Link",
    "label": "Secondary Data Plan",
-   "options": "Item"
+   "options": "Data Plan"
   },
   {
    "bold": 1,
@@ -549,7 +549,7 @@
    "fieldname": "primary_data_plan",
    "fieldtype": "Link",
    "label": "Primary Data Plan",
-   "options": "Item"
+   "options": "Data Plan"
   },
   {
    "fieldname": "description",
@@ -696,7 +696,7 @@
    "link_fieldname": "name"
   }
  ],
- "modified": "2025-03-23 02:41:44.451835",
+ "modified": "2025-03-25 12:24:43.960947",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

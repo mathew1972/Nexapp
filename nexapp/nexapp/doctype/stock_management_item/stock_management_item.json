@@ -13,6 +13,8 @@
   "stock_reserved",
   "column_break_radl",
   "warehouse",
+  "serial_no",
+  "item_group",
   "delivery_note_id",
   "deliver_date"
  ],
@@ -68,13 +70,26 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Item Name"
+  },
+  {
+   "fieldname": "serial_no",
+   "fieldtype": "Link",
+   "label": "Serial No",
+   "options": "Serial No"
+  },
+  {
+   "fetch_from": "item_code.item_group",
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "label": "Item Group",
+   "options": "Item Group"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-03-23 00:22:21.161553",
+ "modified": "2025-03-24 01:03:49.496674",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Stock Management Item",

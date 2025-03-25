@@ -63,7 +63,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Status",
-   "options": "Stock Requested\nStock Reserve Request\nStock Reserved\nStock Delivery Requested\nStock Delivered\nStock Unreserve Requested\nStock Unreserved\nCancel Requested\nCancelled"
+   "options": "Stock Requested\nStock Reserve Requested\nStock Reserved\nStock Delivery Requested\nStock Delivered\nStock Unreserve Requested\nStock Unreserved\nCancel Requested\nCancelled"
   },
   {
    "fieldname": "section_break_unap",
@@ -79,7 +79,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-23 14:08:20.740509",
+ "modified": "2025-03-24 00:25:28.346597",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Stock Management",
