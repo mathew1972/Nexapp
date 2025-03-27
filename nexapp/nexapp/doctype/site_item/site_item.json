@@ -20,7 +20,8 @@
   "solution",
   "solution_name",
   "stock_management_id",
-  "item_group"
+  "item_group",
+  "cancel_reason"
  ],
  "fields": [
   {
@@ -101,7 +102,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "Open\nStock Requested\nStock Reserve Requested\nStock Reserved\nStock Unreserve Requested\nStock Unreserved\nStock Delivery Requested\nStock Delivered\nCancel Requested\nCancelled"
+   "options": "Open\nStock Requested\nStock Reserve Requested\nStock Reserved\nStock Unreserve Requested\nStock Unreserved\nStock Delivery Requested\nStock Delivered\nStock Return Request\nCancel Requested\nCancelled"
   },
   {
    "fieldname": "delivery_note_id",
@@ -119,13 +120,19 @@
    "fieldtype": "Link",
    "label": "Item Group",
    "options": "Item Group"
+  },
+  {
+   "depends_on": "eval:doc.status==\"Cancel Requested\" || doc.status==\"Cancelled\"",
+   "fieldname": "cancel_reason",
+   "fieldtype": "Small Text",
+   "label": "Cancel Reason"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-03-24 01:02:07.919942",
+ "modified": "2025-03-27 12:27:06.350335",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site Item",

@@ -88,15 +88,15 @@
    "fieldname": "primary_data_plan",
    "fieldtype": "Link",
    "label": "Primary Data Plan",
-   "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"Solution\"]]",
-   "options": "Item"
+   "link_filters": "[]",
+   "options": "Data Plan"
   },
   {
    "fieldname": "secondary_data_plan",
    "fieldtype": "Link",
    "label": "Secondary Data Plan",
-   "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"Solution\"]]",
-   "options": "Item"
+   "link_filters": "[]",
+   "options": "Data Plan"
   },
   {
    "fieldname": "static_ip",
@@ -346,13 +346,14 @@
    "fetch_from": "solution_code.item_name",
    "fieldname": "solution_name",
    "fieldtype": "Data",
-   "label": "Solution Name"
+   "label": "Solution Name",
+   "read_only": 1
   },
   {
    "fieldname": "solution_code",
    "fieldtype": "Link",
    "label": "Solution Code",
-   "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"Solution\"]]",
+   "link_filters": "[]",
    "options": "Item",
    "reqd": 1
   },
@@ -401,7 +402,8 @@
    "fieldname": "customer_type",
    "fieldtype": "Select",
    "label": "Customer Type",
-   "options": "\nPaid Customer\nPOC Customer"
+   "options": "\nPaid Customer\nPOC Customer",
+   "reqd": 1
   },
   {
    "fieldname": "territory",
@@ -476,7 +478,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2025-03-22 16:21:21.765346",
+ "modified": "2025-03-27 13:08:05.463251",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",

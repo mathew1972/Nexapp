@@ -1,6 +1,5 @@
 # Copyright (c) 2024, Nexapp Technologies Private Limited and contributors
 # For license information, please see license.txt
-# import frappe
 
 import frappe
 from frappe import _
@@ -35,11 +34,18 @@ class Site(Document):
     def delivery_request(self):
         """Handle Delivery Request action"""
         return self.handle_status_update(
-            site_status="Stock Delivery Requested",
-            sm_status="Stock Delivery Requested"
+            site_status="Delivery Requested",
+            sm_status="Delivery Requested"
         )
-    
-    
+
+    @frappe.whitelist()
+    def cancel_request(self):
+        """Handle Cancel Request action"""
+        return self.handle_status_update(
+            site_status="Cancel Requested",
+            sm_status="Cancel Requested"
+        )
+
     def handle_status_update(self, site_status, sm_status):
         """Common method to handle status updates"""
         # Update Site and Site Item statuses

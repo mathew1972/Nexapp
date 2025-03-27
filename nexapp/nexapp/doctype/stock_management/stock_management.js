@@ -18,7 +18,7 @@ frappe.ui.form.on('Stock Management', {
                 'Stock Request': {method: 'create_stock_request', icon: 'fa fa-list'},
                 'Stock Reserve': {method: 'stock_reserve', icon: 'fa fa-lock'},
                 'Stock Unreserve': {method: 'stock_unreserve', icon: 'fa fa-unlock'},
-                'Delivery Request': {method: 'delivery_request', icon: 'fa fa-truck'},
+                'Delivery': {method: 'delivery_request', icon: 'fa fa-truck'},
                 'Cancel': {method: 'cancel_stock_management', icon: 'fa fa-times-circle'}
             };
 
@@ -26,9 +26,9 @@ frappe.ui.form.on('Stock Management', {
             const status_rules = {
                 'Stock Requested': ['Stock Reserve'],
                 'Stock Reserve Requested': ['Stock Reserve'],
-                'Stock Reserved': ['Stock Unreserve', 'Delivery Request'],
+                
                 'Stock Unreserve Requested': ['Stock Unreserve'],
-                'Stock Delivery Requested': ['Delivery Request'],
+                'Stock Delivery Requested': ['Delivery'],
                 'Cancel Requested': ['Stock Unreserve', 'Cancel']
             };
 
@@ -81,7 +81,7 @@ frappe.ui.form.on('Stock Management', {
                         ${__(label)}
                     </a>`
                 ).click(() => {
-                    frappe.confirm(__('Proceed with ${label}?'), () => {
+                    frappe.confirm(__('Proceed with {0}?', [label]), () => {
                         frm.call(method)
                             .then((r) => {
                                 frm.refresh();
@@ -155,3 +155,4 @@ function update_all_child_rows_stock(frm) {
         }
     });
 }
+

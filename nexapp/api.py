@@ -370,7 +370,8 @@ import re
 def create_hd_ticket_from_communication(doc, method):
     # Step 1: Check if the email is received by helpdesk@nexapp.co.in OR sent from nms@nexapp.co.in
     if (
-        (doc.recipients == "helpdesk@nexapp.co.in" or doc.sender == "nms@nexapp.co.in") 
+        ("helpdesk@nexapp.co.in" in [email.strip() for email in doc.recipients.split(",")] 
+        or doc.sender == "nms@nexapp.co.in") 
         and doc.sent_or_received == "Received" 
         and doc.status == "Open"
     ):
@@ -499,4 +500,4 @@ def before_save(doc, method):
     if doc.status == "Replied":
         doc.custom_agent_responded_on = frappe.utils.now_datetime()
 ######################################################################  
-     
+

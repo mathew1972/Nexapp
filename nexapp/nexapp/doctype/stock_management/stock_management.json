@@ -8,11 +8,13 @@
  "field_order": [
   "circuit_id",
   "customer_name",
+  "solution_code",
   "solution",
   "column_break_vsww",
   "status",
   "site_name",
   "site_address",
+  "delivery_note_id",
   "section_break_unap",
   "stock_management_item"
  ],
@@ -26,7 +28,7 @@
    "options": "Site"
   },
   {
-   "fetch_from": "circuit_id.solution_name",
+   "fetch_from": "solution_code.item_name",
    "fieldname": "solution",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -63,7 +65,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Status",
-   "options": "Stock Requested\nStock Reserve Requested\nStock Reserved\nStock Delivery Requested\nStock Delivered\nStock Unreserve Requested\nStock Unreserved\nCancel Requested\nCancelled"
+   "options": "Stock Requested\nStock Reserve Requested\nStock Reserved\nStock Delivery Requested\nStock Delivered\nStock Unreserve Requested\nStock Unreserved\nStock Return Requested\nCancel Requested\nCancelled"
   },
   {
    "fieldname": "section_break_unap",
@@ -74,12 +76,25 @@
    "fieldtype": "Table",
    "label": "Stock Management Item",
    "options": "Stock Management Item"
+  },
+  {
+   "fetch_from": "circuit_id.solution_code",
+   "fieldname": "solution_code",
+   "fieldtype": "Link",
+   "label": "Solution Code",
+   "options": "Item"
+  },
+  {
+   "fieldname": "delivery_note_id",
+   "fieldtype": "Link",
+   "label": "Delivery Note ID",
+   "options": "Delivery Note"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-24 00:25:28.346597",
+ "modified": "2025-03-27 12:36:15.140055",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Stock Management",

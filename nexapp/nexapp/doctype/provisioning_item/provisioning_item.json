@@ -1,69 +1,185 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:product_code",
+ "autoname": "field:item_code",
  "creation": "2024-11-29 17:55:31.542995",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "serial_number",
-  "product",
+  "section_break_vsjq",
+  "item_code",
+  "item_name",
+  "column_break_tkne",
+  "item_group",
+  "status",
+  "sim_information_section",
+  "sim_no",
+  "mobile_no",
+  "activation_date",
+  "validity",
   "column_break_wcvd",
-  "warranty_expiry_date",
-  "warranty_period_days",
-  "product_code"
+  "data_plan",
+  "recharge_end_date",
+  "supplier",
+  "hardware_appliance_section",
+  "serial_no",
+  "lan_mac",
+  "wan_mac",
+  "column_break_zyaa",
+  "module",
+  "hardware_version",
+  "imei"
  ],
  "fields": [
   {
-   "fetch_from": "serial_number.item_code",
-   "fieldname": "product_code",
-   "fieldtype": "Link",
-   "label": "Product Code",
-   "options": "Item",
-   "unique": 1
+   "fieldname": "column_break_wcvd",
+   "fieldtype": "Column Break"
   },
   {
-   "columns": 3,
-   "fetch_from": "serial_number.item_name",
-   "fieldname": "product",
+   "depends_on": "eval: doc.item_group === \"SIMCARD\" && doc.use_serial_no__batch_fields === 1",
+   "fieldname": "sim_information_section",
+   "fieldtype": "Section Break",
+   "label": "SIM Information"
+  },
+  {
+   "fetch_from": "serial_number.custom_mobile_no",
+   "fieldname": "mobile_no",
    "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Product"
+   "label": "Mobile No"
+  },
+  {
+   "fetch_from": "serial_number.custom_activation_date",
+   "fieldname": "activation_date",
+   "fieldtype": "Date",
+   "label": "Activation Date"
+  },
+  {
+   "fetch_from": "serial_number.custom_validity",
+   "fieldname": "validity",
+   "fieldtype": "Int",
+   "label": "Validity"
+  },
+  {
+   "fetch_from": "sim_no.custom_data_plan",
+   "fieldname": "data_plan",
+   "fieldtype": "Link",
+   "label": "Data Plan",
+   "options": "Data Plan"
+  },
+  {
+   "fetch_from": "serial_number.custom_recharge_end_date",
+   "fieldname": "recharge_end_date",
+   "fieldtype": "Date",
+   "label": "Recharge End Date"
+  },
+  {
+   "fetch_from": "serial_number.custom_supplier",
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "section_break_vsjq",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "item_code.item_group",
+   "fieldname": "item_group",
+   "fieldtype": "Data",
+   "label": "Item Group"
+  },
+  {
+   "depends_on": "eval: doc.item_group === \"Products\" && doc.use_serial_no__batch_fields === 1",
+   "fieldname": "hardware_appliance_section",
+   "fieldtype": "Section Break",
+   "label": "Hardware Appliance"
   },
   {
    "columns": 2,
-   "fieldname": "serial_number",
+   "fieldname": "serial_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Serial No"
+  },
+  {
+   "fetch_from": "sim_no.custom_lan_mac",
+   "fieldname": "lan_mac",
+   "fieldtype": "Data",
+   "label": "LAN MAC"
+  },
+  {
+   "fieldname": "column_break_zyaa",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 2,
+   "fetch_from": "sim_no.custom_module",
+   "fieldname": "module",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Module"
+  },
+  {
+   "fetch_from": "sim_no.custom_hardware_version",
+   "fieldname": "hardware_version",
+   "fieldtype": "Data",
+   "label": "Hardware Version"
+  },
+  {
+   "fetch_from": "sim_no.custom_imei",
+   "fieldname": "imei",
+   "fieldtype": "Data",
+   "label": "IMEI"
+  },
+  {
+   "fetch_from": "sim_no.custom_wan_mac",
+   "fieldname": "wan_mac",
+   "fieldtype": "Data",
+   "label": "WAN MAC"
+  },
+  {
+   "fieldname": "column_break_tkne",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 2,
+   "fieldname": "sim_no",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Serial Number",
+   "label": "SIM No",
    "options": "Serial No"
   },
   {
-   "columns": 1,
-   "fetch_from": "serial_number.warranty_period",
-   "fieldname": "warranty_period_days",
-   "fieldtype": "Int",
+   "columns": 2,
+   "fieldname": "status",
+   "fieldtype": "Select",
    "in_list_view": 1,
-   "label": "Warranty Days"
+   "label": "Status",
+   "options": "\nReserved\nActive"
   },
   {
    "columns": 2,
-   "fetch_from": "serial_number.warranty_expiry_date",
-   "fieldname": "warranty_expiry_date",
-   "fieldtype": "Date",
+   "fetch_from": "item_code.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Warranty Expiry Date"
+   "label": "Item Name"
   },
   {
-   "fieldname": "column_break_wcvd",
-   "fieldtype": "Column Break"
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "options": "Item",
+   "unique": 1
   }
  ],
+ "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-07 09:46:21.241849",
+ "modified": "2025-03-26 16:18:46.168255",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Provisioning Item",
