@@ -19,17 +19,18 @@ frappe.ui.form.on('Stock Management', {
                 'Stock Reserve': {method: 'stock_reserve', icon: 'fa fa-lock'},
                 'Stock Unreserve': {method: 'stock_unreserve', icon: 'fa fa-unlock'},
                 'Delivery': {method: 'delivery_request', icon: 'fa fa-truck'},
-                'Cancel': {method: 'cancel_stock_management', icon: 'fa fa-times-circle'}
+                'Cancel': {method: 'cancel_stock_management', icon: 'fa fa-times-circle'},
+                'Update Serial/ SIM No': {method: 'update_serial_sim_no', icon: 'fa fa-barcode'} // New button added
             };
 
             // Status-based button visibility rules
             const status_rules = {
                 'Stock Requested': ['Stock Reserve'],
                 'Stock Reserve Requested': ['Stock Reserve'],
-                
                 'Stock Unreserve Requested': ['Stock Unreserve'],
                 'Stock Delivery Requested': ['Delivery'],
-                'Cancel Requested': ['Stock Unreserve', 'Cancel']
+                'Cancel Requested': ['Stock Unreserve', 'Cancel'],
+                'Update Serial/ SIM No':['Update Serial/ SIM No']                
             };
 
             // Get allowed buttons for current status
@@ -97,7 +98,6 @@ frappe.ui.form.on('Stock Management', {
         }
     }
 });
-
 //////////////////////////////////////////////////////////////////////////////////////
 frappe.ui.form.on('Stock Management', {
     onload: function (frm) {
@@ -155,4 +155,6 @@ function update_all_child_rows_stock(frm) {
         }
     });
 }
+
+////////////////////////////////////////////////////////////////////////////////
 

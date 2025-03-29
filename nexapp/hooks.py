@@ -269,6 +269,8 @@ doc_events = {
     }
 }
 
+
+
 fixtures = [   
     
     {"dt": "DocType", "filters": [["module", "=", "Nexapp"], ["custom", "=", 1]]},  # Fix: Only custom doctypes

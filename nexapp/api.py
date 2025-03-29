@@ -366,15 +366,18 @@ def update_site_status_on_delivery_note_save(doc, method):
 ############################################################################
 import frappe
 import re
+from email.utils import getaddresses
 
 def create_hd_ticket_from_communication(doc, method):
-    # Step 1: Check if the email is received by helpdesk@nexapp.co.in OR sent from nms@nexapp.co.in
+    # Extract email addresses from recipients
+    recipient_emails = [email.strip() for _, email in getaddresses([doc.recipients])]
+    
+    # Step 1: Check if "helpdesk@nexapp.co.in" is among the recipients OR sent from "nms@nexapp.co.in"
     if (
-        ("helpdesk@nexapp.co.in" in [email.strip() for email in doc.recipients.split(",")] 
-        or doc.sender == "nms@nexapp.co.in") 
-        and doc.sent_or_received == "Received" 
-        and doc.status == "Open"
-    ):
+        ("helpdesk@nexapp.co.in" in recipient_emails) 
+        or doc.sender == "nms@nexapp.co.in"
+    ) and doc.sent_or_received == "Received" and doc.status == "Open":
+        
         # Step 2: Extract Circuit ID from subject or content
         circuit_id = extract_circuit_id(doc.subject) or extract_circuit_id(doc.content)
 
@@ -441,6 +444,7 @@ def create_hd_ticket(circuit_id, status, sender, subject, content):
     # Save the ticket
     ticket.insert(ignore_permissions=True)
     frappe.db.commit()
+
 ############################################################################
 import frappe
 from frappe.utils import get_url
@@ -494,10 +498,3 @@ def download_subcategory_pdf(subcategory):
     frappe.local.response.type = "pdf"
 
 ######################################################################
-import frappe
-
-def before_save(doc, method):
-    if doc.status == "Replied":
-        doc.custom_agent_responded_on = frappe.utils.now_datetime()
-######################################################################  
-

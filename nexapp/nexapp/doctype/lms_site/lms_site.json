@@ -6,12 +6,14 @@
  "engine": "InnoDB",
  "field_order": [
   "lms_master_information_section",
+  "supplier_contact",
   "lms_supplier",
   "bandwith_type",
   "media",
   "support_mode",
   "column_break_bben",
-  "supplier_contact",
+  "supplier_name",
+  "email_id",
   "static_ip",
   "lms_delivery_date",
   "lms_status"
@@ -41,7 +43,7 @@
   },
   {
    "columns": 2,
-   "fetch_from": "circuit_id.supplier_contact",
+   "fetch_from": "lms_supplier.mobile_no",
    "fieldname": "supplier_contact",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -85,12 +87,23 @@
    "in_list_view": 1,
    "label": "LMS Status",
    "options": "Not Selected\nSelected\nRequested\nRejected"
+  },
+  {
+   "fieldname": "supplier_name",
+   "fieldtype": "Data",
+   "label": "Supplier Name"
+  },
+  {
+   "fieldname": "email_id",
+   "fieldtype": "Data",
+   "label": "Email ID"
   }
  ],
+ "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-03-01 01:47:53.560009",
+ "modified": "2025-03-28 18:13:02.229518",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "LMS Site",

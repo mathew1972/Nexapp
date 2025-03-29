@@ -166,7 +166,7 @@ frappe.ui.form.on('Site', {
                 'Open': ['Stock Request', 'Stock Reserve'],
                 'Stock Reserve Requested': ['Cancel Request'],
                 'Stock Requested': ['Stock Reserve', 'Cancel Request'],                    
-                'Stock Reserved': ['Stock Unreserve', 'Delivery Request', 'Stock Return Request'],                        
+                'Stock Reserved': ['Stock Unreserve', 'Delivery Request'],                        
                 'Stock Unreserv Requested': ['Cancel Request'],
                 'Stock Unreserved': ['Stock Reserve', 'Stock Request', 'Cancel Request'],                        
                 'Delivery Requested': ['Cancel Request', 'Stock Return Request'],

@@ -6,16 +6,44 @@ from frappe.model.document import Document
 
 class StockManagement(Document):
     def validate(self):
-        """Run all validations before saving"""
+        """Run validations before saving"""
         self.validate_serial_sim_numbers()
         self.prevent_duplicate_identifiers()
     
     def before_submit(self):
-        """Validation before submission"""
+        """Final validation before submission"""
         self.validate()
 
+    def validate_serial_sim_numbers(self):
+        """
+        Validate identifiers for items requiring them
+        """
+        skip_statuses = [
+            "Stock Requested", "Stock Reserve Requested",
+            "Stock Unreserve Requested", "Delivery Requested",
+            "Cancel Requested", "Stock Return Requested"
+        ]
+
+        validate_for_action = frappe.flags.get("validate_for_action", False)
+        missing = []
+        
+        for idx, item in enumerate(self.get("stock_management_item"), 1):
+            if validate_for_action and not getattr(item, "use_serial_no__batch_fields", 0):
+                continue
+
+            if not validate_for_action and self.status in skip_statuses:
+                continue
+
+            if not (item.serial_no or item.sim_no):
+                name = item.item_name or item.item_code
+                missing.append(f"Row {idx}: {item.item_code} - {name}")
+        
+        if missing:
+            msg = self._format_validation_message(missing)
+            frappe.throw(msg, title=_("Validation Error"), is_minimizable=True)
+
     def prevent_duplicate_identifiers(self):
-        """Prevent duplicate SIM and Serial numbers in items"""
+        """Prevent duplicate SIM/Serial numbers"""
         seen_sim = set()
         seen_serial = set()
         duplicates = {'sim': [], 'serial': []}
@@ -35,75 +63,119 @@ class StockManagement(Document):
             error_msg = self._format_duplicate_message(duplicates)
             frappe.throw(error_msg, title=_("Duplicate Error"))
 
-    def validate_serial_sim_numbers(self):
-        """Validate all items have either serial or SIM number"""
-        missing = []
-        for idx, item in enumerate(self.get("stock_management_item"), 1):
-            if not (item.serial_no or item.sim_no):
-                name = item.item_name or item.item_code
-                missing.append(f"Row {idx}: {item.item_code} - {name}")
-        
-        if missing:
-            msg = self._format_validation_message(missing)
-            frappe.throw(msg, title=_("Validation Error"), is_minimizable=True)
-
     @frappe.whitelist()
     def stock_reserve(self):
-        """Reserve stock after validation"""
-        self.validate()
-        self._update_status("Stock Reserved")
-        return {"success": True}
+        """Reserve stock with validation"""
+        try:
+            frappe.flags.validate_for_action = True
+            self.validate()
+            
+            self._update_status("Stock Reserved", update_site_items=True)
+            
+            frappe.msgprint(
+                _("Stock reserved successfully!"),
+                title=_("Reservation Complete"),
+                indicator="green"
+            )
+            
+            return {"success": True, "message": _("Stock Reserved")}
+            
+        finally:
+            frappe.flags.pop("validate_for_action", None)
 
     @frappe.whitelist()
     def stock_unreserve(self):
-        """Unreserve stock only if all SIM/Serial numbers are cleared"""
+        """Unreserve stock and clear identifiers"""
         if not self._can_unreserve():
             return {"success": False}
         
-        self._update_status("Stock Unreserved")
-        return {"success": True}
+        for item in self.get("stock_management_item"):
+            item.db_set("serial_no", "")
+            item.db_set("sim_no", "")
+        
+        self._update_status("Stock Unreserved", update_site_items=True)
+        
+        frappe.msgprint(
+            _("Stock unreserved successfully!"),
+            title=_("Unreservation Complete"), 
+            indicator="green"
+        )
+        
+        return {"success": True, "message": _("Stock Unreserved")}
 
     @frappe.whitelist()
     def delivery_request(self):
-        """Create Delivery Note with single line item"""
-        self.validate()
-        
+        """Create Delivery Note with complete packed items in one step"""
         try:
+            frappe.flags.validate_for_action = True
+            self.validate()
+            
+            # Create item_code to identifiers mapping
+            item_map = {
+                item.item_code: (item.serial_no, item.sim_no)
+                for item in self.stock_management_item
+            }
+            
+            # Create Delivery Note
             dn = frappe.new_doc("Delivery Note")
             dn.customer = self.customer_name
             
-            # Create just ONE item line using parent document's data
+            # Add main item
             dn.append("items", {
-                "item_code": self.solution_code,  # From parent document
-                "qty": 1,                        # Fixed quantity of 1
-                "custom_circuit_id": self.circuit_id  # From parent document
+                "item_code": self.solution_code,
+                "qty": 1,
+                "custom_circuit_id": self.circuit_id
             })
             
+            # Create packed items with exact item_code matching
+            for sm_item in self.stock_management_item:
+                if sm_item.item_code not in item_map:
+                    frappe.throw(_("Item {0} not found in mapping").format(sm_item.item_code))
+                
+                serial_no, sim_no = item_map[sm_item.item_code]
+                
+                dn.append("packed_items", {
+                    "parent_item": self.solution_code,
+                    "item_code": sm_item.item_code,
+                    "qty": sm_item.qty,
+                    "serial_no": serial_no or "",
+                    "sim_no": sim_no or ""
+                })
+            
             dn.insert(ignore_permissions=True)
-            self._update_status("Stock Delivered")
+            
+            # Update status and references
+            self.db_set({
+                "delivery_note_id": dn.name,
+                "status": "Ready for Dispatch"
+            })
+            
+            frappe.msgprint(
+                _("Delivery Note created with {0} items").format(len(self.stock_management_item)),
+                title=_("Delivery Created"),
+                indicator="green"
+            )
             
             return {
                 "success": True,
-                "delivery_note": dn.name
+                "message": _("Delivery Note {0} created").format(dn.name)
             }
             
         except Exception as e:
-            frappe.log_error(_("Delivery Note creation failed"), str(e))
-            frappe.throw(
-                _("Failed to create Delivery Note: {0}").format(str(e)),
-                title=_("Delivery Error")
-            )
-            return {"success": False}
+            frappe.log_error(_("Delivery creation failed"), str(e))
+            return {
+                "success": False,
+                "message": _("Failed: {0}").format(str(e))
+            }
+        finally:
+            frappe.flags.pop("validate_for_action", None)
 
     def _can_unreserve(self):
-        """Check if stock can be unreserved (no SIM/Serial numbers)"""
+        """Check unreserve conditions"""
         items_with_ids = []
-        
-        for idx, item in enumerate(self.get("stock_management_item"), 1):
+        for item in self.stock_management_item:
             if item.serial_no or item.sim_no:
-                items_with_ids.append(
-                    f"Row {idx}: {item.item_code} - {item.item_name or 'No Name'}"
-                )
+                items_with_ids.append(f"Row {item.idx}: {item.item_code}")
         
         if items_with_ids:
             msg = self._format_unreserve_error(items_with_ids)
@@ -111,82 +183,62 @@ class StockManagement(Document):
             return False
         return True
 
-    def _update_status(self, status):
-        """Update status across all related documents"""
+    def _update_status(self, status, update_site_items=False):
+        """Update document status"""
         self.db_set("status", status)
         
-        site_name = self._get_linked_site()
-        if site_name:
-            try:
-                if self._field_exists("Site", "status"):
-                    frappe.db.set_value("Site", site_name, "status", status)
-                
-                if self._field_exists("Site Item", "status"):
-                    frappe.db.sql("""
-                        UPDATE `tabSite Item`
-                        SET status = %s
-                        WHERE stock_management_id = %s
-                    """, (status, self.name))
-                
-                frappe.msgprint(_("Status updated successfully"), indicator="green")
-            except Exception as e:
-                frappe.log_error(_("Status update error"), str(e))
-                frappe.msgprint(_("Status partially updated"), indicator="orange")
+        if update_site_items:
+            site_items = frappe.get_all("Site Item",
+                filters={"stock_management_id": self.name},
+                pluck="name"
+            )
+            
+            for site_item in site_items:
+                frappe.db.set_value("Site Item", site_item, "status", status)
+            
+            frappe.publish_realtime('list_refresh', {'doctype': 'Site Item'})
 
     def _format_duplicate_message(self, duplicates):
-        """Format duplicate error message"""
         message = []
         if duplicates['sim']:
-            message.append(_("Duplicate SIM Numbers found:"))
+            message.append(_("Duplicate SIM Numbers:"))
             message.extend([f"• {sim}" for sim in duplicates['sim']])
         if duplicates['serial']:
-            if message:
-                message.append("")
-            message.append(_("Duplicate Serial Numbers found:"))
+            if message: message.append("")
+            message.append(_("Duplicate Serial Numbers:"))
             message.extend([f"• {serial}" for serial in duplicates['serial']])
         return "<br>".join(message)
 
     def _format_validation_message(self, missing_items):
-        """Format validation error message"""
         return f"""
             <div style='margin-bottom:15px'>
-                {frappe.bold(_("Missing Serial/SIM Numbers:"))}
+                {frappe.bold(_("Missing Identifiers:"))}
             </div>
             <ul style='margin-left:20px;color:#e74c3c'>
                 {"".join([f"<li>{item}</li>" for item in missing_items])}
             </ul>
             <div style='margin-top:10px;color:#7f8c8d'>
-                {_("Please add identifiers before proceeding.")}
+                {_("Required items need either SIM or Serial Number")}
             </div>
         """
 
     def _format_unreserve_error(self, items_with_ids):
-        """Format unreserve validation error"""
         return f"""
             <div style='margin-bottom:15px'>
-                {frappe.bold(_("Cannot Unreserve - Items still have identifiers:"))}
+                {frappe.bold(_("Identifiers Found:"))}
             </div>
             <ul style='margin-left:20px;color:#e74c3c'>
                 {"".join([f"<li>{item}</li>" for item in items_with_ids])}
             </ul>
             <div style='margin-top:10px;color:#7f8c8d'>
-                {_("Please clear all SIM/Serial numbers before unreserving.")}
+                {_("Clear all identifiers before unreserving")}
             </div>
         """
 
-    def _field_exists(self, doctype, fieldname):
-        """Check if field exists in doctype"""
-        return frappe.db.exists("DocField", {
-            "parent": doctype,
-            "fieldname": fieldname
-        })
-
     def _get_linked_site(self):
-        """Get linked Site through any available method"""
         try:
             if hasattr(self, 'site') and self.site:
                 return self.site
-                
             return frappe.db.get_value(
                 "Site Item",
                 {"stock_management_id": self.name},
