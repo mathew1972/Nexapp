@@ -30,7 +30,8 @@ class Site(Document):
     def delivery_request(self):
         return self.handle_status_update(
             site_status="Stock Delivery Requested",
-            sm_status="Stock Delivery Requested"
+            sm_status="Stock Delivery Requested",
+            skip_validation=True  # Skip validation for delivery requests
         )
 
     @frappe.whitelist()
@@ -47,7 +48,7 @@ class Site(Document):
             sm_status="Stock Return Requested"
         )
 
-    def handle_status_update(self, site_status, sm_status):
+    def handle_status_update(self, site_status, sm_status, skip_validation=False):
         self.status = site_status
         for site_item in self.site_item:
             site_item.status = site_status
@@ -60,6 +61,8 @@ class Site(Document):
 
         if existing_sm and frappe.db.exists("Stock Management", existing_sm):
             sm = frappe.get_doc("Stock Management", existing_sm)
+            if skip_validation:
+                sm.flags.skip_validation = True
             sm.status = sm_status
             sm.save()
             frappe.publish_realtime('list_refresh', 'Stock Management')
@@ -82,6 +85,8 @@ class Site(Document):
                     "site_item": site_item.name
                 })
 
+            if skip_validation:
+                sm.flags.skip_validation = True
             sm.save(ignore_permissions=True)
             frappe.publish_realtime('list_refresh', 'Stock Management')
             msg = _("Created Stock Management: {0}").format(sm.name)

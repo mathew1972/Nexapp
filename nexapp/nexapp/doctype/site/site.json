@@ -107,7 +107,7 @@
    "fieldname": "order_type",
    "fieldtype": "Select",
    "label": "Order Type",
-   "options": "\nService\nShift Address\nUpgrade\nDegrade\nSupply"
+   "options": "\nService Order\nShift Address\nUpgrade\nDegrade\nSupply"
   },
   {
    "default": "Paid Customer",
@@ -696,7 +696,7 @@
    "link_fieldname": "name"
   }
  ],
- "modified": "2025-03-25 13:21:47.937773",
+ "modified": "2025-04-03 23:18:42.718103",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

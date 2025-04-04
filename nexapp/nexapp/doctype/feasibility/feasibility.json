@@ -12,6 +12,8 @@
   "site_information_tab",
   "site_information_section",
   "column_break_vfai",
+  "feaseibility_from",
+  "party_name",
   "organization",
   "customer",
   "site_name",
@@ -354,7 +356,6 @@
    "fieldname": "solution_code",
    "fieldtype": "Link",
    "label": "Solution Code",
-   "link_filters": "[]",
    "options": "Item",
    "reqd": 1
   },
@@ -472,6 +473,19 @@
    "label": "Organization",
    "options": "Prospect",
    "reqd": 1
+  },
+  {
+   "fieldname": "feaseibility_from",
+   "fieldtype": "Link",
+   "label": "Feaseibility From",
+   "link_filters": "[]",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "party_name",
+   "fieldtype": "Dynamic Link",
+   "label": "Party",
+   "options": "feaseibility_from"
   }
  ],
  "grid_page_length": 50,
@@ -480,7 +494,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2025-03-29 19:14:15.924749",
+ "modified": "2025-04-04 11:37:28.862290",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",

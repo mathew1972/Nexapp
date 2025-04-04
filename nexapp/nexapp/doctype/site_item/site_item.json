@@ -100,7 +100,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "Open\nStock Requested\nStock Reserve Requested\nStock Reserved\nStock Unreserve Requested\nStock Unreserved\nStock Delivery Requested\nStock Delivered\nStock Return Request\nCancel Requested\nCancelled"
+   "options": "Open\nStock Requested\nStock Reserve Requested\nStock Reserved\nStock Unreserve Requested\nStock Unreserved\nStock Delivery Requested\nStock Delivered\nStock Delivery In-Process\nStock Return Request\nCancel Requested\nCancelled"
   },
   {
    "fieldname": "delivery_note_id",
@@ -130,7 +130,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-03-29 11:48:52.816918",
+ "modified": "2025-03-31 00:17:03.504013",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site Item",

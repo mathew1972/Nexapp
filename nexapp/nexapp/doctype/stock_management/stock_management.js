@@ -20,7 +20,7 @@ frappe.ui.form.on('Stock Management', {
                 'Stock Unreserve': {method: 'stock_unreserve', icon: 'fa fa-unlock'},
                 'Delivery': {method: 'delivery_request', icon: 'fa fa-truck'},
                 'Cancel': {method: 'cancel_stock_management', icon: 'fa fa-times-circle'},
-                'Update Serial/ SIM No': {method: 'update_serial_sim_no', icon: 'fa fa-barcode'} // New button added
+                'Update Serial/ SIM No': {method: 'update_serial_sim_no', icon: 'fa fa-barcode'} 
             };
 
             // Status-based button visibility rules
@@ -74,7 +74,7 @@ frappe.ui.form.on('Stock Management', {
                 </ul>
             `).insertAfter(main_btn);
 
-            // Add menu items
+            // Add menu items with special handling for Stock Unreserve
             buttons.forEach(({label, method, icon}) => {
                 $('<li>').append(
                     `<a href="#" class="dropdown-item" style="padding:10px 15px;">
@@ -82,38 +82,61 @@ frappe.ui.form.on('Stock Management', {
                         ${__(label)}
                     </a>`
                 ).click(() => {
-                    frappe.confirm(__('Proceed with {0}?', [label]), () => {
+                    if (method === 'stock_unreserve') {
+                        // Special handling for Stock Unreserve
                         frm.call(method)
                             .then((r) => {
-                                frm.refresh();
-                                if (['create_stock_request', 'cancel_stock_management'].includes(method)) {
-                                    frappe.publish_realtime('list_refresh', 'Stock Management');
+                                if (r.message.needs_confirmation) {
+                                    frappe.confirm(
+                                        r.message.message,
+                                        () => {
+                                            // User confirmed - proceed with unreserve
+                                            frm.call('confirm_stock_unreserve')
+                                                .then(() => {
+                                                    frm.refresh();
+                                                    frappe.show_alert(__('Stock unreserved successfully'), 'green');
+                                                })
+                                                .catch(() => frappe.show_alert(__('Operation failed'), 'red'));
+                                        },
+                                        () => {
+                                            // User cancelled
+                                            frappe.show_alert(__('Operation cancelled'), 'orange');
+                                        },
+                                        r.message.title
+                                    );
+                                } else {
+                                    frm.refresh();
+                                    frappe.show_alert(__('Action completed successfully'), 'green');
                                 }
-                                frappe.show_alert(__('Action completed successfully'), 'green');
                             })
                             .catch(() => frappe.show_alert(__('Operation failed'), 'red'));
-                    });
+                    } else {
+                        // Standard confirmation for other actions
+                        frappe.confirm(__('Proceed with {0}?', [label]), () => {
+                            frm.call(method)
+                                .then((r) => {
+                                    frm.refresh();
+                                    if (['create_stock_request', 'cancel_stock_management'].includes(method)) {
+                                        frappe.publish_realtime('list_refresh', 'Stock Management');
+                                    }
+                                    frappe.show_alert(__('Action completed successfully'), 'green');
+                                })
+                                .catch(() => frappe.show_alert(__('Operation failed'), 'red'));
+                        });
+                    }
                 }).appendTo($dropdown);
             });
         }
-    }
-});
-//////////////////////////////////////////////////////////////////////////////////////
-frappe.ui.form.on('Stock Management', {
+    },
     onload: function (frm) {
         update_all_child_rows_stock(frm); // Ensure stock is updated on load
-    },
-
-    refresh: function (frm) {
-        update_all_child_rows_stock(frm); // Also update on refresh
-    },
+    }
 });
 
 frappe.ui.form.on('Stock Management Item', {
     item_code: function (frm, cdt, cdn) {
         fetch_stock_for_child_row(frm, cdt, cdn); // Update stock when item_code changes
     },
-
     warehouse: function (frm, cdt, cdn) {
         fetch_stock_for_child_row(frm, cdt, cdn); // Update stock when warehouse changes
     },
@@ -155,6 +178,3 @@ function update_all_child_rows_stock(frm) {
         }
     });
 }
-
-////////////////////////////////////////////////////////////////////////////////
-

@@ -263,12 +263,8 @@ doc_events = {
     },
     "Communication": {
         "after_insert": "nexapp.api.create_hd_ticket_from_communication"
-    },
-    "HD Ticket": {
-        "before_save": "nexapp.api.before_save"
     }
 }
-
 
 
 fixtures = [   
@@ -276,10 +272,7 @@ fixtures = [
     {"dt": "DocType", "filters": [["module", "=", "Nexapp"], ["custom", "=", 1]]},  # Fix: Only custom doctypes
     {"dt": "Custom Field", "filters": [["module", "=", "Nexapp"]]},
     {"dt": "Property Setter", "filters": [["module", "=", "Nexapp"]]},    
-    {"dt": "Email Domain"},
-    {"dt": "Email Account"},
-    {"dt": "Notification"},
-    {"dt": "Website Theme"}           
+    {"dt": "Email Domain"}               
 ]
 
 doctype_js = {
@@ -345,13 +338,13 @@ doctype_js = {
         "public/js/site_pincode.js",
         "public/js/site_contact.js"
     ],
-    "HD Ticket": [
-        "public/js/hd_ticket_custom.js",
-        "public/js/inhouse_ticket.js",
-        "public/js/sla.js",
-        "public/js/maintenanc.js",
-        "public/js/ticket_task.js"        
-    ],
+    #"HD Ticket": [
+        #"public/js/hd_ticket_custom.js",
+        #"public/js/inhouse_ticket.js",
+        #"public/js/sla.js",
+        #"public/js/maintenanc.js",
+        #"public/js/ticket_task.js"        
+   # ],
 
     "Project": "public/js/Project_custom_ui.js",
     "CCR": "public/js/ccr_custom.js",
