@@ -418,3 +418,25 @@ def download_subcategory_pdf(subcategory):
     frappe.local.response.type = "pdf"
 
 ######################################################################
+import frappe
+
+def validate_subscription_circuit(doc, method):
+    if not doc.subscription or doc.status != "Draft":
+        return
+
+    # Get Subscription
+    subscription = frappe.get_doc("Subscription", doc.subscription)
+    if not subscription:
+        return
+
+    # Get Subscription Plan Details
+    for detail in subscription.get("plans"):
+        if detail.custom_circuit == doc.custom_circuit_id:
+            # Optional: update other fields if required
+            frappe.db.set_value(
+                "Sales Invoice Item", 
+                doc.name, 
+                "subscription", 
+                subscription.name
+            )
+            break

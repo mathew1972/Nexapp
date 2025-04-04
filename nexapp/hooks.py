@@ -263,8 +263,15 @@ doc_events = {
     },
     "Communication": {
         "after_insert": "nexapp.api.create_hd_ticket_from_communication"
+    },
+    "Sales Invoice Item": {
+        "on_update": "nexapp.api.validate_subscription_circuit"
     }
 }
+
+
+
+
 
 
 fixtures = [   
@@ -354,6 +361,7 @@ doctype_js = {
     "Task": "public/js/task_to_ticket.js",
     "Maintenance Visit": "public/js/maintenance_visit_approved.js"    
 }
+
 
 
 
