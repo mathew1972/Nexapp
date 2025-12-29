@@ -3,6 +3,81 @@
 
 frappe.ui.form.on('Stock Management', {
     refresh: function(frm) {
+        const fields = [
+            'circuit_id', 'order_type', 'exiting_circuit_id', 'status', 'delivery_requested_date', 'solution',
+            'stock_management_item', 'stock_activities', 'site_name', 'customer_name', 'site_address', 'city',
+            'pincode', 'district', 'state', 'country', 'contact_person', 'primary_contact_mobile', 'email',
+            'alternate_contact_person', 'alternate_contact_mobile', 'secondary_email', 'delivery_note_id'
+        ];
+
+        fields.forEach(function(field) {
+            if (frm.fields_dict[field]) {
+                const fieldElement = $(frm.fields_dict[field].wrapper).find('input, textarea, select');
+
+                // Apply styles based on whether the field is required
+                if (frm.fields_dict[field].df.reqd) {
+                    fieldElement.css({
+                        'border': '1px solid #ccc',
+                        'border-left': '4px solid red',
+                        'border-radius': '7px',
+                        'padding': '5px',
+                        'outline': 'none',
+                        'background-color': '#ffffff',
+                        'transition': '0.3s ease-in-out'
+                    });
+                } else {
+                    fieldElement.css({
+                        'border': '1px solid #ccc',
+                        'border-radius': '7px',
+                        'padding': '5px',
+                        'outline': 'none',
+                        'background-color': '#ffffff',
+                        'transition': '0.3s ease-in-out'
+                    });
+                }
+
+                // Apply focus and blur effects
+                fieldElement.on('focus', function() {
+                    if (frm.fields_dict[field].df.reqd) {
+                        $(this).css({
+                            'border': '1px solid #80bdff',
+                            'border-left': '5px solid red',
+                            'box-shadow': '0 0 8px 0 rgba(0, 123, 255, 0.5)',
+                            'background-color': '#ffffff'
+                        });
+                    } else {
+                        $(this).css({
+                            'border': '1px solid #80bdff',
+                            'box-shadow': '0 0 8px 0 rgba(0, 123, 255, 0.5)',
+                            'background-color': '#ffffff'
+                        });
+                    }
+                });
+
+                fieldElement.on('blur', function() {
+                    if (frm.fields_dict[field].df.reqd) {
+                        $(this).css({
+                            'border': '1px solid #ccc',
+                            'border-left': '5px solid red',
+                            'box-shadow': 'none',
+                            'background-color': '#ffffff'
+                        });
+                    } else {
+                        $(this).css({
+                            'border': '1px solid #ccc',
+                            'box-shadow': 'none',
+                            'background-color': '#ffffff'
+                        });
+                    }
+                });
+            }
+        });
+    }
+});
+
+//////////////////////////////////////////////////////////////////
+frappe.ui.form.on('Stock Management', {
+    refresh: function(frm) {
         if (!frm.is_new()) {
             // Remove existing button if any
             if (frm.custom_buttons && frm.custom_buttons['Stock Management']) {
@@ -25,7 +100,8 @@ frappe.ui.form.on('Stock Management', {
 
             // Status-based button visibility rules
             const status_rules = {
-                'Stock Requested': ['Stock Reserve'],
+                'Stock Requested': ['Stock Reserve'], 
+                'Stock Reserved': ['Stock Unreserve'],                
                 'Stock Reserve Requested': ['Stock Reserve'],
                 'Stock Unreserve Requested': ['Stock Unreserve'],
                 'Stock Delivery Requested': ['Delivery'],
@@ -178,3 +254,81 @@ function update_all_child_rows_stock(frm) {
         }
     });
 }
+
+//////////////////////////////////////////////////////////////////////////
+frappe.ui.form.on('Delivery Note', {
+    custom_dn_circuit_id(frm) {
+        if (frm.doc.custom_dn_circuit_id) {
+            frappe.call({
+                method: 'nexapp.api.update_site_delivery_status',
+                args: {
+                    site_id: frm.doc.custom_dn_circuit_id
+                },
+                callback: function(r) {
+                    if (r.message === 'updated') {
+                        frappe.msgprint('Site and Site Items updated to "Stock Delivery In-Process"');
+                    } else {
+                        frappe.msgprint('No matching Site found or error occurred.');
+                    }
+                }
+            });
+        }
+    }
+});
+//////////////////////////////////////////////////////////////////////////////
+frappe.ui.form.on('Stock Management', {
+    refresh: function(frm) {
+        // Ensure the field is rendered
+        setTimeout(() => {
+            const field = frm.fields_dict["instructions"];
+            if (field && field.$wrapper) {
+                field.$wrapper.find('textarea, input').css('background-color', '#ffebe6');  // Light red
+            }
+        }, 100);
+    }
+});
+
+///////////////////////////////////////////////////////////////////////////////
+// Additional Item to Site
+
+frappe.ui.form.on('Stock Management', {
+    refresh(frm) {
+        frm.page.clear_primary_action();
+
+        // Check if there are any rows where addition_item = "Yes" and added__to_site != 1
+        const hasPendingItems = (frm.doc.stock_management_item || []).some(
+            row => row.addition_item === "Yes" && row.added__to_site != 1
+        );
+
+        // Only show button if there are items pending to be added
+        if (hasPendingItems) {
+            frm.page.add_button('Add Additional Item To Site', () => {
+                frappe.confirm(
+                    'Are you sure you want to add all Additional Items to the corresponding Site?',
+                    () => {
+                        frappe.call({
+                            method: 'nexapp.nexapp.doctype.stock_management.stock_management.add_additional_item_to_site',
+                            args: {
+                                stock_management_name: frm.doc.name
+                            },
+                            callback: function (r) {
+                                if (!r.exc) {
+                                    frappe.msgprint({
+                                        message: __('All Additional Items added successfully to Site'),
+                                        indicator: 'green'
+                                    });
+                                    frm.reload_doc();
+                                }
+                            }
+                        });
+                    }
+                );
+            }).css({
+                'background-color': '#FF0000',
+                'color': '#FFFFFF',
+                'font-weight': 'bold',
+                'border-radius': '6px'
+            });
+        }
+    }
+});

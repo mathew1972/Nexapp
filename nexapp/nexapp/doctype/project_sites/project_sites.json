@@ -1,0 +1,72 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-04-02 20:21:36.881017",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "circuit_id",
+  "solution",
+  "project_stage",
+  "status",
+  "delivery_date",
+  "billing"
+ ],
+ "fields": [
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Circuit ID",
+   "options": "Site"
+  },
+  {
+   "fetch_from": "circuit_id.solution_name",
+   "fieldname": "solution",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Solution"
+  },
+  {
+   "fetch_from": "circuit_id.stage",
+   "fieldname": "project_stage",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Project Stage"
+  },
+  {
+   "fieldname": "delivery_date",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Delivery Date"
+  },
+  {
+   "fetch_from": "circuit_id.site_status",
+   "fieldname": "status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Status"
+  },
+  {
+   "fetch_from": "circuit_id.billing_status",
+   "fieldname": "billing",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Billing"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-04-02 20:46:20.728673",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Project sites",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

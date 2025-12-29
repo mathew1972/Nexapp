@@ -1,0 +1,55 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-05-29 00:00:05.926830",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 6,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-11-25 12:19:03.664226",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Purchase Invoice - Payment",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "WITH bank_ordered AS (\n    SELECT\n        ba.*,\n        ROW_NUMBER() OVER (\n            PARTITION BY ba.party \n            ORDER BY ba.creation\n        ) AS rn\n    FROM `tabBank Account` ba\n    WHERE ba.party_type = 'Supplier'\n)\n\nSELECT\n    (@rownum := @rownum + 1) AS \"Index:Int:60\",\n    pi.supplier_name AS \"Supplier:Data:150\",\n    CONCAT_WS('-', pi.posting_date, pi.name) AS \"Invoice ID:Data:180\",\n    pi.bill_no AS \"Bill No:Data:120\",\n    pi.bill_date AS \"Bill Date:Date:100\",\n    pi.rounded_total AS \"Rounded Total:Currency:120\",\n    pi.outstanding_amount AS \"Outstanding Amount:Currency:120\",\n    pi.status AS \"Status:Data:100\",\n    pi.posting_date AS \"Posting Date:Date:100\",\n    pi.custom_dutation_from AS \"Duration From:Date:100\",\n    pi.custom_duration_to AS \"Duration To:Date:100\",\n    pi.custom_payment_cycle AS \"Payment Cycle:Data:100\",\n    pi.custom_payment_type AS \"Payment Type:Data:100\",\n    pi.custom_payment_catogery AS \"Payment Category:Data:120\",\n    pi.custom_circuit_id AS \"Circuit ID:Data:120\",\n\n    sup.supplier_group AS \"Supplier Group:Data:120\",\n\n    /* BANK ACCOUNT SET 1 */\n    MAX(CASE WHEN bo.rn = 1 THEN bo.account_name END) AS \"Bank Account Holder-1:Data:150\",\n    MAX(CASE WHEN bo.rn = 1 THEN bo.bank_account_no END) AS \"Bank Account No-1:Data:150\",\n    MAX(CASE WHEN bo.rn = 1 THEN bo.custom_ifsc END) AS \"IFSC Code-1:Data:120\",\n\n    /* BANK ACCOUNT SET 2 */\n    MAX(CASE WHEN bo.rn = 2 THEN bo.account_name END) AS \"Bank Account Holder-2:Data:150\",\n    MAX(CASE WHEN bo.rn = 2 THEN bo.bank_account_no END) AS \"Bank Account No-2:Data:150\",\n    MAX(CASE WHEN bo.rn = 2 THEN bo.custom_ifsc END) AS \"IFSC Code-2:Data:120\",\n\n    /* BANK ACCOUNT SET 3 */\n    MAX(CASE WHEN bo.rn = 3 THEN bo.account_name END) AS \"Bank Account Holder-3:Data:150\",\n    MAX(CASE WHEN bo.rn = 3 THEN bo.bank_account_no END) AS \"Bank Account No-3:Data:150\",\n    MAX(CASE WHEN bo.rn = 3 THEN bo.custom_ifsc END) AS \"IFSC Code-3:Data:120\",\n\n    /* BANK ACCOUNT SET 4 */\n    MAX(CASE WHEN bo.rn = 4 THEN bo.account_name END) AS \"Bank Account Holder-4:Data:150\",\n    MAX(CASE WHEN bo.rn = 4 THEN bo.bank_account_no END) AS \"Bank Account No-4:Data:150\",\n    MAX(CASE WHEN bo.rn = 4 THEN bo.custom_ifsc END) AS \"IFSC Code-4:Data:120\",\n\n    /* BANK ACCOUNT SET 5 */\n    MAX(CASE WHEN bo.rn = 5 THEN bo.account_name END) AS \"Bank Account Holder-5:Data:150\",\n    MAX(CASE WHEN bo.rn = 5 THEN bo.bank_account_no END) AS \"Bank Account No-5:Data:150\",\n    MAX(CASE WHEN bo.rn = 5 THEN bo.custom_ifsc END) AS \"IFSC Code-5:Data:120\"\n\nFROM `tabPurchase Invoice` pi\n\nLEFT JOIN `tabSupplier` sup \n    ON sup.name = pi.supplier\n\nLEFT JOIN bank_ordered bo\n    ON bo.party = pi.supplier\n\n,\n(SELECT @rownum := 0) r\n\nGROUP BY pi.name\nORDER BY pi.posting_date DESC;\n",
+ "ref_doctype": "Purchase Invoice",
+ "report_name": "Purchase Invoice - Payment",
+ "report_script": "\"filters\": [\n    {\n        \"fieldname\": \"bill_date_from\",\n        \"label\": \"Bill Date From\",\n        \"fieldtype\": \"Date\",\n        \"default\": frappe.utils.add_days(frappe.utils.today(), -30)\n    },\n    {\n        \"fieldname\": \"bill_date_to\",\n        \"label\": \"Bill Date To\",\n        \"fieldtype\": \"Date\",\n        \"default\": frappe.utils.today()\n    }\n]\n",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "accounts receivable"
+  },
+  {
+   "role": "Purchase User"
+  },
+  {
+   "role": "Auditor"
+  },
+  {
+   "role": "Accounts  & Finance Manager"
+  },
+  {
+   "role": "Account Payable"
+  },
+  {
+   "role": "Account Receivable User"
+  },
+  {
+   "role": "LMS Manager"
+  },
+  {
+   "role": "LMS User"
+  },
+  {
+   "role": "Stock Manager"
+  }
+ ],
+ "timeout": 0
+}

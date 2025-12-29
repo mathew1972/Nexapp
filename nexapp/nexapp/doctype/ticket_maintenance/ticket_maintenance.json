@@ -6,6 +6,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "circuit_id",
   "maintenance_date",
   "work",
   "status",
@@ -15,7 +16,9 @@
   "service_person",
   "engineer_mobile",
   "field_engineer_mobile",
-  "item"
+  "item",
+  "section_break_oevt",
+  "site_address"
  ],
  "fields": [
   {
@@ -92,12 +95,28 @@
    "fieldtype": "Data",
    "label": "Field Engineer Mobile",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_oevt",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "circuit_id.address_street",
+   "fieldname": "site_address",
+   "fieldtype": "Small Text",
+   "label": "Site Address"
+  },
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "label": "Circuit ID",
+   "options": "Site"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-03-20 22:27:44.482960",
+ "modified": "2025-05-03 16:27:55.850965",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Ticket Maintenance",

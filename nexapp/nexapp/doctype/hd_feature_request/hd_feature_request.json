@@ -1,0 +1,186 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2025-03-16 00:25:46.108097",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "request_type",
+  "status",
+  "application",
+  "module",
+  "submodule",
+  "priority",
+  "parent1",
+  "column_break_sesh",
+  "target_date",
+  "start_date",
+  "end_date",
+  "duration",
+  "product",
+  "category",
+  "sub_category",
+  "story_point_esitmate",
+  "attachment",
+  "feature_name_section",
+  "feature_name",
+  "detailed_information_section",
+  "description"
+ ],
+ "fields": [
+  {
+   "default": "ToDo",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nToDo\nInprogress\nin-review\nDone\nrejected\nconsider for Future"
+  },
+  {
+   "fieldname": "product",
+   "fieldtype": "Link",
+   "label": "Product",
+   "options": "Item"
+  },
+  {
+   "fieldname": "feature_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Summary",
+   "reqd": 1
+  },
+  {
+   "description": "Detailed Information for function or Bug ",
+   "fieldname": "description",
+   "fieldtype": "Text Editor",
+   "label": "Description"
+  },
+  {
+   "fieldname": "column_break_sesh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Feature",
+   "fieldname": "request_type",
+   "fieldtype": "Select",
+   "label": "Request Type",
+   "options": "Epic\nTask\nFeature\nStory\nBug"
+  },
+  {
+   "fieldname": "detailed_information_section",
+   "fieldtype": "Section Break",
+   "label": "Description"
+  },
+  {
+   "fieldname": "application",
+   "fieldtype": "Select",
+   "label": "Application",
+   "options": "Controller\nNexappOS",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "submodule.category",
+   "fieldname": "category",
+   "fieldtype": "Data",
+   "label": "Epic"
+  },
+  {
+   "fieldname": "module",
+   "fieldtype": "Link",
+   "label": "module",
+   "options": "HD feature Module",
+   "reqd": 1
+  },
+  {
+   "fieldname": "submodule",
+   "fieldtype": "Link",
+   "label": "SubModule",
+   "options": "HD feature SubModule",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "submodule.subcategory",
+   "fieldname": "sub_category",
+   "fieldtype": "Data",
+   "label": "Sub Category"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start date"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date"
+  },
+  {
+   "fieldname": "duration",
+   "fieldtype": "Duration",
+   "label": "Duration"
+  },
+  {
+   "fieldname": "target_date",
+   "fieldtype": "Data",
+   "label": "Due Date"
+  },
+  {
+   "fieldname": "priority",
+   "fieldtype": "Select",
+   "label": "Priority",
+   "options": "\nHighest\nHigh\nLow\nlowest",
+   "reqd": 1
+  },
+  {
+   "fieldname": "feature_name_section",
+   "fieldtype": "Section Break",
+   "label": "Feature Name"
+  },
+  {
+   "fieldname": "parent1",
+   "fieldtype": "Link",
+   "label": "Parent",
+   "options": "HD Feature Request"
+  },
+  {
+   "fieldname": "story_point_esitmate",
+   "fieldtype": "Data",
+   "label": "Story Point Esitmate"
+  },
+  {
+   "fieldname": "attachment",
+   "fieldtype": "Attach",
+   "label": "Attachment"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_calendar_and_gantt": 1,
+ "links": [],
+ "modified": "2025-10-28 15:14:21.070982",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "HD Feature Request",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

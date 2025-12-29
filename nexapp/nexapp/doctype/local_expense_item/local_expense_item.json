@@ -1,0 +1,128 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-07-05 21:30:45.350041",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "expense_date",
+  "expense_type",
+  "note",
+  "transport_modes",
+  "column_break_tlyc",
+  "customer",
+  "ccr_id",
+  "km",
+  "amount",
+  "section_break_tqoe",
+  "attach",
+  "column_break_qwmk",
+  "sanctioned_amount"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "expense_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Expense Date",
+   "placeholder": "Expense date must be within 30 days of the activity."
+  },
+  {
+   "columns": 2,
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "columns": 1,
+   "depends_on": "eval: doc.expense_type == \"Local Conveyance\" && (doc.transport_modes == \"Two-wheeler\" || doc.transport_modes == \"Car\")\n",
+   "description": "\u20b94/km for two-wheeler and \u20b98/km for car",
+   "fieldname": "km",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Kilometre",
+   "mandatory_depends_on": "eval: doc.expense_type == \"Local Conveyance\" && (doc.transport_modes == \"Two-wheeler\" || doc.transport_modes == \"Car\")\n",
+   "precision": "2"
+  },
+  {
+   "bold": 1,
+   "columns": 2,
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount",
+   "read_only_depends_on": "eval: doc.expense_type == \"Local Conveyance\" && (doc.transport_modes == \"Two-wheeler\" || doc.transport_modes == \"Car\")"
+  },
+  {
+   "depends_on": "eval:doc.transport_modes!=\"Own vehicle\"",
+   "description": "No bill required for miscellaneous expenses up to \u20b9100 per day",
+   "fieldname": "attach",
+   "fieldtype": "Attach",
+   "label": "Attach"
+  },
+  {
+   "fieldname": "column_break_tlyc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "fieldname": "sanctioned_amount",
+   "fieldtype": "Currency",
+   "label": "Sanctioned Amount"
+  },
+  {
+   "columns": 2,
+   "fieldname": "expense_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Expense Type",
+   "link_filters": "[[\"Expense Claim Type\",\"custom_type\",\"=\",\"Local\"]]",
+   "options": "Expense Claim Type"
+  },
+  {
+   "depends_on": "eval:doc.expense_type==\"Local Conveyance\"",
+   "fieldname": "transport_modes",
+   "fieldtype": "Select",
+   "label": "Transport Modes",
+   "mandatory_depends_on": "eval:doc.expense_type==\"Local Conveyance\"",
+   "options": "\nPublic Transport\nPre-paid Taxi\nAuto-Rickshaw\nTwo-wheeler\nCar"
+  },
+  {
+   "fieldname": "ccr_id",
+   "fieldtype": "Link",
+   "label": "CCR ID",
+   "options": "CCR",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_tqoe",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_qwmk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.expense_type == \"Miscellaneous\"\n",
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Note"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-07-06 22:09:09.930521",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Local Expense Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

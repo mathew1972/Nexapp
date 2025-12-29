@@ -1,0 +1,91 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-07-23 17:18:26.515514",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "shipment_id",
+  "awb_number",
+  "carrier",
+  "service_provider",
+  "column_break_lrge",
+  "tracking_status",
+  "shipment_delivery_date",
+  "pickup_date",
+  "carrier_service"
+ ],
+ "fields": [
+  {
+   "fieldname": "shipment_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Shipment ID",
+   "options": "Shipment"
+  },
+  {
+   "fieldname": "column_break_lrge",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "shipment_id.tracking_status",
+   "fieldname": "tracking_status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Tracking Status"
+  },
+  {
+   "fetch_from": "shipment_id.service_provider",
+   "fieldname": "service_provider",
+   "fieldtype": "Data",
+   "label": "Service Provider"
+  },
+  {
+   "fetch_from": "shipment_id.carrier",
+   "fieldname": "carrier",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Carrier"
+  },
+  {
+   "fetch_from": "shipment_id.custom_delivery_date",
+   "fieldname": "shipment_delivery_date",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Shipment Delivery Date"
+  },
+  {
+   "fetch_from": "shipment_id.pickup_date",
+   "fieldname": "pickup_date",
+   "fieldtype": "Data",
+   "label": "Pickup Date"
+  },
+  {
+   "fetch_from": "shipment_id.carrier_service",
+   "fieldname": "carrier_service",
+   "fieldtype": "Data",
+   "label": "Carrier Service "
+  },
+  {
+   "fetch_from": "shipment_id.awb_number",
+   "fieldname": "awb_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "AWB Number"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-07-23 17:29:53.817313",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Project Shipment",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,64 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-06-17 16:07:37.939967",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "mandatory": 0,
+   "options": "Customer",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "site_type",
+   "fieldtype": "Link",
+   "label": "Site Type",
+   "mandatory": 0,
+   "options": "Site Type",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "territory",
+   "fieldtype": "Link",
+   "label": "Territory",
+   "mandatory": 0,
+   "options": "Territory",
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-06-25 14:43:25.845681",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Project - Site Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    s.name AS \"Circuit ID:Link/Site:150\",\n    s.creation AS \"Created On:Datetime:150\",\n\n    -- Ageing in days based on creation date\n    DATEDIFF(CURDATE(), s.creation) AS \"Ageing (Days):Int:100\",\n\n    -- Bucket based on ageing from creation\n    CASE \n        WHEN DATEDIFF(CURDATE(), s.creation) <= 30 THEN 'Circuit Bucket (30)'\n        WHEN DATEDIFF(CURDATE(), s.creation) <= 60 THEN 'Circuit Bucket (60)'\n        ELSE 'Circuit Bucket (90 and above)'\n    END AS \"Circuit Bucket:Data:150\",\n\n    s.site_id__legal_code AS \"Site ID / Legal Code:Data:150\",\n    s.customer AS \"Customer:Link/Customer:150\",\n    s.site_type AS \"Site Type:Data:100\",\n    s.territory AS \"Territory:Data:120\",\n    s.order_type AS \"Order Type:Data:100\",\n    s.site_name AS \"Site Name:Data:150\",\n    s.site_status AS \"Site Status:Data:100\",\n    s.stage AS \"Stock Stage:Data:100\",\n    s.lms_stage AS \"LMS Stage:Data:100\",\n    s.project_review AS \"Project Review:Data:150\",\n    s.lms_review AS \"LMS Review:Data:150\",\n    s.task_ownership AS \"Task Ownership:Data:150\",\n\n    s.solution_name AS \"Solution Name:Data:150\",\n    s.managed_services AS \"Managed Services:Data:100\",\n    s.config_type AS \"Config Type:Data:100\",\n    s.static_ip AS \"Static IP:Data:100\",\n    s.nos_of_static_ip_required AS \"No. of Static IPs:Int:80\",\n\n    s.address_street AS \"Site Address:Data:200\",\n    s.pincode AS \"Shipment Pincode:Data:100\",\n    s.district AS \"District:Data:100\",\n    s.city AS \"City:Data:100\",\n    s.state AS \"State:Data:100\",\n    s.contact_person AS \"Contact Person:Data:150\",\n    s.primary_contact_mobile AS \"Contact Mobile No:Data:100\",        \n    s.project_manager AS \"Project Manager:Data:150\",\n    s.carrier AS \"Carrier:Data:100\",\n    s.carrier_service AS \"Carrier Service:Data:100\",\n    s.stock_requested_date AS \"Stock Requested Date:Date:120\",\n    s.awb_number AS \"AWB Number:Data:100\",\n    s.pickup_date AS \"Pickup Date:Date:100\",\n    s.delivery_date AS \"Shipment Delivery Date:Date:100\",\n    s.tracking_status AS \"Shipment Tracking Status:Data:100\",    \n\n    lm.name AS \"Lastmile Service ID:Link/Lastmile Services Master:150\",\n    lm.lms_feasibility_partner AS \"LMS Feasibility Partner:Data:150\",    \n    lm.lms_stage AS \"LMS Stage:Data:100\",\n    lm.lms_delivery_date AS \"LMS Delivery Date :Date:100\",\n    lm.po_requested_date AS \"PO Requested Date:Date:100\",    \n    lm.po_released_datetime AS \"PO Released Datetime:Datetime:150\",\n    lm.bandwith_type AS \"Bandwidth Type:Data:100\",\n\n    mv.mntc_date AS \"Maintenance Scheduled Date:Date:120\",\n    mv.custom_completed_datetime AS \"Maintenance Completed:Datetime:150\",\n    mv.completion_status AS \"Maintenance Completion Status:Data:120\",\n\n    s.description AS \"Description:Data:200\"\n\nFROM `tabSite` s\nLEFT JOIN `tabLMS Site` l ON l.lms_id = s.name\nLEFT JOIN `tabLastmile Services Master` lm ON lm.circuit_id = s.name\nLEFT JOIN `tabMaintenance Visit` mv ON mv.custom_circuit_id = s.name\n\nWHERE s.site_status NOT IN ('Delivered and Live', 'Delivered', 'Cancelled')\n\nORDER BY s.name DESC;\n",
+ "ref_doctype": "Site",
+ "report_name": "Project - Site Report",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Projects Manager"
+  },
+  {
+   "role": "LMS Manager"
+  },
+  {
+   "role": "Projects User"
+  }
+ ],
+ "timeout": 0
+}

@@ -1,0 +1,108 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-06-17 15:05:01.110270",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-06-27 14:22:51.255750",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Site Report For Billing",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    (@rownum := @rownum + 1) AS \"Index:Int:60\",\n    s.name AS \"Site ID:Link/Site:150\",\n    s.site_name AS \"Site Name:Data:150\",\n    s.customer AS \"Customer:Link/Customer:150\",  \n    s.customer_type AS \"Customer Type:Data:100\",\n    s.site_status AS \"Site Status:Data:100\",\n    s.stage AS \"Stage:Data:100\",\n    s.order_type AS \"Order Type:Data:100\",\n    s.solution_name AS \"Solution:Data:150\",\n    s.pincode AS \"Pincode:Data:80\",\n    s.city AS \"City:Data:120\",\n    s.state AS \"State:Data:120\",\n    s.date AS \"Circuit Delivery Date:Date:120\",\n    s.project AS \"Project:Link/Project:150\",\n    s.sales_order AS \"Sales Order:Link/Sales Order:150\",\n    s.billing_status AS \"Billing Status:Data:100\",\n    s.partially_completed_date AS \"Partially Completed Date:Date:120\",\n    s.customer_po_no AS \"Customer PO No:Data:120\",\n    s.customer_po_date AS \"Customer PO Date:Date:120\",\n\n    lv.lms_id AS \"LMS ID:Data:120\",\n    lv.lms_supplier AS \"LMS Supplier:Link/Supplier:150\",\n    lv.bandwith_type AS \"Bandwidth Type:Data:100\",\n    i.item_name AS \"Bandwidth:Data:150\",\n    lv.stage AS \"LMS Stage:Data:100\",\n    lv.lms_delivery_date AS \"LMS Delivery Date:Date:120\"\n\nFROM `tabSite` s\nLEFT JOIN `tabLMS Site` lv \n    ON lv.parent = s.name AND lv.parenttype = 'Site'\nLEFT JOIN `tabItem` i \n    ON i.name = lv.bandwidth,\n(SELECT @rownum := 0) r\n\nWHERE lv.stage = 'LMS Delivered'\n  AND s.site_status != 'Cancelled'\n\nORDER BY s.date DESC;\n",
+ "ref_doctype": "Site",
+ "report_name": "Site Report For Billing",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Nexapp Sales Manager"
+  },
+  {
+   "role": "Desk User"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Maintenance User"
+  },
+  {
+   "role": "Maintenance Manager"
+  },
+  {
+   "role": "Administrator"
+  },
+  {
+   "role": "Sales Manager"
+  },
+  {
+   "role": "Support Manager"
+  },
+  {
+   "role": "L2 Support"
+  },
+  {
+   "role": "L1 Support"
+  },
+  {
+   "role": "Projects Manager"
+  },
+  {
+   "role": "Data Analyst"
+  },
+  {
+   "role": "CRM User"
+  },
+  {
+   "role": "CRM-Sales Manager Standard"
+  },
+  {
+   "role": "accounts receivable"
+  },
+  {
+   "role": "CRM MIS"
+  },
+  {
+   "role": "Accounts  & Finance Manager"
+  },
+  {
+   "role": "Account Receivable User"
+  },
+  {
+   "role": "LMS Manager"
+  },
+  {
+   "role": "CRM-Inside Sales"
+  },
+  {
+   "role": "Stock Manager"
+  },
+  {
+   "role": "Projects User"
+  },
+  {
+   "role": "Project Co-Ordinator"
+  },
+  {
+   "role": "LMS User"
+  },
+  {
+   "role": "LMS User-1"
+  },
+  {
+   "role": "Account Payable"
+  }
+ ],
+ "timeout": 0
+}

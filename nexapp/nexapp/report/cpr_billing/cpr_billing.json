@@ -1,0 +1,42 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-09-20 13:06:11.413229",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-09-20 13:08:46.649069",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "CPR Billing",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    s.circuit_id AS \"Circuit ID:Data:150\",\n    s.customer AS \"Customer:Link/Customer:200\",\n    s.site_name AS \"Site Name:Data:200\",\n    s.order_type AS \"Order Type:Data:150\",\n    s.site_status AS \"Site Status:Data:150\",\n    s.lms_stage AS \"LMS Stage:Data:150\",\n    s.stage AS \"Stock Stage:Data:150\",\n\n    GROUP_CONCAT(DISTINCT lms.lms_id SEPARATOR ', ') AS \"LMS ID:Data:150\",\n    GROUP_CONCAT(DISTINCT lms.bandwidth SEPARATOR ', ') AS \"Bandwidth:Data:150\",\n    GROUP_CONCAT(DISTINCT lms.bandwith_type SEPARATOR ', ') AS \"Bandwidth Type:Data:150\",\n    GROUP_CONCAT(DISTINCT lms.brandwidth_name SEPARATOR ', ') AS \"Bandwidth Name:Data:150\",\n    GROUP_CONCAT(DISTINCT lms.stage SEPARATOR ', ') AS \"LMS Status:Data:150\",\n    GROUP_CONCAT(DISTINCT lms.media SEPARATOR ', ') AS \"Media:Data:150\",\n    GROUP_CONCAT(DISTINCT DATE_FORMAT(lms.lms_delivery_date, '%%Y-%%m-%%d') SEPARATOR ', ') AS \"LMS Delivery Date:Date:150\",\n    GROUP_CONCAT(DISTINCT lms.billing_mode SEPARATOR ', ') AS \"Billing Mode:Data:150\"\n\nFROM\n    `tabSite` s\n\nLEFT JOIN\n    `tabLMS Site` lms\n        ON lms.parent = s.name\n        AND lms.parenttype = 'Site'\n        AND lms.parentfield = 'lms_vendor'\n\nWHERE\n    s.customer = \"Connaught Plaza Restaurants\"\n\nGROUP BY\n    s.circuit_id,\n    s.customer,\n    s.site_name,\n    s.order_type,\n    s.site_status,\n    s.lms_stage,\n    s.stage;\n",
+ "ref_doctype": "Site",
+ "report_name": "CPR Billing",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "accounts receivable"
+  },
+  {
+   "role": "Accounts  & Finance Manager"
+  },
+  {
+   "role": "Account Receivable User"
+  },
+  {
+   "role": "Account Payable"
+  }
+ ],
+ "timeout": 0
+}

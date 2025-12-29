@@ -1,0 +1,45 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-08-18 11:05:37.996779",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-08-18 11:07:28.991312",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Site Data",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    -- Site fields\n    s.name AS `Circuit ID`,\n    s.exiting_circuit_id AS `Existing Circuit ID`,\n    s.site_name AS `Site Name`,\n    s.customer AS `Customer`,\n    s.order_type AS `Order Type`,\n    s.site_type AS `Site Type`,\n    s.territory AS `Territory`,\n    s.lms_type AS `LMS Type`,\n    s.site_status AS `Site Status`,\n    s.date AS `Circuit Delivery Date`,\n    s.shifted_circuit_id AS `Shifted Circuit ID`,\n    s.stage AS `Stock Stage`,\n    s.lms_stage AS `LMS Stage`,\n    s.customer_type AS `Customer Type`,\n    s.site_id__legal_code AS `Site Legal Code`,\n    s.solution_name AS `Solution Name`,\n    s.managed_services AS `Managed Services`,\n    s.config_type AS `Config Type`,\n    s.sales_order AS `Sales Order`,\n    s.billing_status AS `Billing Status`,\n    s.partially_completed_date AS `Partially Completed Date`,\n    s.customer_po_no AS `Customer PO No`,\n\n    -- Site Item fields\n    si.item_name AS `Item Name`,\n    si.qty AS `Quantity`,\n    si.status AS `Item Status`,\n\n    -- LMS Site fields\n    lms.lms_id AS `LMS ID`,\n    lms.lms_supplier AS `LMS Supplier`,\n    lms.brandwidth_name AS `Bandwidth Name`,\n    lms.bandwith_type AS `Bandwidth Type`,\n    lms.stage AS `LMS Status`,\n    lms.lms_delivery_date AS `LMS Delivery Date`\n\nFROM\n    `tabSite` s\nLEFT JOIN\n    `tabSite Item` si ON si.parent = s.name\nLEFT JOIN\n    `tabLMS Site` lms ON lms.parent = s.name\n\nORDER BY\n    s.name DESC;\n",
+ "ref_doctype": "Site",
+ "report_name": "Site Data",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Administrator"
+  },
+  {
+   "role": "accounts receivable"
+  },
+  {
+   "role": "Accounts  & Finance Manager"
+  },
+  {
+   "role": "Account Receivable User"
+  },
+  {
+   "role": "Account Payable"
+  }
+ ],
+ "timeout": 0
+}

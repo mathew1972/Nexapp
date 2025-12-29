@@ -1,0 +1,33 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-07-11 21:15:02.101672",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-07-11 22:54:44.683540",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "SLA - HD Ticket",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    t.name AS \"Ticket ID:Link/HD Ticket:150\",\n    t.custom_circuit_id AS \"Circuit ID:Link/Site:150\",\n    t.customer AS \"Customer:Link/Customer:150\",\n    t.custom_site_type AS \"Site Type:Data:120\",\n    t.status AS \"Status:Data:120\",\n    t.custom_agent_name AS \"Agent Name:Data:150\",\n    t.custom_channel AS \"Channel:Data:120\",\n    t.custom_impact AS \"Impact:Data:120\",\n    t.priority AS \"Priority:Data:100\",\n\n    CASE\n        WHEN t.priority = 'Low' THEN 72\n        WHEN t.priority = 'Medium' THEN 24\n        WHEN t.priority = 'High' THEN 4\n        WHEN t.priority = 'Urgent' THEN 2\n        ELSE NULL\n    END AS \"SLA (Hrs):Float:80\",\n\n    STR_TO_DATE(CONCAT(t.opening_date, ' ', t.opening_time), '%%Y-%%m-%%d %%H:%%i:%%s') AS \"Ticket Datetime:Datetime:150\",\n    t.resolution_by AS \"Resoluation Datetime:Datetime:150\",\n\n    IF(\n       t.resolution_by IS NOT NULL AND t.opening_date IS NOT NULL AND t.opening_time IS NOT NULL,\n       CONCAT(\n           FLOOR(TIMESTAMPDIFF(MINUTE, STR_TO_DATE(CONCAT(t.opening_date, ' ', t.opening_time), '%%Y-%%m-%%d %%H:%%i:%%s'), t.resolution_by)/60), ' hr ',\n           MOD(TIMESTAMPDIFF(MINUTE, STR_TO_DATE(CONCAT(t.opening_date, ' ', t.opening_time), '%%Y-%%m-%%d %%H:%%i:%%s'), t.resolution_by), 60), ' min'\n       ),\n       ''\n    ) AS \"Total Time Taken:Data:150\",\n\n    IF(\n       t.resolution_by IS NOT NULL AND t.opening_date IS NOT NULL AND t.opening_time IS NOT NULL,\n       IF(\n           (TIMESTAMPDIFF(MINUTE, STR_TO_DATE(CONCAT(t.opening_date, ' ', t.opening_time), '%%Y-%%m-%%d %%H:%%i:%%s'), t.resolution_by) / 60)\n           <= \n           CASE\n               WHEN t.priority = 'Low' THEN 72\n               WHEN t.priority = 'Medium' THEN 24\n               WHEN t.priority = 'High' THEN 4\n               WHEN t.priority = 'Urgent' THEN 2\n               ELSE NULL\n           END,\n           'SLA Met',\n           'SLA Violated'\n       ),\n       ''\n    ) AS \"SLA Status:Data:120\"\n\nFROM `tabHD Ticket` t\nWHERE t.status = 'Resolved'\n  AND t.resolution_by IS NOT NULL\n  AND t.opening_date IS NOT NULL\n  AND t.opening_time IS NOT NULL\nORDER BY t.opening_date DESC, t.opening_time DESC\nLIMIT 20000;\n",
+ "ref_doctype": "HD Ticket",
+ "report_name": "SLA - HD Ticket",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Support Manager"
+  }
+ ],
+ "timeout": 0
+}

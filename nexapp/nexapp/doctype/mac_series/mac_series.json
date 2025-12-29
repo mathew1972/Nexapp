@@ -1,0 +1,58 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:mac_address",
+ "creation": "2025-05-16 14:14:21.732931",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "mac_series_section",
+  "mac_address",
+  "serial_number"
+ ],
+ "fields": [
+  {
+   "fieldname": "mac_address",
+   "fieldtype": "Data",
+   "label": "MAC address",
+   "unique": 1
+  },
+  {
+   "fieldname": "serial_number",
+   "fieldtype": "Link",
+   "label": "Serial Number",
+   "options": "Serial No"
+  },
+  {
+   "fieldname": "mac_series_section",
+   "fieldtype": "Section Break",
+   "label": "MAC Series"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-05-17 16:07:29.050580",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "MAC series",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

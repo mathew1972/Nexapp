@@ -1,0 +1,23 @@
+{
+ "content": null,
+ "creation": "2025-11-30 12:09:02.293852",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2025-11-30 23:15:57.142039",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "custom-helpdesk",
+ "owner": "Administrator",
+ "page_name": "custom-helpdesk",
+ "roles": [
+  {
+   "role": "All"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": ""
+}

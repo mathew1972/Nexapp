@@ -1,0 +1,75 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-10-29 22:49:11.228195",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 1,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-10-30 11:27:54.695749",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "LMS Revenue",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    -- 1) Main Circuit Identifier\n    sii.custom_circuit_id AS \"Circuit ID:Data:150\",\n\n    -- 2) Customer\n    si.customer AS \"Customer:Link/Customer:200\",\n\n    -- 3) Site Status\n    site.site_status AS \"Site Status:Data:120\",\n\n    -- 4) Site Info\n    sii.custom_site_info AS \"Site Info:Data:200\",\n\n    -- 5) Sales Invoice\n    sii.parent AS \"Sales Invoice:Link/Sales Invoice:150\",\n\n    -- 6) Item Name\n    sii.item_name AS \"Item Name:Data:200\",\n\n    -- 7) Sales Amount\n    sii.amount AS \"Sales Amount:Currency:120\",\n\n    -- 8) Purchase Invoice\n    pii.parent AS \"Purchase Invoice:Link/Purchase Invoice:150\",\n\n    -- 9) LMS ID\n    pii.lms_id AS \"LMS ID:Data:150\",\n\n    -- 10) \u2705 LMS Stage (shifted here)\n    lms.lms_stage AS \"LMS Stage:Data:150\",\n\n    -- 11) Purchase Amount\n    pii.amount AS \"Purchase Amount:Currency:120\"\n\nFROM\n    `tabSales Invoice Item` sii\n\nLEFT JOIN `tabSales Invoice` si\n    ON si.name = sii.parent\n    AND si.docstatus = 1     -- \u2705 Only submitted Sales Invoice\n\nLEFT JOIN `tabSite` site\n    ON TRIM(site.name) = TRIM(sii.custom_circuit_id)\n\nLEFT JOIN `tabLastmile Services Master` lms\n    ON TRIM(lms.circuit_id) = TRIM(sii.custom_circuit_id)\n\nLEFT JOIN `tabPurchase Invoice Item` pii\n    ON TRIM(pii.circuit_id) = TRIM(sii.custom_circuit_id)\n\nLEFT JOIN `tabPurchase Invoice` pi\n    ON pi.name = pii.parent\n    AND pi.docstatus = 1     -- \u2705 Only submitted Purchase Invoice\n\nWHERE\n    si.docstatus = 1\n    AND si.customer = \"Connaught Plaza Restaurants\"   -- \u2705 FAST FILTER\n\nORDER BY\n    sii.custom_circuit_id ASC;\n",
+ "ref_doctype": "HD Ticket",
+ "report_name": "LMS Revenue",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Agent"
+  },
+  {
+   "role": "All"
+  },
+  {
+   "role": "Support Manager"
+  },
+  {
+   "role": "L1 Support"
+  },
+  {
+   "role": "Guest"
+  },
+  {
+   "role": "Guest"
+  },
+  {
+   "role": "Guest"
+  },
+  {
+   "role": "Guest"
+  },
+  {
+   "role": "L2 Support"
+  },
+  {
+   "role": "Guest"
+  },
+  {
+   "role": "Guest"
+  },
+  {
+   "role": "Guest"
+  },
+  {
+   "role": "Guest"
+  },
+  {
+   "role": "Stock Manager"
+  },
+  {
+   "role": "Guest"
+  }
+ ],
+ "timeout": 0
+}

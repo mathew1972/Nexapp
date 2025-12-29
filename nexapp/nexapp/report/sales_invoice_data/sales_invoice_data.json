@@ -1,0 +1,45 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-07-08 16:41:58.444366",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-07-08 19:04:57.036142",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Sales Invoice Data",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    si.name AS \"Invoice#:Link/Sales Invoice:200\",\n    si.posting_date AS \"Invoice Date:Date:200\",\n    si.due_date AS \"Due Date:Date:200\",\n    si.status AS \"Status:Data:200\",\n    si.customer AS \"Customer Name:Link/Customer:200\",\n    si.po_no AS \"Customer PO:Data:200\",\n    si.grand_total AS \"Invoice Total:Currency:200\",\n    si.outstanding_amount AS \"Invoice Outstanding:Currency:200\",\n\n    -- Credit Note Amount (Always Positive)\n    ABS(IFNULL((\n        SELECT SUM(cn.grand_total)\n        FROM `tabSales Invoice` cn\n        WHERE\n            cn.docstatus = 1\n            AND cn.name LIKE 'CN%%'\n            AND cn.return_against = si.name\n    ), 0)) AS \"Credit Note Amount:Currency:200\",\n\n    -- Final Outstanding = Outstanding Amount - Credit Note Amount\n    (\n        si.outstanding_amount \n        - ABS(IFNULL((\n            SELECT SUM(cn.grand_total)\n            FROM `tabSales Invoice` cn\n            WHERE\n                cn.docstatus = 1\n                AND cn.name LIKE 'CN%%'\n                AND cn.return_against = si.name\n        ), 0))\n    ) AS \"Final Outstanding:Currency:200\",\n\n    si.custom_invoice_mode AS \"Invoice Mode:Data:200\",\n    si.custom_start_date AS \"Invoice Start Date:Date:200\",\n    si.custom_end_date AS \"Invoice End Date:Date:200\"\n\nFROM\n    `tabSales Invoice` si\nWHERE\n    si.docstatus = 1\n    AND si.name NOT LIKE 'CN%%'\n",
+ "ref_doctype": "Sales Invoice",
+ "report_name": "Sales Invoice Data",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Accounts  & Finance Manager"
+  },
+  {
+   "role": "Employee Self Service"
+  },
+  {
+   "role": "Account Payable"
+  },
+  {
+   "role": "accounts receivable"
+  },
+  {
+   "role": "Account Receivable User"
+  },
+  {
+   "role": "Financial Report"
+  }
+ ],
+ "timeout": 0
+}

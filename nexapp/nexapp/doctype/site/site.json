@@ -5,25 +5,84 @@
  "autoname": "field:circuit_id",
  "creation": "2025-02-19 15:41:27.946151",
  "doctype": "DocType",
+ "documentation": "nexapp technologies private limited",
  "engine": "InnoDB",
  "field_order": [
   "site_information_tab",
+  "site_stage_progress",
   "feasibility_section",
+  "order_type",
   "circuit_id",
+  "exiting_circuit_id",
   "site_name",
   "customer",
-  "site_type",
-  "territory",
-  "column_break_dlsw",
-  "order_type",
-  "existing_circuit_id",
-  "site_status",
-  "stage",
-  "site_id__legal_code",
+  "lms_type",
+  "lms_type_auto_set",
   "customer_type",
-  "site_information_section",
+  "site_id__legal_code",
+  "territory",
+  "service_request",
+  "column_break_dlsw",
+  "info2",
+  "running_days",
+  "site_status",
+  "shifted_circuit_id",
+  "site_shifted_date",
+  "cancel_reason",
+  "stage",
+  "lms_stage",
+  "site_type",
+  "review_section",
+  "project_review",
+  "column_break_sphp",
+  "lms_review",
+  "column_break_qbrl",
+  "task_ownership",
+  "solution_section",
+  "solution_code",
+  "managed_services",
+  "column_break_dtxu",
+  "solution_name",
+  "config_type",
+  "section_break_juvy",
+  "primary_data_plan",
+  "static_ip",
+  "column_break_cfba",
+  "secondary_plan",
+  "nos_of_static_ip_required",
+  "description_section",
   "description",
+  "comments_section",
+  "comments",
+  "customer_type_2",
   "contact_address",
+  "central_spoke_contact_information_section",
+  "central_spoke",
+  "column_break_cgmy",
+  "mobile",
+  "column_break_azsf",
+  "central_email",
+  "site_contact_section",
+  "contact_person",
+  "primary_contact_mobile",
+  "email",
+  "column_break_fvvn",
+  "alternate_contact_person",
+  "alternate_contact_mobile",
+  "secondary_email",
+  "section_break_ossb",
+  "different_shipment_address",
+  "column_break_kiki",
+  "section_break_drsu",
+  "shipment_address",
+  "shipment_city",
+  "shipment_contact_person",
+  "column_break_hifg",
+  "shipment_pincode",
+  "shipment_district",
+  "shipment_state",
+  "shipment_country",
+  "contact_mobile_no",
   "section_break_lkzf",
   "address_street",
   "city",
@@ -32,148 +91,203 @@
   "district",
   "state",
   "country",
-  "site_contact_section",
-  "contact_person",
-  "primary_contact_mobile",
-  "column_break_fvvn",
-  "alternate_contact_person",
-  "alternate_contact_mobile",
+  "shipment_instructions_section",
+  "instructions",
+  "section_break_hanh",
+  "shipment_instruction",
   "services_tab",
   "stock_live_update_section",
   "site_item",
-  "request_tab",
-  "provisioning_information_section",
-  "provisioning_id",
-  "column_break_wvja",
-  "provisioning_request_date",
-  "column_break_jcez",
-  "provisioning_completion_date",
-  "column_break_khnk",
-  "provisioning_status",
-  "tab_3_tab",
-  "solution_section",
-  "solution_code",
-  "solution_name",
-  "static_ip",
-  "nos_of_static_ip_required",
-  "column_break_dtxu",
-  "primary_data_plan",
-  "secondary_plan",
-  "managed_services",
-  "config_type",
-  "project_section",
-  "column_break_frik",
-  "project_name",
-  "project",
-  "expected_start_date",
-  "column_break_szvj",
-  "child_project",
-  "expected_end_date",
-  "project_manager",
-  "sales_order_information_section",
-  "sales_order",
-  "column_break_xpep",
-  "sales_order_date",
-  "customer_po_information_section",
-  "customer_po_date",
-  "column_break_rckh",
-  "customer_po_no",
-  "section_break_xjel",
-  "invoice_no",
-  "column_break_bxjx",
-  "invoice_date",
-  "assigned_product_tab",
-  "assigned_product_section",
-  "provisioning_item",
+  "wireless_feasibility_section",
+  "column_break_lcug",
+  "wireless",
+  "stock_requested_date",
+  "section_break_fjgg",
+  "delivery_requested_date",
+  "column_break_tibh",
+  "stock_management_id",
+  "column_break_ewew",
+  "im_id",
+  "activity_log_section",
+  "activity_html",
+  "section_break_lmgx",
+  "stock_activities",
   "lms_tab",
   "lms_section",
   "lms_vendor",
-  "wireless_tab",
-  "wireless",
+  "lms_feasibility_tab",
+  "lms__feasibility_section",
+  "site_lms_feasibility",
   "tab_12_tab",
   "delivery_challan_section",
   "dc",
   "column_break_lryq",
   "dc_date",
+  "shipment_section",
+  "shipment_id",
+  "service_provider",
+  "carrier",
+  "carrier_service",
+  "column_break_oqdi",
+  "tracking_status",
+  "delivery_date",
+  "pickup_date",
+  "awb_number",
+  "shipment_information_section",
+  "shipment",
+  "provisioning_tab",
+  "provisioning_information_section",
+  "provisioning_id",
+  "provisioning_status",
+  "column_break_hclh",
+  "provisioning_partially_completed_date",
+  "provisioning_date",
+  "tab_3_tab",
+  "project_team_information_section",
+  "project_manager_2",
+  "project_manager_email",
+  "sales_person",
+  "assigned_owner",
+  "column_break_vnda",
+  "site_created_date",
+  "total_days",
+  "project_manager",
+  "project_section",
+  "column_break_frik",
+  "project_name",
+  "column_break_szvj",
+  "project",
+  "sales_order_information_section",
+  "sales_order",
+  "zoho_sales_order_no",
+  "column_break_xpep",
+  "sales_order_date",
+  "billing_information_section",
+  "billing_status",
+  "partially_completed_date",
+  "column_break_dfec",
+  "customer_po_information_section",
+  "customer_po_no",
+  "column_break_rckh",
+  "customer_po_date",
+  "po_end_date",
+  "installation_tab",
   "installation_report_section",
+  "create_installation",
   "installation_note",
   "column_break_mmql",
   "date",
-  "circuits_documents_section",
-  "documents"
+  "installation_document_status",
+  "customer_rating_section",
+  "service_rating",
+  "section_break_uoxb",
+  "client_installation_approval_status",
+  "column_break_jctd",
+  "client_installation_approval_date",
+  "section_break_glra",
+  "customer_email_id",
+  "column_break_ibzk",
+  "customer_email_idii",
+  "column_break_hxnx",
+  "customer_email_id_3",
+  "installation_attachemnt_1_section",
+  "ir_report",
+  "column_break_ylmb",
+  "server_rack_photo",
+  "column_break_nhhc",
+  "router_photo",
+  "column_break_nkvh",
+  "customer_testing_photo",
+  "column_break_qahr",
+  "cable_labling_photo",
+  "column_break_vvlu",
+  "sp_device_photo",
+  "section_break_jkbl",
+  "lms_billing",
+  "section_break_ggvj",
+  "installation_master_id",
+  "subscription_tab",
+  "subscription_section",
+  "subscription",
+  "billing_tab",
+  "sales_order_item_information_section",
+  "table_zxoi"
  ],
  "fields": [
   {
+   "default": "Service",
    "fieldname": "order_type",
    "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Order Type",
-   "options": "\nService Order\nShift Address\nUpgrade\nDegrade\nSupply"
+   "options": "\nService\nUpgrade\nDegrade\nShifting"
   },
   {
    "default": "Paid Customer",
    "fieldname": "customer_type",
    "fieldtype": "Select",
+   "in_standard_filter": 1,
    "label": "Customer Type  ",
-   "options": "\nPaid Customer\nPOC Customer"
+   "options": "\nPaid Customer\nPOC Customer",
+   "reqd": 1
   },
   {
-   "depends_on": "eval:doc.order_type==\"Upgrade\" || doc.order_type==\"Degrade\"",
-   "fieldname": "existing_circuit_id",
-   "fieldtype": "Data",
-   "label": "Existing Circuit id"
-  },
-  {
-   "fetch_from": "circuit_id.config_type",
    "fieldname": "config_type",
    "fieldtype": "Select",
    "label": "Config Type",
-   "options": "\nRemote Config\nOnsite Installation"
+   "options": "\nRemote Config\nOnsite Installation",
+   "read_only": 1
   },
   {
    "bold": 1,
    "fieldname": "site_name",
    "fieldtype": "Data",
-   "in_list_view": 1,
-   "in_preview": 1,
    "in_standard_filter": 1,
-   "label": "Site Name  "
+   "label": "Site Name  ",
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "allow_in_quick_entry": 1,
    "fieldname": "site_type",
    "fieldtype": "Link",
    "label": "Site Type  ",
-   "options": "Site Type"
+   "options": "Site Type",
+   "read_only": 1
   },
   {
    "fetch_from": "circuit_id.secondary_data_plan",
    "fieldname": "secondary_plan",
    "fieldtype": "Link",
    "label": "Secondary Data Plan",
-   "options": "Item"
+   "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"LMS Bandwidth\"]]",
+   "options": "Item",
+   "read_only": 1
   },
   {
    "bold": 1,
    "fieldname": "circuit_id",
    "fieldtype": "Data",
-   "in_list_view": 1,
    "in_preview": 1,
    "in_standard_filter": 1,
    "label": "Circuit ID",
+   "read_only": 1,
    "unique": 1
   },
   {
    "fetch_from": "sales_order.po_no",
    "fieldname": "customer_po_no",
    "fieldtype": "Data",
+   "in_standard_filter": 1,
    "label": "Customer's PO No"
   },
   {
    "fieldname": "sales_order",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Sales Order No",
-   "options": "Sales Order",
-   "read_only": 1
+   "options": "Sales Order"
   },
   {
    "bold": 1,
@@ -181,10 +295,10 @@
    "fieldname": "site_status",
    "fieldtype": "Select",
    "in_list_view": 1,
-   "in_preview": 1,
    "in_standard_filter": 1,
    "label": "Site Status  ",
-   "options": "Pending\nInprocess\nDelivered"
+   "options": "Pending\nIn-process\nInstallation Initiated\nOn Hold\nProvisioning\nPartially Provisioning Completed\nProvisioning Completed\nDelivered and Live\nAwaiting Customer Approval\nDisconnection In Process\nDisconnected\nCancelled\nSite Shifted to new location\nSite Upgraded to new Circuit\nSite degraded to new Circuit",
+   "read_only": 1
   },
   {
    "fieldname": "site_item",
@@ -195,10 +309,10 @@
   {
    "fieldname": "site_id__legal_code",
    "fieldtype": "Data",
-   "label": "Site ID / Legal Code"
+   "label": "Site ID / Legal Code",
+   "read_only": 1
   },
   {
-   "fetch_from": "customer_po_no.customer_po_date",
    "fieldname": "customer_po_date",
    "fieldtype": "Date",
    "label": "Customer's PO Date"
@@ -207,13 +321,15 @@
    "fieldname": "customer",
    "fieldtype": "Link",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Customer",
-   "options": "Customer"
+   "options": "Customer",
+   "read_only": 1
   },
   {
    "fieldname": "feasibility_section",
    "fieldtype": "Section Break",
-   "label": "Site Information"
+   "label": "Branch Information"
   },
   {
    "fieldname": "column_break_dlsw",
@@ -228,13 +344,15 @@
   {
    "fieldname": "tab_3_tab",
    "fieldtype": "Tab Break",
-   "label": "Project"
+   "label": "Project",
+   "options": "today"
   },
   {
    "fieldname": "column_break_dtxu",
    "fieldtype": "Column Break"
   },
   {
+   "depends_on": "eval: doc.lms_type != \"No LMS\"",
    "fieldname": "lms_tab",
    "fieldtype": "Tab Break",
    "label": "LMS"
@@ -251,12 +369,6 @@
    "label": "Project Name"
   },
   {
-   "fieldname": "provisioning_item",
-   "fieldtype": "Table",
-   "label": "Provisioning Item",
-   "options": "Provisioning Item"
-  },
-  {
    "fieldname": "lms_vendor",
    "fieldtype": "Table",
    "label": "LMS Vendor",
@@ -264,19 +376,7 @@
   },
   {
    "fieldname": "column_break_frik",
-   "fieldtype": "Column Break",
-   "label": "Project "
-  },
-  {
-   "fieldname": "expected_start_date",
-   "fieldtype": "Date",
-   "label": "Project Start Date"
-  },
-  {
-   "fieldname": "expected_end_date",
-   "fieldtype": "Date",
-   "label": "Project End Date",
-   "read_only": 1
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "site_information_tab",
@@ -284,18 +384,9 @@
    "label": "Site Information"
   },
   {
-   "fieldname": "invoice_no",
-   "fieldtype": "Data",
-   "label": "Invoice No"
-  },
-  {
-   "fieldname": "invoice_date",
-   "fieldtype": "Date",
-   "label": "Invoice Date"
-  },
-  {
    "fieldname": "stock_live_update_section",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Customer Premises Equipments"
   },
   {
    "fieldname": "services_tab",
@@ -303,41 +394,37 @@
    "label": "SO Item"
   },
   {
-   "fieldname": "assigned_product_tab",
-   "fieldtype": "Tab Break",
-   "label": "Assigned Product"
-  },
-  {
+   "bold": 1,
+   "default": "Pending",
    "fieldname": "stage",
    "fieldtype": "Select",
-   "label": "Stage",
-   "options": "\nProject Initiated\nLastmile Procurement\nInventory allocation\nShipment Intransit\nUnder Provisioning\nPartially Delivered\nDelivered and Live"
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Stock Stage",
+   "options": "\nPending\nStock Requested\nStock Reserved\nLMS Procurement\nInstallation Initiated\nInstallation In-process\nInventory allocation\nShipment In-Transit\nUnder Provisioning\nStock Delivery Requested\nStock Delivery In-Process\nStock Delivered\nStock Returned\nStock Return Requested\nOn Hold\nStock Lost\nDelivered and Live\nCancelled",
+   "read_only": 1
   },
   {
    "fieldname": "tab_12_tab",
    "fieldtype": "Tab Break",
-   "label": "Delivery"
+   "label": "Shipment"
   },
   {
    "fieldname": "delivery_challan_section",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Delivery Challan Information"
   },
   {
    "fieldname": "dc",
    "fieldtype": "Link",
-   "label": "DC",
+   "label": "Delivery Note",
    "options": "Delivery Note"
-  },
-  {
-   "fieldname": "site_information_section",
-   "fieldtype": "Section Break",
-   "label": "Description Information"
   },
   {
    "fieldname": "site_contact_section",
    "fieldtype": "Section Break",
-   "label": "Site Contact"
+   "label": "Branch Contact Information"
   },
   {
    "fieldname": "column_break_fvvn",
@@ -351,41 +438,26 @@
   {
    "fieldname": "solution_section",
    "fieldtype": "Section Break",
-   "label": "Solution Informtion"
+   "label": "Solution Information"
   },
   {
    "collapsible": 1,
    "fieldname": "project_section",
    "fieldtype": "Section Break",
-   "label": "Project Information"
-  },
-  {
-   "fieldname": "assigned_product_section",
-   "fieldtype": "Section Break",
-   "label": "Assigned Product"
+   "label": "Project Information",
+   "read_only": 1
   },
   {
    "fieldname": "lms_section",
    "fieldtype": "Section Break",
-   "label": "LMS"
+   "label": "LMS Feasibility"
   },
   {
-   "fetch_from": "circuit_id.managed_services",
    "fieldname": "managed_services",
    "fieldtype": "Select",
    "label": "Managed Services",
-   "options": "\nProactive\nReactive"
-  },
-  {
-   "fieldname": "request_tab",
-   "fieldtype": "Tab Break",
-   "label": "Request"
-  },
-  {
-   "fieldname": "child_project",
-   "fieldtype": "Link",
-   "label": "Child Project",
-   "options": "Project"
+   "options": "\nProactive\nReactive",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_szvj",
@@ -395,7 +467,8 @@
    "collapsible": 1,
    "fieldname": "sales_order_information_section",
    "fieldtype": "Section Break",
-   "label": "Sales Order Information"
+   "label": "Sales Order Information",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_xpep",
@@ -405,48 +478,33 @@
    "collapsible": 1,
    "fieldname": "customer_po_information_section",
    "fieldtype": "Section Break",
-   "label": "Customer PO Information"
+   "label": "Customer PO Information",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_rckh",
    "fieldtype": "Column Break"
   },
   {
-   "collapsible": 1,
-   "fieldname": "section_break_xjel",
-   "fieldtype": "Section Break",
-   "label": "Project Invoice Information"
-  },
-  {
-   "fieldname": "column_break_bxjx",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "installation_report_section",
-   "fieldtype": "Section Break",
-   "label": "Installation Report"
+   "fieldtype": "Section Break"
   },
   {
+   "description": "\ud83d\udc46 Please click the link above, upload all the required documents, and submit the final Installation Note. Without submission, the document will remain invalid.",
    "fieldname": "installation_note",
    "fieldtype": "Link",
    "label": "Installation Note",
-   "options": "Installation Note"
-  },
-  {
-   "fieldname": "circuits_documents_section",
-   "fieldtype": "Section Break",
-   "label": "Circuits Documents"
-  },
-  {
-   "fieldname": "documents",
-   "fieldtype": "Table",
-   "label": "Documents",
-   "options": "Circuits Documents"
+   "link_filters": "[[\"Installation Note\",\"customer\",\"=\",\"eval:doc.customer\"],[\"Installation Note\",\"custom_circuit_id\",\"=\",\"eval:doc.circuit_id\"]]",
+   "mandatory_depends_on": "Please click the link, upload all the required documents, and submit the final Installation Note. Without submission, the document will remain invalid.",
+   "options": "Installation Note",
+   "read_only": 1
   },
   {
    "fieldname": "project_manager",
-   "fieldtype": "Data",
-   "label": "Project Manager"
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Project Manager ID",
+   "options": "User"
   },
   {
    "fieldname": "column_break_lryq",
@@ -456,111 +514,72 @@
    "fetch_from": "dc.posting_date",
    "fieldname": "dc_date",
    "fieldtype": "Date",
-   "label": "DC Date"
+   "label": "Delivery Note Date"
   },
   {
    "fieldname": "column_break_mmql",
    "fieldtype": "Column Break"
   },
   {
-   "description": "customer accepatce is must for invoice",
+   "description": "This date will consider for Invoice start Date",
    "fieldname": "date",
    "fieldtype": "Date",
-   "label": "Date",
-   "placeholder": "Circuit Delivery date"
-  },
-  {
-   "fieldname": "provisioning_information_section",
-   "fieldtype": "Section Break",
-   "label": "Provisioning Information"
-  },
-  {
-   "fieldname": "provisioning_id",
-   "fieldtype": "Link",
-   "label": "Provisioning ID",
-   "options": "Provisioning"
-  },
-  {
-   "fieldname": "column_break_wvja",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fetch_from": "provisioning_id.start_date",
-   "fieldname": "provisioning_request_date",
-   "fieldtype": "Data",
-   "label": "Provisioning request date"
-  },
-  {
-   "fieldname": "column_break_jcez",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fetch_from": "provisioning_id.end_date",
-   "fieldname": "provisioning_completion_date",
-   "fieldtype": "Date",
-   "label": "Provisioning Completion date"
-  },
-  {
-   "fieldname": "column_break_khnk",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fetch_from": "provisioning_id.status",
-   "fieldname": "provisioning_status",
-   "fieldtype": "Data",
-   "label": "Provisioning Status"
+   "label": "Circuit Delivery Date"
   },
   {
    "fieldname": "territory",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "in_preview": 1,
    "in_standard_filter": 1,
    "label": "Territory",
-   "options": "Territory"
+   "options": "Territory",
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "allow_in_quick_entry": 1,
-   "fetch_from": "circuit_id.solution_code",
    "fieldname": "solution_code",
    "fieldtype": "Link",
    "label": "Solution Code",
-   "options": "Item"
+   "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"Solution\"]]",
+   "options": "Item",
+   "read_only": 1
   },
   {
    "fetch_from": "solution_code.item_name",
+   "fetch_if_empty": 1,
    "fieldname": "solution_name",
    "fieldtype": "Data",
-   "label": "Solution Name"
+   "in_standard_filter": 1,
+   "label": "Solution Name",
+   "read_only": 1
   },
   {
    "fieldname": "static_ip",
    "fieldtype": "Select",
    "label": "Static IP",
-   "options": "\nYes\nNo"
+   "options": "\nYes\nNo",
+   "read_only": 1
   },
   {
    "fieldname": "nos_of_static_ip_required",
    "fieldtype": "Data",
-   "label": "Nos of Static IP Required"
+   "label": "Nos of Static IP Required",
+   "read_only": 1
   },
   {
    "fetch_from": "circuit_id.primary_data_plan",
    "fieldname": "primary_data_plan",
    "fieldtype": "Link",
    "label": "Primary Data Plan",
-   "options": "Item"
+   "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"LMS Bandwidth\"]]",
+   "options": "Item",
+   "read_only": 1
   },
   {
    "fieldname": "description",
    "fieldtype": "Small Text",
-   "label": "Description ",
-   "max_height": "80px"
-  },
-  {
-   "fieldname": "wireless_tab",
-   "fieldtype": "Tab Break",
-   "label": "Wireless "
+   "label": "Description "
   },
   {
    "fieldname": "wireless",
@@ -570,17 +589,23 @@
   },
   {
    "fieldname": "section_break_lkzf",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Site Address Information"
   },
   {
    "fieldname": "address_street",
    "fieldtype": "Small Text",
-   "label": "Address/ Street "
+   "in_standard_filter": 1,
+   "label": "Address/ Street ",
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fieldname": "city",
    "fieldtype": "Data",
-   "label": "City "
+   "in_standard_filter": 1,
+   "label": "City ",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_btqz",
@@ -589,22 +614,26 @@
   {
    "fieldname": "pincode",
    "fieldtype": "Data",
-   "label": "Pincode"
+   "label": "Pincode",
+   "read_only": 1
   },
   {
    "fieldname": "district",
    "fieldtype": "Data",
-   "label": "District "
+   "label": "District ",
+   "read_only": 1
   },
   {
    "fieldname": "state",
    "fieldtype": "Data",
-   "label": "State "
+   "label": "State ",
+   "read_only": 1
   },
   {
    "fieldname": "country",
    "fieldtype": "Data",
-   "label": "Country "
+   "label": "Country ",
+   "read_only": 1
   },
   {
    "fieldname": "contact_person",
@@ -625,78 +654,781 @@
    "fieldname": "alternate_contact_mobile",
    "fieldtype": "Data",
    "label": "Alternate Contact Mobile"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email"
+  },
+  {
+   "fieldname": "secondary_email",
+   "fieldtype": "Data",
+   "label": "Secondary Email"
+  },
+  {
+   "fieldname": "wireless_feasibility_section",
+   "fieldtype": "Section Break",
+   "label": "Wireless Feasibility"
+  },
+  {
+   "depends_on": "eval:doc.customer_type ==\"Paid Customer\"",
+   "fieldname": "subscription_tab",
+   "fieldtype": "Tab Break",
+   "hidden": 1,
+   "label": "Subscription"
+  },
+  {
+   "fieldname": "subscription_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Subscription"
+  },
+  {
+   "fieldname": "subscription",
+   "fieldtype": "Link",
+   "label": "subscription",
+   "options": "Subscription"
+  },
+  {
+   "fieldname": "shipment_section",
+   "fieldtype": "Section Break",
+   "label": "Shipment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_oqdi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_lmgx",
+   "fieldtype": "Section Break",
+   "hidden": 1
+  },
+  {
+   "fieldname": "activity_log_section",
+   "fieldtype": "Section Break",
+   "label": "Activity Log"
+  },
+  {
+   "fieldname": "activity_html",
+   "fieldtype": "HTML",
+   "label": "Activity HTML"
+  },
+  {
+   "fieldname": "stock_activities",
+   "fieldtype": "Table",
+   "label": "Activities",
+   "options": "Site Stock Activity"
+  },
+  {
+   "depends_on": "eval:doc.order_type == \"Shifting\" || doc.order_type == \"Degrade\" || doc.order_type == \"Upgrade\"\n",
+   "fieldname": "exiting_circuit_id",
+   "fieldtype": "Link",
+   "label": "Exiting Circuit ID",
+   "mandatory_depends_on": "eval:doc.order_type == \"Shifting\"\neval:doc.order_type == \"Upgrade\"\neval:doc.order_type == \"Degrade\"",
+   "options": "Site"
+  },
+  {
+   "fieldname": "zoho_sales_order_no",
+   "fieldtype": "Data",
+   "label": "Zoho Sales Order No"
+  },
+  {
+   "fieldname": "section_break_ossb",
+   "fieldtype": "Section Break",
+   "label": "Shipping Address"
+  },
+  {
+   "fieldname": "column_break_kiki",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "shipment_address",
+   "fieldtype": "Small Text",
+   "label": "Shipment Address"
+  },
+  {
+   "depends_on": "eval: doc.different_shipment_address == 1",
+   "fieldname": "section_break_drsu",
+   "fieldtype": "Section Break",
+   "label": "Shipment Address Information"
+  },
+  {
+   "fieldname": "shipment_pincode",
+   "fieldtype": "Data",
+   "label": "Pincode",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_hifg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "shipment_contact_person",
+   "fieldtype": "Data",
+   "label": "Contact Person"
+  },
+  {
+   "fieldname": "contact_mobile_no",
+   "fieldtype": "Data",
+   "label": "Contact Mobile No"
+  },
+  {
+   "fieldname": "shipment_district",
+   "fieldtype": "Data",
+   "label": "District"
+  },
+  {
+   "fieldname": "shipment_state",
+   "fieldtype": "Data",
+   "label": "State"
+  },
+  {
+   "fieldname": "shipment_country",
+   "fieldtype": "Data",
+   "label": "Country"
+  },
+  {
+   "fieldname": "shipment_city",
+   "fieldtype": "Data",
+   "label": "City "
+  },
+  {
+   "bold": 1,
+   "default": "Pending",
+   "fieldname": "lms_stage",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "LMS Stage",
+   "options": "Pending\nLMS Initiated\nPO Pending\nPO Requested\nPO Released\nIn process\nLMS Partially Delivered\nLMS Delivered\nNo LMS\nDisconnection In Process",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_fjgg",
+   "fieldtype": "Section Break",
+   "read_only": 1
+  },
+  {
+   "fieldname": "delivery_requested_date",
+   "fieldtype": "Date",
+   "label": "Delivery Requested Date"
+  },
+  {
+   "fieldname": "column_break_tibh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "stock_management_id",
+   "fieldtype": "Data",
+   "label": "Stock Management ID"
+  },
+  {
+   "fetch_from": "shipment.pickup_date",
+   "fieldname": "pickup_date",
+   "fieldtype": "Date",
+   "label": "Pickup Date"
+  },
+  {
+   "fetch_from": "shipment.service_provider",
+   "fieldname": "service_provider",
+   "fieldtype": "Data",
+   "label": "Service Provider"
+  },
+  {
+   "fetch_from": "shipment.awb_number",
+   "fieldname": "awb_number",
+   "fieldtype": "Data",
+   "label": "AWB Number"
+  },
+  {
+   "fetch_from": "shipment.tracking_status",
+   "fieldname": "tracking_status",
+   "fieldtype": "Select",
+   "label": "Tracking Status",
+   "options": "\nIn Progress\nDelivered\nReturned\nLost"
+  },
+  {
+   "fetch_from": "shipment_id.custom_delivery_date",
+   "fieldname": "delivery_date",
+   "fieldtype": "Date",
+   "label": "Shipment Delivery Date"
+  },
+  {
+   "fieldname": "im_id",
+   "fieldtype": "Data",
+   "label": "IM ID"
+  },
+  {
+   "fieldname": "column_break_ewew",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "shipment_id",
+   "fieldtype": "Link",
+   "label": "Shipment ID",
+   "link_filters": "[[\"Shipment\",\"delivery_customer\",\"=\",\"eval:doc.customer\"],[\"Shipment\",\"custom_circuit_id\",\"=\",\"eval:doc.circuit_id\"]]",
+   "options": "Shipment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "carrier",
+   "fieldtype": "Data",
+   "label": "Carrier"
+  },
+  {
+   "fieldname": "carrier_service",
+   "fieldtype": "Data",
+   "label": "Carrier Service "
+  },
+  {
+   "fieldname": "provisioning_tab",
+   "fieldtype": "Tab Break",
+   "label": "Provisioning"
+  },
+  {
+   "fieldname": "provisioning_id",
+   "fieldtype": "Link",
+   "label": "Provisioning ID",
+   "link_filters": "[[\"Provisioning\",\"customer\",\"=\",\"eval:doc.customer\"],[\"Provisioning\",\"circuit_id\",\"=\",\"eval:doc.name\"],[\"Provisioning\",\"status\",\"=\",\"Completed\"]]",
+   "options": "Provisioning",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_hclh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "provisioning_id.provisioning_date",
+   "fieldname": "provisioning_date",
+   "fieldtype": "Date",
+   "label": "Provisioning Completed Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "installation_tab",
+   "fieldtype": "Tab Break",
+   "label": "Installation"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_jkbl",
+   "fieldtype": "Section Break",
+   "label": "Billing"
+  },
+  {
+   "fieldname": "lms_billing",
+   "fieldtype": "Table",
+   "label": "LMS Billing",
+   "options": "LMS Billing"
+  },
+  {
+   "default": "No LMS",
+   "fieldname": "lms_type",
+   "fieldtype": "Select",
+   "label": "LMS Type",
+   "options": "No LMS\nSingle\nDual"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "billing_information_section",
+   "fieldtype": "Section Break",
+   "label": "Billing Information",
+   "read_only": 1
+  },
+  {
+   "default": "Pending",
+   "fieldname": "billing_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Billing Status",
+   "options": "Pending\nPartially Completed\nCompleted\nBilling completed"
+  },
+  {
+   "fieldname": "column_break_dfec",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer_email_id",
+   "fieldtype": "Data",
+   "label": "Customer Email ID",
+   "options": "Email",
+   "placeholder": "Use only one email ID"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "installation_attachemnt_1_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Installation Attachemnt"
+  },
+  {
+   "fieldname": "ir_report",
+   "fieldtype": "Attach",
+   "label": "IR Report"
+  },
+  {
+   "fieldname": "column_break_ylmb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "server_rack_photo",
+   "fieldtype": "Attach",
+   "label": "Server Rack Photo"
+  },
+  {
+   "fieldname": "column_break_nhhc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "router_photo",
+   "fieldtype": "Attach",
+   "label": "Router Photo"
+  },
+  {
+   "fieldname": "column_break_nkvh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer_testing_photo",
+   "fieldtype": "Attach",
+   "label": "Testing Photo"
+  },
+  {
+   "fieldname": "column_break_qahr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cable_labling_photo",
+   "fieldtype": "Attach",
+   "label": "Cable Labling Photo"
+  },
+  {
+   "fieldname": "column_break_vvlu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sp_device_photo",
+   "fieldtype": "Attach",
+   "label": "SP Device Photo"
+  },
+  {
+   "depends_on": "eval: doc.billing_status == \"Partially Completed\"",
+   "fieldname": "partially_completed_date",
+   "fieldtype": "Date",
+   "label": "Partially Completed Date"
+  },
+  {
+   "fieldname": "stock_requested_date",
+   "fieldtype": "Date",
+   "label": "Stock Requested Date",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.site_status==\"Cancelled\"",
+   "fieldname": "cancel_reason",
+   "fieldtype": "Small Text",
+   "label": "Cancel Reason",
+   "mandatory_depends_on": "eval:doc.site_status==\"Cancelled\""
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "bold": 1,
+   "fieldname": "project_review",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Project Review",
+   "options": "Project Review"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "bold": 1,
+   "description": "This LMS Review will also automatically update from the Lastmile Services Master.",
+   "fieldname": "lms_review",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "LMS Review",
+   "options": "LMS Review"
+  },
+  {
+   "bold": 1,
+   "fieldname": "review_section",
+   "fieldtype": "Section Break",
+   "hide_border": 1,
+   "label": "Project Review"
+  },
+  {
+   "fieldname": "column_break_sphp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_qbrl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "bold": 1,
+   "fieldname": "task_ownership",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Task Ownership",
+   "options": "Task Ownership"
+  },
+  {
+   "fieldname": "create_installation",
+   "fieldtype": "Button",
+   "label": "Create Installation Note"
+  },
+  {
+   "fieldname": "installation_document_status",
+   "fieldtype": "Select",
+   "label": "Installation Document Status",
+   "options": "\nDraft\nCancelled\nSubmitted",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval: doc.lms_stage != \"No LMS\"",
+   "fieldname": "section_break_juvy",
+   "fieldtype": "Section Break",
+   "label": "Lastmile  Bandwidth Information"
+  },
+  {
+   "fieldname": "column_break_cfba",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer_email_idii",
+   "fieldtype": "Data",
+   "label": "Customer Email ID",
+   "options": "Email",
+   "placeholder": "Use only one email ID"
+  },
+  {
+   "fieldname": "section_break_glra",
+   "fieldtype": "Section Break",
+   "label": "Automated Installation Report via Email"
+  },
+  {
+   "fieldname": "column_break_ibzk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_hxnx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer_email_id_3",
+   "fieldtype": "Data",
+   "label": "Customer Email ID",
+   "options": "Email",
+   "placeholder": "Use only one email ID"
+  },
+  {
+   "bold": 1,
+   "fetch_from": "project_manager.full_name",
+   "fieldname": "project_manager_2",
+   "fieldtype": "Data",
+   "label": "Project Manager"
+  },
+  {
+   "fieldname": "column_break_vnda",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "fieldname": "site_created_date",
+   "fieldtype": "Datetime",
+   "label": "Site Created Date",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "project_manager.email",
+   "fieldname": "assigned_owner",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Assigned Owner",
+   "options": "Email",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_days",
+   "fieldtype": "Data",
+   "label": "Total Days ",
+   "read_only": 1
+  },
+  {
+   "fieldname": "running_days",
+   "fieldtype": "HTML",
+   "hidden": 1,
+   "label": "Running Days"
+  },
+  {
+   "fieldname": "comments_section",
+   "fieldtype": "Section Break",
+   "label": "Project Comments"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "comments",
+   "fieldtype": "Table",
+   "label": "Comments",
+   "options": "Comments Item"
+  },
+  {
+   "fieldname": "description_section",
+   "fieldtype": "Section Break",
+   "label": "Description "
+  },
+  {
+   "fieldname": "section_break_uoxb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "Awaiting Customer Approval",
+   "fieldname": "client_installation_approval_status",
+   "fieldtype": "Select",
+   "label": "Client Installation Approval Status",
+   "options": "Awaiting Customer Approval\nAccepted\nNo"
+  },
+  {
+   "fieldname": "column_break_jctd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "client_installation_approval_date",
+   "fieldtype": "Datetime",
+   "label": "Client Installation Approval Date"
+  },
+  {
+   "fieldname": "central_spoke_contact_information_section",
+   "fieldtype": "Section Break",
+   "label": "Central Spoke Contact Information"
+  },
+  {
+   "fieldname": "central_spoke",
+   "fieldtype": "Link",
+   "label": "Central Spoke",
+   "options": "Contact"
+  },
+  {
+   "fetch_from": "central_spoke.mobile_no",
+   "fieldname": "mobile",
+   "fieldtype": "Data",
+   "label": "Mobile"
+  },
+  {
+   "fieldname": "column_break_cgmy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "central_spoke.email_id",
+   "fieldname": "central_email",
+   "fieldtype": "Data",
+   "label": "Central Email"
+  },
+  {
+   "fieldname": "provisioning_information_section",
+   "fieldtype": "Section Break",
+   "label": "Provisioning Information",
+   "read_only": 1
+  },
+  {
+   "fieldname": "project_team_information_section",
+   "fieldtype": "Section Break",
+   "label": "Project Team Information",
+   "read_only": 1
+  },
+  {
+   "fieldname": "billing_tab",
+   "fieldtype": "Tab Break",
+   "label": "Billing"
+  },
+  {
+   "fieldname": "table_zxoi",
+   "fieldtype": "Table",
+   "label": "SO Item",
+   "options": "Site SO"
+  },
+  {
+   "fieldname": "sales_order_item_information_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Sales Order Item Information"
+  },
+  {
+   "fieldname": "shipment_information_section",
+   "fieldtype": "Section Break",
+   "label": "Shipment Information"
+  },
+  {
+   "fieldname": "shipment",
+   "fieldtype": "Table",
+   "label": "Shipment",
+   "options": "Site Shipment"
+  },
+  {
+   "fieldname": "section_break_hanh",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Shipment instruction"
+  },
+  {
+   "fieldname": "shipment_instruction",
+   "fieldtype": "Small Text",
+   "label": "Shipment instruction"
+  },
+  {
+   "depends_on": "eval:doc.instructions",
+   "fieldname": "shipment_instructions_section",
+   "fieldtype": "Section Break",
+   "label": "Shipment Instructions"
+  },
+  {
+   "fieldname": "instructions",
+   "fieldtype": "Small Text",
+   "label": "Instructions"
+  },
+  {
+   "default": "0",
+   "fieldname": "different_shipment_address",
+   "fieldtype": "Check",
+   "label": "Diferent Shipment Address"
+  },
+  {
+   "fieldname": "column_break_azsf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "customer.account_manager",
+   "fieldname": "sales_person",
+   "fieldtype": "Data",
+   "label": "Sales Person"
+  },
+  {
+   "default": "0",
+   "fieldname": "lms_type_auto_set",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "LMS auto set"
+  },
+  {
+   "fieldname": "section_break_ggvj",
+   "fieldtype": "Section Break",
+   "hidden": 1
+  },
+  {
+   "fieldname": "installation_master_id",
+   "fieldtype": "Link",
+   "label": "Installation Master ID",
+   "options": "Installation Master"
+  },
+  {
+   "fieldname": "provisioning_partially_completed_date",
+   "fieldtype": "Date",
+   "label": "Provisioning Partially Completed Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "customer_rating_section",
+   "fieldtype": "Section Break",
+   "label": "Customer Rating"
+  },
+  {
+   "fieldname": "service_rating",
+   "fieldtype": "Rating",
+   "label": "Service Rating"
+  },
+  {
+   "fieldname": "info2",
+   "fieldtype": "HTML",
+   "hidden": 1,
+   "label": "Info2"
+  },
+  {
+   "depends_on": "eval:doc.site_status == \"Site Shifted to new location\" || doc. site_status == \"Site Upgraded to new Circuit\" || doc. site_status == \"Site degraded to new Circuit\"",
+   "fieldname": "shifted_circuit_id",
+   "fieldtype": "Link",
+   "label": "New Circuit ID",
+   "options": "Site",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.site_status == \"Site Shifted to new location\" || doc. site_status == \"Site Upgraded to new Circuit\" || doc. site_status == \"Site degraded to new Circuit\"",
+   "fieldname": "site_shifted_date",
+   "fieldtype": "Date",
+   "label": "Site Shifted Date",
+   "mandatory_depends_on": "eval:doc.site_status==\"Site Shifted\" ",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_lcug",
+   "fieldtype": "Column Break",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "provisioning_id.status",
+   "fieldname": "provisioning_status",
+   "fieldtype": "Data",
+   "label": "Provisioning Status"
+  },
+  {
+   "fieldname": "site_stage_progress",
+   "fieldtype": "HTML",
+   "label": "site_stage_progress"
+  },
+  {
+   "fetch_from": "project_manager_2.company_email",
+   "fieldname": "project_manager_email",
+   "fieldtype": "Data",
+   "label": "Project Manager Email"
+  },
+  {
+   "fieldname": "service_request",
+   "fieldtype": "Select",
+   "label": "Service request",
+   "options": "\nUpgrade requested\nDegrade requested\nShifting requested",
+   "read_only": 1
+  },
+  {
+   "fieldname": "lms_feasibility_tab",
+   "fieldtype": "Tab Break",
+   "label": "LMS Feasibility"
+  },
+  {
+   "fieldname": "lms__feasibility_section",
+   "fieldtype": "Section Break",
+   "label": "LMS  Feasibility"
+  },
+  {
+   "fieldname": "site_lms_feasibility",
+   "fieldtype": "Table",
+   "options": "Site LMS  Feasibility"
+  },
+  {
+   "fetch_from": "sales_order.custom_po_end_date",
+   "fetch_if_empty": 1,
+   "fieldname": "po_end_date",
+   "fieldtype": "Date",
+   "label": "PO End Date"
+  },
+  {
+   "fieldname": "customer_type_2",
+   "fieldtype": "Link",
+   "label": "HD Customer Type",
+   "options": "Customer Type"
   }
  ],
- "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
- "links": [
-  {
-   "group": "Provisioning",
-   "link_doctype": "Provisioning",
-   "link_fieldname": "circuit_id"
-  },
-  {
-   "group": "Shipment",
-   "link_doctype": "Shipment",
-   "link_fieldname": "custom_circuit_id"
-  },
-  {
-   "group": "Site Address",
-   "link_doctype": "Feasibility",
-   "link_fieldname": "circuit_id"
-  },
-  {
-   "group": "Product Assigment",
-   "link_doctype": "Product Assigment",
-   "link_fieldname": "circuit_id"
-  },
-  {
-   "group": "LMS Feasibility",
-   "link_doctype": "Lastmile Services Master",
-   "link_fieldname": "circuit_id"
-  },
-  {
-   "group": "Delivery Challan",
-   "link_doctype": "Delivery Note",
-   "link_fieldname": "customer"
-  },
-  {
-   "group": "LMS PO Request",
-   "link_doctype": "LMS PO Request",
-   "link_fieldname": "name"
-  },
-  {
-   "group": "Installation Note",
-   "link_doctype": "Installation Note",
-   "link_fieldname": "customer"
-  },
-  {
-   "group": "Maintenance Visit",
-   "link_doctype": "Maintenance Visit",
-   "link_fieldname": "customer"
-  },
-  {
-   "group": "Maintenance Visit",
-   "link_doctype": "Maintenance Schedule",
-   "link_fieldname": "customer"
-  },
-  {
-   "group": "Invoice",
-   "link_doctype": "Sales Invoice",
-   "link_fieldname": "customer"
-  },
-  {
-   "group": "Invoice",
-   "link_doctype": "e-Waybill Log",
-   "link_fieldname": "e_waybill_number"
-  },
-  {
-   "group": "Task",
-   "link_doctype": "Task",
-   "link_fieldname": "name"
-  }
- ],
- "modified": "2025-04-03 23:18:42.718103",
+ "is_calendar_and_gantt": 1,
+ "links": [],
+ "make_attachments_public": 1,
+ "modified": "2025-12-24 18:22:09.360902",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",
@@ -833,9 +1565,23 @@
    "role": "Nexapp Sales Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "All",
+   "share": 1,
+   "write": 1
   }
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
 }

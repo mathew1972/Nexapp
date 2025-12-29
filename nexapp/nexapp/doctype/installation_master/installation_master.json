@@ -1,0 +1,269 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "IM-.YYYY.####.",
+ "creation": "2025-04-23 11:42:14.160133",
+ "default_view": "List",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "circuit_id",
+  "site_name",
+  "site_address",
+  "site_contact_person",
+  "site_contact_mobile",
+  "solution",
+  "total_engineer_vistt",
+  "column_break_igkq",
+  "installation_status",
+  "installation_stage",
+  "nexapp_engineer_schedule_datetime",
+  "nexapp_engineer_note",
+  "local_enginner_name",
+  "local_enginner_schedule_datetime",
+  "local_enginner_mobile_no",
+  "local_enginner_note",
+  "customer",
+  "site_type",
+  "primary_plan",
+  "secondary_plan",
+  "total_engineer_visit_cost",
+  "section_break_hmjo",
+  "engineer_visit",
+  "provisioning_id",
+  "so_item_information_tab",
+  "item_code",
+  "lms_information_tab",
+  "show_lms_information",
+  "section_break_ikzg",
+  "custom_lms_html_table",
+  "section_break_guzr",
+  "test"
+ ],
+ "fields": [
+  {
+   "default": "Installation Requested",
+   "fieldname": "installation_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Installation Status",
+   "options": "Installation Requested\nProvisioning Requested\nPartially Provisioning Completed\nProvisioning Completed\nInstallation In-process\nInstalled"
+  },
+  {
+   "fieldname": "installation_stage",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Installation Stage",
+   "options": "Pending\nInstallation Initiated\nNexapp Engineer\nLocal Engineer\nEngineer Visited\nAwaiting IR\nMailed To Client\nSite Live"
+  },
+  {
+   "fetch_from": "circuit_id.customer",
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer"
+  },
+  {
+   "fetch_from": "circuit_id.site_type",
+   "fieldname": "site_type",
+   "fieldtype": "Data",
+   "label": "Site Type"
+  },
+  {
+   "fetch_from": "circuit_id.primary_data_plan",
+   "fieldname": "primary_plan",
+   "fieldtype": "Data",
+   "label": "Primary Plan"
+  },
+  {
+   "fetch_from": "circuit_id.secondary_plan",
+   "fieldname": "secondary_plan",
+   "fieldtype": "Data",
+   "label": "Secondary Plan"
+  },
+  {
+   "fetch_from": "circuit_id.solution_name",
+   "fieldname": "solution",
+   "fieldtype": "Data",
+   "label": "Solution"
+  },
+  {
+   "depends_on": "eval: doc.installation_stage != \"Nexapp Engineer\" && doc.installation_stage != \"Local Engineer\" ",
+   "fieldname": "section_break_hmjo",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "engineer_visit",
+   "fieldtype": "Table",
+   "label": "Engineer Visit",
+   "options": "Installation Engineer Visit"
+  },
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Circuit ID",
+   "options": "Site"
+  },
+  {
+   "fetch_from": "circuit_id.site_name",
+   "fieldname": "site_name",
+   "fieldtype": "Data",
+   "label": "Site Name"
+  },
+  {
+   "fetch_from": "circuit_id.address_street",
+   "fieldname": "site_address",
+   "fieldtype": "Small Text",
+   "label": "Site Address"
+  },
+  {
+   "fieldname": "site_contact_person",
+   "fieldtype": "Data",
+   "label": "Site Contact Person",
+   "placeholder": "add site Spoke"
+  },
+  {
+   "fieldname": "site_contact_mobile",
+   "fieldtype": "Data",
+   "label": "Site Contact Mobile",
+   "placeholder": "add Site Spoke mobile"
+  },
+  {
+   "fieldname": "column_break_igkq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.installation_stage != \"Nexapp Engineer\"",
+   "fieldname": "total_engineer_vistt",
+   "fieldtype": "Int",
+   "label": "Total Engineer Vistt",
+   "read_only": 1
+  },
+  {
+   "fieldname": "so_item_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "SO Item Information"
+  },
+  {
+   "fieldname": "lms_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "LMS Information"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Table",
+   "label": "SO Item",
+   "options": "Installation Master SO Item"
+  },
+  {
+   "fieldname": "test",
+   "fieldtype": "Table",
+   "label": "test",
+   "options": "Installation LMS Details"
+  },
+  {
+   "depends_on": "eval: doc.installation_stage != \"Nexapp Engineer\"",
+   "fieldname": "total_engineer_visit_cost",
+   "fieldtype": "Currency",
+   "label": "Total Engineer Visit Cost",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval: doc.installation_stage == \"Nexapp Engineer\"\n",
+   "fieldname": "nexapp_engineer_note",
+   "fieldtype": "Small Text",
+   "label": "Nexapp Engineer Note"
+  },
+  {
+   "depends_on": "eval: doc.installation_stage == \"Local Engineer\"",
+   "fieldname": "local_enginner_name",
+   "fieldtype": "Data",
+   "label": "Local Enginner Name"
+  },
+  {
+   "depends_on": "eval: doc.installation_stage == \"Local Engineer\"",
+   "fieldname": "local_enginner_schedule_datetime",
+   "fieldtype": "Datetime",
+   "label": "Local Enginner Schedule Datetime",
+   "mandatory_depends_on": "eval: doc.installation_stage == \"Local Engineer\""
+  },
+  {
+   "depends_on": "eval: doc.installation_stage == \"Nexapp Engineer\"\n",
+   "fieldname": "nexapp_engineer_schedule_datetime",
+   "fieldtype": "Datetime",
+   "label": "Nexapp Engineer Schedule Datetime",
+   "mandatory_depends_on": "eval: doc.installation_stage == \"Nexapp Engineer\"\n"
+  },
+  {
+   "depends_on": "eval: doc.installation_stage == \"Local Engineer\"",
+   "fieldname": "local_enginner_mobile_no",
+   "fieldtype": "Data",
+   "label": "Local Enginner Mobile No",
+   "mandatory_depends_on": "eval: doc.installation_stage == \"Local Engineer\""
+  },
+  {
+   "depends_on": "eval: doc.installation_stage == \"Local Engineer\"",
+   "fieldname": "local_enginner_note",
+   "fieldtype": "Small Text",
+   "label": "Local Enginner Note",
+   "mandatory_depends_on": "eval: doc.installation_stage == \"Local Engineer\""
+  },
+  {
+   "fieldname": "provisioning_id",
+   "fieldtype": "Link",
+   "label": "Provisioning ID",
+   "options": "Provisioning"
+  },
+  {
+   "default": "0",
+   "fieldname": "show_lms_information",
+   "fieldtype": "Check",
+   "label": "Show LMS Information"
+  },
+  {
+   "fieldname": "section_break_ikzg",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "custom_lms_html_table",
+   "fieldtype": "HTML",
+   "label": "LMS HTML Table"
+  },
+  {
+   "fieldname": "section_break_guzr",
+   "fieldtype": "Section Break",
+   "hidden": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-08-06 02:42:52.568053",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Installation Master",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

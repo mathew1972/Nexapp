@@ -7,19 +7,42 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "hd_ticket_information_section",
+  "customer_ticket_id",
+  "customer_ticket_status",
+  "column_break_upsw",
+  "circuit_id",
+  "customer",
   "lms_ticket_information_section",
-  "lms_supplier",
-  "customer_ticket",
   "lms_id",
+  "product_item",
+  "lms_supplier",
+  "lms_ticket_internal",
+  "subcategory",
+  "created_date_and_time",
+  "payment_escalation_task",
   "column_break_ccpe",
   "lms_ticket_status",
-  "contact_person",
-  "customer_ticket_status",
-  "circuit_id"
+  "closed_on",
+  "rca",
+  "mode",
+  "lms_ticket_id",
+  "attachment",
+  "lms_1_partner_contact_details_section",
+  "contact_person_1",
+  "email_1",
+  "column_break_zkuu",
+  "phone_1",
+  "mobile_1",
+  "descriptions_section",
+  "description",
+  "escalation_matrix_tab",
+  "table_gqpg"
  ],
  "fields": [
   {
    "columns": 2,
+   "fetch_from": "lms_id.supplier",
    "fieldname": "lms_supplier",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -31,19 +54,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "lms_supplier.supplier_primary_contact",
-   "fieldname": "contact_person",
-   "fieldtype": "Data",
-   "label": "Contact Person"
-  },
-  {
-   "fieldname": "customer_ticket",
-   "fieldtype": "Link",
-   "label": "Customer Ticket",
-   "options": "HD Ticket"
-  },
-  {
-   "fetch_from": "customer_ticket.status",
+   "fetch_from": "customer_ticket_id.status",
    "fieldname": "customer_ticket_status",
    "fieldtype": "Data",
    "label": "Customer Ticket status"
@@ -54,27 +65,170 @@
    "label": "LMS Ticket Information"
   },
   {
+   "fetch_from": "customer_ticket.custom_lms_id",
    "fieldname": "lms_id",
    "fieldtype": "Link",
    "label": "LMS ID",
+   "link_filters": "[[\"Lastmile Services Master\",\"lms_stage\",\"=\",\"Delivered\"],[\"Lastmile Services Master\",\"circuit_id\",\"=\",\"eval:doc.circuit_id\"]]",
    "options": "Lastmile Services Master"
   },
   {
+   "fetch_from": "customer_ticket_id.custom_circuit_id",
    "fieldname": "circuit_id",
    "fieldtype": "Link",
    "label": "Circuit ID",
    "options": "Site"
   },
   {
+   "default": "Open",
    "fieldname": "lms_ticket_status",
    "fieldtype": "Select",
    "label": "LMS ticket Status",
-   "options": "Open\nReplied\nResolved\nWrong Circuit\nClosed"
+   "options": "Open\nreported to ISP\nReplied\nResolved\nWrong Circuit\nClosed"
+  },
+  {
+   "depends_on": "eval:doc.mode=='Portal'",
+   "description": "Add ISP Ticket Number",
+   "fieldname": "lms_ticket_id",
+   "fieldtype": "Data",
+   "label": "LMS Ticket ID",
+   "mandatory_depends_on": "eval:doc.mode=='Portal'"
+  },
+  {
+   "fieldname": "escalation_matrix_tab",
+   "fieldtype": "Tab Break",
+   "label": "Escalation matrix"
+  },
+  {
+   "fieldname": "table_gqpg",
+   "fieldtype": "Table",
+   "options": "LMS Contact Escalation"
+  },
+  {
+   "fieldname": "descriptions_section",
+   "fieldtype": "Section Break",
+   "label": "Descriptions"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "column_break_zkuu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "lms_1_partner_contact_details_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Partner Contact Details"
+  },
+  {
+   "fetch_from": "lms_id.supplier_contact",
+   "fieldname": "contact_person_1",
+   "fieldtype": "Link",
+   "label": "Contact Person 1",
+   "options": "Contact"
+  },
+  {
+   "fetch_from": "lms_id.email_address",
+   "fieldname": "email_1",
+   "fieldtype": "Data",
+   "label": "Email 1"
+  },
+  {
+   "fieldname": "phone_1",
+   "fieldtype": "Data",
+   "label": "Phone 1"
+  },
+  {
+   "fetch_from": "lms_id.suppliernumber",
+   "fieldname": "mobile_1",
+   "fieldtype": "Data",
+   "label": "Mobile 1"
+  },
+  {
+   "fieldname": "customer_ticket_id",
+   "fieldtype": "Link",
+   "label": "Customer Ticket ID",
+   "options": "HD Ticket"
+  },
+  {
+   "fieldname": "column_break_upsw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "hd_ticket_information_section",
+   "fieldtype": "Section Break",
+   "label": "Customer Ticket Information"
+  },
+  {
+   "fieldname": "lms_ticket_internal",
+   "fieldtype": "Data",
+   "label": "LMS Ticket Internal"
+  },
+  {
+   "fieldname": "mode",
+   "fieldtype": "Select",
+   "label": "Mode",
+   "mandatory_depends_on": "eval:doc.lms_ticket_status=='reported to ISP'",
+   "options": "\nEmail\nPortal"
+  },
+  {
+   "depends_on": "eval:doc.mode=='Email'",
+   "fieldname": "attachment",
+   "fieldtype": "Attach",
+   "label": "Attachment",
+   "mandatory_depends_on": "eval:doc.mode=='Email'"
+  },
+  {
+   "fetch_from": "circuit_id.customer",
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "label": "Customer"
+  },
+  {
+   "fieldname": "created_date_and_time",
+   "fieldtype": "Datetime",
+   "label": "Created Date and Time",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.lms_ticket_status=='Closed'",
+   "fieldname": "closed_on",
+   "fieldtype": "Datetime",
+   "label": "Closed on",
+   "mandatory_depends_on": "eval:doc.lms_ticket_status=='Closed'"
+  },
+  {
+   "fieldname": "rca",
+   "fieldtype": "Select",
+   "label": "RCA",
+   "options": "\nNon Payment\nFibercut"
+  },
+  {
+   "fieldname": "payment_escalation_task",
+   "fieldtype": "Link",
+   "label": "Payment Escalation Task",
+   "options": "Task"
+  },
+  {
+   "fieldname": "subcategory",
+   "fieldtype": "Select",
+   "label": "Subcategory",
+   "options": "\nBackhaul down"
+  },
+  {
+   "fetch_from": "lms_id.lms_brandwith_name",
+   "fieldname": "product_item",
+   "fieldtype": "Data",
+   "label": "Product Item"
   }
  ],
+ "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-15 20:49:54.389613",
+ "modified": "2025-11-17 15:07:53.932419",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "HD LMS Ticket",
@@ -94,7 +248,11 @@
    "write": 1
   }
  ],
+ "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
 }

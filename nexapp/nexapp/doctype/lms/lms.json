@@ -1,0 +1,147 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-04-08 15:28:19.321534",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "lms_supplier_information_section",
+  "lms_supplier",
+  "expected_delivery_date",
+  "column_break_izqr",
+  "supplier_contact",
+  "lms_delivery_date",
+  "section_break_nyyg",
+  "circuit_id",
+  "site_name",
+  "site_type",
+  "site_address",
+  "parent_project",
+  "column_break_woig",
+  "customer",
+  "solution",
+  "primary_plan",
+  "secondary_plan",
+  "child_project"
+ ],
+ "fields": [
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "label": "Circuit ID",
+   "options": "Site"
+  },
+  {
+   "fieldname": "site_name",
+   "fieldtype": "Data",
+   "label": "Site Name"
+  },
+  {
+   "fieldname": "solution",
+   "fieldtype": "Link",
+   "label": "Solution",
+   "options": "Item"
+  },
+  {
+   "fieldname": "column_break_woig",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "site_address",
+   "fieldtype": "Small Text",
+   "label": "Site Address"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "label": "Customer"
+  },
+  {
+   "fieldname": "site_type",
+   "fieldtype": "Data",
+   "label": "Site Type"
+  },
+  {
+   "fieldname": "primary_plan",
+   "fieldtype": "Data",
+   "label": "Primary Plan"
+  },
+  {
+   "fieldname": "secondary_plan",
+   "fieldtype": "Data",
+   "label": "Secondary Plan"
+  },
+  {
+   "fieldname": "child_project",
+   "fieldtype": "Link",
+   "label": "Child Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "parent_project",
+   "fieldtype": "Link",
+   "label": "Parent Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "lms_supplier_information_section",
+   "fieldtype": "Section Break",
+   "label": " LMS Supplier Information "
+  },
+  {
+   "fieldname": "lms_supplier",
+   "fieldtype": "Link",
+   "label": " LMS Supplier ",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "column_break_izqr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "expected_delivery_date",
+   "fieldtype": "Date",
+   "label": "Expected Delivery Date"
+  },
+  {
+   "fieldname": "section_break_nyyg",
+   "fieldtype": "Section Break",
+   "label": "Circuit Information "
+  },
+  {
+   "fieldname": "supplier_contact",
+   "fieldtype": "Data",
+   "label": "Supplier Contact"
+  },
+  {
+   "fieldname": "lms_delivery_date",
+   "fieldtype": "Date",
+   "label": "LMS Delivery Date"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-04-08 16:14:41.118080",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "LMS",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

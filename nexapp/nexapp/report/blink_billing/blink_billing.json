@@ -1,0 +1,42 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-08-16 11:47:38.106018",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 10,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-11-19 22:16:18.784876",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Blink Billing",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "WITH ordered_lms AS (\n    SELECT\n        lms.*,\n        lms.parent AS site_id,\n        ROW_NUMBER() OVER (PARTITION BY lms.parent ORDER BY lms.creation) AS rn\n    FROM `tabLMS Site` lms\n    WHERE \n        lms.parenttype = 'Site'\n        AND lms.parentfield = 'lms_vendor'\n        AND lms.stage = 'LMS Delivered'      -- Only Delivered records\n)\n\nSELECT\n    s.circuit_id AS \"Circuit ID:Data:150\",\n    s.site_name AS \"Site Name:Data:200\",\n    s.order_type AS \"Order Type:Data:150\",\n    s.site_status AS \"Site Status:Data:150\",\n    s.lms_stage AS \"LMS Stage:Data:150\",\n    s.stage AS \"Stock Stage:Data:150\",\n\n    /* ---------------------------\n       NEW FIELDS ADDED HERE\n    --------------------------- */\n    s.sales_order AS \"Sales Order:Link/Sales Order:150\",\n    s.customer_po_no AS \"Customer PO No:Data:160\",\n    DATE_FORMAT(s.customer_po_date, '%%d-%%m-%%Y') AS \"Customer PO Date:Date:120\",\n\n    /* ---------------------------\n       LMS SET 1\n    --------------------------- */\n    MAX(CASE WHEN lm.rn = 1 THEN lm.lms_id END) AS \"LMS ID - 1\",\n    MAX(CASE WHEN lm.rn = 1 THEN lm.bandwidth END) AS \"Bandwidth - 1\",\n    MAX(CASE WHEN lm.rn = 1 THEN lm.bandwith_type END) AS \"Bandwidth Type - 1\",\n    MAX(CASE WHEN lm.rn = 1 THEN lm.brandwidth_name END) AS \"Bandwidth Name - 1\",\n    MAX(CASE WHEN lm.rn = 1 THEN lm.billing_mode END) AS \"Billing Mode - 1\",\n    MAX(CASE WHEN lm.rn = 1 THEN lm.stage END) AS \"LMS Status - 1\",\n    MAX(CASE WHEN lm.rn = 1 THEN DATE_FORMAT(lm.customer_approval_date, '%%d-%%m-%%Y') END) AS \"Customer Approval Dt - 1\",\n\n    /* ---------------------------\n       LMS SET 2\n    --------------------------- */\n    MAX(CASE WHEN lm.rn = 2 THEN lm.lms_id END) AS \"LMS ID - 2\",\n    MAX(CASE WHEN lm.rn = 2 THEN lm.bandwidth END) AS \"Bandwidth - 2\",\n    MAX(CASE WHEN lm.rn = 2 THEN lm.bandwith_type END) AS \"Bandwidth Type - 2\",\n    MAX(CASE WHEN lm.rn = 2 THEN lm.brandwidth_name END) AS \"Bandwidth Name - 2\",\n    MAX(CASE WHEN lm.rn = 2 THEN lm.billing_mode END) AS \"Billing Mode - 2\",\n    MAX(CASE WHEN lm.rn = 2 THEN lm.stage END) AS \"LMS Status - 2\",\n    MAX(CASE WHEN lm.rn = 2 THEN DATE_FORMAT(lm.customer_approval_date, '%%d-%%m-%%Y') END) AS \"Customer Approval Dt - 2\",\n\n    /* ---------------------------\n       LMS SET 3\n    --------------------------- */\n    MAX(CASE WHEN lm.rn = 3 THEN lm.lms_id END) AS \"LMS ID - 3\",\n    MAX(CASE WHEN lm.rn = 3 THEN lm.bandwidth END) AS \"Bandwidth - 3\",\n    MAX(CASE WHEN lm.rn = 3 THEN lm.bandwith_type END) AS \"Bandwidth Type - 3\",\n    MAX(CASE WHEN lm.rn = 3 THEN lm.brandwidth_name END) AS \"Bandwidth Name - 3\",\n    MAX(CASE WHEN lm.rn = 3 THEN lm.billing_mode END) AS \"Billing Mode - 3\",\n    MAX(CASE WHEN lm.rn = 3 THEN lm.stage END) AS \"LMS Status - 3\",\n    MAX(CASE WHEN lm.rn = 3 THEN DATE_FORMAT(lm.customer_approval_date, '%%d-%%m-%%Y') END) AS \"Customer Approval Dt - 3\",\n\n    /* ---------------------------\n       LMS SET 4\n    --------------------------- */\n    MAX(CASE WHEN lm.rn = 4 THEN lm.lms_id END) AS \"LMS ID - 4\",\n    MAX(CASE WHEN lm.rn = 4 THEN lm.bandwidth END) AS \"Bandwidth - 4\",\n    MAX(CASE WHEN lm.rn = 4 THEN lm.bandwith_type END) AS \"Bandwidth Type - 4\",\n    MAX(CASE WHEN lm.rn = 4 THEN lm.brandwidth_name END) AS \"Bandwidth Name - 4\",\n    MAX(CASE WHEN lm.rn = 4 THEN lm.billing_mode END) AS \"Billing Mode - 4\",\n    MAX(CASE WHEN lm.rn = 4 THEN lm.stage END) AS \"LMS Status - 4\",\n    MAX(CASE WHEN lm.rn = 4 THEN DATE_FORMAT(lm.customer_approval_date, '%%d-%%m-%%Y') END) AS \"Customer Approval Dt - 4\"\n\nFROM `tabSite` s\n\nLEFT JOIN ordered_lms lm \n    ON lm.site_id = s.name\n\nWHERE\n    s.customer = \"Blink Commerce Private Limited\"\n    AND s.site_status NOT IN ('Cancelled', 'Disconnection In Process', 'Disconnected')\n    AND s.lms_stage IN ('LMS Partially Delivered', 'LMS Delivered')\n\nGROUP BY\n    s.circuit_id,\n    s.site_name,\n    s.order_type,\n    s.site_status,\n    s.lms_stage,\n    s.stage,\n    s.sales_order,\n    s.customer_po_no,\n    s.customer_po_date;\n",
+ "ref_doctype": "Site",
+ "report_name": "Blink Billing",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "accounts receivable"
+  },
+  {
+   "role": "Accounts  & Finance Manager"
+  },
+  {
+   "role": "Account Receivable User"
+  },
+  {
+   "role": "Projects User"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
+ "timeout": 0
+}

@@ -1,0 +1,86 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "TI - .#####",
+ "creation": "2025-10-29 09:35:19.703762",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "job_subject",
+  "column_break_vzek",
+  "department",
+  "ai_task_instructions_section",
+  "ai_task_instruction",
+  "short_summary",
+  "support_doctype_name"
+ ],
+ "fields": [
+  {
+   "fieldname": "job_subject",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Job Subject",
+   "reqd": 1
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Department",
+   "options": "Department",
+   "reqd": 1
+  },
+  {
+   "fieldname": "ai_task_instruction",
+   "fieldtype": "Table",
+   "options": "AI Task Instruction",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_vzek",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ai_task_instructions_section",
+   "fieldtype": "Section Break",
+   "label": "AI Task Instructions"
+  },
+  {
+   "fieldname": "short_summary",
+   "fieldtype": "Data",
+   "label": "Short Summary",
+   "reqd": 1
+  },
+  {
+   "fieldname": "support_doctype_name",
+   "fieldtype": "Data",
+   "label": "Support Doctype Name"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-11-03 20:27:00.901081",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "AI Task",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

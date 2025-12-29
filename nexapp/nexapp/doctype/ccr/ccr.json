@@ -3,22 +3,30 @@
  "allow_rename": 1,
  "autoname": "CCR-.#####",
  "creation": "2025-01-10 10:24:04.796318",
+ "default_view": "List",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "customer_connect_section",
   "meeting",
-  "customer_name",
+  "customer_type",
+  "channel_partner",
+  "customer",
   "start_date_and_time",
-  "other_travellers",
   "opportunity",
   "column_break_jjiq",
   "ccr_owner",
-  "customer_type",
+  "other_travellers",
   "end_date_and_time",
   "contact",
   "deal",
   "section_break_jxcn",
-  "remarks_and_description"
+  "remarks_and_description",
+  "lft",
+  "rgt",
+  "is_group",
+  "old_parent",
+  "parent_ccr"
  ],
  "fields": [
   {
@@ -37,14 +45,6 @@
    "options": "User"
   },
   {
-   "fetch_from": "contact.company_name",
-   "fieldname": "customer_name",
-   "fieldtype": "Link",
-   "label": "Customer Name",
-   "options": "Customer",
-   "reqd": 1
-  },
-  {
    "fieldname": "customer_type",
    "fieldtype": "Select",
    "label": "Customer Type ",
@@ -61,7 +61,6 @@
    "fieldname": "contact",
    "fieldtype": "Link",
    "label": "Contact ",
-   "link_filters": "[[\"Contact\",\"link_name\",\"=\",\"Customer\"]]",
    "options": "Contact",
    "reqd": 1
   },
@@ -104,17 +103,74 @@
    "fieldtype": "Link",
    "label": "Deal",
    "mandatory_depends_on": "eval:doc.opportunity==\"Yes\"",
-   "options": "CRM Deal"
+   "options": "Opportunity"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Organization",
+   "options": "Prospect",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.customer_type==\"Partner\"",
+   "fieldname": "channel_partner",
+   "fieldtype": "Link",
+   "label": "Channel Partner",
+   "mandatory_depends_on": "eval:doc.customer_type==\"Partner\"",
+   "options": "Sales Partner"
+  },
+  {
+   "fieldname": "customer_connect_section",
+   "fieldtype": "Section Break",
+   "label": "Customer connect"
+  },
+  {
+   "fieldname": "lft",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Left",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "rgt",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Right",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_group",
+   "fieldtype": "Check",
+   "label": "Is Group"
+  },
+  {
+   "fieldname": "old_parent",
+   "fieldtype": "Link",
+   "label": "Old Parent",
+   "options": "CCR"
+  },
+  {
+   "fieldname": "parent_ccr",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Parent CCR",
+   "options": "CCR"
   }
  ],
+ "grid_page_length": 50,
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-15 16:02:57.576904",
+ "modified": "2025-08-29 12:55:33.511628",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "CCR",
  "naming_rule": "Expression (old style)",
+ "nsm_parent_field": "parent_ccr",
  "owner": "Administrator",
  "permissions": [
   {
@@ -144,5 +200,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

@@ -1,0 +1,111 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-04-17 00:31:51.303424",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "circuit_id",
+  "site_name",
+  "site_address",
+  "column_break_otqb",
+  "installation_status",
+  "installation_stage",
+  "customer",
+  "site_type",
+  "primary_plan",
+  "secondary_plan",
+  "solution"
+ ],
+ "fields": [
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "label": "Circuit ID",
+   "options": "Site"
+  },
+  {
+   "fetch_from": "circuit_id.site_name",
+   "fieldname": "site_name",
+   "fieldtype": "Data",
+   "label": "Site Name"
+  },
+  {
+   "fetch_from": "circuit_id.address_street",
+   "fieldname": "site_address",
+   "fieldtype": "Small Text",
+   "label": "Site Address"
+  },
+  {
+   "fieldname": "column_break_otqb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "circuit_id.customer",
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "label": "Customer"
+  },
+  {
+   "fetch_from": "circuit_id.site_type",
+   "fieldname": "site_type",
+   "fieldtype": "Data",
+   "label": "Site Type"
+  },
+  {
+   "fetch_from": "circuit_id.primary_data_plan",
+   "fieldname": "primary_plan",
+   "fieldtype": "Data",
+   "label": "Primary Plan"
+  },
+  {
+   "fetch_from": "circuit_id.secondary_plan",
+   "fieldname": "secondary_plan",
+   "fieldtype": "Data",
+   "label": "Secondary Plan"
+  },
+  {
+   "fetch_from": "circuit_id.solution_name",
+   "fieldname": "solution",
+   "fieldtype": "Data",
+   "label": "Solution"
+  },
+  {
+   "fieldname": "installation_status",
+   "fieldtype": "Select",
+   "label": "Installation Status",
+   "options": "Open\nInstallation In-process\nInstalled"
+  },
+  {
+   "fieldname": "installation_stage",
+   "fieldtype": "Select",
+   "label": "Installation Stage",
+   "options": "\nEngineer Visited\nAwaiting IR\nMailed To Client\nSite Live"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-04-17 00:57:22.466599",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Installation Request",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

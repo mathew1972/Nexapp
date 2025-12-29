@@ -1,0 +1,39 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-08-11 16:31:23.515236",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-08-11 17:16:53.347447",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "PO Vs LMS Vs Site",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    po.name AS \"PO No:Link/Purchase Order:150\",\n    po.transaction_date AS \"PO Date:Date:120\",\n    po.supplier_name AS \"Supplier Name:Data:200\",\n    po.custom_lms_id AS \"LMS ID:Data:150\",\n    po.circuit_id AS \"Circuit No:Data:150\",\n    po.rounded_total AS \"PO Amount:Currency:120\",\n    po.status AS \"PO Status:Data:100\",\n    po.custom_po_category AS \"PO Category:Data:150\",\n\n    lms.lms_stage AS \"LMS Status:Data:150\",\n    lms.lms_delivery_date AS \"LMS Delivery Date:Date:120\",\n\n    site.site_status AS \"Site Status:Data:150\",\n    site.date AS \"Site Delivery Date:Date:120\",\n    site.site_name AS \"Site Name:Data:200\",\n    site.customer AS \"Customer:Link/Customer:200\",\n    site.solution_name AS \"Solution Name:Data:200\",\n\n    GROUP_CONCAT(DISTINCT pi.name SEPARATOR ', ') AS \"Purchase Invoice Nos:Data:200\",\n    GROUP_CONCAT(DISTINCT pi.status SEPARATOR ', ') AS \"Purchase Invoice Statuses:Data:200\",\n    GROUP_CONCAT(DISTINCT pi.custom_dutation_from SEPARATOR ', ') AS \"Period From Dates:Data:200\",\n    GROUP_CONCAT(DISTINCT pi.custom_duration_to SEPARATOR ', ') AS \"Period To Dates:Data:200\"\n\nFROM\n    `tabPurchase Order` po\n\nLEFT JOIN\n    `tabLastmile Services Master` lms ON po.custom_lms_id = lms.name\n\nLEFT JOIN\n    `tabSite` site ON po.circuit_id = site.name\n\nLEFT JOIN\n    `tabPurchase Invoice Item` pii ON po.custom_lms_id = pii.lms_id\n\nLEFT JOIN\n    `tabPurchase Invoice` pi ON pii.parent = pi.name\n\nGROUP BY\n    po.name, po.transaction_date, po.supplier_name, po.custom_lms_id, po.circuit_id, po.rounded_total, po.status, po.custom_po_category,\n    lms.lms_stage, lms.lms_delivery_date,\n    site.site_status, site.date, site.site_name, site.customer, site.solution_name;\n",
+ "ref_doctype": "Purchase Order",
+ "report_name": "PO Vs LMS Vs Site",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Purchase User"
+  },
+  {
+   "role": "Purchase Manager"
+  },
+  {
+   "role": "Accounts  & Finance Manager"
+  },
+  {
+   "role": "Account Payable"
+  }
+ ],
+ "timeout": 0
+}

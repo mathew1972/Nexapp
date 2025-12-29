@@ -7,28 +7,96 @@
  "engine": "InnoDB",
  "field_order": [
   "circuit_id",
+  "order_type",
+  "exiting_circuit_id",
   "customer_name",
-  "solution_code",
   "solution",
+  "disconnection_customer_type",
   "column_break_vsww",
   "status",
-  "site_name",
-  "site_address",
-  "delivery_note_id",
+  "disconnection_stage",
+  "stock_management_type",
+  "delivery_requested_date",
+  "solution_code",
+  "customer_type",
+  "disconnection_request_id",
   "section_break_unap",
-  "stock_management_item"
+  "stock_management_item",
+  "section_break_oaxm",
+  "table_znyq",
+  "disconnection_item_section",
+  "stock_management_disconnection",
+  "description_information_section",
+  "description",
+  "section_break_gifx",
+  "activity_html",
+  "section_break_ntij",
+  "stock_activities",
+  "site_details_tab",
+  "site_name",
+  "column_break_pbvm",
+  "site_address_section",
+  "site_address_column",
+  "site_address",
+  "city",
+  "state",
+  "column_break_nvpd",
+  "pincode",
+  "district",
+  "country",
+  "site_contact_section",
+  "contact_person",
+  "primary_contact_mobile",
+  "email",
+  "column_break_bjkg",
+  "alternate_contact_person",
+  "alternate_contact_mobile",
+  "secondary_email",
+  "shipment_details_tab",
+  "shipment_instructions_section",
+  "instructions",
+  "shipment_details_section",
+  "shipment_details",
+  "shipping_city",
+  "column_break_wcvj",
+  "shipping_pincode",
+  "shipping_district",
+  "shipping_state",
+  "shipping_country",
+  "section_break_gyne",
+  "shipping_contact_person",
+  "column_break_soar",
+  "shippling_primary_contact_mobile",
+  "section_break_dpcw",
+  "shipment_id",
+  "service_provider",
+  "carrier_service",
+  "carrier",
+  "column_break_zbes",
+  "tracking_status",
+  "delivery_date",
+  "pickup_date",
+  "awb_number",
+  "id_tab",
+  "sales_order",
+  "delivery_note_id",
+  "project_supply_id",
+  "column_break_pisy"
  ],
  "fields": [
   {
+   "depends_on": "eval: doc.order_type != \"Supply\"",
    "fieldname": "circuit_id",
    "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Circuit ID",
-   "options": "Site"
+   "options": "Site",
+   "read_only": 1
   },
   {
-   "fetch_from": "solution_code.item_name",
+   "depends_on": "eval: doc.order_type != \"Supply\"",
+   "fetch_from": "circuit_id.solution_name",
    "fieldname": "solution",
    "fieldtype": "Data",
    "in_standard_filter": 1,
@@ -43,13 +111,195 @@
   {
    "fetch_from": "circuit_id.customer",
    "fieldname": "customer_name",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Customer Name"
+   "label": "Customer Name",
+   "options": "Customer"
   },
   {
    "fieldname": "column_break_vsww",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.stock_management_type !=\"Disconnection\"",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Stock Requested\nStock Reserved\nStock Delivery Requested\nUpdate Serial/ SIM No\nStock Delivered\nStock Shipment In-Transit\nStock Delivery In-Process\nStock Unreserved\nStock Return Requested\nStock Returned\nStock Lost\nOn Hold\nCancelled\nDisconnection"
+  },
+  {
+   "fieldname": "section_break_unap",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.stock_management_type !=\"Disconnection\"",
+   "fieldname": "stock_management_item",
+   "fieldtype": "Table",
+   "label": "Stock Management Item",
+   "options": "Stock Management Item"
+  },
+  {
+   "fieldname": "delivery_note_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Delivery Note ID"
+  },
+  {
+   "fieldname": "section_break_gifx",
+   "fieldtype": "Section Break",
+   "label": "Activity Log"
+  },
+  {
+   "fieldname": "activity_html",
+   "fieldtype": "HTML",
+   "label": "Activity HTML"
+  },
+  {
+   "fieldname": "section_break_ntij",
+   "fieldtype": "Section Break",
+   "hidden": 1
+  },
+  {
+   "fieldname": "stock_activities",
+   "fieldtype": "Table",
+   "label": "Activities",
+   "options": "Stock Activity"
+  },
+  {
+   "depends_on": "eval: doc.order_type != \"Supply\"",
+   "fieldname": "site_details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Site Details"
+  },
+  {
+   "fieldname": "column_break_nvpd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "fetch_from": "circuit_id.order_type",
+   "fieldname": "order_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Order Type",
+   "options": "\nService\nSupply\nUpgrade\nDegrade\nShifting"
+  },
+  {
+   "depends_on": "eval:doc.order_type == \"Shifting\"",
+   "fetch_from": "circuit_id.exiting_circuit_id",
+   "fieldname": "exiting_circuit_id",
+   "fieldtype": "Link",
+   "label": "Exiting Circuit ID",
+   "options": "Site"
+  },
+  {
+   "fieldname": "site_address_section",
+   "fieldtype": "Section Break",
+   "label": "Site Address "
+  },
+  {
+   "fieldname": "site_contact_section",
+   "fieldtype": "Section Break",
+   "label": "Site Contact"
+  },
+  {
+   "fetch_from": "circuit_id.contact_person",
+   "fieldname": "contact_person",
+   "fieldtype": "Data",
+   "label": "Contact Person"
+  },
+  {
+   "fieldname": "column_break_bjkg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "circuit_id.primary_contact_mobile",
+   "fieldname": "primary_contact_mobile",
+   "fieldtype": "Data",
+   "label": "Primary Contact Mobile"
+  },
+  {
+   "fetch_from": "circuit_id.email",
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email"
+  },
+  {
+   "fetch_from": "circuit_id.alternate_contact_person",
+   "fieldname": "alternate_contact_person",
+   "fieldtype": "Data",
+   "label": "Alternate Contact Person"
+  },
+  {
+   "fetch_from": "circuit_id.alternate_contact_mobile",
+   "fieldname": "alternate_contact_mobile",
+   "fieldtype": "Data",
+   "label": "Alternate Contact Mobile"
+  },
+  {
+   "fetch_from": "circuit_id.secondary_email",
+   "fieldname": "secondary_email",
+   "fieldtype": "Data",
+   "label": "Secondary Email"
+  },
+  {
+   "fetch_from": "circuit_id.city",
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fetch_from": "circuit_id.pincode",
+   "fieldname": "pincode",
+   "fieldtype": "Data",
+   "label": "Pincode"
+  },
+  {
+   "fetch_from": "circuit_id.district",
+   "fieldname": "district",
+   "fieldtype": "Data",
+   "label": "District"
+  },
+  {
+   "fetch_from": "circuit_id.state",
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "State"
+  },
+  {
+   "fetch_from": "circuit_id.country",
+   "fieldname": "country",
+   "fieldtype": "Data",
+   "label": "Country"
+  },
+  {
+   "fieldname": "id_tab",
+   "fieldtype": "Tab Break",
+   "label": "ID"
+  },
+  {
+   "fieldname": "column_break_pisy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "depends_on": "eval:doc.status==\"Stock Delivery Requested\" ",
+   "fieldname": "delivery_requested_date",
+   "fieldtype": "Date",
+   "label": "Delivery Requested Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_pbvm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "site_address_column",
    "fieldtype": "Column Break"
   },
   {
@@ -59,22 +309,31 @@
    "label": "Site Address"
   },
   {
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Status",
-   "options": "Stock Requested\nStock Reserve Requested\nStock Reserved\nStock Delivery Requested\nUpdate Serial/ SIM No\nStock Delivered\nStock Delivery In-Process\nStock Unreserve Requested\nStock Unreserved\nStock Return Requested\nCancel Requested\nCancelled"
+   "depends_on": "eval:doc.stock_management_type !=\"Disconnection\"",
+   "fieldname": "shipment_details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Shipment Details"
   },
   {
-   "fieldname": "section_break_unap",
-   "fieldtype": "Section Break"
+   "fieldname": "shipment_details",
+   "fieldtype": "Small Text",
+   "label": "Address"
   },
   {
-   "fieldname": "stock_management_item",
+   "fieldname": "shipment_details_section",
+   "fieldtype": "Section Break",
+   "label": "Shipping Address"
+  },
+  {
+   "depends_on": "eval:doc.stock_management_type !=\"Disconnection\"",
+   "fieldname": "table_znyq",
    "fieldtype": "Table",
-   "label": "Stock Management Item",
-   "options": "Stock Management Item"
+   "label": "Wireless",
+   "options": "Wireless SM"
+  },
+  {
+   "fieldname": "section_break_oaxm",
+   "fieldtype": "Section Break"
   },
   {
    "fetch_from": "circuit_id.solution_code",
@@ -84,16 +343,197 @@
    "options": "Item"
   },
   {
-   "fieldname": "delivery_note_id",
+   "fieldname": "column_break_wcvj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "shipping_city",
    "fieldtype": "Data",
-   "label": "Delivery Note ID",
-   "options": "Delivery Note"
+   "label": "City"
+  },
+  {
+   "fieldname": "shipping_pincode",
+   "fieldtype": "Data",
+   "label": "Pincode"
+  },
+  {
+   "fieldname": "shipping_district",
+   "fieldtype": "Data",
+   "label": "District"
+  },
+  {
+   "fieldname": "shipping_state",
+   "fieldtype": "Data",
+   "label": "State"
+  },
+  {
+   "fieldname": "shipping_country",
+   "fieldtype": "Data",
+   "label": "Country"
+  },
+  {
+   "depends_on": "eval: doc.order_type != \"Supply\"",
+   "fieldname": "customer_type",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Customer Type",
+   "options": "\nPaid Customer\nPOC Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "project_supply_id",
+   "fieldtype": "Data",
+   "label": "Project Supply ID"
+  },
+  {
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "label": "Sales order ",
+   "options": "Sales Order"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_dpcw",
+   "fieldtype": "Section Break",
+   "label": "Shipping Information"
+  },
+  {
+   "fieldname": "shipment_id",
+   "fieldtype": "Data",
+   "label": "Shipment ID"
+  },
+  {
+   "fieldname": "service_provider",
+   "fieldtype": "Data",
+   "label": "Service Provider"
+  },
+  {
+   "fieldname": "delivery_date",
+   "fieldtype": "Date",
+   "label": "Delivery Date"
+  },
+  {
+   "fieldname": "column_break_zbes",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pickup_date",
+   "fieldtype": "Date",
+   "label": "Pickup Date"
+  },
+  {
+   "fieldname": "tracking_status",
+   "fieldtype": "Select",
+   "label": "Tracking Status",
+   "options": "\nIn Progress\nDelivered\nReturned\nLost"
+  },
+  {
+   "fieldname": "awb_number",
+   "fieldtype": "Data",
+   "label": "AWB Number"
+  },
+  {
+   "fieldname": "carrier",
+   "fieldtype": "Data",
+   "label": "Carrier"
+  },
+  {
+   "fieldname": "carrier_service",
+   "fieldtype": "Data",
+   "label": "Carrier Service"
+  },
+  {
+   "bold": 1,
+   "default": "Service",
+   "fieldname": "stock_management_type",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Stock Management Type",
+   "options": "Service\nDisconnection\nChange Management"
+  },
+  {
+   "depends_on": "eval:doc.stock_management_type ==\"Disconnection\"",
+   "fieldname": "disconnection_item_section",
+   "fieldtype": "Section Break",
+   "label": "Disconnection Item"
+  },
+  {
+   "fieldname": "stock_management_disconnection",
+   "fieldtype": "Table",
+   "label": "Stock Management Disconnection",
+   "options": "Stock Management Disconnection"
+  },
+  {
+   "default": "Open",
+   "depends_on": "eval:doc.stock_management_type ==\"Disconnection\"",
+   "fieldname": "disconnection_stage",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Disconnection Stage",
+   "options": "\nOpen\nItem Return Pending\nItem Returned\nDisconnection Cancelled"
+  },
+  {
+   "fieldname": "description_information_section",
+   "fieldtype": "Section Break",
+   "label": "Description Information "
+  },
+  {
+   "fetch_from": "circuit_id.description",
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "section_break_gyne",
+   "fieldtype": "Section Break",
+   "label": "Contact  Information"
+  },
+  {
+   "fieldname": "shipping_contact_person",
+   "fieldtype": "Data",
+   "label": "Contact Person"
+  },
+  {
+   "fieldname": "column_break_soar",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "shippling_primary_contact_mobile",
+   "fieldtype": "Data",
+   "label": "Primary Contact Mobile"
+  },
+  {
+   "depends_on": "eval:doc.instructions",
+   "fieldname": "shipment_instructions_section",
+   "fieldtype": "Section Break",
+   "label": "Shipment Instructions"
+  },
+  {
+   "bold": 1,
+   "fieldname": "instructions",
+   "fieldtype": "Small Text",
+   "label": "Instructions"
+  },
+  {
+   "depends_on": "eval:doc.stock_management_type ==\"Disconnection\"",
+   "fieldname": "disconnection_request_id",
+   "fieldtype": "Link",
+   "label": "Disconnection Request ID",
+   "options": "Disconnection Request"
+  },
+  {
+   "fetch_from": "disconnection_request_id.customer_type",
+   "fieldname": "disconnection_customer_type",
+   "fieldtype": "Data",
+   "label": "Disconnection Customer Type",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-31 02:00:01.008298",
+ "modified": "2025-11-18 22:33:31.498021",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Stock Management",

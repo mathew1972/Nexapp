@@ -55,7 +55,8 @@ frappe.ui.form.on('Sales Invoice', {
             'auto_repeat', 'to_date', 'update_auto_repeat_reference', 'more_information', 
             'status', 'einvoice_status', 'inter_company_invoice_reference', 'campaign', 
             'represents_company', 'source', 'customer_group', 'is_internal_customer', 
-            'is_discounted', 'remarks', 'connections_tab'
+            'is_discounted', 'remarks', 'connections_tab', 'custom_start_date', 'custom_end_date',
+            'custom_sales_order', 'custom_order_type','custom_invoice_mode'
         ];
 
         fields.forEach(function(field) {
@@ -158,3 +159,90 @@ frappe.ui.form.on('Sales Invoice', {
 })
 
 
+frappe.ui.form.on('Sales Invoice', {
+    refresh: function(frm) {
+        if (frm.doc.docstatus === 0) {
+            // Add a custom top-level button named "Subscription Update"
+            frm.add_custom_button(__('Subscription Update'), function () {
+                run_subscription_mapping(frm);
+            }).addClass('custom-update-btn');
+
+            // Apply custom styles (black, white text, bold, oval shape)
+            setTimeout(() => {
+                const btn = document.querySelector('.custom-update-btn');
+                if (btn) {
+                    btn.style.backgroundColor = '#000000';  // Black background
+                    btn.style.color = '#ffffff';            // White text
+                    btn.style.fontWeight = 'bold';          // Bold font
+                    btn.style.border = 'none';
+                    btn.style.padding = '8px 20px';
+                    btn.style.borderRadius = '999px';       // Oval shape
+                    btn.style.marginRight = '8px';
+                }
+            }, 100);
+        }
+    }
+});
+
+// Logic to run when Subscription Update button is clicked
+function run_subscription_mapping(frm) {
+    if (frm.doc.subscription) {
+        frappe.call({
+            method: 'frappe.client.get',
+            args: {
+                doctype: 'Subscription',
+                name: frm.doc.subscription
+            },
+            callback: function(response) {
+                if (response.message) {
+                    let subscription_doc = response.message;
+                    let circuits = [];
+                    let site_names = [];
+
+                    // Set header-level fields
+                    frm.set_value('po_no', subscription_doc.custom_customers_purchase_orde);
+                    frm.set_value('po_date', subscription_doc.custom_customers_purchase_order_date);
+                    frm.set_value('custom_start_date', subscription_doc.current_invoice_start);
+                    frm.set_value('custom_end_date', subscription_doc.current_invoice_end);
+                    frm.set_value('custom_sales_order', subscription_doc.custom_sales_order);
+                    frm.set_value('custom_order_type', 'Service');
+
+                    // Collect values from child table in Subscription
+                    if (subscription_doc.plans) {
+                        subscription_doc.plans.forEach(plan => {
+                            circuits.push(plan.custom_circuit || "");
+                            site_names.push(plan.custom_site_name || "");
+                        });
+                    }
+
+                    // Update child table in Sales Invoice
+                    if (frm.doc.items && frm.doc.items.length > 0) {
+                        frm.doc.items.forEach((item, index) => {
+                            if (circuits[index]) {
+                                frappe.model.set_value(item.doctype, item.name, 'custom_circuit_id', circuits[index]);
+                            }
+                            if (site_names[index]) {
+                                frappe.model.set_value(item.doctype, item.name, 'custom_site_info', site_names[index]);
+                            }
+                        });
+
+                        frm.refresh_field('items');
+                    }
+
+                    // Save and refresh the form
+                    frm.save_or_update();
+                }
+            }
+        });
+    }
+}
+
+frappe.ui.form.on('Sales Invoice', {
+    is_return: function(frm) {
+        if (frm.doc.is_return) {
+            frm.set_value('naming_series', 'CN-.YY.-');
+        } else {
+            frm.set_value('naming_series', 'INV-.YY.-');
+        }
+    }
+});

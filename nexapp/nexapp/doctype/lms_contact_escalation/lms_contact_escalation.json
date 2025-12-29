@@ -1,0 +1,82 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "LMS-C.#######",
+ "creation": "2025-03-15 23:58:39.928279",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_gmrp",
+  "level",
+  "link_zitr",
+  "contact_phone",
+  "link_syot",
+  "designation",
+  "department"
+ ],
+ "fields": [
+  {
+   "fieldname": "link_zitr",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Contact Name",
+   "link_filters": "[[\"Contact\",\"link_name\",\"=\",\"eval:parent.supplier\"]]",
+   "options": "Contact"
+  },
+  {
+   "fetch_from": "link_zitr.email_id",
+   "fieldname": "link_syot",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Contact Email"
+  },
+  {
+   "fetch_from": "link_zitr.designation",
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Designation"
+  },
+  {
+   "fetch_from": "link_zitr.department",
+   "fieldname": "department",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Department"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "section_break_gmrp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "link_zitr.mobile_no",
+   "fieldname": "contact_phone",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Contact Phone"
+  },
+  {
+   "fieldname": "level",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Level",
+   "options": "Level-1\nLevel-2\nLevel-3\nLevel-4\nLevel-5"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-07-31 13:49:27.280038",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "LMS Contact Escalation",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

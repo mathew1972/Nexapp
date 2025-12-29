@@ -1,0 +1,337 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "CM-.######",
+ "creation": "2025-05-21 22:04:03.701987",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "circuit_id",
+  "column_break_rgex",
+  "change_request_type",
+  "stage",
+  "disconnected_date",
+  "section_break_awjs",
+  "customer",
+  "site_address",
+  "solution",
+  "column_break_pdsx",
+  "site_type",
+  "primary_plan",
+  "secondary_plan",
+  "isp_change_tab",
+  "isp_change_section",
+  "lms_id",
+  "purchase_order_number",
+  "expected_date",
+  "column_break_bjny",
+  "isp_status",
+  "supplier",
+  "purchase_order_date",
+  "section_break_sjvk",
+  "isp_change_issue",
+  "device_change_tab",
+  "existing_device",
+  "section_break_wwoe",
+  "expected_delivery_date",
+  "column_break_zqsj",
+  "section_break_ejqt",
+  "device_change_item",
+  "sim_change_tab",
+  "existing_sim_details_section",
+  "serial_no",
+  "data_plan",
+  "column_break_lhxa",
+  "mobile_no",
+  "reacharge_amount",
+  "new_sim_details_section",
+  "new_sim_serial_no",
+  "new_data_plan",
+  "expected_sim_change_date",
+  "column_break_wuue",
+  "new_mobile_no",
+  "new_reacharge_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Circuit ID",
+   "options": "Site"
+  },
+  {
+   "fieldname": "column_break_pdsx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "circuit_id.customer",
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fetch_from": "circuit_id.address_street",
+   "fieldname": "site_address",
+   "fieldtype": "Small Text",
+   "label": "Site Address"
+  },
+  {
+   "bold": 1,
+   "fetch_from": "circuit_id.site_type",
+   "fieldname": "site_type",
+   "fieldtype": "Data",
+   "label": "Site Type"
+  },
+  {
+   "fetch_from": "circuit_id.primary_data_plan",
+   "fieldname": "primary_plan",
+   "fieldtype": "Data",
+   "label": "Primary Plan"
+  },
+  {
+   "fetch_from": "circuit_id.secondary_plan",
+   "fieldname": "secondary_plan",
+   "fieldtype": "Data",
+   "label": "Secondary Plan"
+  },
+  {
+   "fetch_from": "circuit_id.solution_name",
+   "fieldname": "solution",
+   "fieldtype": "Data",
+   "label": "Solution"
+  },
+  {
+   "fieldname": "column_break_rgex",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "change_request_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Change Request Type",
+   "options": "\nISP Change\nDevice Change\nSIM Change\nHardware Change"
+  },
+  {
+   "fieldname": "isp_change_section",
+   "fieldtype": "Section Break",
+   "label": "ISP Change"
+  },
+  {
+   "fetch_from": "lms_id.lms_feasibility_partner",
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "column_break_bjny",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "lms_id",
+   "fieldtype": "Link",
+   "label": "LMS ID",
+   "options": "Lastmile Services Master"
+  },
+  {
+   "fetch_from": "lms_id.po_number",
+   "fieldname": "purchase_order_number",
+   "fieldtype": "Link",
+   "label": "Purchase Order Number",
+   "options": "Purchase Order"
+  },
+  {
+   "fieldname": "isp_change_issue",
+   "fieldtype": "Text Editor",
+   "label": "ISP Change Issue"
+  },
+  {
+   "fieldname": "section_break_sjvk",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "lms_id.po_released_datetime",
+   "fieldname": "purchase_order_date",
+   "fieldtype": "Datetime",
+   "label": "Purchase Order Date"
+  },
+  {
+   "fieldname": "section_break_awjs",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.change_request_type==\"ISP Change\" ",
+   "fieldname": "isp_change_tab",
+   "fieldtype": "Tab Break",
+   "label": "ISP Change"
+  },
+  {
+   "depends_on": "eval:doc.change_request_type==\"Device Change\" ",
+   "fieldname": "device_change_tab",
+   "fieldtype": "Tab Break",
+   "label": "Device Change"
+  },
+  {
+   "depends_on": "eval:doc.change_request_type==\"SIM Change\" ",
+   "fieldname": "sim_change_tab",
+   "fieldtype": "Tab Break",
+   "label": "SIM Change"
+  },
+  {
+   "fieldname": "device_change_item",
+   "fieldtype": "Table",
+   "label": "Device Change Item",
+   "options": "Device Change Item"
+  },
+  {
+   "fieldname": "existing_device",
+   "fieldtype": "Table",
+   "label": "Existing Device",
+   "options": "Existing Device"
+  },
+  {
+   "fieldname": "section_break_ejqt",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "serial_no",
+   "fieldtype": "Data",
+   "label": "SIM Serial No"
+  },
+  {
+   "fieldname": "column_break_lhxa",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "existing_sim_details_section",
+   "fieldtype": "Section Break",
+   "label": "Existing SIM Details"
+  },
+  {
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No"
+  },
+  {
+   "fieldname": "data_plan",
+   "fieldtype": "Data",
+   "label": "Data Plan"
+  },
+  {
+   "fieldname": "reacharge_amount",
+   "fieldtype": "Currency",
+   "label": "Reacharge amount"
+  },
+  {
+   "fieldname": "new_sim_details_section",
+   "fieldtype": "Section Break",
+   "label": "New SIM Details"
+  },
+  {
+   "fieldname": "new_sim_serial_no",
+   "fieldtype": "Data",
+   "label": "New SIM Serial No"
+  },
+  {
+   "fieldname": "new_data_plan",
+   "fieldtype": "Data",
+   "label": "New Data Plan"
+  },
+  {
+   "fieldname": "column_break_wuue",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "new_mobile_no",
+   "fieldtype": "Data",
+   "label": "New Mobile No"
+  },
+  {
+   "fieldname": "new_reacharge_amount",
+   "fieldtype": "Currency",
+   "label": "New Reacharge amount"
+  },
+  {
+   "fieldname": "expected_date",
+   "fieldtype": "Date",
+   "label": "Expected ISP Change Date",
+   "mandatory_depends_on": "eval:doc.change_request_type==\"ISP Change\" ",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_wwoe",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "expected_delivery_date",
+   "fieldtype": "Date",
+   "label": "Expected Delivery Date",
+   "mandatory_depends_on": "eval:doc.change_request_type==\"Device Change\" "
+  },
+  {
+   "fieldname": "column_break_zqsj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "expected_sim_change_date",
+   "fieldtype": "Date",
+   "label": "Expected SIM Change Date",
+   "mandatory_depends_on": "eval:doc.change_request_type==\"Device Change\" "
+  },
+  {
+   "default": "Pending",
+   "fieldname": "isp_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "ISP Status",
+   "options": "Pending\nFeasibility Requested\nFeasibility Completed\nPO In-process\nLMS Delivered"
+  },
+  {
+   "default": "Pending",
+   "fieldname": "stage",
+   "fieldtype": "Select",
+   "label": "Stage",
+   "options": "Pending\nDisconnected"
+  },
+  {
+   "depends_on": "eval:doc.stage==\"Disconnected\" ",
+   "fieldname": "disconnected_date",
+   "fieldtype": "Date",
+   "label": "Disconnected Date",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-08-12 11:29:38.581337",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Change Management Request",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

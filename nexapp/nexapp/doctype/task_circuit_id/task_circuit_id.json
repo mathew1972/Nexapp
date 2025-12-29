@@ -8,19 +8,22 @@
  "field_order": [
   "circuit_id",
   "site_name",
+  "item",
+  "recurring",
   "solution",
   "sales_order_no"
  ],
  "fields": [
   {
+   "columns": 1,
    "fieldname": "circuit_id",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Circuit ID ",
-   "link_filters": "[[\"Feasibility\",\"feasibility_status\",\"=\",\"Feasible\"]]",
    "options": "Feasibility"
   },
   {
+   "columns": 2,
    "fetch_from": "circuit_id.site_name",
    "fieldname": "site_name",
    "fieldtype": "Data",
@@ -28,25 +31,44 @@
    "label": "Site Name"
   },
   {
-   "fetch_from": "circuit_id.solution2",
+   "fetch_from": "circuit_id.solution_code",
    "fieldname": "solution",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Solution"
+   "label": "Solution",
+   "options": "Item"
   },
   {
    "fetch_from": "circuit_id.sales_order",
+   "fetch_if_empty": 1,
    "fieldname": "sales_order_no",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Sales Order No",
    "options": "Sales Order"
+  },
+  {
+   "columns": 1,
+   "fieldname": "item",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "OTC",
+   "link_filters": "[[\"Item\",\"custom_item_segment\",\"in\",[\"Solution\",\"Quote\"]],[\"Item\",\"item_group\",\"in\",[\"OTC Support Visit\",\"OTC Installation\"]]]",
+   "options": "Item"
+  },
+  {
+   "columns": 1,
+   "fieldname": "recurring",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Recurring",
+   "options": "Subscription Plan"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-02-15 16:54:22.952675",
+ "modified": "2025-09-25 11:52:10.364996",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Task Circuit ID",

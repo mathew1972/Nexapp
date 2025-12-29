@@ -1,0 +1,72 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2025-09-30 23:22:34.921895",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "blog_plan_section",
+  "title",
+  "blog_category",
+  "publish_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Title",
+   "reqd": 1
+  },
+  {
+   "fieldname": "blog_category",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Blog Category",
+   "options": "Blog Category",
+   "reqd": 1
+  },
+  {
+   "fieldname": "publish_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Publish Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "blog_plan_section",
+   "fieldtype": "Section Break",
+   "label": "Blog Plan"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_calendar_and_gantt": 1,
+ "links": [],
+ "modified": "2025-09-30 23:32:33.827515",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Marketing Plan",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

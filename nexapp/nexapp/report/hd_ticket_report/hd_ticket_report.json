@@ -1,0 +1,33 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-08-14 17:01:48.473698",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 7,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-09-26 11:28:05.119453",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "HD Ticket Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    hd.name AS \"Ticket No:Link/HD Ticket:150\",\n    hd.status AS \"Status:Data:120\",\n    hd.custom_circuit_id AS \"Circuit ID:Data:150\",\n    hd.customer AS \"Customer:Link/Customer:200\",\n    hd.custom_site_type AS \"Site Type:Data:150\",\n    hd.custom_impact AS \"Impact:Data:150\",\n    hd.custom_ticket_category AS \"Ticket Category:Data:180\",\n    hd.custom_ticket_sub_category AS \"Ticket Sub Category:Data:200\",\n    hd.priority AS \"Priority:Data:100\",\n    rca.rca AS \"RCA:Data:250\",\n    hd.custom_agent AS \"Agent:Data:150\",\n    hd.custom_stage AS \"Agent Stage:Data:150\",\n    hd.custom_on_hold_reason AS \"On Hold Reason:Data:200\",\n    hd.ticket_type AS \"Ticket Type:Data:150\",\n    hd.raised_by AS \"Raised By:Data:150\",\n    hd.custom_channel AS \"Channel:Data:150\",\n    hd.subject AS \"Subject:Data:250\",\n    hd.response_by AS \"Response By:Datetime:150\",\n    hd.resolution_by AS \"Resolution By:Datetime:150\",\n    hd.resolution_date AS \"Resolution Datetime:Datetime:150\",\n    hd.custom_agent_responded_on AS \"Agent Responded On:Datetime:150\",\n    hd.custom_close_datetime AS \"Close Datetime:Datetime:150\",\n    hd.creation AS \"Ticket Created Datetime:Datetime:150\",\n    LEFT(MONTHNAME(hd.creation), 3) AS \"Month Ticket Created:Data:80\",\n\n    -- In-house Escalation fields\n    esc.task_type AS \"Task Type:Data:150\",\n    esc.department AS \"Department:Data:150\",\n    esc.task_subject AS \"Task Subject:Data:250\",\n    esc.task_priority AS \"Task Priority:Data:100\",\n    esc.task_id AS \"Task ID:Data:150\",\n    esc.partner AS \"Partner:Data:150\",\n    esc.support_mode AS \"Support Mode:Data:150\",\n    esc.partner_ticket_number AS \"Partner Ticket Number:Data:150\",\n    esc.task_status AS \"Task Status:Data:120\",\n    esc.expected_start_date AS \"Expected Start Date:Datetime:150\",\n    esc.expected_end_date AS \"Expected End Date:Datetime:150\",\n    esc.completed_datetime AS \"Completed Datetime:Datetime:150\",\n    esc.partner_ticket_log_date AS \"Partner Ticket Log Date:Datetime:150\"\n\nFROM\n    `tabHD Ticket` hd\nLEFT JOIN `tabRCA` rca\n    ON rca.parent = hd.name\n   AND rca.parenttype = 'HD Ticket'\n   AND rca.parentfield = 'custom_rca'\n\nLEFT JOIN `tabIn-house Escalation` esc\n    ON esc.parent = hd.name\n   AND esc.parenttype = 'HD Ticket'\n   AND esc.parentfield = 'custom_inhouse_eaclation'\n\nWHERE\n    hd.creation >= DATE_SUB(CURDATE(), INTERVAL 2 MONTH)\n\nORDER BY\n    hd.creation DESC;\n",
+ "ref_doctype": "HD Ticket",
+ "report_name": "HD Ticket Report",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Support Manager"
+  }
+ ],
+ "timeout": 0
+}

@@ -1,0 +1,59 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-12-22 11:08:12.954783",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sales_invoice_no",
+  "sales_invoice_date",
+  "outstanding_amount",
+  "unallocated_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "sales_invoice_no",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Sales Invoice No",
+   "options": "Sales Invoice",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "sales_invoice_no.posting_date",
+   "fieldname": "sales_invoice_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Sales Invoice Date",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "sales_invoice_no.outstanding_amount",
+   "fieldname": "outstanding_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Outstanding Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "unallocated_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Unallocated Amount"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-12-22 14:35:33.447648",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Customer_Unallocated",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

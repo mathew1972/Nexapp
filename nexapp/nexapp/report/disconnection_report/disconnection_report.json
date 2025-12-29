@@ -1,0 +1,51 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-11-19 12:39:43.039988",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-11-19 12:39:43.039988",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Disconnection Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    dr.name AS \"Disconnection ID:Link/Disconnection Request:150\",\n    dr.customer_name_2 AS \"Customer:Data:200\",\n    dr.reason_for_disconnection AS \"Reason for Disconnection:Data:200\",\n    dr.status AS \"Status:Data:120\",\n    dr.notice_period_start_date AS \"Notice Period Start Date:Date:120\",\n    dr.disconnection_notice_date AS \"Disconnection Notice Date:Date:120\",\n\n    -- Child table\n    cdc.circuit_id AS \"Circuit ID:Data:150\",\n\n    -- Site Status lookup\n    st.site_status AS \"Site Status:Data:150\",\n\n    -- Lastmile Services Master fields\n    lms.name AS \"LMS Name:Link/Lastmile Services Master:150\",\n    lms.supplier AS \"Supplier:Data:200\",\n    lms.lms_stage AS \"LMS Stage:Data:150\"\n\nFROM\n    `tabDisconnection Request` dr\n\nLEFT JOIN\n    `tabCircuit disconnection` cdc\n        ON cdc.parent = dr.name\n\nLEFT JOIN\n    `tabSite` st\n        ON st.name = cdc.circuit_id\n\nLEFT JOIN\n    `tabLastmile Services Master` lms\n        ON lms.circuit_id = cdc.circuit_id\n        AND lms.lms_stage IN ('Delivered', 'Disconnection In Process')\n\nWHERE\n    dr.docstatus != 2   -- Exclude cancelled, show draft + submitted\n\nORDER BY\n    dr.creation DESC;\n",
+ "ref_doctype": "Disconnection Request",
+ "report_name": "Disconnection Report",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "CRM-Sales Manager Standard"
+  },
+  {
+   "role": "accounts receivable"
+  },
+  {
+   "role": "Accounts  & Finance Manager"
+  },
+  {
+   "role": "Sales Manager"
+  },
+  {
+   "role": "Sales Master Manager"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Account Payable"
+  }
+ ],
+ "timeout": 0
+}

@@ -1,0 +1,301 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "DCLMS-.#####.",
+ "creation": "2025-06-12 22:21:34.961979",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "disconnection_request_id",
+  "circuit_id",
+  "customer",
+  "site",
+  "lms_id",
+  "supplier_name",
+  "bandwith_type",
+  "column_break_qaaz",
+  "disconnection_status",
+  "disconnected_date",
+  "reason_for_cancellation",
+  "lms_stage",
+  "lms_delivery_date",
+  "po_number",
+  "po_date",
+  "media",
+  "solution",
+  "email_details_section",
+  "portal_login_id",
+  "supplier_email_id",
+  "effective_date",
+  "disconnection_reason",
+  "column_break_zclm",
+  "note",
+  "cc_email_id",
+  "section_break_bhjd",
+  "mobile",
+  "bill_no",
+  "brandwidth_name",
+  "outstanding",
+  "bill_date",
+  "purchase_invoice_id",
+  "duration_to",
+  "amount",
+  "duration_from",
+  "pyment"
+ ],
+ "fields": [
+  {
+   "fieldname": "lms_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "LMS ID",
+   "options": "Lastmile Services Master",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_qaaz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "lms_id.po_number",
+   "fieldname": "po_number",
+   "fieldtype": "Link",
+   "label": "PO Number",
+   "options": "Purchase Order"
+  },
+  {
+   "fetch_from": "lms_id.po_released_datetime",
+   "fieldname": "po_date",
+   "fieldtype": "Date",
+   "label": "PO Date"
+  },
+  {
+   "fetch_from": "lms_id.circuit_id",
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Circuit ID",
+   "options": "Site"
+  },
+  {
+   "fetch_from": "lms_id.supplier",
+   "fieldname": "supplier_name",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Supplier Name",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "purchase_invoice_id",
+   "fieldtype": "Link",
+   "label": "Purchase Invoice ID",
+   "options": "Purchase Invoice"
+  },
+  {
+   "fetch_from": "purchase_invoice_id.bill_no",
+   "fieldname": "bill_no",
+   "fieldtype": "Data",
+   "label": "Bill No"
+  },
+  {
+   "fetch_from": "purchase_invoice_id.bill_date",
+   "fieldname": "bill_date",
+   "fieldtype": "Data",
+   "label": "Bill Date"
+  },
+  {
+   "fetch_from": "purchase_invoice_id.status",
+   "fieldname": "pyment",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Pyment"
+  },
+  {
+   "fetch_from": "purchase_invoice_id.rounded_total",
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount",
+   "precision": "2"
+  },
+  {
+   "fetch_from": "purchase_invoice_id.outstanding_amount",
+   "fieldname": "outstanding",
+   "fieldtype": "Currency",
+   "label": "Outstanding",
+   "precision": "2"
+  },
+  {
+   "fieldname": "duration_from",
+   "fieldtype": "Date",
+   "label": "Duration From"
+  },
+  {
+   "fieldname": "duration_to",
+   "fieldtype": "Date",
+   "label": "Duration To"
+  },
+  {
+   "fieldname": "mobile",
+   "fieldtype": "Data",
+   "label": "Mobile"
+  },
+  {
+   "fetch_from": "lms_id.bandwith_type",
+   "fieldname": "bandwith_type",
+   "fieldtype": "Data",
+   "label": "Bandwith Type"
+  },
+  {
+   "fieldname": "brandwidth_name",
+   "fieldtype": "Data",
+   "label": "Brandwidth Name"
+  },
+  {
+   "fetch_from": "lms_id.media",
+   "fieldname": "media",
+   "fieldtype": "Data",
+   "label": "Media"
+  },
+  {
+   "fetch_from": "lms_id.lms_stage",
+   "fieldname": "lms_stage",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "LMS Stage"
+  },
+  {
+   "fetch_from": "lms_id.lms_delivery_date",
+   "fieldname": "lms_delivery_date",
+   "fieldtype": "Date",
+   "label": "LMS Delivery Date"
+  },
+  {
+   "fieldname": "section_break_bhjd",
+   "fieldtype": "Section Break",
+   "hidden": 1
+  },
+  {
+   "fetch_from": "circuit_id.customer",
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer"
+  },
+  {
+   "fetch_from": "circuit_id.site_name",
+   "fieldname": "site",
+   "fieldtype": "Data",
+   "label": "Site"
+  },
+  {
+   "fieldname": "disconnection_request_id",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Disconnection Request ID",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "circuit_id.solution_name",
+   "fieldname": "solution",
+   "fieldtype": "Data",
+   "label": "Solution"
+  },
+  {
+   "default": "Open",
+   "fieldname": "disconnection_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Disconnection Status",
+   "options": "Open\nService Cancellation\nSupplier Notified\nDisconnected\nDisconnection Cancelled"
+  },
+  {
+   "fieldname": "supplier_email_id",
+   "fieldtype": "Data",
+   "label": "Supplier Email ID",
+   "options": "Email"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Note"
+  },
+  {
+   "fieldname": "portal_login_id",
+   "fieldtype": "Data",
+   "label": "Portal Login ID"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "email_details_section",
+   "fieldtype": "Section Break",
+   "label": "Email Details"
+  },
+  {
+   "fieldname": "effective_date",
+   "fieldtype": "Date",
+   "label": "Effective Date"
+  },
+  {
+   "fieldname": "disconnection_reason",
+   "fieldtype": "Data",
+   "label": "Disconnection Reason"
+  },
+  {
+   "fieldname": "column_break_zclm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "disconnected_date",
+   "fieldtype": "Date",
+   "hidden": 1,
+   "label": "Disconnected Date",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.disconnection_status==\"Disconnection Cancelled\"",
+   "fieldname": "reason_for_cancellation",
+   "fieldtype": "Small Text",
+   "label": "Reason for cancellation",
+   "mandatory_depends_on": "eval:doc.disconnection_status==\"Disconnection Cancelled\""
+  },
+  {
+   "default": "support.vendor@nexapp.co.in",
+   "fieldname": "cc_email_id",
+   "fieldtype": "Data",
+   "label": "CC Email ID",
+   "options": "Email"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-12-05 12:59:50.951765",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Disconnection LMS",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

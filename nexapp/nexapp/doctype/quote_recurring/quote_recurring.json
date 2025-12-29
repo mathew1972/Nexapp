@@ -1,0 +1,71 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-08-08 14:45:19.217822",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "recurring_charges_section",
+  "description",
+  "item_code",
+  "mrc",
+  "qty",
+  "arc"
+ ],
+ "fields": [
+  {
+   "fieldname": "recurring_charges_section",
+   "fieldtype": "Section Break",
+   "label": "Recurring Charges"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Description",
+   "reqd": 1
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item code",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "mrc",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "MRC",
+   "reqd": 1
+  },
+  {
+   "fieldname": "qty",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Qty",
+   "reqd": 1
+  },
+  {
+   "fieldname": "arc",
+   "fieldtype": "Read Only",
+   "in_list_view": 1,
+   "label": "ARC"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-08-08 14:49:22.214004",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Quote Recurring",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

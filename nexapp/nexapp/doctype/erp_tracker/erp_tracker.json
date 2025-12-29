@@ -1,0 +1,159 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "ET- .#####.",
+ "creation": "2025-10-18 18:08:12.681373",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "erp_development_tracker_section",
+  "task_name",
+  "department",
+  "function",
+  "target_date",
+  "column_break_dsls",
+  "status",
+  "open_date",
+  "consider_date",
+  "closed_date",
+  "erp_module",
+  "attachment",
+  "description_section",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "erp_development_tracker_section",
+   "fieldtype": "Section Break",
+   "label": "ERP Development tracker"
+  },
+  {
+   "fieldname": "task_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Task Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "erp_module",
+   "fieldtype": "Link",
+   "label": "ERP Module",
+   "options": "Module Def",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.status==\"Open\" ",
+   "fieldname": "open_date",
+   "fieldtype": "Date",
+   "label": "Open Date",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.status==\"Consider\" ",
+   "fieldname": "consider_date",
+   "fieldtype": "Date",
+   "label": "Consider Date"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Long Text"
+  },
+  {
+   "fieldname": "column_break_dsls",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "function",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Function",
+   "options": "\nSales\nMarketing\nAccount receivable\nAccounts payable\nFeasibility\nProjects\nInventory\nlogistics\nSupport",
+   "reqd": 1
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Department",
+   "options": "Sales & Marketing\nAccounts & Finance\nService Delivery\nStock management\nCustomer Support\nRecruitment\nHRMS",
+   "reqd": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Open\nConsider\nCompleted\nCancelled",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.status==\"Completed\" ",
+   "fieldname": "closed_date",
+   "fieldtype": "Date",
+   "label": "Completed"
+  },
+  {
+   "fieldname": "description_section",
+   "fieldtype": "Section Break",
+   "label": "Description"
+  },
+  {
+   "fieldname": "target_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Target Date"
+  },
+  {
+   "fieldname": "attachment",
+   "fieldtype": "Attach",
+   "label": "Attachment"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-11-11 13:20:29.793010",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "ERP Tracker",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Developer",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

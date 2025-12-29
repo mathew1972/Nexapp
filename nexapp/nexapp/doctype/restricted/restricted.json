@@ -1,0 +1,47 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-05-06 15:51:15.281315",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "restricted"
+ ],
+ "fields": [
+  {
+   "default": "Open",
+   "fieldname": "restricted",
+   "fieldtype": "Select",
+   "label": "Restricted",
+   "options": "Open\nRestricted"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-07-17 13:30:09.570531",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Restricted",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "restricted",
+ "translated_doctype": 1
+}

@@ -1,0 +1,88 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-05-02 13:28:53.532265",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "meeting_schedules_section",
+  "meeting",
+  "ccr_id",
+  "customer",
+  "mode",
+  "km",
+  "total_amount"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "meeting",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Meeting",
+   "options": "CCR",
+   "reqd": 1
+  },
+  {
+   "columns": 3,
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "km",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "KM",
+   "reqd": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "meeting_schedules_section",
+   "fieldtype": "Section Break",
+   "label": "Meeting Schedules"
+  },
+  {
+   "columns": 2,
+   "fieldname": "mode",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Mode",
+   "options": "Two Wheeler\nFour Wheeler",
+   "reqd": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "ccr_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "CCR ID",
+   "options": "CCR"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-05-02 14:39:52.788453",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Monthly meetings",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

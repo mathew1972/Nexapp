@@ -1,0 +1,189 @@
+{
+ "actions": [],
+ "allow_events_in_timeline": 1,
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "DC-.#####",
+ "creation": "2025-05-30 21:54:38.776294",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "service_disconnection_information_section",
+  "customer_type",
+  "customer_name_2",
+  "reason_for_disconnection",
+  "customer_disconnection_confirmation",
+  "column_break_iyph",
+  "status",
+  "reason_for_rejection",
+  "notice_period",
+  "notice_period_start_date",
+  "disconnection_notice_date",
+  "circuit_id_information_section",
+  "circuit_disconnection",
+  "service_team_remarks_section",
+  "service_team_remarks",
+  "section_break_vfea",
+  "note_html",
+  "section_break_eoen",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "reason_for_disconnection",
+   "fieldtype": "Select",
+   "label": "Reason for Disconnection",
+   "options": "\nRequirement changed\nSite Shutdown\nServices Issues\nSite shifted",
+   "reqd": 1
+  },
+  {
+   "fieldname": "customer_disconnection_confirmation",
+   "fieldtype": "Attach",
+   "label": "Customer Disconnection Confirmation",
+   "reqd": 1
+  },
+  {
+   "fieldname": "notice_period",
+   "fieldtype": "Select",
+   "label": "Notice Period",
+   "options": "30\n60\n90",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "service_team_remarks",
+   "fieldtype": "Small Text"
+  },
+  {
+   "bold": 1,
+   "fieldname": "disconnection_notice_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Disconnection Notice End Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "customer_name_2",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer Name",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "notice_period_start_date",
+   "fieldtype": "Date",
+   "label": "Notice Period Start Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_eoen",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Data",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Disconnection Request",
+   "print_hide": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "customer_type",
+   "fieldtype": "Select",
+   "label": "Customer Type",
+   "options": "\nOpex (Rental)\nCapex",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "bold": 1,
+   "default": "Open",
+   "description": "To Reject, please choose an option from the list.",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Open\nSubmitted for Approval\nRejected\nApproved\nDisconnection In Process\nService Disconnected\nDisconnection Cancelled",
+   "reqd": 1
+  },
+  {
+   "fieldname": "service_team_remarks_section",
+   "fieldtype": "Section Break",
+   "label": "Sales Team Remarks"
+  },
+  {
+   "fieldname": "section_break_vfea",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "note_html",
+   "fieldtype": "HTML",
+   "label": "Note HTML",
+   "read_only": 1
+  },
+  {
+   "fieldname": "service_disconnection_information_section",
+   "fieldtype": "Section Break",
+   "label": "Service Disconnection Information"
+  },
+  {
+   "fieldname": "column_break_iyph",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "circuit_id_information_section",
+   "fieldtype": "Section Break",
+   "label": "Circuit Information"
+  },
+  {
+   "depends_on": "eval: doc.status == \"Rejected\"",
+   "fieldname": "reason_for_rejection",
+   "fieldtype": "Small Text",
+   "label": "Reason for Rejection",
+   "mandatory_depends_on": "eval: doc.status == \"Rejected\""
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "circuit_disconnection",
+   "fieldtype": "Table",
+   "options": "Circuit disconnection",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "make_attachments_public": 1,
+ "modified": "2025-12-06 12:52:24.444652",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Disconnection Request",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

@@ -1,0 +1,152 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "PRO.-.YY.-.#####",
+ "creation": "2025-04-08 11:30:39.590360",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "customer",
+  "customer_address",
+  "address_html",
+  "column_break_ekgx",
+  "date",
+  "purchase_order",
+  "po_date",
+  "sales_order",
+  "section_break_fizr",
+  "proforma_invoice",
+  "section_break_vste",
+  "column_break_fztz",
+  "column_break_ybwr",
+  "column_break_kzol",
+  "grand_total",
+  "section_break_gmcn",
+  "in_words",
+  "terms_and_conditions_section",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "column_break_ekgx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "sales_order.po_no",
+   "fieldname": "purchase_order",
+   "fieldtype": "Data",
+   "label": "Purchase Order"
+  },
+  {
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "label": "Sales Order",
+   "options": "Sales Order"
+  },
+  {
+   "fieldname": "customer_address",
+   "fieldtype": "Link",
+   "label": "Customer Address",
+   "options": "Address"
+  },
+  {
+   "fieldname": "address_html",
+   "fieldtype": "HTML",
+   "label": "Address HTML"
+  },
+  {
+   "fieldname": "section_break_fizr",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "proforma_invoice",
+   "fieldtype": "Table",
+   "label": "Proforma Invoice",
+   "options": "Proforma Invoice Item"
+  },
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "PI Date"
+  },
+  {
+   "fetch_from": "sales_order.po_date",
+   "fieldname": "po_date",
+   "fieldtype": "Date",
+   "label": "PO Date"
+  },
+  {
+   "fieldname": "terms_and_conditions_section",
+   "fieldtype": "Section Break",
+   "label": "Terms and Conditions"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "grand_total",
+   "fieldtype": "Currency",
+   "label": "Grand Total"
+  },
+  {
+   "fieldname": "in_words",
+   "fieldtype": "Data",
+   "label": "In Words"
+  },
+  {
+   "fieldname": "section_break_vste",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_fztz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_ybwr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_kzol",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_gmcn",
+   "fieldtype": "Section Break"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-05-09 11:39:53.806370",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Proforma Invoice",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

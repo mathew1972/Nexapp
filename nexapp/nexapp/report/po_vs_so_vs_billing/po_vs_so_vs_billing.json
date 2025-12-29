@@ -1,0 +1,39 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-08-16 00:01:34.336639",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-08-16 00:03:15.326334",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "PO vs SO vs Billing",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    -- Site Details\n    site.customer AS \"Customer:Link/Customer:200\",\n    site.name AS \"Circuit ID:Data:150\",\n    site.site_name AS \"Site Name:Data:200\",\n    site.site_status AS \"Site Status:Data:150\",\n    site.sales_order AS \"SO No:Link/Sales Order:150\",\n\n    -- Sales Order Details\n    so.transaction_date AS \"SO Date:Date:120\",\n    so.status AS \"SO Status:Data:120\",\n    so.total AS \"Basic SO Amount:Currency:120\",\n    so.po_no AS \"PO No:Data:150\",\n    so.po_date AS \"PO Date:Date:120\",\n    so.custom_po_end_date AS \"PO End Date:Date:120\",\n    so.custom_customer_purchase_amount AS \"PO Amount:Currency:120\",\n\n    -- Sales Invoice Details\n    GROUP_CONCAT(DISTINCT si.name SEPARATOR ', ') AS \"Sales Invoice No:Data:200\",\n    GROUP_CONCAT(DISTINCT si.posting_date SEPARATOR ', ') AS \"Invoice Date:Date:120\",\n    GROUP_CONCAT(DISTINCT si.custom_start_date SEPARATOR ', ') AS \"Start Date:Date:120\",\n    GROUP_CONCAT(DISTINCT si.custom_end_date SEPARATOR ', ') AS \"End Date:Date:120\",\n    GROUP_CONCAT(DISTINCT si.status SEPARATOR ', ') AS \"Invoice Status:Data:120\",\n    GROUP_CONCAT(DISTINCT si.total SEPARATOR ', ') AS \"Basic Invoice Amount:Currency:120\",\n    GROUP_CONCAT(DISTINCT si.total_taxes_and_charges SEPARATOR ', ') AS \"Tax Amount:Currency:120\",\n    GROUP_CONCAT(DISTINCT si.rounded_total SEPARATOR ', ') AS \"Total Invoiced with Tax:Currency:120\"\n\nFROM\n    `tabSite` site\n\nLEFT JOIN\n    `tabSales Order` so \n        ON site.sales_order = so.name\n\nLEFT JOIN\n    `tabSales Invoice` si \n        ON site.sales_order = si.custom_sales_order\n\nGROUP BY\n    site.customer,\n    site.name,\n    site.site_name,\n    site.site_status,\n    site.sales_order,\n    so.transaction_date,\n    so.status,\n    so.total,\n    so.po_no,\n    so.po_date,\n    so.custom_po_end_date,\n    so.custom_customer_purchase_amount;\n",
+ "ref_doctype": "Site",
+ "report_name": "PO vs SO vs Billing",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "accounts receivable"
+  },
+  {
+   "role": "Accounts  & Finance Manager"
+  },
+  {
+   "role": "Account Receivable User"
+  }
+ ],
+ "timeout": 0
+}

@@ -1,0 +1,121 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-10-28 10:09:29.758747",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "lms_feasibility_section",
+  "lms_supplier",
+  "bandwith_type",
+  "media",
+  "support_mode",
+  "lms_requested_id",
+  "column_break_mibe",
+  "lms_status",
+  "feasibility_type",
+  "static_ip",
+  "bandwidth",
+  "bandwidth_name"
+ ],
+ "fields": [
+  {
+   "fieldname": "lms_feasibility_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Feasibility"
+  },
+  {
+   "fieldname": "lms_supplier",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "LMS Feasibility Partner",
+   "options": "LMS Feasibility Partner",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "circuit_id.bandwith_type",
+   "fieldname": "bandwith_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Bandwith Type",
+   "options": "\nILL\nMBB\nLTE\nAirfiber\n4G\n5G",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "circuit_id.media",
+   "fieldname": "media",
+   "fieldtype": "Select",
+   "label": "Media",
+   "options": "\nWired\nFTTH\nRF\n4G\n5G",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "circuit_id.support_mode",
+   "fieldname": "support_mode",
+   "fieldtype": "Select",
+   "label": "Support Mode",
+   "options": "\nEmail\nSupport Portal\nHelpdesk Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_mibe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Default",
+   "fieldname": "feasibility_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Feasibility Type",
+   "options": "\nDefault\nNew Supplier"
+  },
+  {
+   "fieldname": "lms_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "LMS Feasibility Status",
+   "options": "\nFeasible\nHigh Commercials\nNot Feasible",
+   "reqd": 1
+  },
+  {
+   "fieldname": "static_ip",
+   "fieldtype": "Select",
+   "label": "Static IP",
+   "options": "\nAvailable\nNot Available",
+   "reqd": 1
+  },
+  {
+   "fieldname": "bandwidth",
+   "fieldtype": "Link",
+   "label": "Bandwidth Code",
+   "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"LMS Bandwidth\"]]",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "bandwidth.item_name",
+   "fieldname": "bandwidth_name",
+   "fieldtype": "Data",
+   "label": "Bandwidth Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "lms_requested_id",
+   "fieldtype": "Data",
+   "label": "LMS Requested ID"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-10-28 10:48:53.479017",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Site LMS  Feasibility",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

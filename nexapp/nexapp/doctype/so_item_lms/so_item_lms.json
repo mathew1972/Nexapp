@@ -1,0 +1,136 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-10-23 18:54:32.928600",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "lms_items_section",
+  "lms_id",
+  "brandwidth_name",
+  "billing_start_date",
+  "unit_price",
+  "bandwith_type",
+  "amount",
+  "amount_to_bill",
+  "billing_status",
+  "lms_delivery_date",
+  "qty",
+  "lms_status",
+  "invoice_number",
+  "bandwidth"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "lms_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "LMS ID",
+   "options": "Lastmile Services Master"
+  },
+  {
+   "fieldname": "lms_status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "LMS Status"
+  },
+  {
+   "fieldname": "bandwidth",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Bandwidth Item Code",
+   "options": "Item"
+  },
+  {
+   "columns": 2,
+   "fetch_from": "bandwidth.item_name",
+   "fieldname": "brandwidth_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Bandwidth Item Name"
+  },
+  {
+   "description": "its Link Delivery date",
+   "fieldname": "lms_delivery_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "LMS Delivery Date"
+  },
+  {
+   "fieldname": "bandwith_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Bandwith Type"
+  },
+  {
+   "columns": 2,
+   "description": "Billing Start date, check Customer acceptance proof",
+   "fieldname": "billing_start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Billing Start date"
+  },
+  {
+   "fieldname": "lms_items_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Items"
+  },
+  {
+   "columns": 2,
+   "fieldname": "unit_price",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Unit Price"
+  },
+  {
+   "columns": 1,
+   "fieldname": "qty",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Qty"
+  },
+  {
+   "columns": 1,
+   "fieldname": "amount_to_bill",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount to bill"
+  },
+  {
+   "columns": 1,
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount"
+  },
+  {
+   "default": "Pending",
+   "fieldname": "billing_status",
+   "fieldtype": "Select",
+   "label": "Billing Status",
+   "options": "Pending\nCompleted"
+  },
+  {
+   "fieldname": "invoice_number",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Invoice Number",
+   "options": "Sales Invoice"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-11-19 01:03:16.298119",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "SO Item LMS",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

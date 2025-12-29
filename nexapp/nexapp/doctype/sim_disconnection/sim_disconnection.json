@@ -1,0 +1,395 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "SIMD-.#####",
+ "creation": "2025-11-26 13:54:15.264054",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sim_information_tab",
+  "section_break_qrte",
+  "item_code",
+  "item_name",
+  "disconnection_request_id",
+  "disconnection_notice_end_date",
+  "column_break_radl",
+  "status",
+  "solution",
+  "reason_for_disconnection",
+  "disconnection_type",
+  "disconnected_information_section",
+  "disconnected_date",
+  "replacement_sim_information_section",
+  "replacement_sim_number",
+  "column_break_xcfr",
+  "replacement_sim_number_date",
+  "section_break_fjrm",
+  "sr_no",
+  "column_break_kinw",
+  "sim_suspended_date",
+  "section_break_fjon",
+  "sim_no",
+  "mobile_no",
+  "validity",
+  "recharge_end_date",
+  "column_break_tnms",
+  "sim_status",
+  "brand",
+  "data_plan",
+  "activation_date",
+  "section_break_czpt",
+  "remarks",
+  "site_address_tab",
+  "site_information_section",
+  "circuit_id",
+  "customer",
+  "site_id__legal_code",
+  "territory",
+  "column_break_elpo",
+  "site_name",
+  "order_type",
+  "site_type",
+  "customer_type",
+  "section_break_xjim",
+  "address_street",
+  "column_break_pzkr",
+  "contact_person",
+  "primary_contact_mobile"
+ ],
+ "fields": [
+  {
+   "columns": 2,
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "options": "Item"
+  },
+  {
+   "fetch_from": "item_code.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name",
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "fetch_from": "circuit_id.solution_name",
+   "fieldname": "solution",
+   "fieldtype": "Data",
+   "label": "Solution",
+   "options": "Item"
+  },
+  {
+   "fieldname": "column_break_radl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_fjon",
+   "fieldtype": "Section Break",
+   "label": "SIM Information"
+  },
+  {
+   "columns": 2,
+   "depends_on": "eval: doc.order_type != \"Supply\"",
+   "fieldname": "sim_no",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "SIM No",
+   "link_filters": "[[\"Serial No\",\"item_group\",\"=\",\"Telecom\"],[\"Serial No\",\"status\",\"=\",\"Active\"]]",
+   "options": "Serial No"
+  },
+  {
+   "fetch_from": "sim_no.custom_mobile_no",
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "sim_no.custom_activation_date",
+   "fieldname": "activation_date",
+   "fieldtype": "Date",
+   "label": "Activation Date",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "sim_no.custom_validity",
+   "fieldname": "validity",
+   "fieldtype": "Int",
+   "label": "Validity",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_tnms",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "sim_no.custom_data_plan",
+   "fieldname": "data_plan",
+   "fieldtype": "Data",
+   "label": "Data Plan",
+   "options": "Item",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "sim_no.custom_recharge_end_date",
+   "fieldname": "recharge_end_date",
+   "fieldtype": "Date",
+   "label": "Recharge End Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_qrte",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "site_information_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Circuit ID",
+   "options": "Site"
+  },
+  {
+   "fieldname": "column_break_elpo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "circuit_id.customer",
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "circuit_id.site_name",
+   "fieldname": "site_name",
+   "fieldtype": "Data",
+   "label": "Site Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "circuit_id.order_type",
+   "fieldname": "order_type",
+   "fieldtype": "Data",
+   "label": "Order Type",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "circuit_id.territory",
+   "fieldname": "territory",
+   "fieldtype": "Data",
+   "label": "Territory",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "circuit_id.site_type",
+   "fieldname": "site_type",
+   "fieldtype": "Data",
+   "label": "Site Type ",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "circuit_id.customer_type",
+   "fieldname": "customer_type",
+   "fieldtype": "Data",
+   "label": "Customer Type",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "circuit_id.site_id__legal_code",
+   "fieldname": "site_id__legal_code",
+   "fieldtype": "Data",
+   "label": "Site ID / Legal Code",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "circuit_id.contact_person",
+   "fieldname": "contact_person",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "label": "Contact Person"
+  },
+  {
+   "fetch_from": "circuit_id.primary_contact_mobile",
+   "fieldname": "primary_contact_mobile",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "label": "Primary Contact Mobile"
+  },
+  {
+   "fetch_from": "circuit_id.address_street",
+   "fieldname": "address_street",
+   "fieldtype": "Small Text",
+   "label": "Address/ Street",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sim_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "SIM Information"
+  },
+  {
+   "fieldname": "site_address_tab",
+   "fieldtype": "Tab Break",
+   "label": "Site Information"
+  },
+  {
+   "fieldname": "section_break_xjim",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_pzkr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "default": "Open",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Open\nSIMEX\nSuspended\nDisconnected"
+  },
+  {
+   "fieldname": "section_break_czpt",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks",
+   "max_height": "500px"
+  },
+  {
+   "bold": 1,
+   "fieldname": "sim_suspended_date",
+   "fieldtype": "Date",
+   "in_standard_filter": 1,
+   "label": "SIM Suspended Date"
+  },
+  {
+   "bold": 1,
+   "fieldname": "sr_no",
+   "fieldtype": "Data",
+   "label": "SR No"
+  },
+  {
+   "depends_on": "eval: doc.status == \"Suspended\"",
+   "fieldname": "section_break_fjrm",
+   "fieldtype": "Section Break",
+   "label": "SIM Suspended Information"
+  },
+  {
+   "fieldname": "column_break_kinw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "replacement_sim_number",
+   "fieldtype": "Data",
+   "label": "Replacement SIM Number"
+  },
+  {
+   "fieldname": "replacement_sim_number_date",
+   "fieldtype": "Date",
+   "label": "Replacement SIM Number Date"
+  },
+  {
+   "depends_on": "eval: doc.status == \"SIMEX\"",
+   "fieldname": "replacement_sim_information_section",
+   "fieldtype": "Section Break",
+   "label": "Replacement SIM Information"
+  },
+  {
+   "fieldname": "column_break_xcfr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "disconnected_date",
+   "fieldtype": "Date",
+   "label": "Disconnected Date",
+   "mandatory_depends_on": "eval: doc.status == \"Disconnected\""
+  },
+  {
+   "depends_on": "eval: doc.status == \"Disconnected\"",
+   "fieldname": "disconnected_information_section",
+   "fieldtype": "Section Break",
+   "label": "Disconnected Information"
+  },
+  {
+   "fetch_from": "sim_no.brand",
+   "fieldname": "brand",
+   "fieldtype": "Data",
+   "label": "Brand",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "sim_no.status",
+   "fieldname": "sim_status",
+   "fieldtype": "Data",
+   "label": "SIM Status",
+   "read_only": 1
+  },
+  {
+   "fieldname": "disconnection_request_id",
+   "fieldtype": "Link",
+   "label": "Disconnection Request ID",
+   "options": "Disconnection Request"
+  },
+  {
+   "fetch_from": "disconnection_request_id.reason_for_disconnection",
+   "fieldname": "reason_for_disconnection",
+   "fieldtype": "Data",
+   "label": "Reason for Disconnection"
+  },
+  {
+   "fetch_from": "disconnection_request_id.customer_type",
+   "fieldname": "disconnection_type",
+   "fieldtype": "Data",
+   "label": "Disconnection Type"
+  },
+  {
+   "fetch_from": "disconnection_request_id.disconnection_notice_date",
+   "fieldname": "disconnection_notice_end_date",
+   "fieldtype": "Date",
+   "label": " Disconnection Notice End Date"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-11-28 10:12:22.557425",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "SIM Disconnection",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_views": 1
+}

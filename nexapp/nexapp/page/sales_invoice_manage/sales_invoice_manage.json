@@ -1,0 +1,29 @@
+{
+ "content": null,
+ "creation": "2025-08-17 22:25:16.410488",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2025-08-18 10:28:01.586733",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "sales-invoice-manage",
+ "owner": "Administrator",
+ "page_name": "sales-invoice-manage",
+ "roles": [
+  {
+   "role": "accounts receivable"
+  },
+  {
+   "role": "Accounts  & Finance Manager"
+  },
+  {
+   "role": "Accounts Manager"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Sales Invoice Management"
+}

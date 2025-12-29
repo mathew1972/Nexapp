@@ -1,0 +1,199 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-05-31 00:43:57.918581",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "stock_live_update_section",
+  "column_break_enhu",
+  "item_code",
+  "item_name",
+  "qty",
+  "column_break_qkfm",
+  "serial_no_sim_no",
+  "item_group",
+  "hardware_information_section",
+  "warranty_expiry_date",
+  "lan_mac",
+  "hardware_version",
+  "wlan_mac",
+  "column_break_kiml",
+  "wan_mac",
+  "module",
+  "warranty_period_days",
+  "imei",
+  "sim_information_section",
+  "mobile_no",
+  "activation_date",
+  "validity",
+  "column_break_ohbk",
+  "data_plan",
+  "recharge_end_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "stock_live_update_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "columns": 1,
+   "fieldname": "column_break_enhu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 2,
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Code",
+   "options": "Item"
+  },
+  {
+   "columns": 3,
+   "fetch_from": "item_code.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Name"
+  },
+  {
+   "columns": 1,
+   "fieldname": "qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Qty"
+  },
+  {
+   "fieldname": "column_break_qkfm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 3,
+   "fieldname": "serial_no_sim_no",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Serial No/ SIM No",
+   "options": "Serial No"
+  },
+  {
+   "fetch_from": "item_code.item_group",
+   "fieldname": "item_group",
+   "fieldtype": "Data",
+   "label": "Item Group"
+  },
+  {
+   "depends_on": "eval:doc.item_group==\"SDIOT\" ",
+   "fieldname": "hardware_information_section",
+   "fieldtype": "Section Break",
+   "label": "Hardware Information"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.warranty_expiry_date",
+   "fieldname": "warranty_expiry_date",
+   "fieldtype": "Date",
+   "label": "Warranty Expiry Date"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_lan_mac",
+   "fieldname": "lan_mac",
+   "fieldtype": "Data",
+   "label": "LAN MAC"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_hardware_version",
+   "fieldname": "hardware_version",
+   "fieldtype": "Data",
+   "label": "Hardware Version"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_wlan_mac",
+   "fieldname": "wlan_mac",
+   "fieldtype": "Data",
+   "label": "WLAN MAC"
+  },
+  {
+   "fieldname": "column_break_kiml",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_wan_mac",
+   "fieldname": "wan_mac",
+   "fieldtype": "Data",
+   "label": "WAN MAC"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_module",
+   "fieldname": "module",
+   "fieldtype": "Data",
+   "label": "Module"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.warranty_period",
+   "fieldname": "warranty_period_days",
+   "fieldtype": "Data",
+   "label": "Warranty Period (Days)"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_imei",
+   "fieldname": "imei",
+   "fieldtype": "Data",
+   "label": "IMEI"
+  },
+  {
+   "depends_on": "eval:doc.item_group==\"Telecom\"",
+   "fieldname": "sim_information_section",
+   "fieldtype": "Section Break",
+   "label": "SIM Information"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_mobile_no",
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_activation_date",
+   "fieldname": "activation_date",
+   "fieldtype": "Data",
+   "label": "Activation Date"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_validity",
+   "fieldname": "validity",
+   "fieldtype": "Data",
+   "label": "Validity"
+  },
+  {
+   "fieldname": "column_break_ohbk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_data_plan",
+   "fieldname": "data_plan",
+   "fieldtype": "Data",
+   "label": "Data Plan"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_recharge_end_date",
+   "fieldname": "recharge_end_date",
+   "fieldtype": "Data",
+   "label": "Recharge End Date"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-06-13 00:24:40.556506",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Stock Management Disconnection",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

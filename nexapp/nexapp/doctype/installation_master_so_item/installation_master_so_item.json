@@ -1,0 +1,180 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-04-25 23:37:40.307023",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "item_code",
+  "item_name",
+  "column_break_ekob",
+  "item_group",
+  "serial_no_sim_no",
+  "hardware_information_section",
+  "warranty_expiry_date",
+  "lan_mac",
+  "hardware_version",
+  "wlan_mac",
+  "column_break_opjc",
+  "wan_mac",
+  "module",
+  "warranty_period_days",
+  "imei",
+  "sim_information_section",
+  "mobile_no",
+  "activation_date",
+  "validity",
+  "column_break_rsrt",
+  "data_plan",
+  "recharge_end_date"
+ ],
+ "fields": [
+  {
+   "columns": 2,
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Code",
+   "options": "Item"
+  },
+  {
+   "fieldname": "column_break_ekob",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 2,
+   "fetch_from": "item_code.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Name"
+  },
+  {
+   "columns": 2,
+   "fetch_from": "item_code.item_group",
+   "fieldname": "item_group",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Group"
+  },
+  {
+   "columns": 2,
+   "fieldname": "serial_no_sim_no",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Serial No/ SIM No",
+   "options": "Serial No"
+  },
+  {
+   "depends_on": "eval:doc.item_group==\"SDIOT\" ",
+   "fieldname": "hardware_information_section",
+   "fieldtype": "Section Break",
+   "label": "Hardware Information"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.warranty_expiry_date",
+   "fieldname": "warranty_expiry_date",
+   "fieldtype": "Data",
+   "label": "Warranty Expiry Date"
+  },
+  {
+   "fieldname": "column_break_opjc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_wan_mac",
+   "fieldname": "wan_mac",
+   "fieldtype": "Data",
+   "label": "WAN MAC"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_lan_mac",
+   "fieldname": "lan_mac",
+   "fieldtype": "Data",
+   "label": "LAN MAC"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_hardware_version",
+   "fieldname": "hardware_version",
+   "fieldtype": "Data",
+   "label": "Hardware Version"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_wlan_mac",
+   "fieldname": "wlan_mac",
+   "fieldtype": "Data",
+   "label": "WLAN MAC"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_module",
+   "fieldname": "module",
+   "fieldtype": "Data",
+   "label": "Module"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.warranty_period",
+   "fieldname": "warranty_period_days",
+   "fieldtype": "Data",
+   "label": "Warranty Period (Days)"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_imei",
+   "fieldname": "imei",
+   "fieldtype": "Data",
+   "label": "IMEI"
+  },
+  {
+   "depends_on": "eval:doc.item_group==\"Telecom\"",
+   "fieldname": "sim_information_section",
+   "fieldtype": "Section Break",
+   "label": "SIM Information"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_mobile_no",
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_activation_date",
+   "fieldname": "activation_date",
+   "fieldtype": "Date",
+   "label": "Activation Date"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_validity",
+   "fieldname": "validity",
+   "fieldtype": "Data",
+   "label": "Validity"
+  },
+  {
+   "fieldname": "column_break_rsrt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_data_plan",
+   "fieldname": "data_plan",
+   "fieldtype": "Data",
+   "label": "Data Plan"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_recharge_end_date",
+   "fieldname": "recharge_end_date",
+   "fieldtype": "Date",
+   "label": "Recharge End Date"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-04-26 00:06:14.618461",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Installation Master SO Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

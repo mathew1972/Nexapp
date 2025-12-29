@@ -1,0 +1,108 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-07-15 14:46:02.801849",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-07-15 18:18:54.932880",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Nexapp Billling",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    s.circuit_id AS \"Circuit ID:Data:150\",\n    s.site_name AS \"Site Name:Data:180\",\n    s.customer AS \"Customer:Link/Customer:150\",\n    s.customer_type AS \"Customer Type:Data:120\",\n    s.order_type AS \"Order Type:Data:120\",\n    s.site_status AS \"Site Status:Data:120\",\n    s.solution_name AS \"Solution Name:Data:150\",\n    s.billing_status AS \"Billing Status:Data:120\",\n    s.date AS \"Circuit Delivery Date:Date:120\",\n\n    so.name AS \"Sales Order:Link/Sales Order:150\",\n    so.po_no AS \"PO No:Data:120\",\n    so.po_date AS \"PO Date:Date:120\",\n    so.custom_po_end_date AS \"PO End Date:Date:120\",\n\n    soi.item_name AS \"Item Name:Data:150\",\n    soi.qty AS \"Qty:Float:80\",\n    soi.rate AS \"Rate:Currency:100\",\n    soi.amount AS \"Amount:Currency:120\",\n\n    tci.item AS \"OTC:Data:150\",\n    tci.custom_mrc AS \"MRC:Currency:120\",\n    tci.recurring AS \"ARC:Data:100\"\n\nFROM `tabSite` s\nINNER JOIN `tabSales Order Item` soi\n    ON s.circuit_id = soi.custom_feasibility\nINNER JOIN `tabSales Order` so\n    ON so.name = soi.parent AND so.docstatus = 1\nLEFT JOIN `tabTask Circuit ID` tci\n    ON tci.circuit_id = s.circuit_id\n    AND tci.item = soi.item_name\nWHERE soi.amount > 0\nORDER BY s.date DESC\nLIMIT 10000;\n",
+ "ref_doctype": "Site",
+ "report_name": "Nexapp Billling",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Nexapp Sales Manager"
+  },
+  {
+   "role": "Desk User"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Maintenance User"
+  },
+  {
+   "role": "Maintenance Manager"
+  },
+  {
+   "role": "Administrator"
+  },
+  {
+   "role": "Sales Manager"
+  },
+  {
+   "role": "Support Manager"
+  },
+  {
+   "role": "L2 Support"
+  },
+  {
+   "role": "L1 Support"
+  },
+  {
+   "role": "Projects Manager"
+  },
+  {
+   "role": "Data Analyst"
+  },
+  {
+   "role": "CRM User"
+  },
+  {
+   "role": "CRM-Sales Manager Standard"
+  },
+  {
+   "role": "accounts receivable"
+  },
+  {
+   "role": "CRM MIS"
+  },
+  {
+   "role": "Accounts  & Finance Manager"
+  },
+  {
+   "role": "Account Receivable User"
+  },
+  {
+   "role": "LMS Manager"
+  },
+  {
+   "role": "CRM-Inside Sales"
+  },
+  {
+   "role": "Stock Manager"
+  },
+  {
+   "role": "Projects User"
+  },
+  {
+   "role": "Project Co-Ordinator"
+  },
+  {
+   "role": "LMS User"
+  },
+  {
+   "role": "LMS User-1"
+  },
+  {
+   "role": "Account Payable"
+  }
+ ],
+ "timeout": 0
+}

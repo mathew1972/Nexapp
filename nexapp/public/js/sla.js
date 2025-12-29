@@ -1,38 +1,39 @@
 frappe.ui.form.on('HD Ticket', {
     status: function(frm) {
-        // Auto-set resolution date when resolved
-        if (frm.doc.status === 'Resolved' && !frm.doc.custom_resolution_date_2) {
-            frm.set_value('custom_resolution_date_2', frappe.datetime.now_datetime());
-        }
-
         // Handle hold timing
-        if (frm.doc.status === 'On Hold' && !frm.holdStart) {
+        if ((frm.doc.status === 'On Hold' || frm.doc.agreement_status === 'Paused') && !frm.holdStart) {
             frm.holdStart = new Date();
-        } else if (['Open', 'Replied'].includes(frm.doc.status) && frm.holdStart) {
+            if (!frm.doc.on_hold_since) {
+                frm.set_value('on_hold_since', frappe.datetime.now_datetime());
+            }
+        } else if (['Open', 'Replied'].includes(frm.doc.status) && frm.holdStart && frm.doc.agreement_status !== 'Paused') {
             const holdEnd = new Date();
             frm.totalHoldDuration = (frm.totalHoldDuration || 0) + (holdEnd - frm.holdStart);
             frm.holdStart = null;
+            frm.set_value('on_hold_since', null);
+        }
+    },
+
+    agreement_status: function(frm) {
+        if (frm.doc.agreement_status === 'Paused' && frm.doc.status !== 'On Hold') {
+            frm.set_value('status', 'On Hold');
+        } else if (frm.doc.agreement_status !== 'Paused' && frm.doc.status === 'On Hold') {
+            frm.set_value('status', 'Open');
         }
     },
 
     priority: function(frm) {
-        // Refresh display when priority changes (assuming resolution_by is updated elsewhere)
         if (frm.slaInterval) clearInterval(frm.slaInterval);
-        frm.script_manager.trigger('refresh');
+        frm.refresh();
     },
 
     refresh: function(frm) {
-        // Hide SLA for new/unsaved tickets
         if (frm.is_new()) return;
 
         const container = frm.fields_dict.custom_resolution_update.$wrapper;
-        let finalClosedDate = null;
-
-        // Initialize hold tracking
         frm.totalHoldDuration = frm.totalHoldDuration || 0;
         frm.holdStart = frm.holdStart || null;
 
-        // Clear existing interval
         if (frm.slaInterval) {
             clearInterval(frm.slaInterval);
             frm.slaInterval = null;
@@ -47,6 +48,8 @@ frappe.ui.form.on('HD Ticket', {
                     </div>
                     <div class="timer" style="text-align: center; font-family: monospace; font-size: 14px; margin-top: 8px;"></div>
                     <div class="violation-duration" style="text-align: center; font-family: monospace; font-size: 12px; color: #dc3545; margin-top: 5px;"></div>
+                    ${(frm.doc.status === 'On Hold' || frm.doc.agreement_status === 'Paused') ? 
+                        `<div class="hold-duration" style="text-align: center; font-family: monospace; font-size: 12px; color: #ffc107; margin-top: 5px;"></div>` : ''}
                 </div>
             `);
         }
@@ -69,44 +72,51 @@ frappe.ui.form.on('HD Ticket', {
                 const openingDateTime = parseDateTime(`${frm.doc.opening_date} ${frm.doc.opening_time}`);
                 const resolutionBy = frm.doc.resolution_by ? parseDateTime(frm.doc.resolution_by) : null;
 
-                // Validate required fields
                 if (!openingDateTime || !resolutionBy || !frm.doc.opening_date) {
                     container.hide();
                     return;
                 }
 
-                // Handle terminal statuses
                 if (['Closed', 'Wrong Circuit'].includes(frm.doc.status)) {
                     container.find('.progress-bar').hide();
                     container.find('.sla-status').text(`⚫ ${frm.doc.status.toUpperCase()}`);
                     return;
                 }
 
-                // Calculate effective elapsed time
                 let elapsed = now - openingDateTime;
                 elapsed -= (frm.totalHoldDuration || 0);
                 if (frm.holdStart) elapsed -= (now - frm.holdStart);
 
-                // Calculate time dynamics
                 const totalExpectedTime = resolutionBy - openingDateTime;
                 const remainingTime = resolutionBy - now;
                 const violationDuration = now - resolutionBy;
 
-                // Update progress
                 const progress = Math.min((elapsed / totalExpectedTime) * 100, 100);
                 container.find('.progress-bar').css('width', `${progress}%`);
 
-                // Update display elements
                 const statusElement = container.find('.sla-status')[0];
                 const timerElement = container.find('.timer')[0];
                 const violationElement = container.find('.violation-duration')[0];
+                const holdElement = container.find('.hold-duration')[0];
 
                 if (frm.doc.status === 'Resolved') {
                     statusElement.textContent = "🟢 RESOLVED";
                     statusElement.style.background = "#28a74522";
                     timerElement.textContent = '';
                     violationElement.textContent = '';
-                } else if (now > resolutionBy) {
+                } 
+                else if (frm.doc.status === 'On Hold' || frm.doc.agreement_status === 'Paused') {
+                    statusElement.textContent = "🟡 ON HOLD";
+                    statusElement.style.background = "#ffc10722";
+                    timerElement.textContent = '';
+                    violationElement.textContent = '';
+                    
+                    if (holdElement) {
+                        const holdDuration = frm.holdStart ? now - frm.holdStart : 0;
+                        holdElement.textContent = `On Hold: ${formatDuration(holdDuration)}`;
+                    }
+                }
+                else if (now > resolutionBy) {
                     statusElement.textContent = "🔴 SLA VIOLATED";
                     statusElement.style.background = "#dc354522";
                     violationElement.textContent = `Overdue: ${formatDuration(violationDuration)}`;
@@ -126,16 +136,18 @@ frappe.ui.form.on('HD Ticket', {
 
         initializeDisplay();
         calculateSLA();
-        frm.slaInterval = setInterval(calculateSLA, 1000);
 
-        // Cleanup handler
-        frm.script_manager.on('cleanup', () => {
-            if (frm.slaInterval) clearInterval(frm.slaInterval);
+        // 🟢 Use 10 seconds interval
+        frm.slaInterval = setInterval(calculateSLA, 10000);
+
+        $(frm.wrapper).on('remove', function () {
+            if (frm.slaInterval) {
+                clearInterval(frm.slaInterval);
+            }
         });
     },
 
     after_save: function(frm) {
-        // Refresh to show SLA after initial save
-        frm.script_manager.trigger('refresh');
+        frm.refresh();
     }
 });

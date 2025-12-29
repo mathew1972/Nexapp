@@ -1,0 +1,228 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "POR-.######",
+ "creation": "2025-07-19 15:22:16.294592",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "lms_id",
+  "supplier",
+  "supplier_group",
+  "circuit_id",
+  "gst_category",
+  "company",
+  "column_break_fqpi",
+  "po_status",
+  "supplier_contact",
+  "supplier_number",
+  "document",
+  "section_break_qvtq",
+  "po_management_item",
+  "section_break_mjio",
+  "po_note",
+  "customer_information_tab",
+  "customer",
+  "lms_type",
+  "column_break_xhzp",
+  "customer_type",
+  "payment_information_tab",
+  "payment",
+  "po_information_tab",
+  "po_number",
+  "column_break_icta",
+  "po_date",
+  "column_break_ovsr",
+  "po_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "lms_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "LMS ID",
+   "options": "Lastmile Services Master"
+  },
+  {
+   "bold": 1,
+   "fetch_from": "lms_id.supplier",
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "column_break_fqpi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "lms_id.supplier_contact",
+   "fieldname": "supplier_contact",
+   "fieldtype": "Data",
+   "label": "Supplier Contact"
+  },
+  {
+   "fetch_from": "lms_id.suppliernumber",
+   "fieldname": "supplier_number",
+   "fieldtype": "Data",
+   "label": "Supplier Number"
+  },
+  {
+   "fieldname": "section_break_qvtq",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "po_management_item",
+   "fieldtype": "Table",
+   "label": "PO Item",
+   "options": "PO Management Item"
+  },
+  {
+   "fieldname": "section_break_mjio",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "po_note",
+   "fieldtype": "Small Text",
+   "label": "PO Note"
+  },
+  {
+   "fetch_from": "supplier.supplier_group",
+   "fieldname": "supplier_group",
+   "fieldtype": "Data",
+   "label": "Supplier Group"
+  },
+  {
+   "fetch_from": "lms_id.circuit_id",
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "label": "Circuit ID",
+   "options": "Site"
+  },
+  {
+   "fieldname": "document",
+   "fieldtype": "Attach",
+   "label": "Document"
+  },
+  {
+   "bold": 1,
+   "default": "PO Requested",
+   "fieldname": "po_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "PO Status",
+   "options": "PO Requested\nPO Created (Draft)\nPO Released\nPO Cancelled\nAmend"
+  },
+  {
+   "fetch_from": "lms_id.customer",
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "label": "Customer"
+  },
+  {
+   "fetch_from": "circuit_id.lms_type",
+   "fieldname": "lms_type",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "LMS Type"
+  },
+  {
+   "fieldname": "payment_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Payment Information"
+  },
+  {
+   "fieldname": "payment",
+   "fieldtype": "Data",
+   "label": "Payment"
+  },
+  {
+   "fetch_from": "circuit_id.customer_type",
+   "fieldname": "customer_type",
+   "fieldtype": "Data",
+   "label": "Customer Type"
+  },
+  {
+   "fieldname": "customer_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Customer Information"
+  },
+  {
+   "fieldname": "column_break_xhzp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "po_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "PO Information"
+  },
+  {
+   "fieldname": "po_number",
+   "fieldtype": "Data",
+   "label": "PO Number",
+   "options": "Purchase Order"
+  },
+  {
+   "fieldname": "column_break_icta",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "po_date",
+   "fieldtype": "Date",
+   "label": "PO Date"
+  },
+  {
+   "fieldname": "column_break_ovsr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "po_amount",
+   "fieldtype": "Currency",
+   "label": "PO Amount",
+   "precision": "2"
+  },
+  {
+   "fetch_from": "supplier.gst_category",
+   "fieldname": "gst_category",
+   "fieldtype": "Data",
+   "label": "GST Category"
+  },
+  {
+   "default": "Nexapp Technologies Private Limited",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-07-20 23:33:38.381211",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "PO Management",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,84 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-07-24 15:35:36.375369",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-07-24 15:35:36.375369",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Feasibility Update",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    name AS \"Feasibility ID:Link/Feasibility:150\",\n    customer AS \"Customer:Link/Customer:180\",\n    customer_type AS \"Customer Type:Data:150\",\n    solution_name AS \"Solution Name:Data:200\"\nFROM `tabFeasibility`\nORDER BY creation DESC;\n",
+ "ref_doctype": "Feasibility",
+ "report_name": "Feasibility Update",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "LMS User"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Sales Manager"
+  },
+  {
+   "role": "Nexapp Sales Manager"
+  },
+  {
+   "role": "Projects Manager"
+  },
+  {
+   "role": "LMS Manager"
+  },
+  {
+   "role": "CRM User"
+  },
+  {
+   "role": "CRM-Sales Manager Standard"
+  },
+  {
+   "role": "CRM MIS"
+  },
+  {
+   "role": "accounts receivable"
+  },
+  {
+   "role": "Project Co-Ordinator"
+  },
+  {
+   "role": "Projects User"
+  },
+  {
+   "role": "LMS User-1"
+  },
+  {
+   "role": "Stock Manager"
+  },
+  {
+   "role": "CRM-Inside Sales"
+  },
+  {
+   "role": "Support Manager"
+  },
+  {
+   "role": "L1 Support"
+  },
+  {
+   "role": "L2 Support"
+  }
+ ],
+ "timeout": 0
+}

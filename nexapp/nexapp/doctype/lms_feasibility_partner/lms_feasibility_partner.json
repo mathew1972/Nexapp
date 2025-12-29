@@ -1,0 +1,236 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:supplier",
+ "creation": "2025-02-20 19:56:39.637192",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "lms_feasibility_partner_section",
+  "supplier_type",
+  "supplier",
+  "class",
+  "column_break_janj",
+  "custom_info",
+  "active",
+  "status",
+  "supplier_group",
+  "section_break_gprz",
+  "upload_document",
+  "section_break_qdin",
+  "address_1",
+  "address_2",
+  "pincode",
+  "column_break_btrp",
+  "primary_contact",
+  "city",
+  "state",
+  "description_section",
+  "description",
+  "contact_tab",
+  "contact_information_section",
+  "table_onol",
+  "section_break_cwlh",
+  "primary_contact_name",
+  "column_break_jwxd",
+  "primary_contact_mobile"
+ ],
+ "fields": [
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Feasibility Partner",
+   "placeholder": "Enter Name as per GST document only",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "column_break_janj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "ISP",
+   "fieldname": "supplier_group",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Supplier Group",
+   "options": "Supplier Group",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "default": "Company",
+   "fieldname": "supplier_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Supplier Type",
+   "options": "Company\nIndividual\nPartnership\nProprietor",
+   "reqd": 1
+  },
+  {
+   "default": "Open",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Open\nSupplier Created",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_gprz",
+   "fieldtype": "Section Break",
+   "label": "Partner documents"
+  },
+  {
+   "fieldname": "upload_document",
+   "fieldtype": "Table",
+   "label": "Upload Document",
+   "options": "LMS documents",
+   "reqd": 1
+  },
+  {
+   "fieldname": "description_section",
+   "fieldtype": "Section Break",
+   "label": "Description"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "contact_tab",
+   "fieldtype": "Tab Break",
+   "label": "Contact"
+  },
+  {
+   "fieldname": "table_onol",
+   "fieldtype": "Table",
+   "options": "LMS Contact"
+  },
+  {
+   "fieldname": "class",
+   "fieldtype": "Select",
+   "label": "ISP Class",
+   "options": "\nA\nB\nC\nMSO",
+   "reqd": 1
+  },
+  {
+   "fieldname": "lms_feasibility_partner_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Feasibility Partner"
+  },
+  {
+   "fieldname": "contact_information_section",
+   "fieldtype": "Section Break",
+   "label": "Contact Information"
+  },
+  {
+   "fieldname": "section_break_qdin",
+   "fieldtype": "Section Break",
+   "label": "Address Information"
+  },
+  {
+   "fieldname": "pincode",
+   "fieldtype": "Data",
+   "label": "Pincode",
+   "reqd": 1
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City",
+   "reqd": 1
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Select",
+   "label": "State",
+   "options": "\nAndhra Pradesh\nArunachal Pradesh\nAssam\nBihar\nChhattisgarh\nGoa\nGujarat\nHaryana\nHimachal Pradesh\nJharkhand\nKarnataka\nKerala\nMadhya Pradesh\nMaharashtra\nManipur\nMeghalaya\nMizoram\nNagaland\nOdisha\nPunjab\nRajasthan\nSikkim\nTamil Nadu\nTelangana\nTripura\nUttar Pradesh\nUttarakhand\nWest Bengal\nAndaman and Nicobar Islands\nChandigarh\nDadra and Nagar Haveli\nDaman and Diu\nDelhi NCR\nJammu and Kashmir\nLadakh\nLakshadweep\nPuducherry",
+   "reqd": 1
+  },
+  {
+   "fieldname": "address_1",
+   "fieldtype": "Data",
+   "label": "Address line 1"
+  },
+  {
+   "fieldname": "address_2",
+   "fieldtype": "Data",
+   "label": "Address line 2"
+  },
+  {
+   "fieldname": "column_break_btrp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "primary_contact",
+   "fieldtype": "Link",
+   "label": "Primary contact",
+   "options": "Contact",
+   "reqd": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "active",
+   "fieldtype": "Check",
+   "label": "Active"
+  },
+  {
+   "fieldname": "custom_info",
+   "fieldtype": "HTML",
+   "label": "Info"
+  },
+  {
+   "fieldname": "section_break_cwlh",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "primary_contact_name",
+   "fieldtype": "Data",
+   "label": "Primary Contact Name "
+  },
+  {
+   "fieldname": "column_break_jwxd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "primary_contact_mobile",
+   "fieldtype": "Data",
+   "label": "Primary Contact Mobile"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "make_attachments_public": 1,
+ "modified": "2025-08-01 18:18:34.939113",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "LMS Feasibility Partner",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "supplier",
+ "track_changes": 1,
+ "translated_doctype": 1
+}

@@ -1,0 +1,39 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-05-12 15:06:12.434377",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "assessment_questionnaire_section",
+  "question"
+ ],
+ "fields": [
+  {
+   "fieldname": "assessment_questionnaire_section",
+   "fieldtype": "Section Break",
+   "label": "Assessment Questionnaire"
+  },
+  {
+   "fieldname": "question",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Question",
+   "placeholder": "Add Question"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-05-12 15:08:23.250648",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Assessment Questionnaire",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

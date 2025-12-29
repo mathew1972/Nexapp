@@ -1,0 +1,36 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-06-05 16:37:56.577374",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-06-05 17:47:28.120939",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Stock - Site Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    site.name AS \"Site ID:Link/Site:120\",\n    site.circuit_id AS \"Circuit ID:Data:120\",\n    site.site_name AS \"Site Name:Data:150\",\n    site.customer AS \"Customer:Link/Customer:120\",\n    site.site_type AS \"Site Type:Data:100\",\n    site.customer_type AS \"Customer Type:Data:100\",\n    site.site_status AS \"Site Status:Data:100\",\n    site.stage AS \"Stage:Data:100\",\n    site.order_type AS \"Order Type:Data:100\",\n    site.exiting_circuit_id AS \"Exiting Circuit ID:Data:120\",\n    site.solution_code AS \"Solution Code:Data:100\",\n    site.solution_name AS \"Solution Name:Data:100\",    \n    site.service_provider AS \"Service Provider:Data:100\",\n    site.awb_number AS \"AWB Number:Data:100\",\n    site.pickup_date AS \"Pickup Date:Date:100\",\n    site.delivery_date AS \"Delivery Date:Date:100\",\n    site.tracking_status AS \"Tracking Status:Data:100\",\n    site.carrier AS \"Carrier:Data:100\",\n    site.carrier_service AS \"Carrier Service:Data:100\",    \n    si.item_code AS \"Item Code:Data:120\",\n    si.item_name AS \"Item Name:Data:120\",\n    si.qty AS \"Quantity:Int:80\",\n    si.status AS \"Item Status:Data:100\",\n    si.serial_no_sim_no AS \"Serial/SIM No:Data:150\",\n    si.brand AS \"Brand:Data:120\",\n    si.mobile_no AS \"Mobile No:Data:120\",\n    si.data_plan AS \"Data Plan:Data:120\",\n    si.rental_plan AS \"Rental Plan:Data:120\",\n    sm.delivery_requested_date AS \"Delivery Requested Date:Date:120\",\n    DATEDIFF(site.pickup_date, sm.delivery_requested_date) AS \"Material Ageing (Days):Int:100\",\n    DATEDIFF(site.delivery_date, site.pickup_date) AS \"Ageing Shipment Delivery (Days):Int:100\"\nFROM\n    `tabSite` site\nLEFT JOIN\n    `tabSite Item` si ON si.parent = site.name\nLEFT JOIN\n    `tabStock Management` sm ON sm.circuit_id = site.circuit_id\nWHERE\n    site.docstatus < 2\nORDER BY\n    site.creation DESC\n",
+ "ref_doctype": "Site",
+ "report_name": "Stock - Site Report",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Administrator"
+  },
+  {
+   "role": "Stock Manager"
+  }
+ ],
+ "timeout": 0
+}

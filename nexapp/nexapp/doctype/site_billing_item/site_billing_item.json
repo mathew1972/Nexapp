@@ -1,0 +1,103 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-11-18 23:42:46.795714",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "circuit_id",
+  "item_code",
+  "otc",
+  "mrc",
+  "arc",
+  "rate",
+  "qty",
+  "amount",
+  "solution"
+ ],
+ "fields": [
+  {
+   "columns": 2,
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Circuit ID",
+   "options": "Site"
+  },
+  {
+   "fetch_from": "circuit_id.solution_code",
+   "fieldname": "solution",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Solution",
+   "options": "Item"
+  },
+  {
+   "columns": 2,
+   "fieldname": "otc",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "OTC",
+   "link_filters": "[[\"Item\",\"custom_item_segment\",\"in\",[\"Solution\",\"Quote\"]],[\"Item\",\"item_group\",\"in\",[\"OTC Support Visit\",\"OTC Installation\"]]]"
+  },
+  {
+   "columns": 2,
+   "fieldname": "mrc",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "MRC"
+  },
+  {
+   "columns": 2,
+   "fieldname": "arc",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "ARC"
+  },
+  {
+   "columns": 1,
+   "fetch_from": "circuit_id.sales_order",
+   "fetch_if_empty": 1,
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Rate",
+   "options": "Sales Order"
+  },
+  {
+   "columns": 1,
+   "fieldname": "qty",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Qty"
+  },
+  {
+   "columns": 2,
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount"
+  },
+  {
+   "columns": 1,
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Code",
+   "options": "Item"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-11-19 00:17:10.147308",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Site Billing Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,79 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-11-01 13:41:10.204677",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "circuits_section",
+  "circuit_id",
+  "customer",
+  "solution",
+  "order_type",
+  "delivery_date",
+  "status"
+ ],
+ "fields": [
+  {
+   "fieldname": "circuits_section",
+   "fieldtype": "Section Break",
+   "label": "Circuits"
+  },
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Circuit Id",
+   "options": "Site"
+  },
+  {
+   "fetch_from": "circuit_id.solution_name",
+   "fieldname": "solution",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Solution"
+  },
+  {
+   "fetch_from": "circuit_id.date",
+   "fieldname": "delivery_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Delivery Date"
+  },
+  {
+   "fetch_from": "circuit_id.site_status",
+   "fieldname": "status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Status"
+  },
+  {
+   "fetch_from": "circuit_id.customer",
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Customer"
+  },
+  {
+   "fetch_from": "circuit_id.order_type",
+   "fieldname": "order_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Order Type"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-11-27 17:43:24.611615",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Circuit disconnection",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

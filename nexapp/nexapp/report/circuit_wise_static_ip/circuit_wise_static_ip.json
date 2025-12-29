@@ -1,0 +1,48 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-11-05 11:53:31.244519",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-11-05 12:39:37.969672",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Circuit wise Static IP",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    -- From Site\n    site.name AS \"Circuit ID:Link/Site:150\",\n    site.customer AS \"Customer:Link/Customer:200\",\n    site.site_name AS \"Site Name:Data:200\",\n    site.site_status AS \"Site Status:Data:150\",\n\n    -- From Lastmile Services Master (join via circuit_id)\n    lms.name AS \"LMS ID:Link/Lastmile Services Master:180\",\n    lms.lms_feasibility_partner AS \"Supplier (Partner):Link/LMS Feasibility Partner:200\",\n    lms.supplier AS \"Supplier:Link/Supplier:180\",\n    lms.static_ip_1 AS \"Static IP:Data:180\"\n\nFROM\n    `tabSite` site\n\nLEFT JOIN `tabLastmile Services Master` lms\n    ON TRIM(lms.circuit_id) = TRIM(site.name)\n\nORDER BY\n    site.name ASC;\n",
+ "ref_doctype": "Site",
+ "report_name": "Circuit wise Static IP",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Nexapp Sales Manager"
+  },
+  {
+   "role": "Desk User"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Administrator"
+  },
+  {
+   "role": "Support Manager"
+  },
+  {
+   "role": "L2 Support"
+  },
+  {
+   "role": "L1 Support"
+  }
+ ],
+ "timeout": 0
+}

@@ -1,0 +1,72 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-12-09 18:44:35.711895",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 1,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-12-22 13:19:58.284098",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Sales Order Lookup by Circuit ID",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    so.name AS \"Sales Order:Link/Sales Order:200\",\n\n    so.customer AS \"Customer::200\",\n\n    CASE\n        WHEN so.docstatus = 0 THEN 'Draft'\n        WHEN so.docstatus = 1 THEN 'Submitted'\n        WHEN so.docstatus = 2 THEN 'Cancelled'\n    END AS \"SO Status::120\",\n\n    so.po_no AS \"PO No::150\",\n    so.custom_task AS \"Task::150\",\n\n    soi.custom_feasibility AS \"Circuit ID:Link/Site:180\",\n    soi.custom_circuit_id_renewal AS \"Circuit ID (Renewal):Link/Site:180\",\n\n    s.site_name AS \"Site Name::180\",\n    s.site_status AS \"Site Status::120\"\n\nFROM\n    `tabSales Order` so\n\nLEFT JOIN\n    `tabSales Order Item` soi\n        ON soi.parent = so.name\n\nLEFT JOIN\n    `tabSite` s\n        ON s.name = soi.custom_feasibility\n\nORDER BY\n    so.creation DESC;\n",
+ "ref_doctype": "Sales Order",
+ "report_name": "Sales Order Lookup by Circuit ID",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "accounts receivable"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Maintenance User"
+  },
+  {
+   "role": "Sales Manager"
+  },
+  {
+   "role": "Stock User"
+  },
+  {
+   "role": "CRM User"
+  },
+  {
+   "role": "Account Receivable User"
+  },
+  {
+   "role": "Projects Manager"
+  },
+  {
+   "role": "Projects User"
+  },
+  {
+   "role": "Project Co-Ordinator"
+  },
+  {
+   "role": "Project Co-Ordinator"
+  },
+  {
+   "role": "Project Co-Ordinator"
+  },
+  {
+   "role": "Account Payable"
+  },
+  {
+   "role": "CRM-Sales Manager Standard"
+  },
+  {
+   "role": "Sales Master Manager"
+  }
+ ],
+ "timeout": 0
+}

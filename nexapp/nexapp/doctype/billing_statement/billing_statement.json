@@ -1,0 +1,184 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "BS-.######",
+ "creation": "2025-12-15 21:58:24.214722",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "sales_order_information_section",
+  "sales_order_no",
+  "order_type",
+  "billing_terms",
+  "customer_po_start_date",
+  "sales_order_amount",
+  "billing_start_date",
+  "column_break_vtax",
+  "customer",
+  "customer_po_number",
+  "customer_po_date",
+  "customer_po_end_date",
+  "customer_po_amount",
+  "billing_end_date",
+  "section_break_sbpg",
+  "so_item",
+  "section_break_zsyy",
+  "lms_details",
+  "billing_control_section",
+  "onwards_billing_date",
+  "billing_setting_tab",
+  "one_time_billing"
+ ],
+ "fields": [
+  {
+   "fieldname": "sales_order_no",
+   "fieldtype": "Link",
+   "label": "Sales Order No",
+   "options": "Sales Order"
+  },
+  {
+   "fieldname": "column_break_vtax",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "sales_order_no.order_type",
+   "fieldname": "order_type",
+   "fieldtype": "Data",
+   "label": "Order Type"
+  },
+  {
+   "fetch_from": "sales_order_no.customer",
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "label": "Customer"
+  },
+  {
+   "fetch_from": "sales_order_no.po_no",
+   "fieldname": "customer_po_number",
+   "fieldtype": "Data",
+   "label": "Customer PO number"
+  },
+  {
+   "fetch_from": "sales_order_no.po_date",
+   "fieldname": "customer_po_date",
+   "fieldtype": "Date",
+   "label": "Customer' PO Date"
+  },
+  {
+   "fetch_from": "sales_order_no.custom_customer_purchase_amount",
+   "fieldname": "customer_po_amount",
+   "fieldtype": "Currency",
+   "label": "Customer PO Amount"
+  },
+  {
+   "fetch_from": "sales_order_no.custom_customer_po_start_date",
+   "fieldname": "customer_po_start_date",
+   "fieldtype": "Date",
+   "label": "Customer PO Start Date"
+  },
+  {
+   "fetch_from": "sales_order_no.custom_customer_po_end_date",
+   "fieldname": "customer_po_end_date",
+   "fieldtype": "Date",
+   "label": "Customer PO End Date"
+  },
+  {
+   "fetch_from": "sales_order_no.custom_billing_terms",
+   "fieldname": "billing_terms",
+   "fieldtype": "Data",
+   "label": "Billing Terms"
+  },
+  {
+   "fieldname": "sales_order_information_section",
+   "fieldtype": "Section Break",
+   "label": "Sales Order Information"
+  },
+  {
+   "fieldname": "section_break_zsyy",
+   "fieldtype": "Section Break",
+   "label": "LMS Information "
+  },
+  {
+   "fieldname": "lms_details",
+   "fieldtype": "Table",
+   "label": "LMS Details",
+   "options": "Billing Statement LMS"
+  },
+  {
+   "fieldname": "section_break_sbpg",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "so_item",
+   "fieldtype": "Table",
+   "label": "SO Item",
+   "options": "Billing Statement SO"
+  },
+  {
+   "fetch_from": "sales_order_no.rounded_total",
+   "fieldname": "sales_order_amount",
+   "fieldtype": "Currency",
+   "label": "Sales Order Amount"
+  },
+  {
+   "fetch_from": "sales_order_no.custom_billing_start_date",
+   "fieldname": "billing_start_date",
+   "fieldtype": "Date",
+   "label": "Billing Start Date"
+  },
+  {
+   "fetch_from": "sales_order_no.custom_billing_end_date",
+   "fieldname": "billing_end_date",
+   "fieldtype": "Date",
+   "label": "Billing End Date"
+  },
+  {
+   "fieldname": "billing_control_section",
+   "fieldtype": "Section Break",
+   "label": "Billing Control"
+  },
+  {
+   "fieldname": "onwards_billing_date",
+   "fieldtype": "Date",
+   "label": "Onwards billing date"
+  },
+  {
+   "fieldname": "billing_setting_tab",
+   "fieldtype": "Tab Break",
+   "label": "Billing Setting"
+  },
+  {
+   "default": "0",
+   "fetch_from": "sales_order_no.custom_onetime_billing",
+   "fieldname": "one_time_billing",
+   "fieldtype": "Check",
+   "label": "One Time Billing"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-12-20 23:34:57.390057",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Billing Statement",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

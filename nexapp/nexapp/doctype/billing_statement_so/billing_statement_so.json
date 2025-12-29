@@ -1,0 +1,104 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-12-15 23:11:45.881312",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "so_item_invoice_section",
+  "circuit_id",
+  "item_name",
+  "bandwith_type",
+  "rate",
+  "qty",
+  "amount",
+  "circuit_delivery_date",
+  "billing_mode",
+  "item_code"
+ ],
+ "fields": [
+  {
+   "fieldname": "so_item_invoice_section",
+   "fieldtype": "Section Break",
+   "label": "SO Item Invoice"
+  },
+  {
+   "columns": 2,
+   "fetch_from": "item_code.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Name"
+  },
+  {
+   "columns": 2,
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Rate"
+  },
+  {
+   "columns": 1,
+   "fieldname": "qty",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Quantity"
+  },
+  {
+   "columns": 2,
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Code",
+   "options": "Item"
+  },
+  {
+   "fieldname": "billing_mode",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Billing Mode"
+  },
+  {
+   "columns": 1,
+   "fetch_from": "item_code.custom_bandwith_type",
+   "fieldname": "bandwith_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Bandwith Type"
+  },
+  {
+   "columns": 1,
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Circuit ID",
+   "options": "Site"
+  },
+  {
+   "fetch_from": "circuit_id.date",
+   "fieldname": "circuit_delivery_date",
+   "fieldtype": "Data",
+   "label": "Circuit Delivery Date"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-12-17 22:59:26.838926",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Billing Statement SO",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

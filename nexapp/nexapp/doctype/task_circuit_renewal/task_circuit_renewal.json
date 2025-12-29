@@ -1,0 +1,92 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-06-02 17:05:18.949295",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "circuit_id",
+  "site_name",
+  "item",
+  "arc",
+  "mrc",
+  "recurring",
+  "solution",
+  "sales_order_no"
+ ],
+ "fields": [
+  {
+   "columns": 2,
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Circuit ID ",
+   "link_filters": "[]",
+   "options": "Site"
+  },
+  {
+   "columns": 3,
+   "fetch_from": "circuit_id.site_name",
+   "fieldname": "site_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Site Name"
+  },
+  {
+   "columns": 1,
+   "fieldname": "item",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "OTC",
+   "link_filters": "[[\"Item\",\"custom_item_segment\",\"in\",[\"Solution\",\"Quote\"]],[\"Item\",\"item_group\",\"in\",[\"OTC Support Visit\",\"OTC Installation\"]]]",
+   "options": "Item"
+  },
+  {
+   "fieldname": "recurring",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Recurring",
+   "options": "Subscription Plan"
+  },
+  {
+   "fetch_from": "circuit_id.solution_code",
+   "fieldname": "solution",
+   "fieldtype": "Link",
+   "label": "Solution",
+   "options": "Item"
+  },
+  {
+   "fetch_from": "circuit_id.sales_order",
+   "fieldname": "sales_order_no",
+   "fieldtype": "Link",
+   "label": "Sales Order No",
+   "options": "Sales Order"
+  },
+  {
+   "columns": 1,
+   "fieldname": "arc",
+   "fieldtype": "Data",
+   "label": "ARC"
+  },
+  {
+   "columns": 1,
+   "fieldname": "mrc",
+   "fieldtype": "Data",
+   "label": "MRC"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-07-03 12:08:46.532815",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Task Circuit Renewal",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

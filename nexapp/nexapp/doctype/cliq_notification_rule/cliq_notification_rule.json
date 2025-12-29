@@ -1,0 +1,102 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-09-22 15:26:29.845195",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "rule_name",
+  "doc",
+  "event",
+  "recipient_mode",
+  "email",
+  "send_only_when_status_changes",
+  "column_break_cvqz",
+  "condition",
+  "message"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "doc",
+   "fieldtype": "Link",
+   "label": "Doc",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "event",
+   "fieldtype": "Select",
+   "label": "Event",
+   "options": "\nafter_insert\non_update\non_submit\non_cancel"
+  },
+  {
+   "fieldname": "condition",
+   "fieldtype": "Code",
+   "label": "condition"
+  },
+  {
+   "fieldname": "recipient_mode",
+   "fieldtype": "Select",
+   "label": "recipient_mode",
+   "options": "Email"
+  },
+  {
+   "fieldname": "message",
+   "fieldtype": "Code",
+   "label": "Message"
+  },
+  {
+   "default": "0",
+   "description": "When checked and event=on_update, we fire only if status or site_status changed.",
+   "fieldname": "send_only_when_status_changes",
+   "fieldtype": "Check",
+   "label": "send_only_when_status_changes"
+  },
+  {
+   "description": "Put your document fieldname here, e.g. sales_person, project_manager, project_coordinator.",
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email"
+  },
+  {
+   "fieldname": "rule_name",
+   "fieldtype": "Data",
+   "label": "Rule Name"
+  },
+  {
+   "fieldname": "column_break_cvqz",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-09-22 21:31:54.543598",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Cliq Notification Rule",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,108 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-07-08 12:20:11.828263",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-07-08 12:37:32.743093",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Stock Management Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    sm.name AS \"Stock Management ID:Link/Stock Management:150\",\n    sm.circuit_id AS \"Circuit ID:Data:120\",\n    sm.site_name AS \"Site Name:Data:150\",\n    sm.order_type AS \"Order Type:Data:100\",\n    sm.exiting_circuit_id AS \"Exiting Circuit ID:Data:120\",\n    sm.customer_name AS \"Customer:Data:150\",\n    sm.status AS \"Status:Data:100\",\n    sm.disconnection_stage AS \"Disconnection Stage:Data:100\",\n    sm.stock_management_type AS \"Stock Management Type:Data:120\",\n    sm.delivery_requested_date AS \"Delivery Requested Date:Date:120\",\n    sm.solution AS \"Solution Name:Data:120\",\n    sm.solution_code AS \"Solution Code:Data:120\",\n    sm.customer_type AS \"Customer Type:Data:100\",\n    sm.delivery_note_id AS \"Delivery Note ID:Link/Delivery Note:120\",\n\n    sm.shipment_id AS \"Shipment ID:Data:120\",\n    sm.tracking_status AS \"Tracking Status:Data:100\",\n    sm.service_provider AS \"Service Provider:Data:100\",\n    sm.carrier_service AS \"Carrier Service:Data:100\",\n    sm.carrier AS \"Carrier:Data:100\",\n    sm.delivery_date AS \"Delivery Date:Date:100\",\n    sm.pickup_date AS \"Pickup Date:Date:100\",\n    sm.awb_number AS \"AWB Number:Data:100\",\n\n    smi.item_code AS \"Item Code:Data:120\",\n    smi.item_name AS \"Item Name:Data:120\",\n    smi.qty AS \"Quantity:Int:80\",\n    smi.bulk_serial_no AS \"Bulk Serial No:Data:120\",\n    smi.item_group AS \"Item Group:Data:120\",\n    smi.delivery_note_id AS \"Item Delivery Note:Link/Delivery Note:120\",\n    smi.deliver_date AS \"Item Delivery Date:Date:100\",\n    smi.sim_no AS \"SIM No:Data:120\",\n    smi.data_plan AS \"Data Plan:Data:120\",\n    smi.mobile_no AS \"Mobile No:Data:120\",\n    smi.supplier AS \"Supplier:Data:120\",\n    smi.serial_no AS \"Serial No:Data:120\",\n    smi.imei AS \"IMEI:Data:120\",\n\n    DATEDIFF(sm.pickup_date, sm.delivery_requested_date) AS \"Material Ageing (Days):Int:100\",\n    DATEDIFF(sm.delivery_date, sm.pickup_date) AS \"Shipment Ageing (Days):Int:100\"\n\nFROM\n    `tabStock Management` sm\nLEFT JOIN\n    `tabStock Management Item` smi ON smi.parent = sm.name\nWHERE\n    sm.docstatus < 2\nORDER BY\n    sm.creation DESC\n",
+ "ref_doctype": "Site",
+ "report_name": "Stock Management Report",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Nexapp Sales Manager"
+  },
+  {
+   "role": "Desk User"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Maintenance User"
+  },
+  {
+   "role": "Maintenance Manager"
+  },
+  {
+   "role": "Administrator"
+  },
+  {
+   "role": "Sales Manager"
+  },
+  {
+   "role": "Support Manager"
+  },
+  {
+   "role": "L2 Support"
+  },
+  {
+   "role": "L1 Support"
+  },
+  {
+   "role": "Projects Manager"
+  },
+  {
+   "role": "Data Analyst"
+  },
+  {
+   "role": "CRM User"
+  },
+  {
+   "role": "CRM-Sales Manager Standard"
+  },
+  {
+   "role": "accounts receivable"
+  },
+  {
+   "role": "CRM MIS"
+  },
+  {
+   "role": "Accounts  & Finance Manager"
+  },
+  {
+   "role": "Account Receivable User"
+  },
+  {
+   "role": "LMS Manager"
+  },
+  {
+   "role": "CRM-Inside Sales"
+  },
+  {
+   "role": "Stock Manager"
+  },
+  {
+   "role": "Projects User"
+  },
+  {
+   "role": "Project Co-Ordinator"
+  },
+  {
+   "role": "LMS User"
+  },
+  {
+   "role": "LMS User-1"
+  },
+  {
+   "role": "Account Payable"
+  }
+ ],
+ "timeout": 0
+}

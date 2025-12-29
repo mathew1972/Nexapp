@@ -1,0 +1,55 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-11-18 23:43:27.098997",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "sales_order",
+  "section_break_xvvr",
+  "site_billing_item"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_xvvr",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "site_billing_item",
+   "fieldtype": "Table",
+   "label": "Site Billing Item",
+   "options": "Site Billing Item"
+  },
+  {
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "label": "Sales Order",
+   "options": "Sales Order"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-11-18 23:57:16.667096",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Site Billing",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

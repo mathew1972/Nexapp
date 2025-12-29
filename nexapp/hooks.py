@@ -5,6 +5,7 @@ app_description = "Nexapp ERP"
 app_email = "mathewsamuel10@gmail.com"
 app_license = "mit"
 
+
 # Apps
 # ------------------
 
@@ -145,6 +146,7 @@ app_license = "mit"
 # 	}
 # }
 
+
 # Scheduled Tasks
 # ---------------
 
@@ -165,6 +167,39 @@ app_license = "mit"
 # 		"nexapp.tasks.monthly"
 # 	],
 # }
+###################################################################
+#scheduler_events = {
+#    "cron": {
+#        "*/1 * * * *": [
+#            "frappe.email.queue.flush",
+#            "frappe.email.doctype.email_account.email_account.pull"
+#        ]
+#    }
+#}
+
+scheduler_events = {
+    "cron": {
+        # Pull incoming emails every 1 minute
+        "*/1 * * * *": [
+            "frappe.email.doctype.email_account.email_account.pull"
+        ],
+
+        # Flush outgoing emails every 10 minutes (reduce SMTP pressure on Zoho)
+        "*/10 * * * *": [
+            "frappe.email.queue.flush"
+        ],
+
+        # Custom: email
+        "20 20 * * *": [
+            "nexapp.api.send_engineer_ticket_report"
+        ]
+        
+    }
+}
+
+##################################################################
+
+
 
 # Testing
 # -------
@@ -177,6 +212,10 @@ app_license = "mit"
 # override_whitelisted_methods = {
 # 	"frappe.desk.doctype.event.event.get_events": "nexapp.event.get_events"
 # }
+
+#override_whitelisted_methods = {
+#    "erpnext.stock.doctype.material_request.material_request.make_purchase_order": "nexapp.api.custom_make_purchase_order"
+#}
 
 
 
@@ -246,33 +285,80 @@ app_license = "mit"
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+
+# Scheduled Tasks
+# ---------------
+
+
 app_include_css = [
-    "/assets/nexapp/css/custom.css"
+    "/assets/nexapp/css/custom.css",
+    "/assets/nexapp/css/Number_card.css"
 ]
+
+app_include_js = [
+    "/nexapp/page/bank_reconciliation/bank_reconciliation.js",
+    "/nexapp/page/custom_helpdesk/custom_helpdesk.js",
+    "/nexapp/page/billing_potal/billing_potal.js",
+    "public/js/crm_extensions.js"  
+]
+
 
 doctype_list_js = {
     "Site": "public/js/Site_list.js"
 }
 
+
 doc_events = {
     "Delivery Note": {
-        "on_submit": "nexapp.api.update_site_status_on_delivery_note_save"
-    },
-    "Sales Order": {
-        "on_submit": "nexapp.api.update_custom_circuit_id_in_stock_reservation"
+        "on_submit": "nexapp.api.update_site_status_on_delivery_note_save",
+        "before_save": "nexapp.api.validate_delivery_note"
     },
     "Communication": {
-        "after_insert": "nexapp.api.create_hd_ticket_from_communication"
+        "after_insert": "nexapp.api.create_hd_ticket_from_communication"        
     },
-    "Sales Invoice Item": {
-        "on_update": "nexapp.api.validate_subscription_circuit"
-    }
+    "Customer": {
+        "after_insert": "nexapp.api.customer_created"
+    },
+    "Shipment": {
+        "on_update": "nexapp.api.update_site_and_stock_management"
+    },
+    "Purchase Order": {
+        "on_update": "nexapp.api.update_lastmile_on_po_save"
+    },
+    "LMS Payment Request": {
+        "on_submit": "nexapp.api.update_lms_on_payment_submit"
+    },
+    "Lastmile Services Master": {
+        "validate": "nexapp.api.update_site_child_table",
+        "on_update": "nexapp.api.sync_lms_review_to_site"
+    },
+    "Change Management Request": {
+        "on_update": "nexapp.api.on_update"
+    },
+    "Disconnection Request": {
+        "on_submit": "nexapp.api.process_disconnection_request_submit"        
+    },     
+    "Installation Note": {
+        "on_update": "nexapp.api.update_site_on_installation_note",
+        "on_submit": "nexapp.api.update_site_on_installation_note",
+        "on_cancel": "nexapp.api.update_site_on_installation_note"
+    },
+    "ToDo": {
+        "after_insert": "nexapp.api.notify_assignment",
+        "after_insert": "nexapp.api.sync_custom_agent_from_todo",
+        "on_update": "nexapp.api.sync_custom_agent_from_todo"
+    },
+    "Payment Entry": {
+        "on_submit": "nexapp.api.update_expense_claim_status"
+    },     
+    "Sales Order": {
+        "after_save": "nexapp.api.update_task_circuit_sales_order",
+        #"before_submit": "nexapp.api.sales_order_to_site"
+    }#,
+    #"Site": {
+     #   "on_update": "nexapp.api.update_invoice_and_lms"
+    #}   
 }
-
-
-
-
-
 
 fixtures = [   
     
@@ -281,6 +367,10 @@ fixtures = [
     {"dt": "Property Setter", "filters": [["module", "=", "Nexapp"]]},    
     {"dt": "Email Domain"}               
 ]
+
+doctype_list_js = {
+    "HD Ticket": "public/js/hd_ticket_custom.js"
+}
 
 doctype_js = {
     "Issue": [              
@@ -291,7 +381,7 @@ doctype_js = {
         "public/js/lead_pincode.js",
         "public/js/lead_custom.js"
     ],    
-    "Opportunity": "public/js/Deal_custom.js",
+    "Opportunity": "public/js/ Deal_custom.js",  
     "Customer": "public/js/Customer_custom.js",
     "Quotation": "public/js/Quotes_custom.js",
     "Item Price": "public/js/Product_Price_custom.js",
@@ -301,13 +391,14 @@ doctype_js = {
         "public/js/Sales_order_circuit.js",
         "public/js/sales_order_project.js"
     ],
-    "Sales Invoice": "public/js/Sales_Invoice_custom.js",
+    "Sales Invoice": "public/js/Sales_Invoice_custom.js",    
     "Payment Entry": "public/js/Payment_Entry_custom.js",
     "Territory": "public/js/Territory_custom.js",
     "Job Opening": "public/js/Job_opening_custom.js",
     "Job Applicant": "public/js/Job_applicant_custom.js",
     "Job Offer": "public/js/Job_offer_custom.js",
     "Employee": "public/js/Employee_custom.js",
+    "Expense Claim": "public/js/expense_claim_custom.js",
     "Leave Application": "public/js/Leave_application_custom.js",
     "Company": "public/js/Company_custom.js",
     "Branch": "public/js/Branch_custom.js",
@@ -317,6 +408,7 @@ doctype_js = {
     "Delivery Note": [
         "public/js/Stock_custom_ui.js",  
         "public/js/sales_order_delivery_note_id.js",
+        "public/js/delivery_note.js",
         "public/js/delivery_note_serial.js"
     ],
     "Material Request": "public/js/Stock_custom_ui.js",
@@ -345,39 +437,30 @@ doctype_js = {
         "public/js/site_pincode.js",
         "public/js/site_contact.js"
     ],
-    #"HD Ticket": [
-        #"public/js/hd_ticket_custom.js",
-        #"public/js/inhouse_ticket.js",
-        #"public/js/sla.js",
-        #"public/js/maintenanc.js",
-        #"public/js/ticket_task.js"        
-   # ],
-
+    "HD Ticket": [
+        "public/js/hd_ticket_custom.js",
+        "public/js/inhouse_ticket.js",
+        "public/js/sla.js",
+        "public/js/maintenanc.js",
+        "public/js/ticket_task.js"        
+    ],
     "Project": "public/js/Project_custom_ui.js",
     "CCR": "public/js/ccr_custom.js",
     "LMS": "public/js/lms.js",    
     "Stock Reservation Entry": "public/js/stock_reservation_entry.js",
     "Product Assigment": "doctype/product_assigment/product_assigment.js",   
     "Task": "public/js/task_to_ticket.js",
-    "Maintenance Visit": "public/js/maintenance_visit_approved.js"    
+    "Maintenance Visit": "public/js/maintenance_visit_approved.js",
+    "Work Order": "public/js/work_order.js",
+    "Supplier": "public/js/supplier_custom.js",
+    "Disconnection Request": "public/js/disconnection_request.js",
+    "PO Management": "public/js/po_management.js",
+    "Purchase Order": "public/js/purchase_order_custom.js"
 }
 
-
-
-
-
-       
-       
-
-
-
-
-
-
-
-
-
-   
+override_whitelisted_methods = {
+    "crm.api.navigation.get_navigation_items": "nexapp.crm_sidebar.get_crm_sidebar_items"
+}
     
 
 

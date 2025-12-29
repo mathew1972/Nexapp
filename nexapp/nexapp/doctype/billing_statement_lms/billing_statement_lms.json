@@ -1,0 +1,97 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-12-15 23:00:51.046889",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "lms_items_section",
+  "circuit_id",
+  "lms_id",
+  "brandwidth_name",
+  "bandwith_type",
+  "lms_delivery_date",
+  "lms_billing_start_date",
+  "bandwidth_code",
+  "lms_status"
+ ],
+ "fields": [
+  {
+   "fieldname": "lms_items_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Items"
+  },
+  {
+   "columns": 2,
+   "fieldname": "lms_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "LMS ID",
+   "options": "Lastmile Services Master"
+  },
+  {
+   "columns": 2,
+   "fetch_from": "lms_id.lms_brandwith_name",
+   "fieldname": "brandwidth_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Bandwidth Item Name"
+  },
+  {
+   "fetch_from": "lms_id.bandwith_type",
+   "fieldname": "bandwith_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Bandwith Type"
+  },
+  {
+   "description": "its Link Delivery date",
+   "fetch_from": "lms_id.lms_delivery_date",
+   "fieldname": "lms_delivery_date",
+   "fieldtype": "Date",
+   "label": "LMS Delivery Date"
+  },
+  {
+   "fetch_from": "lms_id.lms_stage",
+   "fieldname": "lms_status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "LMS Status"
+  },
+  {
+   "fetch_from": "lms_id.lms_bandwith",
+   "fieldname": "bandwidth_code",
+   "fieldtype": "Data",
+   "label": "Bandwidth Code"
+  },
+  {
+   "columns": 2,
+   "description": "Billing Start date, check Customer acceptance proof",
+   "fieldname": "lms_billing_start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "LMS Billing Start Date"
+  },
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Circuit ID",
+   "options": "Site"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-12-17 22:43:19.720779",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Billing Statement LMS",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

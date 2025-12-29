@@ -1,0 +1,86 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-10-26 17:47:59.056210",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "chat_window",
+  "invoice_file",
+  "status",
+  "extracted_json",
+  "supplier",
+  "invoice_number",
+  "invoice_date",
+  "invoice_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "chat_window",
+   "fieldtype": "HTML",
+   "label": "Chat Window"
+  },
+  {
+   "fieldname": "invoice_file",
+   "fieldtype": "Attach",
+   "label": "Upload Invoice"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nPending\nProcessing\nExtracted\nError\nCompleted"
+  },
+  {
+   "fieldname": "extracted_json",
+   "fieldtype": "Long Text",
+   "label": "Extracted Data"
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "invoice_number",
+   "fieldtype": "Data",
+   "label": "Invoice Number"
+  },
+  {
+   "fieldname": "invoice_date",
+   "fieldtype": "Date",
+   "label": "Invoice Date"
+  },
+  {
+   "fieldname": "invoice_amount",
+   "fieldtype": "Currency",
+   "label": "Invoice Amount"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-10-26 17:57:24.031821",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "AI Invoice Import",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

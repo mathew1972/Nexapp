@@ -1,0 +1,393 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "LMS ID-.######",
+ "creation": "2025-04-07 21:03:29.992845",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_pldb",
+  "circuit_id",
+  "site_name",
+  "site_address",
+  "site_type",
+  "solution",
+  "column_break_dpyj",
+  "lms_request_status",
+  "status",
+  "customer",
+  "territory",
+  "primary_plan",
+  "secondary_plan",
+  "section_break_gpds",
+  "lms_fesible_suppliers",
+  "isp_change_details_tab",
+  "supplier_details_section",
+  "lms_id",
+  "supplier",
+  "purchase_order_number",
+  "purchase_order_date",
+  "task_id",
+  "expected_date",
+  "column_break_czaq",
+  "po_stage",
+  "supplier_stage",
+  "disconnection_date",
+  "supplier_reason_for_disconnection",
+  "disconnection_effective_date",
+  "section_break_gvcx",
+  "supplier_email_id",
+  "cc_email_i",
+  "column_break_nzrf",
+  "supplier_disconnection_email_id_2",
+  "cc_email_ii",
+  "section_break_yhvm",
+  "isp_change_issue",
+  "section_break_dpot",
+  "supplier_invoice_id",
+  "supplier_invoice_no",
+  "duration_from",
+  "payment_type",
+  "invoice_amount",
+  "column_break_peve",
+  "payment_status",
+  "supplier_invoice_date",
+  "duration_to",
+  "payment_cycle",
+  "section_break_wblh",
+  "change_management_request_id"
+ ],
+ "fields": [
+  {
+   "fieldname": "lms_fesible_suppliers",
+   "fieldtype": "Table",
+   "label": "LMS Fesible Suppliers",
+   "options": "LMS Request Item"
+  },
+  {
+   "fieldname": "section_break_pldb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Circuit ID",
+   "options": "Site",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_dpyj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "circuit_id.customer",
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer"
+  },
+  {
+   "fetch_from": "circuit_id.site_type",
+   "fieldname": "site_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Site Type"
+  },
+  {
+   "fetch_from": "circuit_id.site_name",
+   "fieldname": "site_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Site Name"
+  },
+  {
+   "bold": 1,
+   "fetch_from": "circuit_id.solution_name",
+   "fieldname": "solution",
+   "fieldtype": "Data",
+   "label": "Solution"
+  },
+  {
+   "fetch_from": "circuit_id.primary_data_plan",
+   "fieldname": "primary_plan",
+   "fieldtype": "Data",
+   "label": "Primary Plan"
+  },
+  {
+   "fetch_from": "circuit_id.secondary_plan",
+   "fieldname": "secondary_plan",
+   "fieldtype": "Data",
+   "label": "Secondary Plan"
+  },
+  {
+   "description": "To add a new supplier, please first add it in the Feasibility section. It will then be automatically updated in the LMS Request and Site records.",
+   "fieldname": "section_break_gpds",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "circuit_id.address_street",
+   "fieldname": "site_address",
+   "fieldtype": "Small Text",
+   "label": "Site Address"
+  },
+  {
+   "fetch_from": "circuit_id.territory",
+   "fieldname": "territory",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Territory",
+   "options": "Territory"
+  },
+  {
+   "depends_on": "eval:doc.lms_request_status==\"ISP Change\" ",
+   "fieldname": "isp_change_details_tab",
+   "fieldtype": "Tab Break",
+   "label": "ISP Change Details"
+  },
+  {
+   "fieldname": "purchase_order_number",
+   "fieldtype": "Data",
+   "label": "Purchase Order Number"
+  },
+  {
+   "fieldname": "column_break_czaq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "purchase_order_date",
+   "fieldtype": "Datetime",
+   "label": "Purchase Order Date"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_yhvm",
+   "fieldtype": "Section Break",
+   "label": "ISP Change Reason"
+  },
+  {
+   "fieldname": "isp_change_issue",
+   "fieldtype": "Text Editor",
+   "label": "ISP Change Issue"
+  },
+  {
+   "fieldname": "supplier_details_section",
+   "fieldtype": "Section Break",
+   "label": "Change Supplier Details"
+  },
+  {
+   "fieldname": "lms_id",
+   "fieldtype": "Link",
+   "label": "LMS ID",
+   "options": "Lastmile Services Master"
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Data",
+   "label": "Supplier"
+  },
+  {
+   "fieldname": "supplier_email_id",
+   "fieldtype": "Data",
+   "label": "Supplier Disconnection Email ID - I",
+   "mandatory_depends_on": "eval:doc.change_supplier_status ==\"Disconnection & PO Cancel Request\"",
+   "options": "Email"
+  },
+  {
+   "depends_on": "eval:doc.supplier_stage==\"Disconnection Informed\" || doc.supplier_stage==\"Disconnected\"\n",
+   "fieldname": "disconnection_effective_date",
+   "fieldtype": "Date",
+   "label": "Disconnection Effective Date",
+   "mandatory_depends_on": "eval:doc.supplier_stage==\"Disconnection Informed\" "
+  },
+  {
+   "depends_on": "eval:doc.supplier_stage==\"Disconnection Informed\" || doc.supplier_stage==\"Disconnected\"\n",
+   "fieldname": "supplier_reason_for_disconnection",
+   "fieldtype": "Table",
+   "label": "Supplier Reason for Disconnection",
+   "mandatory_depends_on": "eval:doc.supplier_stage==\"Disconnection Informed\" ",
+   "options": "LMS Disconnection"
+  },
+  {
+   "depends_on": "eval:doc.change_supplier_status ==\"Disconnection & PO Cancel Request\"",
+   "fieldname": "task_id",
+   "fieldtype": "Data",
+   "label": "Task ID"
+  },
+  {
+   "fieldname": "expected_date",
+   "fieldtype": "Date",
+   "label": "Expected ISP Change Date"
+  },
+  {
+   "collapsible": 1,
+   "description": "Displays the invoice details for the supplier from the most recent billing period.",
+   "fieldname": "section_break_dpot",
+   "fieldtype": "Section Break",
+   "label": "Supplier Latest Invoice Information"
+  },
+  {
+   "fieldname": "supplier_invoice_id",
+   "fieldtype": "Link",
+   "label": "Supplier Invoice ID",
+   "options": "Purchase Invoice"
+  },
+  {
+   "fieldname": "column_break_peve",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "supplier_invoice_id.custom_payment_type",
+   "fieldname": "payment_type",
+   "fieldtype": "Data",
+   "label": "Payment Type"
+  },
+  {
+   "fetch_from": "supplier_invoice_id.custom_dutation_from",
+   "fieldname": "duration_from",
+   "fieldtype": "Date",
+   "label": "Duration From"
+  },
+  {
+   "fetch_from": "supplier_invoice_id.custom_payment_cycle",
+   "fieldname": "payment_cycle",
+   "fieldtype": "Data",
+   "label": "Payment Cycle"
+  },
+  {
+   "fetch_from": "supplier_invoice_id.custom_duration_to",
+   "fieldname": "duration_to",
+   "fieldtype": "Date",
+   "label": "Duration To"
+  },
+  {
+   "fetch_from": "supplier_invoice_id.bill_no",
+   "fieldname": "supplier_invoice_no",
+   "fieldtype": "Data",
+   "label": "Supplier Invoice No"
+  },
+  {
+   "fetch_from": "supplier_invoice_id.bill_date",
+   "fieldname": "supplier_invoice_date",
+   "fieldtype": "Date",
+   "label": "Supplier Invoice Date"
+  },
+  {
+   "fetch_from": "supplier_invoice_id.rounded_total",
+   "fieldname": "invoice_amount",
+   "fieldtype": "Currency",
+   "label": "Invoice Amount"
+  },
+  {
+   "fetch_from": "supplier_invoice_id.status",
+   "fieldname": "payment_status",
+   "fieldtype": "Data",
+   "label": "Payment Status"
+  },
+  {
+   "bold": 1,
+   "fieldname": "lms_request_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "LMS Request Type",
+   "options": "LMS\nISP Change"
+  },
+  {
+   "default": "PO Cancel Task Not Created",
+   "fieldname": "po_stage",
+   "fieldtype": "Select",
+   "label": "PO Stage",
+   "options": "PO Cancel Task Not Created\nPO Cancel Task Created"
+  },
+  {
+   "default": "Disconnection Pending",
+   "fieldname": "supplier_stage",
+   "fieldtype": "Select",
+   "label": "Supplier Stage",
+   "options": "Disconnection Pending\nDisconnection Informed\nDisconnected"
+  },
+  {
+   "fieldname": "supplier_disconnection_email_id_2",
+   "fieldtype": "Data",
+   "label": "Supplier Disconnection Email ID - II",
+   "options": "Email"
+  },
+  {
+   "fieldname": "section_break_gvcx",
+   "fieldtype": "Section Break",
+   "label": "Supplier Email ID"
+  },
+  {
+   "fieldname": "column_break_nzrf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.supplier_stage==\"Disconnected\" ",
+   "fieldname": "disconnection_date",
+   "fieldtype": "Date",
+   "label": "Disconnection Date",
+   "mandatory_depends_on": "eval:doc.supplier_stage==\"Disconnected\" "
+  },
+  {
+   "fieldname": "change_management_request_id",
+   "fieldtype": "Data",
+   "label": "Change Management Request ID"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_wblh",
+   "fieldtype": "Section Break",
+   "label": "ID"
+  },
+  {
+   "fieldname": "cc_email_i",
+   "fieldtype": "Data",
+   "label": "CC Email - I"
+  },
+  {
+   "fieldname": "cc_email_ii",
+   "fieldtype": "Data",
+   "label": "CC Email - II"
+  },
+  {
+   "default": "Open",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Open\nClose"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-09-17 15:12:58.450491",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "LMS Request",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

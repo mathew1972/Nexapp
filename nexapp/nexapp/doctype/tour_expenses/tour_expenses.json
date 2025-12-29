@@ -1,0 +1,125 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-07-06 21:11:36.630395",
+ "default_view": "List",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "expense_date",
+  "expense_type",
+  "allowed_lodging_limits",
+  "transport_modes",
+  "other_costs",
+  "column_break_tlyc",
+  "customer",
+  "amount",
+  "note",
+  "section_break_tqoe",
+  "attach",
+  "column_break_qwmk",
+  "sanctioned_amount"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "expense_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Expense Date",
+   "placeholder": "Expense date must be within 30 days of the activity."
+  },
+  {
+   "columns": 2,
+   "fieldname": "expense_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Expense Type",
+   "link_filters": "[[\"Expense Claim Type\",\"custom_type\",\"=\",\"Tour\"]]",
+   "options": "Expense Claim Type"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Note"
+  },
+  {
+   "depends_on": "eval:doc.expense_type==\"Travel Expenses\"",
+   "fieldname": "transport_modes",
+   "fieldtype": "Select",
+   "label": "Transport Modes",
+   "mandatory_depends_on": "eval:doc.expense_type==\"Travel Expenses\"",
+   "options": "\nPublic Transport\nTaxi\nAuto-Rickshaw\nTwo-wheeler\nCar\nPetrol Refueling"
+  },
+  {
+   "fieldname": "column_break_tlyc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 2,
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "bold": 1,
+   "columns": 2,
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount"
+  },
+  {
+   "fieldname": "section_break_tqoe",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.transport_modes!=\"Own vehicle\"",
+   "description": "No bill required for miscellaneous expenses up to \u20b9100 per day",
+   "fieldname": "attach",
+   "fieldtype": "Attach",
+   "label": "Attach"
+  },
+  {
+   "fieldname": "column_break_qwmk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "fieldname": "sanctioned_amount",
+   "fieldtype": "Currency",
+   "label": "Sanctioned Amount"
+  },
+  {
+   "default": "M cadre: \u20b92,500 per day in Class A cities, \u20b92,000 in Class B cities.\nS cadre: \u20b93,500 per day in Class A cities, \u20b93,000 in Class B cities.\nL cadre: \u20b95,000 per day in Class A cities, \u20b94,000 in Class B cities.\nPlease ensure your lodging expenses stay within these approved daily limits.",
+   "depends_on": "eval:doc.expense_type==\"Lodging & Boarding\"",
+   "fieldname": "allowed_lodging_limits",
+   "fieldtype": "Small Text",
+   "label": "Allowed lodging (hotel stay) limits as per cadre and city class:",
+   "read_only": 1
+  },
+  {
+   "default": "M cadre: \u20b91,500 per day in Class A cities, \u20b91,000 in Class B cities.\nS cadre: \u20b92,000 per day in Class A cities, \u20b91,500 in Class B cities.\nL cadre: At actuals, with prior approval required.\nPlease submit supporting bills wherever applicable.",
+   "depends_on": "eval:doc.expense_type!=\"Lodging & Boarding\"",
+   "fieldname": "other_costs",
+   "fieldtype": "Small Text",
+   "label": "Other costs and daily expenses allowed as per cadre and city class:",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-07-06 22:27:18.649253",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Tour Expenses",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

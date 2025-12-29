@@ -119,3 +119,131 @@ frappe.ui.form.on('Customer', {
     }
 });
 
+///////////////////////////////////////////////////////////////////////////////////
+
+frappe.ui.form.on('Customer', {
+
+    // --------------------------------------------------
+    // Load Outstanding Sales Invoices (Child Table)
+    // --------------------------------------------------
+    load_outstanding_invoices(frm) {
+
+        frm.clear_table('custom_outstanding_amount');
+
+        frappe.call({
+            method: 'nexapp.api.get_customer_outstanding_invoices',
+            args: {
+                customer: frm.doc.name
+            },
+            callback: function (r) {
+                if (!r.message) return;
+
+                r.message.forEach(inv => {
+                    let row = frm.add_child('custom_outstanding_amount');
+                    row.sales_invoice_no = inv.sales_invoice_no;
+                    row.sales_invoice_date = inv.sales_invoice_date;
+                    row.outstanding_amount = inv.outstanding_amount;
+                    // unallocated_amount is USER INPUT
+                });
+
+                frm.refresh_field('custom_outstanding_amount');
+            }
+        });
+    },
+
+    // --------------------------------------------------
+    // Load Customer Unallocated Amount (TOP FIELD)
+    // Source: Ledger (Advance Balance)
+    // --------------------------------------------------
+    load_customer_unallocated_amount(frm) {
+
+        frappe.call({
+            method: 'nexapp.api.get_customer_unallocated_amount',
+            args: {
+                customer: frm.doc.name
+            },
+            callback: function (r) {
+                if (r.message !== undefined && r.message !== null) {
+                    // ✅ THIS FIELD EXISTS
+                    frm.set_value('custom_unallocated_amount', r.message);
+                }
+            }
+        });
+    },
+
+    // --------------------------------------------------
+    // On Customer Form Refresh
+    // --------------------------------------------------
+    refresh(frm) {
+
+        if (frm.is_new()) return;
+
+        frm.trigger('load_outstanding_invoices');
+        frm.trigger('load_customer_unallocated_amount');
+    },
+
+    // --------------------------------------------------
+    // Button: Create Unallocated Payment Entry
+    // --------------------------------------------------
+    custom_create_unallocated_payment_entry(frm) {
+
+        let invoices = [];
+
+        frm.doc.custom_outstanding_amount.forEach(row => {
+
+            if (
+                row.sales_invoice_no &&
+                row.unallocated_amount &&
+                flt(row.unallocated_amount) > 0
+            ) {
+
+                // 🔒 Validation
+                if (flt(row.unallocated_amount) > flt(row.outstanding_amount)) {
+                    frappe.throw(
+                        __('Unallocated Amount cannot exceed Outstanding Amount for Sales Invoice {0}', [
+                            row.sales_invoice_no
+                        ])
+                    );
+                }
+
+                invoices.push({
+                    sales_invoice_no: row.sales_invoice_no,
+                    amount: row.unallocated_amount
+                });
+            }
+        });
+
+        if (!invoices.length) {
+            frappe.msgprint(__('Enter Unallocated Amount for at least one invoice.'));
+            return;
+        }
+
+        frappe.call({
+            method: 'nexapp.api.create_unallocated_payment_entry',
+            args: {
+                customer: frm.doc.name,
+                invoices: invoices
+            },
+            freeze: true,
+            freeze_message: __('Creating Payment Entry...'),
+            callback: function (r) {
+
+                if (r.message && r.message.payment_entry) {
+
+                    frappe.msgprint({
+                        title: __('Success'),
+                        indicator: 'green',
+                        message: __(
+                            'Payment Entry <b>{0}</b> has been successfully created.',
+                            [r.message.payment_entry]
+                        )
+                    });
+
+                    // 🔑 Refresh after reconciliation
+                    frm.trigger('load_outstanding_invoices');
+                    frm.trigger('load_customer_unallocated_amount');
+                }
+            }
+        });
+    }
+});

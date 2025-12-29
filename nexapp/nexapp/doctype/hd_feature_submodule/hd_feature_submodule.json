@@ -1,0 +1,66 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:module",
+ "creation": "2025-03-24 22:56:43.784300",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "category",
+  "subcategory",
+  "main_menu",
+  "module"
+ ],
+ "fields": [
+  {
+   "fieldname": "category",
+   "fieldtype": "Select",
+   "label": "Category",
+   "options": "SDWAN\nSDIOT EDGE"
+  },
+  {
+   "fieldname": "subcategory",
+   "fieldtype": "Select",
+   "label": "Subcategory",
+   "options": "Controller\nNexappOS"
+  },
+  {
+   "fieldname": "module",
+   "fieldtype": "Data",
+   "label": "Module",
+   "unique": 1
+  },
+  {
+   "fieldname": "main_menu",
+   "fieldtype": "Link",
+   "label": "Main menu",
+   "options": "HD feature Module"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-03-24 23:22:59.180061",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "HD feature SubModule",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

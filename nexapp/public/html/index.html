@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Nexapp FCM Test</title>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+</head>
+<body>
+  <h1>Nexapp Notifications Test Page</h1>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCWuJUcxXyW_hMz1UzcQpSAfZWtiPDH9qY",
+      authDomain: "nexapp-notification.firebaseapp.com",
+      projectId: "nexapp-notification",
+      storageBucket: "nexapp-notification.appspot.com",
+      messagingSenderId: "254587463147",
+      appId: "1:254587463147:web:c52a0b27c8bc64602665ae",
+      measurementId: "G-BHTCERMMHH"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/firebase-messaging-sw.js')
+        .then(registration => {
+          console.log('Service Worker registered:', registration.scope);
+
+          // Request permission & get token
+          messaging.getToken({
+            vapidKey: 'BD7Fh_pBmGM2hXZk0WCRYBBeeVyeLUDjs71MwcIP5p2q8YslyMBqltec6mucBlvGaixlSn0FGSGn4mQYtS0bS50',
+            serviceWorkerRegistration: registration
+          }).then(token => {
+            console.log('FCM Token:', token);
+            // TODO: send this token to your server or save it
+          }).catch(err => {
+            console.error('Error getting FCM token:', err);
+          });
+        }).catch(err => {
+          console.error('Service Worker registration failed:', err);
+        });
+    }
+
+    // Handle foreground messages
+    messaging.onMessage(payload => {
+      console.log('Foreground message received:', payload);
+      alert(payload.notification?.title + "\n" + payload.notification?.body);
+    });
+  </script>
+</body>
+</html>

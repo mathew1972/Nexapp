@@ -1,0 +1,85 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-07-16 20:59:38.046113",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "bank_account_information_section",
+  "bank_account_holder",
+  "ifsc_code",
+  "data_zkjf",
+  "column_break_bdsh",
+  "bank_name",
+  "bank_account_no",
+  "crossed_cheque_copy"
+ ],
+ "fields": [
+  {
+   "fetch_from": "bank_account_holder.bank_account_no",
+   "fieldname": "bank_account_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Bank Account No"
+  },
+  {
+   "fetch_from": "bank_account_holder.custom_ifsc",
+   "fieldname": "ifsc_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "IFSC Code"
+  },
+  {
+   "fieldname": "column_break_bdsh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "bank_account_holder.bank",
+   "fieldname": "bank_name",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Bank Name",
+   "options": "Bank"
+  },
+  {
+   "fieldname": "bank_account_holder",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Bank Account Holder",
+   "link_filters": "[[\"Bank Account\",\"party\",\"=\",\"eval:parent.name\"]]",
+   "options": "Bank Account"
+  },
+  {
+   "fetch_from": "bank_account_holder.account_type",
+   "fieldname": "data_zkjf",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Bank Account Type"
+  },
+  {
+   "fetch_from": "bank_account_no.custom_crossed_cheque_image",
+   "fieldname": "crossed_cheque_copy",
+   "fieldtype": "Attach",
+   "in_list_view": 1,
+   "label": " Crossed Cheque copy"
+  },
+  {
+   "fieldname": "bank_account_information_section",
+   "fieldtype": "Section Break",
+   "label": "Bank Account Information"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-07-19 17:59:57.543665",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Supplier Bank",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

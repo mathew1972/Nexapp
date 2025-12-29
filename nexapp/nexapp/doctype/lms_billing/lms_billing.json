@@ -1,0 +1,95 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-05-13 19:39:20.694904",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "lms_id",
+  "lms_stage",
+  "supplier",
+  "item",
+  "column_break_xfpu",
+  "lms_delivery_date",
+  "billing_start_date",
+  "billing_status"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "lms_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "LMS ID",
+   "options": "Lastmile Services Master"
+  },
+  {
+   "columns": 2,
+   "fetch_from": "lms_id.lms_feasibility_partner",
+   "fieldname": "supplier",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "columns": 1,
+   "fetch_from": "lms_id.lms_stage",
+   "fieldname": "lms_stage",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "LMS Stage"
+  },
+  {
+   "fieldname": "column_break_xfpu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 2,
+   "description": "this date is for link delivery date",
+   "fetch_from": "lms_id.lms_delivery_date",
+   "fieldname": "lms_delivery_date",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "LMS Delivery Date"
+  },
+  {
+   "columns": 2,
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item",
+   "options": "Item"
+  },
+  {
+   "columns": 1,
+   "description": "this date is for billing start Date",
+   "fieldname": "billing_start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Billing Start Date"
+  },
+  {
+   "columns": 1,
+   "default": "Pending",
+   "fieldname": "billing_status",
+   "fieldtype": "Select",
+   "label": "Billing status",
+   "options": "Pending\ncompleted"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-06-30 18:17:16.231975",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "LMS Billing",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -5,34 +5,58 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "primary",
+  "column_break_uefh",
+  "feasibility_updated_date",
   "lms_feasibility_section",
   "lms_supplier",
-  "supplier_contact",
   "bandwith_type",
   "media",
   "support_mode",
   "column_break_mibe",
-  "supplier_name",
-  "email_id",
+  "feasibility_type",
   "lms_status",
   "static_ip",
+  "bandwidth",
+  "bandwidth_name",
+  "section_break_wmrg",
+  "supplier_contact",
+  "contact",
+  "column_break_juss",
+  "mobile",
+  "column_break_nfdt",
+  "email_id",
   "lms_commercial_section",
   "billing_mode",
   "billing_terms",
   "otc",
+  "otc_details",
+  "validity",
   "column_break_sstt",
   "security_deposit",
   "mrc",
-  "static_ip_cost"
+  "arc",
+  "static_ip_cost",
+  "section_break_znkl",
+  "is_the_site_address_complete_and_verified",
+  "did_you_speak_to_the_supplier",
+  "supplier_confirmed_service_availability_at_this_site",
+  "written_supplier_quote",
+  "attach_icpc",
+  "column_break_eugb",
+  "quote_valid_until",
+  "section_break_soyc",
+  "description",
+  "lms_request_id"
  ],
  "fields": [
   {
-   "fetch_from": "circuit_id.lms_supplier",
    "fieldname": "lms_supplier",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "LMS Supplier",
-   "options": "Supplier"
+   "label": "LMS Feasibility Partner",
+   "options": "LMS Feasibility Partner",
+   "reqd": 1
   },
   {
    "fetch_from": "circuit_id.bandwith_type",
@@ -40,32 +64,34 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Bandwith Type",
-   "options": "\nILL\nMBB\nLTE\nAirfiber\n4G\n5G"
+   "options": "\nILL\nMBB\nLTE\nAirfiber\n4G\n5G",
+   "reqd": 1
   },
   {
    "fetch_from": "circuit_id.media",
    "fieldname": "media",
    "fieldtype": "Select",
    "label": "Media",
-   "options": "\nWired\nRF\n4G\n5G"
+   "options": "\nWired\nFTTH\nRF\n4G\n5G",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_mibe",
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "lms_supplier.mobile_no",
    "fieldname": "supplier_contact",
    "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Supplier Contact"
+   "label": "Supplier Name",
+   "read_only": 1,
+   "reqd": 1
   },
   {
-   "fetch_from": "circuit_id.static_ip",
    "fieldname": "static_ip",
    "fieldtype": "Select",
    "label": "Static IP",
-   "options": "\nAvailable\nNot Available"
+   "options": "\nAvailable\nNot Available",
+   "reqd": 1
   },
   {
    "fetch_from": "circuit_id.otc",
@@ -84,13 +110,15 @@
    "fieldname": "billing_terms",
    "fieldtype": "Select",
    "label": "Billing Terms",
-   "options": "\nPre-Paid\nPost-Paid"
+   "options": "\nPostpaid\nPrepaid",
+   "reqd": 1
   },
   {
    "fetch_from": "circuit_id.mrc",
    "fieldname": "mrc",
    "fieldtype": "Currency",
-   "label": "MRC"
+   "label": "MRC",
+   "reqd": 1
   },
   {
    "fetch_from": "circuit_id.security_deposit",
@@ -99,25 +127,27 @@
    "label": "Security Deposit"
   },
   {
-   "fetch_from": "circuit_id.billing_mode",
    "fieldname": "billing_mode",
    "fieldtype": "Select",
    "label": "Billing Mode",
-   "options": "\nMRC\nQRC\nHYRC\nARC"
+   "options": "\nMRC\nQRC\nHRC\nARC",
+   "reqd": 1
   },
   {
    "fetch_from": "circuit_id.support_mode",
    "fieldname": "support_mode",
    "fieldtype": "Select",
    "label": "Support Mode",
-   "options": "\nEmail\nSupport Potal\nHelpdesk No"
+   "options": "\nEmail\nSupport Portal\nHelpdesk Number",
+   "reqd": 1
   },
   {
    "fieldname": "lms_status",
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "LMS Feasibility Status",
-   "options": "\nFeasible\nHigh Commercials\nNot Feasible"
+   "options": "\nFeasible\nHigh Commercials\nNot Feasible",
+   "reqd": 1
   },
   {
    "fieldname": "lms_feasibility_section",
@@ -134,23 +164,169 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "lms_supplier.custom_contact_name",
-   "fieldname": "supplier_name",
-   "fieldtype": "Data",
-   "label": "Supplier Name"
-  },
-  {
-   "fetch_from": "lms_supplier.email_id",
+   "fetch_from": "supplier_contact.email_id",
    "fieldname": "email_id",
    "fieldtype": "Data",
-   "label": "Email Id"
+   "label": "Email ID",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "bandwidth",
+   "fieldtype": "Link",
+   "label": "Bandwidth Code",
+   "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"LMS Bandwidth\"]]",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "validity",
+   "fieldtype": "Select",
+   "label": "Validity",
+   "options": "\n30\n45\n60\n90\n120\n180\n365",
+   "reqd": 1
+  },
+  {
+   "fieldname": "arc",
+   "fieldtype": "Currency",
+   "label": "ARC"
+  },
+  {
+   "fetch_from": "supplier_contact.mobile_no",
+   "fieldname": "mobile",
+   "fieldtype": "Data",
+   "label": "Mobile",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_soyc",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "default": "0",
+   "description": "While doing the Feasibility, please select the Primary Supplier who is most capable of performing this activity.",
+   "fieldname": "primary",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Primary"
+  },
+  {
+   "bold": 1,
+   "default": "Today",
+   "fieldname": "feasibility_updated_date",
+   "fieldtype": "Date",
+   "label": "Feasibility Updated Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_uefh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.written_supplier_quote== 1",
+   "fieldname": "attach_icpc",
+   "fieldtype": "Attach",
+   "label": "Attachment",
+   "mandatory_depends_on": "eval:doc.written_supplier_quote== 1"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_znkl",
+   "fieldtype": "Section Break",
+   "label": "Feasibility Check List"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_the_site_address_complete_and_verified",
+   "fieldtype": "Check",
+   "label": "Is the site address complete and verified"
+  },
+  {
+   "default": "0",
+   "fieldname": "did_you_speak_to_the_supplier",
+   "fieldtype": "Check",
+   "label": "Did you speak to the supplier?"
+  },
+  {
+   "default": "0",
+   "fieldname": "supplier_confirmed_service_availability_at_this_site",
+   "fieldtype": "Check",
+   "label": "Supplier confirmed service availability at this site?"
+  },
+  {
+   "default": "0",
+   "fieldname": "written_supplier_quote",
+   "fieldtype": "Check",
+   "label": "Written supplier quote/response available? Attach if yes.",
+   "mandatory_depends_on": "eval:doc.written_supplier_quote== 1"
+  },
+  {
+   "fieldname": "column_break_eugb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Do not enter the quote validity date without supplier confirmation.",
+   "fieldname": "quote_valid_until",
+   "fieldtype": "Date",
+   "label": "Quote/ Rate Valid Until"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "otc_details",
+   "fieldtype": "Link",
+   "label": "OTC Details",
+   "options": "OTC Details"
+  },
+  {
+   "default": "Default",
+   "fieldname": "feasibility_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Feasibility Type",
+   "options": "\nDefault\nNew Supplier"
+  },
+  {
+   "fieldname": "lms_request_id",
+   "fieldtype": "Data",
+   "label": "LMS Request ID"
+  },
+  {
+   "fieldname": "contact",
+   "fieldtype": "Button",
+   "label": "Contact"
+  },
+  {
+   "fieldname": "section_break_wmrg",
+   "fieldtype": "Section Break",
+   "label": "Supplier Contact Information"
+  },
+  {
+   "fieldname": "column_break_juss",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_nfdt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "bandwidth.item_name",
+   "fieldname": "bandwidth_name",
+   "fieldtype": "Data",
+   "label": "Bandwidth Name",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-03-28 18:34:08.491402",
+ "modified": "2025-08-22 11:44:52.016697",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "LMS Feasibility",

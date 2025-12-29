@@ -21,7 +21,7 @@ frappe.ui.form.on('Sales Order', {
             'loyalty_points_redemption', 'loyalty_points', 'loyalty_amount', 'from_date', 'to_date', 'auto_repeat', 'update_auto_repeat_reference', 
             'printing_details', 'letter_head', 'group_same_items', 'select_print_heading', 'language', 'is_internal_customer', 
             'represents_company', 'source', 'inter_company_order_reference', 'campaign', 'party_account_currency', 
-            'ecommerce_supply_type', 'ecommerce_gstin'
+            'ecommerce_supply_type', 'ecommerce_gstin', "custom_old_sales_order", "custom_task", "custom_contract", "custom_child_project"
         ];
 
         fields.forEach(function(field) {
@@ -87,4 +87,5 @@ frappe.ui.form.on('Sales Order', {
     }
 });
 
-
+///////////////////////////////////////////////////////////////////////////////////
+// public/js/sales_order_customer_type.js

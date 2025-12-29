@@ -1,0 +1,61 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-07-01 19:01:27.958381",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "lms_id",
+  "bandwith_type",
+  "lms_bandwith",
+  "media"
+ ],
+ "fields": [
+  {
+   "columns": 2,
+   "fieldname": "lms_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "LMS ID",
+   "options": "Lastmile Services Master"
+  },
+  {
+   "columns": 2,
+   "fetch_from": "lms_id.bandwith_type",
+   "fieldname": "bandwith_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Bandwith Type"
+  },
+  {
+   "columns": 2,
+   "fetch_from": "lms_id.lms_brandwith_name",
+   "fieldname": "lms_bandwith",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "LMS Bandwith"
+  },
+  {
+   "columns": 1,
+   "fetch_from": "lms_id.media",
+   "fieldname": "media",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Media"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-07-02 12:58:00.043074",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "LMS Installation Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

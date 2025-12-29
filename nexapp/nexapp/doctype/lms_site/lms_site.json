@@ -6,72 +6,89 @@
  "engine": "InnoDB",
  "field_order": [
   "lms_master_information_section",
-  "supplier_contact",
+  "lms_id",
+  "brandwidth_name",
   "lms_supplier",
+  "supplier_contact",
   "bandwith_type",
   "media",
   "support_mode",
+  "lms_requested_id",
+  "feasibility_type",
   "column_break_bben",
-  "supplier_name",
   "email_id",
+  "mobile",
   "static_ip",
+  "bandwidth",
+  "lms_status",
+  "stage",
   "lms_delivery_date",
-  "lms_status"
+  "customer_approval_date",
+  "po_no",
+  "section_break_nkva",
+  "mode",
+  "column_break_ikbs",
+  "section_break_ukfk",
+  "user_id",
+  "column_break_mywq",
+  "password",
+  "section_break_mcnz",
+  "static_ip_1",
+  "column_break_akfv",
+  "static_ip1",
+  "lms_commercial_section",
+  "billing_mode",
+  "billing_terms",
+  "otc",
+  "validity",
+  "column_break_ahee",
+  "security_deposit",
+  "mrc",
+  "arc",
+  "static_ip_cost"
  ],
  "fields": [
   {
-   "columns": 2,
-   "fetch_from": "circuit_id.lms_supplier",
+   "columns": 1,
+   "fetch_from": "lms_id.supplier",
    "fieldname": "lms_supplier",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "label": "LMS Supplier",
    "options": "Supplier"
   },
   {
-   "columns": 2,
-   "fetch_from": "circuit_id.lms_bandwith",
    "fieldname": "bandwith_type",
    "fieldtype": "Select",
-   "in_list_view": 1,
    "label": "Bandwith Type",
-   "options": "\nILL\nMBB\n4G\n5G"
+   "options": "\nILL\nMBB\nLTE\nAirfiber\n4G\n5G"
   },
   {
    "fieldname": "column_break_bben",
    "fieldtype": "Column Break"
   },
   {
-   "columns": 2,
-   "fetch_from": "lms_supplier.mobile_no",
    "fieldname": "supplier_contact",
    "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Supplier Contact"
+   "label": "Supplier Contact",
+   "options": "Contact"
   },
   {
-   "fetch_from": "circuit_id.media",
    "fieldname": "media",
    "fieldtype": "Select",
    "label": "Media",
-   "options": "\nWired\nRF\n4G\n5G"
-  },
-  {
-   "fetch_from": "lms_id.delivery_date",
-   "fieldname": "lms_delivery_date",
-   "fieldtype": "Date",
-   "label": "LMS Delivery Date"
+   "options": "\nWired\nFTTH\nRF\n4G\n5G"
   },
   {
    "fieldname": "lms_master_information_section",
    "fieldtype": "Section Break",
-   "label": "LMS Master Information"
+   "label": "LMS Feasibility"
   },
   {
    "fieldname": "support_mode",
    "fieldtype": "Select",
    "label": "Support Mode",
-   "options": "\nEmail\nSupport Potal\nHelpdesk No"
+   "options": "\nEmail\nSupport Portal\nHelpdesk Number"
   },
   {
    "fieldname": "static_ip",
@@ -80,30 +97,214 @@
    "options": "\nAvailable\nNot Available"
   },
   {
-   "columns": 2,
-   "default": "Not Selected",
+   "default": "Feasible",
    "fieldname": "lms_status",
    "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "LMS Status",
-   "options": "Not Selected\nSelected\nRequested\nRejected"
-  },
-  {
-   "fieldname": "supplier_name",
-   "fieldtype": "Data",
-   "label": "Supplier Name"
+   "label": "Feasibility Status",
+   "options": "\nFeasible\nHigh Commercials\nNot Feasible\nSelected"
   },
   {
    "fieldname": "email_id",
    "fieldtype": "Data",
    "label": "Email ID"
+  },
+  {
+   "fieldname": "mobile",
+   "fieldtype": "Data",
+   "label": "Mobile"
+  },
+  {
+   "fetch_from": "lms_id.lms_bandwith",
+   "fieldname": "bandwidth",
+   "fieldtype": "Link",
+   "label": "Bandwidth",
+   "options": "Item"
+  },
+  {
+   "fieldname": "billing_mode",
+   "fieldtype": "Select",
+   "label": "Billing Mode",
+   "options": "\nMRC\nQRC\nHRC\nARC"
+  },
+  {
+   "fieldname": "otc",
+   "fieldtype": "Currency",
+   "label": "OTC"
+  },
+  {
+   "fieldname": "validity",
+   "fieldtype": "Select",
+   "label": "Validity",
+   "options": "\n30\n45\n60\n90\n120\n180\n365"
+  },
+  {
+   "fieldname": "lms_commercial_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "LMS Commercial "
+  },
+  {
+   "fieldname": "column_break_ahee",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "security_deposit",
+   "fieldtype": "Currency",
+   "label": "Security Deposit"
+  },
+  {
+   "fieldname": "mrc",
+   "fieldtype": "Currency",
+   "label": "MRC"
+  },
+  {
+   "fieldname": "arc",
+   "fieldtype": "Currency",
+   "label": "ARC"
+  },
+  {
+   "fieldname": "static_ip_cost",
+   "fieldtype": "Currency",
+   "label": "Static IP Cost"
+  },
+  {
+   "columns": 2,
+   "default": "Open",
+   "fieldname": "stage",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "LMS Stage",
+   "options": "Open\nLMS Requested\nLMS Initiated\nLMS PO Requested\nLMS PO Released\nLMS PO Cancelled\nLMS ID Created\nLMS Delivered\nDisconnection In Process\nLMS Disconnected\nLMS Cancelled"
+  },
+  {
+   "fieldname": "lms_requested_id",
+   "fieldtype": "Data",
+   "label": "LMS Requested ID",
+   "options": "LMS Request"
+  },
+  {
+   "columns": 1,
+   "fieldname": "lms_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "LMS ID",
+   "link_filters": "[[\"Lastmile Services Master\",\"circuit_id\",\"=\",\"eval:parent.name\"]]",
+   "options": "Lastmile Services Master"
+  },
+  {
+   "depends_on": "eval:doc.stage==\"LMS Delivered\" ",
+   "fieldname": "section_break_nkva",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "lms_id.mode1",
+   "fieldname": "mode",
+   "fieldtype": "Select",
+   "label": "Mode",
+   "options": "\nDHCP\nPPPoE\nStatic IP",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ikbs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "lms_id.static_ip",
+   "fieldname": "static_ip1",
+   "fieldtype": "Small Text",
+   "label": "Static IP Details",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval: doc.mode==\"PPPoE\"",
+   "fetch_from": "lms_id.user_id",
+   "fieldname": "user_id",
+   "fieldtype": "Data",
+   "label": "User ID",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval: doc.mode==\"PPPoE\"",
+   "fetch_from": "lms_id.password",
+   "fieldname": "password",
+   "fieldtype": "Data",
+   "label": "Password",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fetch_from": "lms_id.lms_delivery_date",
+   "fieldname": "lms_delivery_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "LMS Delivery Date"
+  },
+  {
+   "columns": 2,
+   "fetch_from": "bandwidth.item_name",
+   "fieldname": "brandwidth_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Brandwidth Name"
+  },
+  {
+   "depends_on": "eval: doc.mode==\"PPPoE\"",
+   "fieldname": "section_break_ukfk",
+   "fieldtype": "Section Break",
+   "label": "PPPoE Details"
+  },
+  {
+   "fieldname": "column_break_mywq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.mode1==\"Static IP\"",
+   "fieldname": "section_break_mcnz",
+   "fieldtype": "Section Break",
+   "label": "Static IP Details"
+  },
+  {
+   "fieldname": "static_ip_1",
+   "fieldtype": "Data",
+   "label": "Static IP",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_akfv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "feasibility_type",
+   "fieldtype": "Data",
+   "label": "Feasibility Type",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "lms_id.po_number",
+   "fieldname": "po_no",
+   "fieldtype": "Data",
+   "label": "PO No"
+  },
+  {
+   "fieldname": "billing_terms",
+   "fieldtype": "Select",
+   "label": "Billing Terms",
+   "options": "\nPostpaid\nPrepaid"
+  },
+  {
+   "columns": 2,
+   "description": "this date will be considered for billing, customer acceptance proof is a must",
+   "fieldname": "customer_approval_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "LMS Billing Start Date"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-03-28 18:13:02.229518",
+ "modified": "2025-12-06 10:12:30.519730",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "LMS Site",

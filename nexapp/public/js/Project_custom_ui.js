@@ -15,7 +15,9 @@ frappe.ui.form.on('Project', {
             'margin', 'gross_margin', 'column_break_37', 'per_gross_margin', 
             'monitor_progress', 'collect_progress', 'holiday_list', 'frequency', 
             'from_time', 'to_time', 'first_email', 'second_email', 'daily_time_to_send', 
-            'day_to_send', 'weekly_time_to_send', 'column_break_45', 'message'
+            'day_to_send', 'weekly_time_to_send', 'column_break_45', 'message','custom_order_type',
+            'custom_supply_delivery_date', 'custom_shipping_address','project_type','custom_customer_po_no',
+            'custom_customer_po_date','department'
         ];
 
         fields.forEach(function(field) {

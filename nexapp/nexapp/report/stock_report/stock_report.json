@@ -1,0 +1,33 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-11-19 11:17:09.588105",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-11-19 12:58:11.804752",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Stock Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    sle.company AS \"Company:Data:200\",\n    sle.item_code AS \"Item Code:Data:200\",\n\n    it.item_name AS \"Item Name:Data:200\",\n    it.item_group AS \"Item Group:Data:200\",\n    it.custom_product_type AS \"Product Type:Data:200\",\n\n    sle.warehouse AS \"Warehouse:Data:200\",\n    sle.serial_and_batch_bundle AS \"Serial No./Sim No:Data:200\",\n    sle.posting_date AS \"Inward Date:Date:120\",\n\n    sn.status AS \"Status:Data:120\",\n\n    sle.voucher_no AS \"Voucher No:Data:150\"\n\nFROM\n    `tabStock Ledger Entry` sle\n\nLEFT JOIN `tabItem` it\n    ON it.item_code = sle.item_code\n\nLEFT JOIN `tabSerial_and_Batch_Bundle` sbb\n    ON sbb.name = sle.serial_and_batch_bundle\n\nLEFT JOIN `tabSerial_and_Batch_Bundle_Item` sbb_item\n    ON sbb_item.parent = sbb.name\n\nLEFT JOIN `tabSerial No` sn\n    ON sn.name = sbb_item.serial_no\n\nORDER BY\n    sle.posting_date DESC;\n",
+ "ref_doctype": "Stock Ledger Entry",
+ "report_name": "Stock Report",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Stock User"
+  },
+  {
+   "role": "Accounts  & Finance Manager"
+  }
+ ],
+ "timeout": 0
+}

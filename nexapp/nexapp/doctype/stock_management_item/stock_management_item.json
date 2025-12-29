@@ -10,9 +10,12 @@
   "item_name",
   "solution",
   "qty",
+  "addition_item",
   "stock_balance",
   "stock_reserved",
+  "added__to_site",
   "column_break_radl",
+  "bulk_serial_no",
   "warehouse",
   "item_group",
   "delivery_note_id",
@@ -25,7 +28,6 @@
   "validity",
   "column_break_tnms",
   "data_plan",
-  "recharge_end_date",
   "supplier",
   "section_break_lxaq",
   "serial_no",
@@ -99,7 +101,6 @@
    "options": "Item Group"
   },
   {
-   "depends_on": "eval: doc.item_group === \"SIMCARD\" && doc.use_serial_no__batch_fields === 1",
    "fieldname": "section_break_fjon",
    "fieldtype": "Section Break",
    "label": "SIM Information"
@@ -115,11 +116,10 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "sim_no.custom_data_plan",
    "fieldname": "data_plan",
    "fieldtype": "Link",
    "label": "Data Plan",
-   "options": "Data Plan"
+   "options": "Item"
   },
   {
    "fetch_from": "sim_no.custom_activation_date",
@@ -134,13 +134,6 @@
    "label": "Validity"
   },
   {
-   "fetch_from": "sim_no.custom_recharge_end_date",
-   "fieldname": "recharge_end_date",
-   "fieldtype": "Data",
-   "label": "Recharge End Date"
-  },
-  {
-   "fetch_from": "sim_no.custom_supplier",
    "fieldname": "supplier",
    "fieldtype": "Link",
    "label": "Supplier",
@@ -148,25 +141,27 @@
   },
   {
    "columns": 2,
+   "depends_on": "eval: doc.order_type != \"Supply\"",
    "fieldname": "sim_no",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "SIM No",
-   "link_filters": "[[\"Serial No\",\"item_group\",\"=\",\"SIMCARD\"]]",
+   "link_filters": "[[\"Serial No\",\"item_group\",\"=\",\"Telecom\"],[\"Serial No\",\"status\",\"=\",\"Active\"]]",
    "options": "Serial No"
   },
   {
-   "depends_on": "eval: doc.item_group === \"Products\" && doc.use_serial_no__batch_fields === 1",
    "fieldname": "section_break_lxaq",
    "fieldtype": "Section Break",
    "label": "Hardware Appliance"
   },
   {
    "columns": 2,
+   "depends_on": "eval: doc.order_type != \"Supply\"",
    "fieldname": "serial_no",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Serial No",
+   "link_filters": "[[\"Serial No\",\"status\",\"=\",\"Active\"]]",
    "options": "Serial No"
   },
   {
@@ -216,13 +211,32 @@
    "fieldtype": "Link",
    "label": "Solution",
    "options": "Item"
+  },
+  {
+   "fieldname": "bulk_serial_no",
+   "fieldtype": "Text",
+   "label": "Bulk Serial No"
+  },
+  {
+   "default": "No",
+   "fieldname": "addition_item",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Addition Item",
+   "options": "No\nYes"
+  },
+  {
+   "default": "0",
+   "fieldname": "added__to_site",
+   "fieldtype": "Check",
+   "label": "Added  To Site"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-03-27 00:49:29.603849",
+ "modified": "2025-11-27 00:27:12.810494",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Stock Management Item",

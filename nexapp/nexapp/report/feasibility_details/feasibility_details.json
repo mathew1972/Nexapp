@@ -1,0 +1,63 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-08-22 10:00:20.814762",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-09-16 15:47:40.301931",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Feasibility Details",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    f.name AS \"Feasibility ID:Link/Feasibility:150\",\n    f.customer_type AS \"Customer Type:Data:150\",\n    f.feaseibility_from AS \"Feasibility From:Data:150\",\n    f.customer AS \"Customer:Link/Customer:180\",\n    f.site_name AS \"Site Name:Data:200\",\n    f.customer_request AS \"Customer Request:Text:200\",\n    f.sales_person AS \"Sales Person:Link/Sales Person:150\",\n    f.order_type AS \"Order Type:Data:120\",\n    f.circuit_id AS \"Circuit ID:Data:150\",\n    f.exiting_circuit_id AS \"Existing Circuit ID:Data:150\",\n    f.feasibility_status AS \"Feasibility Status:Data:150\",\n    f.reason_for_high_commercials AS \"Reason For High Commercials:Text:200\",\n    f.reason_for_not_feasible AS \"Reason For Not Feasible:Text:200\",\n    f.site_type AS \"Site Type:Data:150\",\n    f.site_id__legal_code AS \"Site Legal Code:Data:150\",\n    f.territory AS \"Territory:Link/Territory:150\",\n    f.solution_name AS \"Solution Name:Data:200\",\n    f.primary_data_plan_name AS \"Primary Data Plan:Data:200\",\n    f.secondary_data_plan_name AS \"Secondary Data Plan:Data:200\",\n    f.static_ip AS \"Static IP:Data:100\",\n    f.config_type AS \"Config Type:Data:150\",\n    f.no_of_static_ip_required AS \"Nos of Static IP Required:Int:120\",\n    f.managed_services AS \"Managed Services:Data:150\",\n    u.full_name AS \"Created By:Data:180\"\nFROM\n    `tabFeasibility` f\nLEFT JOIN\n    `tabUser` u ON u.name = f.owner\nWHERE\n    f.docstatus < 2\nORDER BY\n    f.creation DESC\nLIMIT 18446744073709551615;\n",
+ "ref_doctype": "Feasibility",
+ "report_name": "Feasibility Details",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Sales Manager"
+  },
+  {
+   "role": "Nexapp Sales Manager"
+  },
+  {
+   "role": "CRM User"
+  },
+  {
+   "role": "CRM-Sales Manager Standard"
+  },
+  {
+   "role": "CRM MIS"
+  },
+  {
+   "role": "CRM-Inside Sales"
+  },
+  {
+   "role": "accounts receivable"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Account Payable"
+  },
+  {
+   "role": "Accounts  & Finance Manager"
+  }
+ ],
+ "timeout": 0
+}

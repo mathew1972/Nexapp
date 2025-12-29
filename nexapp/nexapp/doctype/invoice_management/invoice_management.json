@@ -1,0 +1,207 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "field:circuit_id",
+ "creation": "2025-08-17 20:58:29.870391",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "billing_information_section",
+  "billing_status",
+  "sales_order_no",
+  "column_break_czhi",
+  "project_invoice_number",
+  "customer_po_number",
+  "circuit_information_section",
+  "circuit_id",
+  "customer",
+  "solution_code",
+  "solution_name",
+  "sales_person",
+  "column_break_rzdm",
+  "customer_po_date",
+  "customer_po_amount",
+  "site_status",
+  "customer_po_enddate",
+  "order_type",
+  "section_break_qtbm",
+  "so_item_invoice",
+  "lms_information_section",
+  "so_item_lms"
+ ],
+ "fields": [
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Circuit ID",
+   "link_filters": "[[\"Site\",\"site_status\",\"in\",[\"Partially Provisioning\",\"Completed\",\"Delivered and Live\",null]]]",
+   "options": "Site",
+   "unique": 1
+  },
+  {
+   "fetch_from": "circuit_id.site_status",
+   "fieldname": "site_status",
+   "fieldtype": "Data",
+   "label": "Site Status"
+  },
+  {
+   "fetch_from": "circuit_id.customer",
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer"
+  },
+  {
+   "fetch_from": "circuit_id.order_type",
+   "fieldname": "order_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Order Type"
+  },
+  {
+   "default": "Billing Pending",
+   "fieldname": "billing_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Billing Status",
+   "options": "Billing Pending\nBilling completed"
+  },
+  {
+   "fetch_from": "circuit_id.sales_order",
+   "fieldname": "sales_order_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Sales Order No"
+  },
+  {
+   "fieldname": "billing_information_section",
+   "fieldtype": "Section Break",
+   "label": "Billing information"
+  },
+  {
+   "fetch_from": "circuit_id.customer_po_no",
+   "fieldname": "customer_po_number",
+   "fieldtype": "Data",
+   "label": "Customer PO number"
+  },
+  {
+   "fetch_from": "circuit_id.solution_code",
+   "fieldname": "solution_code",
+   "fieldtype": "Data",
+   "label": "Solution code"
+  },
+  {
+   "fetch_from": "circuit_id.solution_name",
+   "fieldname": "solution_name",
+   "fieldtype": "Data",
+   "label": "Solution name"
+  },
+  {
+   "fieldname": "lms_information_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Information"
+  },
+  {
+   "fieldname": "section_break_qtbm",
+   "fieldtype": "Section Break",
+   "label": "Sales Order Item"
+  },
+  {
+   "fieldname": "circuit_information_section",
+   "fieldtype": "Section Break",
+   "label": "Circuit Information"
+  },
+  {
+   "fieldname": "column_break_rzdm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "project_invoice_number",
+   "fieldtype": "Data",
+   "label": "Project Invoice Number"
+  },
+  {
+   "fieldname": "so_item_invoice",
+   "fieldtype": "Table",
+   "label": "SO Items",
+   "options": "SO Item Invoice"
+  },
+  {
+   "fieldname": "so_item_lms",
+   "fieldtype": "Table",
+   "label": "SO LMS Items",
+   "options": "SO Item LMS"
+  },
+  {
+   "fetch_from": "circuit_id.customer_po_date",
+   "fieldname": "customer_po_date",
+   "fieldtype": "Date",
+   "label": "Customer PO Date"
+  },
+  {
+   "fieldname": "customer_po_amount",
+   "fieldtype": "Currency",
+   "label": "Customer PO Amount"
+  },
+  {
+   "fieldname": "customer_po_enddate",
+   "fieldtype": "Date",
+   "label": "Customer PO Expiry date"
+  },
+  {
+   "fetch_from": "circuit_id.sales_person",
+   "fieldname": "sales_person",
+   "fieldtype": "Data",
+   "label": "Sales Person"
+  },
+  {
+   "fieldname": "column_break_czhi",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-11-05 23:20:38.107068",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Invoice Management",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "accounts receivable",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

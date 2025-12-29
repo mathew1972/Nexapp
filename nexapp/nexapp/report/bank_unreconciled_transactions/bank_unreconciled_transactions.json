@@ -1,0 +1,48 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-12-08 12:31:09.359672",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2025-12-08 12:49:24.048087",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Bank Unreconciled Transactions",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    name AS `Bank Statement ID`,\n    transaction_date AS `Transaction Date`,\n    description AS `Statement Details`,\n    deposit AS `Deposit Amount`,\n    withdrawal AS `Withdrawal Amount`,\n    bank_account AS `Bank Account Name`,\n    bank_account_no AS `Bank Account No`\nFROM\n    `tabBank Statement Entry`\nWHERE\n    reconciled = 0;\n",
+ "ref_doctype": "Bank Statement Entry",
+ "report_name": "Bank Unreconciled Transactions",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Account Payable"
+  },
+  {
+   "role": "Account Receivable User"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Accounts  & Finance Manager"
+  },
+  {
+   "role": "accounts receivable"
+  }
+ ],
+ "timeout": 0
+}

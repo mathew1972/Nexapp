@@ -11,17 +11,38 @@
   "item_code",
   "item_name",
   "qty",
+  "status",
+  "lms_id",
+  "billing_status",
   "stock_balance",
   "stock_reserved",
-  "status",
-  "delivery_note_id",
   "column_break_qkfm",
   "warehouse",
   "solution",
   "solution_name",
-  "stock_management_id",
   "item_group",
-  "cancel_reason"
+  "customer_bill_date",
+  "serial_no_sim_no",
+  "change_management",
+  "hardware_information_section",
+  "warranty_expiry_date",
+  "lan_mac",
+  "hardware_version",
+  "wlan_mac",
+  "column_break_kiml",
+  "wan_mac",
+  "module",
+  "warranty_period_days",
+  "imei",
+  "sim_information_section",
+  "mobile_no",
+  "brand",
+  "activation_date",
+  "validity",
+  "column_break_ohbk",
+  "data_plan",
+  "recharge_end_date",
+  "rental_plan"
  ],
  "fields": [
   {
@@ -32,7 +53,7 @@
    "label": "Qty"
   },
   {
-   "columns": 2,
+   "columns": 3,
    "fieldname": "item_code",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -42,14 +63,13 @@
   {
    "fieldname": "stock_reserved",
    "fieldtype": "Int",
+   "hidden": 1,
    "label": "Stock Reserved",
    "precision": "0"
   },
   {
-   "columns": 2,
    "fieldname": "stock_balance",
    "fieldtype": "Int",
-   "in_list_view": 1,
    "label": "Stock Balance"
   },
   {
@@ -65,7 +85,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "columns": 3,
+   "columns": 2,
    "fetch_from": "item_code.item_name",
    "fieldname": "item_name",
    "fieldtype": "Data",
@@ -100,17 +120,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "Open\nStock Requested\nStock Reserve Requested\nStock Reserved\nStock Unreserve Requested\nStock Unreserved\nStock Delivery Requested\nStock Delivered\nStock Delivery In-Process\nStock Return Request\nCancel Requested\nCancelled"
-  },
-  {
-   "fieldname": "delivery_note_id",
-   "fieldtype": "Data",
-   "label": "Delivery Note ID"
-  },
-  {
-   "fieldname": "stock_management_id",
-   "fieldtype": "Data",
-   "label": "Stock Management ID"
+   "options": "Open\nStock Requested\nStock Reserved\nStock Delivery Requested\nStock Delivered\nDelivery In-Process\nShipment In-Transit\nStock Return Request\nStock Returned\nStock Lost\nOn Hold\nCancelled"
   },
   {
    "fetch_from": "item_code.item_group",
@@ -120,17 +130,156 @@
    "options": "Item Group"
   },
   {
-   "depends_on": "eval:doc.status==\"Cancel Requested\" || doc.status==\"Cancelled\"",
-   "fieldname": "cancel_reason",
-   "fieldtype": "Small Text",
-   "label": "Cancel Reason"
+   "fetch_from": "serial_no_sim_no.warranty_expiry_date",
+   "fieldname": "warranty_expiry_date",
+   "fieldtype": "Date",
+   "label": "Warranty Expiry Date"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_hardware_version",
+   "fieldname": "hardware_version",
+   "fieldtype": "Data",
+   "label": "Hardware Version"
+  },
+  {
+   "fieldname": "column_break_kiml",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_wan_mac",
+   "fieldname": "wan_mac",
+   "fieldtype": "Data",
+   "label": "WAN MAC"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_module",
+   "fieldname": "module",
+   "fieldtype": "Data",
+   "label": "Module"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.warranty_period",
+   "fieldname": "warranty_period_days",
+   "fieldtype": "Data",
+   "label": "Warranty Period (Days)"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_wlan_mac",
+   "fieldname": "wlan_mac",
+   "fieldtype": "Data",
+   "label": "WLAN MAC"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_imei",
+   "fieldname": "imei",
+   "fieldtype": "Data",
+   "label": "IMEI"
+  },
+  {
+   "depends_on": "eval:doc.item_group==\"SDIOT\" ",
+   "fieldname": "hardware_information_section",
+   "fieldtype": "Section Break",
+   "label": "Hardware Information"
+  },
+  {
+   "depends_on": "eval:doc.item_group==\"Telecom\"",
+   "fieldname": "sim_information_section",
+   "fieldtype": "Section Break",
+   "label": "SIM Information"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_mobile_no",
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_activation_date",
+   "fieldname": "activation_date",
+   "fieldtype": "Data",
+   "label": "Activation Date"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_validity",
+   "fieldname": "validity",
+   "fieldtype": "Data",
+   "label": "Validity"
+  },
+  {
+   "fieldname": "column_break_ohbk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_data_plan",
+   "fieldname": "data_plan",
+   "fieldtype": "Data",
+   "label": "Data Plan"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_recharge_end_date",
+   "fieldname": "recharge_end_date",
+   "fieldtype": "Data",
+   "label": "Recharge End Date"
+  },
+  {
+   "fieldname": "serial_no_sim_no",
+   "fieldtype": "Link",
+   "label": "Serial No/ SIM No",
+   "options": "Serial No"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_lan_mac",
+   "fieldname": "lan_mac",
+   "fieldtype": "Data",
+   "label": "LAN MAC"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.custom_rental_plan",
+   "fieldname": "rental_plan",
+   "fieldtype": "Currency",
+   "label": "Rental Plan"
+  },
+  {
+   "fetch_from": "serial_no_sim_no.brand",
+   "fieldname": "brand",
+   "fieldtype": "Data",
+   "label": "Brand"
+  },
+  {
+   "columns": 1,
+   "default": "Pending",
+   "fieldname": "billing_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Billing Status",
+   "options": "Pending\nCompleted"
+  },
+  {
+   "columns": 2,
+   "fieldname": "customer_bill_date",
+   "fieldtype": "Date",
+   "label": "Customer Bill Date"
+  },
+  {
+   "columns": 1,
+   "fieldname": "lms_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "LMS ID",
+   "options": "Lastmile Services Master"
+  },
+  {
+   "default": "0",
+   "fieldname": "change_management",
+   "fieldtype": "Check",
+   "label": "Change Management"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-03-31 00:17:03.504013",
+ "modified": "2025-12-26 17:12:08.796590",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site Item",

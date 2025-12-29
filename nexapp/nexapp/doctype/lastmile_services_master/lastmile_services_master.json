@@ -1,116 +1,196 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "LMS-.######",
+ "autoname": "LMS- .######",
  "creation": "2025-01-15 21:18:48.590080",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "circuit_information_section",
+  "details_tab",
+  "lms_stage_progress",
+  "lms_information_section",
+  "lms_feasibility_partner",
+  "supplier",
+  "expected_delivery_date",
+  "territory",
+  "old_lms_id",
+  "duration",
+  "lms_review",
+  "order_type",
+  "exiting_circuit_id",
+  "lms_accepted_by_customer_date",
+  "ir_customer_acceptance_document",
+  "column_break_mctq",
+  "custom_info",
   "lms_stage",
+  "cancel_reason",
+  "lms_payment_request",
+  "supplier_contact",
+  "suppliernumber",
+  "email_address",
+  "lms_delivery_date",
+  "billing_start_date",
+  "section_break_hlgt",
+  "bandwith_type",
+  "media",
+  "column_break_ctob",
+  "lms_bandwith",
+  "lms_brandwith_name",
+  "circuit_information_section",
   "circuit_id",
   "site",
+  "site_id__legal_code",
   "solution",
+  "pin_code",
+  "city",
   "column_break_uwil",
   "customer",
   "site_type",
   "primary_plan",
   "secondary_plan",
-  "lms_feasibility_information_section",
-  "lms_feasibility_id",
-  "column_break_zxfn",
-  "lms_feasibility_status",
-  "lms_information_section",
-  "lms_supplier",
-  "expected_delivery_date",
-  "column_break_mctq",
-  "supplier_contact",
-  "delivery_date",
-  "section_break_okwv",
-  "lms_po_request_id",
-  "lms_po_number",
-  "column_break_ufwq",
-  "lms_po_request_date",
-  "lms_po_date",
-  "section_break_hlgt",
-  "bandwith_type",
-  "media",
-  "billing_terms",
-  "column_break_ctob",
-  "lms_bandwith",
-  "security_deposit",
-  "billing_mode",
-  "description",
-  "lms_support_information_section",
-  "support_email",
-  "tollfree_number",
-  "webportal_user_name",
+  "site_address",
+  "lms_po_request_tab",
+  "section_break_msxz",
+  "table_djyj",
+  "table_athu",
+  "section_break_oziz",
+  "vendor_distribution",
+  "lms_distribution_po",
+  "billing_information_section",
   "payment_mode",
-  "modem_user_id",
-  "column_break_xnlq",
-  "support_phone",
-  "support_other_phone",
-  "webportal_password",
-  "mode",
-  "modem_password",
+  "security_deposit",
+  "validity",
+  "column_break_ylbl",
+  "payment_cycle",
+  "billing_terms",
+  "billing_mode",
+  "po_information_tab",
+  "po_information_section",
+  "lms_request_id",
+  "po_requeste_id",
+  "po_number",
+  "column_break_madf",
+  "lms_requested_date",
+  "po_requested_date",
+  "po_released_datetime",
+  "section_break_xfpo",
+  "payment_request_id",
+  "payment_details",
+  "column_break_qxfo",
+  "payment_request_date",
+  "payment_type",
+  "payment_amount",
+  "payment_date",
+  "tab_9_tab",
+  "mode_section",
+  "mode1",
+  "column_break_lxoc",
+  "account_no_dsl_no_service_id",
+  "static_ip_details_section",
+  "static_ip_1",
+  "column_break_xxgh",
+  "static_ip",
+  "section_break_kiej",
+  "user_id",
+  "column_break_itdt",
+  "password",
+  "delivery_tab",
   "documents_section",
   "noc",
   "column_break_xedf",
-  "address_proof"
+  "address_proof",
+  "column_break_qfim",
+  "supplier_first_invoice",
+  "section_break_gvez",
+  "lms_documentation",
+  "section_break_ejra",
+  "lms_installation_proof",
+  "installation_supporting_documents_section",
+  "attach_1",
+  "column_break_ywoi",
+  "attach_2",
+  "column_break_zcbi",
+  "attach_3",
+  "column_break_wtyd",
+  "attach_4",
+  "section_break_alio",
+  "description",
+  "lms_support_tab",
+  "lms_support_section",
+  "table_gyhp",
+  "escalation_metrix_tab",
+  "escalation_metrix_section",
+  "table_oeiw",
+  "lms_portal_tab",
+  "payment_information_section",
+  "column_break_voce",
+  "payment_mode_1",
+  "column_break_hqms",
+  "bank",
+  "section_break_foiq",
+  "url",
+  "column_break_ibzy",
+  "portal_login_id",
+  "portal_login_password",
+  "section_break_fwmc",
+  "description_lms",
+  "lms_project_tab",
+  "parent_project",
+  "column_break_bjsg",
+  "child_project"
  ],
  "fields": [
-  {
-   "fieldname": "lms_supplier",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "LMS Supplier",
-   "options": "Supplier"
-  },
   {
    "fieldname": "bandwith_type",
    "fieldtype": "Select",
    "label": "Bandwith Type",
-   "options": "\nILL\nMBB\n4G\n5G"
+   "options": "\nILL\nMBB\nLTE\nAirfiber\n4G\n5G",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_ctob",
    "fieldtype": "Column Break"
   },
   {
+   "description": "LMS contact",
    "fieldname": "supplier_contact",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Supplier Contact"
+   "fieldtype": "Link",
+   "label": "Supplier Contact",
+   "options": "Contact"
   },
   {
    "fieldname": "lms_bandwith",
    "fieldtype": "Link",
    "label": "LMS Bandwith",
+   "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"LMS Bandwidth\"]]",
    "options": "Item"
   },
   {
    "fieldname": "media",
    "fieldtype": "Select",
    "label": "Media",
-   "options": "\nWired\nRF\n4G\n5G"
+   "options": "\nWired\nFTTH\nRF\n4G\n5G",
+   "read_only": 1
   },
   {
    "fieldname": "billing_terms",
    "fieldtype": "Select",
    "label": "Billing Terms",
-   "options": "\nPre-Paid\nPost-Paid"
+   "options": "\nPrepaid\nPostpaid",
+   "permlevel": 1
   },
   {
    "fieldname": "security_deposit",
    "fieldtype": "Currency",
-   "label": "Security Deposit"
+   "label": "Security Deposit",
+   "permlevel": 1
   },
   {
    "fieldname": "billing_mode",
    "fieldtype": "Select",
    "label": "Billing Mode",
-   "options": "\nMRC\nQRC\nHYRC\nARC"
+   "options": "\nOTC\nMRC\nQRC\nHRC\nARC",
+   "permlevel": 1
   },
   {
    "fieldname": "circuit_id",
@@ -119,24 +199,13 @@
    "in_standard_filter": 1,
    "label": "Circuit ID",
    "options": "Site",
-   "unique": 1
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fieldname": "description",
    "fieldtype": "Small Text",
    "label": "Description"
-  },
-  {
-   "fieldname": "lms_po_request_id",
-   "fieldtype": "Link",
-   "label": "LMS PO Request ID",
-   "options": "LMS PO Request"
-  },
-  {
-   "fetch_from": "lms_po_request_id.po_request_date",
-   "fieldname": "lms_po_request_date",
-   "fieldtype": "Date",
-   "label": "LMS PO Request Date"
   },
   {
    "fieldname": "column_break_uwil",
@@ -146,114 +215,75 @@
    "fetch_from": "circuit_id.customer",
    "fieldname": "customer",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Customer",
-   "options": "Customer"
+   "options": "Customer",
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fieldname": "section_break_hlgt",
    "fieldtype": "Section Break",
-   "label": "LMS Other Information"
+   "label": "LMS Other Information",
+   "read_only": 1
   },
   {
    "fetch_from": "circuit_id.site_name",
    "fieldname": "site",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Site",
-   "options": "Site"
+   "options": "Site",
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fetch_from": "circuit_id.site_type",
    "fieldname": "site_type",
    "fieldtype": "Data",
-   "label": "Site Type"
+   "label": "Site Type",
+   "read_only": 1,
+   "reqd": 1
   },
   {
-   "fetch_from": "circuit_id.solution",
+   "fetch_from": "circuit_id.solution_name",
    "fieldname": "solution",
    "fieldtype": "Data",
-   "label": "Solution"
+   "label": "Solution",
+   "read_only": 1,
+   "reqd": 1
   },
   {
-   "fetch_from": "circuit_id.primary_plan",
+   "fetch_from": "circuit_id.primary_data_plan",
    "fieldname": "primary_plan",
    "fieldtype": "Data",
-   "label": "Primary Plan"
+   "label": "Primary Plan",
+   "read_only": 1
   },
   {
    "fetch_from": "circuit_id.secondary_plan",
    "fieldname": "secondary_plan",
    "fieldtype": "Data",
-   "label": "Secondary Plan"
+   "label": "Secondary Plan",
+   "read_only": 1
   },
   {
    "fieldname": "circuit_information_section",
    "fieldtype": "Section Break",
-   "label": "Circuit Information"
-  },
-  {
-   "fieldname": "lms_support_information_section",
-   "fieldtype": "Section Break",
-   "label": "LMS Support Information"
-  },
-  {
-   "fieldname": "support_email",
-   "fieldtype": "Data",
-   "label": "Support Email"
-  },
-  {
-   "fieldname": "tollfree_number",
-   "fieldtype": "Data",
-   "label": "Tollfree Number"
-  },
-  {
-   "fieldname": "webportal_user_name",
-   "fieldtype": "Data",
-   "label": "Webportal User Name"
+   "label": "Circuit Information",
+   "read_only": 1
   },
   {
    "fieldname": "payment_mode",
    "fieldtype": "Select",
    "label": "Payment Mode",
-   "options": "\nBank Transfer\nWebportal"
-  },
-  {
-   "fieldname": "modem_user_id",
-   "fieldtype": "Data",
-   "label": "Modem User ID"
-  },
-  {
-   "fieldname": "column_break_xnlq",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "support_phone",
-   "fieldtype": "Data",
-   "label": "Support Phone"
-  },
-  {
-   "fieldname": "support_other_phone",
-   "fieldtype": "Data",
-   "label": "Support Other Phone"
-  },
-  {
-   "fieldname": "webportal_password",
-   "fieldtype": "Data",
-   "label": "Webportal Password"
-  },
-  {
-   "fieldname": "mode",
-   "fieldtype": "Select",
-   "label": "Mode",
-   "options": "\nDHCP\nPPPoE"
-  },
-  {
-   "fieldname": "modem_password",
-   "fieldtype": "Password",
-   "label": "Modem Password"
+   "options": "\nOTC\nMRC\nQRC\nHRC\nARC",
+   "permlevel": 1
   },
   {
    "fieldname": "documents_section",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Documents "
   },
   {
@@ -279,32 +309,15 @@
    "default": "PO Pending",
    "fieldname": "lms_stage",
    "fieldtype": "Select",
-   "label": "LMS Stage",
-   "options": "\nPO Pending\nApplied\nInprocess\nDelivered\nCancelled\nDisconnected"
-  },
-  {
-   "fieldname": "lms_feasibility_id",
-   "fieldtype": "Link",
+   "in_filter": 1,
    "in_list_view": 1,
-   "label": "LMS Feasibility ID",
-   "options": "LMS Feasibility"
+   "in_standard_filter": 1,
+   "label": "LMS Stage",
+   "options": "PO Pending\nPO Requested\nPO Released\nIn process\nDelivered\nCancelled\nDisconnected\nDisconnection In Process",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_mctq",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "delivery_date",
-   "fieldtype": "Date",
-   "label": "Delivery Date"
-  },
-  {
-   "fieldname": "section_break_okwv",
-   "fieldtype": "Section Break",
-   "label": "LMS PO Request Info"
-  },
-  {
-   "fieldname": "column_break_ufwq",
    "fieldtype": "Column Break"
   },
   {
@@ -313,37 +326,607 @@
    "label": "Expected Delivery Date"
   },
   {
-   "fetch_from": "lms_feasibility_id.lms_status",
-   "fieldname": "lms_feasibility_status",
-   "fieldtype": "Data",
-   "label": "LMS Feasibility Status"
+   "fieldname": "escalation_metrix_tab",
+   "fieldtype": "Tab Break",
+   "label": "Escalation Metrix"
   },
   {
-   "fieldname": "lms_feasibility_information_section",
+   "fieldname": "table_oeiw",
+   "fieldtype": "Table",
+   "label": "Escalation Metrix Info",
+   "options": "LMS Contact Escalation"
+  },
+  {
+   "fieldname": "lms_support_tab",
+   "fieldtype": "Tab Break",
+   "label": "LMS Support"
+  },
+  {
+   "fieldname": "table_gyhp",
+   "fieldtype": "Table",
+   "label": "LMS Support Info",
+   "options": "LMS Support"
+  },
+  {
+   "fieldname": "lms_po_request_tab",
+   "fieldtype": "Tab Break",
+   "label": "LMS PO Request"
+  },
+  {
+   "fieldname": "table_djyj",
+   "fieldtype": "Table",
+   "label": "LMS Item",
+   "options": "LMS PO Item",
+   "permlevel": 1
+  },
+  {
+   "fieldname": "section_break_msxz",
    "fieldtype": "Section Break",
-   "label": "LMS Feasibility information"
+   "label": "LMS PO Request",
+   "read_only": 1
   },
   {
-   "fieldname": "column_break_zxfn",
+   "fieldname": "validity",
+   "fieldtype": "Select",
+   "label": "Plan Validity",
+   "options": "\n30\n60\n90\n180\n365",
+   "permlevel": 1
+  },
+  {
+   "fieldname": "column_break_ylbl",
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "lms_po_request_id.purchase_order",
-   "fieldname": "lms_po_number",
-   "fieldtype": "Data",
-   "label": "LMS PO Number"
+   "fieldname": "payment_cycle",
+   "fieldtype": "Select",
+   "label": "Payment Cycle",
+   "options": "\n5\n15\n25",
+   "permlevel": 1
   },
   {
-   "fetch_from": "lms_po_request_id.purchase_order_date",
-   "fieldname": "lms_po_date",
+   "fieldname": "lms_support_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Support"
+  },
+  {
+   "fieldname": "lms_portal_tab",
+   "fieldtype": "Tab Break",
+   "label": "LMS PMT Portal"
+  },
+  {
+   "fieldname": "table_athu",
+   "fieldtype": "Table",
+   "hidden": 1,
+   "label": "PO Request",
+   "options": "LMS PO Request"
+  },
+  {
+   "depends_on": "eval: doc.lms_stage == \"In process\" || doc.lms_stage == \"Delivered\"",
+   "description": "date on which the link is handed over by the ISP",
+   "fieldname": "lms_delivery_date",
+   "fieldtype": "Date",
+   "label": "LMS Delivery Date"
+  },
+  {
+   "fieldname": "billing_information_section",
+   "fieldtype": "Section Break",
+   "label": "Billing information"
+  },
+  {
+   "fieldname": "lms_project_tab",
+   "fieldtype": "Tab Break",
+   "label": "LMS Project"
+  },
+  {
+   "fieldname": "parent_project",
+   "fieldtype": "Link",
+   "label": "Parent Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "column_break_bjsg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "child_project",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Child Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "escalation_metrix_section",
+   "fieldtype": "Section Break",
+   "label": "Escalation Metrix"
+  },
+  {
+   "fieldname": "section_break_alio",
+   "fieldtype": "Section Break",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "lms_feasibility_partner",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "LMS Feasibility Partner",
+   "options": "LMS Feasibility Partner"
+  },
+  {
+   "fieldname": "po_requeste_id",
    "fieldtype": "Data",
-   "label": "LMS PO date"
+   "label": "PO Requeste ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_oziz",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "vendor_distribution",
+   "fieldtype": "Check",
+   "label": "Vendor Distribution",
+   "permlevel": 1
+  },
+  {
+   "depends_on": "eval: doc.vendor_distribution == 1",
+   "fieldname": "lms_distribution_po",
+   "fieldtype": "Table",
+   "label": "LMS Distribution PO",
+   "options": "LMS Distribution PO"
+  },
+  {
+   "fieldname": "old_lms_id",
+   "fieldtype": "Data",
+   "label": "Old LMS ID"
+  },
+  {
+   "fieldname": "installation_supporting_documents_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Installation Supporting Documents"
+  },
+  {
+   "fieldname": "attach_1",
+   "fieldtype": "Attach",
+   "label": "Attach-1"
+  },
+  {
+   "fieldname": "column_break_ywoi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_zcbi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_wtyd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "attach_2",
+   "fieldtype": "Attach",
+   "label": "Attach-2"
+  },
+  {
+   "fieldname": "attach_3",
+   "fieldtype": "Attach",
+   "label": "Attach-3"
+  },
+  {
+   "fieldname": "attach_4",
+   "fieldtype": "Attach",
+   "label": "Attach-4"
+  },
+  {
+   "fieldname": "url",
+   "fieldtype": "Data",
+   "label": "Url",
+   "mandatory_depends_on": "eval: doc.payment_mode_1==\"Portal\""
+  },
+  {
+   "fieldname": "mode_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Provisioning Info"
+  },
+  {
+   "fieldname": "mode1",
+   "fieldtype": "Select",
+   "label": "Mode",
+   "options": "\nDHCP\nPPPoE\nStatic IP"
+  },
+  {
+   "fieldname": "column_break_lxoc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.mode1==\"PPPoE\"\t",
+   "fieldname": "user_id",
+   "fieldtype": "Data",
+   "label": "User ID",
+   "mandatory_depends_on": "eval: doc.mode1==\"PPPoE\"\t"
+  },
+  {
+   "depends_on": "eval: doc.mode1==\"PPPoE\"\t",
+   "fieldname": "password",
+   "fieldtype": "Data",
+   "label": "Password",
+   "mandatory_depends_on": "eval: doc.mode1==\"PPPoE\"\t"
+  },
+  {
+   "fetch_from": "circuit_id.territory",
+   "fieldname": "territory",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Territory",
+   "options": "Territory",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "po_number.transaction_date",
+   "fieldname": "po_released_datetime",
+   "fieldtype": "Datetime",
+   "label": "PO Released Datetime",
+   "read_only": 1
+  },
+  {
+   "fieldname": "payment_request_id",
+   "fieldtype": "Data",
+   "label": "Payment Request ID"
+  },
+  {
+   "fieldname": "column_break_qfim",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "supplier_first_invoice",
+   "fieldtype": "Attach",
+   "label": "Supplier First Invoice"
+  },
+  {
+   "fieldname": "payment_details",
+   "fieldtype": "Small Text",
+   "label": " Payment Details "
+  },
+  {
+   "fieldname": "payment_date",
+   "fieldtype": "Date",
+   "label": "Payment Date"
+  },
+  {
+   "fieldname": "payment_request_date",
+   "fieldtype": "Datetime",
+   "label": "Payment Request Date"
+  },
+  {
+   "fieldname": "po_number",
+   "fieldtype": "Data",
+   "label": "PO Number",
+   "link_filters": "[]",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_madf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "po_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "PO Information"
+  },
+  {
+   "fieldname": "section_break_xfpo",
+   "fieldtype": "Section Break",
+   "label": "PO Payment Request Information"
+  },
+  {
+   "fieldname": "column_break_qxfo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "po_information_section",
+   "fieldtype": "Section Break",
+   "label": "PO Information",
+   "read_only": 1
+  },
+  {
+   "fieldname": "payment_type",
+   "fieldtype": "Select",
+   "label": "Payment Type",
+   "options": "\nNEFT\nPortal"
+  },
+  {
+   "fieldname": "payment_amount",
+   "fieldtype": "Currency",
+   "label": "Payment Amount"
+  },
+  {
+   "fieldname": "static_ip",
+   "fieldtype": "Small Text",
+   "label": "Static IP Details",
+   "mandatory_depends_on": "eval: doc.mode1 == \"Static IP\""
+  },
+  {
+   "fieldname": "section_break_fwmc",
+   "fieldtype": "Section Break",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "description_lms",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "depends_on": "eval: doc.lms_stage == \"PO Released\"",
+   "fieldname": "lms_payment_request",
+   "fieldtype": "Select",
+   "label": "LMS Payment Request",
+   "options": "\nLMS Payment Requested\nLMS Payment Released"
+  },
+  {
+   "fieldname": "section_break_gvez",
+   "fieldtype": "Section Break",
+   "label": "Customer documents"
+  },
+  {
+   "fieldname": "lms_documentation",
+   "fieldtype": "Table",
+   "label": "LMS Documentation",
+   "options": "LMS Documentation"
+  },
+  {
+   "fieldname": "section_break_ejra",
+   "fieldtype": "Section Break",
+   "label": "Installation documents"
+  },
+  {
+   "fieldname": "lms_installation_proof",
+   "fieldtype": "Table",
+   "label": "LMS Installation Proof",
+   "options": "LMS Installation Proof"
+  },
+  {
+   "fieldname": "lms_request_id",
+   "fieldtype": "Data",
+   "label": "LMS Request ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "po_requested_date",
+   "fieldtype": "Date",
+   "label": "PO Requested Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "lms_requested_date",
+   "fieldtype": "Date",
+   "label": "LMS Requested Date",
+   "read_only": 1
+  },
+  {
+   "description": "This LMS Review will automatically update the Site as well.",
+   "fieldname": "lms_review",
+   "fieldtype": "Link",
+   "label": "LMS Review",
+   "options": "LMS Review"
+  },
+  {
+   "fetch_from": "lms_bandwith.item_name",
+   "fieldname": "lms_brandwith_name",
+   "fieldtype": "Data",
+   "label": "LMS Brandwith Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "supplier_contact.mobile_no",
+   "fieldname": "suppliernumber",
+   "fieldtype": "Data",
+   "label": "SupplierNumber",
+   "read_only": 1
+  },
+  {
+   "description": "ISP Partner",
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Supplier",
+   "mandatory_depends_on": "eval: doc.mode1 == \"Static IP\"",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "duration",
+   "fieldtype": "Duration",
+   "hide_seconds": 1,
+   "label": "Duration"
+  },
+  {
+   "fieldname": "delivery_tab",
+   "fieldtype": "Tab Break",
+   "label": "Delivery"
+  },
+  {
+   "fieldname": "tab_9_tab",
+   "fieldtype": "Tab Break",
+   "label": "LMS Provisioning"
+  },
+  {
+   "fieldname": "details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Details"
+  },
+  {
+   "depends_on": "eval: doc.mode1==\"PPPoE\"\t",
+   "fieldname": "section_break_kiej",
+   "fieldtype": "Section Break",
+   "label": "PPPoE Details",
+   "mandatory_depends_on": "eval: doc.mode==\"Portal\""
+  },
+  {
+   "fieldname": "column_break_itdt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "static_ip_1",
+   "fieldtype": "Data",
+   "label": "Static IP",
+   "mandatory_depends_on": "eval: doc.mode1 == \"Static IP\""
+  },
+  {
+   "fieldname": "column_break_hqms",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.payment_mode_1==\"NEFT\"",
+   "fieldname": "bank",
+   "fieldtype": "Link",
+   "label": "Bank",
+   "link_filters": "[[\"Bank Account\",\"party\",\"=\",\"eval:doc.supplier\"]]",
+   "mandatory_depends_on": "eval: doc.payment_mode_1==\"NEFT\"",
+   "options": "Bank Account"
+  },
+  {
+   "fieldname": "custom_info",
+   "fieldtype": "HTML",
+   "label": "Info"
+  },
+  {
+   "fieldname": "payment_information_section",
+   "fieldtype": "Section Break",
+   "label": "Payment information"
+  },
+  {
+   "depends_on": "eval: doc.payment_mode_1==\"Portal\"",
+   "fieldname": "section_break_foiq",
+   "fieldtype": "Section Break",
+   "label": "Payment Portal Information"
+  },
+  {
+   "fieldname": "column_break_ibzy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "static_ip_details_section",
+   "fieldtype": "Section Break",
+   "label": "Static IP Details"
+  },
+  {
+   "fieldname": "column_break_xxgh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "supplier_contact.email_id",
+   "fieldname": "email_address",
+   "fieldtype": "Data",
+   "label": "Email Address"
+  },
+  {
+   "fieldname": "portal_login_id",
+   "fieldtype": "Data",
+   "label": "Portal Login ID",
+   "mandatory_depends_on": "eval: doc.payment_mode_1==\"Portal\""
+  },
+  {
+   "fieldname": "portal_login_password",
+   "fieldtype": "Data",
+   "label": "Portal Login Password",
+   "mandatory_depends_on": "eval: doc.payment_mode_1==\"Portal\""
+  },
+  {
+   "fieldname": "column_break_voce",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "payment_mode_1",
+   "fieldtype": "Select",
+   "label": "LMS Payment Mode",
+   "mandatory_depends_on": "eval:doc.lms_delivery_date",
+   "options": "\nNEFT\nPortal"
+  },
+  {
+   "fetch_from": "circuit_id.pincode",
+   "fieldname": "pin_code",
+   "fieldtype": "Data",
+   "label": "Pin code",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "circuit_id.city",
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City",
+   "read_only": 1
+  },
+  {
+   "fieldname": "lms_stage_progress",
+   "fieldtype": "HTML",
+   "label": "LMS Stage progress"
+  },
+  {
+   "depends_on": "eval:doc.lms_stage==\"Cancelled\"",
+   "fieldname": "cancel_reason",
+   "fieldtype": "Small Text",
+   "label": "Cancel Reason",
+   "mandatory_depends_on": "eval:doc.lms_stage==\"Cancelled\""
+  },
+  {
+   "depends_on": "eval:doc.mode1 ==\"DHCP\" || doc.mode1 == \"Static IP\"",
+   "fieldname": "account_no_dsl_no_service_id",
+   "fieldtype": "Data",
+   "label": "Account No/ DSL No/ Service ID",
+   "mandatory_depends_on": "eval:doc.mode1 ==\"DHCP\" || doc.mode1 == \"Static IP\""
+  },
+  {
+   "fetch_from": "circuit_id.address_street",
+   "fieldname": "site_address",
+   "fieldtype": "Small Text",
+   "in_standard_filter": 1,
+   "label": "Site Address"
+  },
+  {
+   "fetch_from": "circuit_id.order_type",
+   "fieldname": "order_type",
+   "fieldtype": "Data",
+   "label": "Order Type"
+  },
+  {
+   "fetch_from": "circuit_id.exiting_circuit_id",
+   "fieldname": "exiting_circuit_id",
+   "fieldtype": "Data",
+   "label": "Exiting Circuit ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "lms_accepted_by_customer_date",
+   "fieldtype": "Date",
+   "label": "LMS Accepted by Customer Date"
+  },
+  {
+   "description": "customer Billing Start Date based IR\nClient acceptance is must over IR or Email",
+   "fieldname": "billing_start_date",
+   "fieldtype": "Date",
+   "label": "Billing Start Date"
+  },
+  {
+   "description": "attached customer acceptance proof",
+   "fieldname": "ir_customer_acceptance_document",
+   "fieldtype": "Attach",
+   "label": "IR Customer acceptance document"
+  },
+  {
+   "fetch_from": "circuit_id.site_id__legal_code",
+   "fieldname": "site_id__legal_code",
+   "fieldtype": "Data",
+   "label": "Site ID / Legal Code"
   }
  ],
- "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-15 19:24:56.614167",
+ "make_attachments_public": 1,
+ "modified": "2025-11-21 15:34:48.951653",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Lastmile Services Master",
@@ -397,9 +980,32 @@
    "role": "Nexapp Sales Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "L1 Support",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "L2 Support",
+   "share": 1,
+   "write": 1
   }
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
 }

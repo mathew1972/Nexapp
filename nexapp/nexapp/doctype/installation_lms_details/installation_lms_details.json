@@ -1,0 +1,106 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-04-26 00:19:33.771796",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "lms_feasibility_partner",
+  "bandwith_type",
+  "media",
+  "column_break_pzjo",
+  "static_ip",
+  "bandwidth",
+  "lms_support_information_section",
+  "modem_user_id",
+  "webportal_user_name",
+  "column_break_koqv",
+  "webportal_password",
+  "mode",
+  "modem_password"
+ ],
+ "fields": [
+  {
+   "fieldname": "lms_feasibility_partner",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "LMS Feasibility Partner",
+   "options": "LMS Feasibility Partner"
+  },
+  {
+   "fieldname": "column_break_pzjo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "bandwith_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Bandwith Type"
+  },
+  {
+   "fieldname": "media",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Media"
+  },
+  {
+   "fieldname": "static_ip",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Static IP"
+  },
+  {
+   "fieldname": "bandwidth",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Bandwidth"
+  },
+  {
+   "fieldname": "lms_support_information_section",
+   "fieldtype": "Section Break",
+   "label": " LMS Support Information "
+  },
+  {
+   "fieldname": "modem_user_id",
+   "fieldtype": "Data",
+   "label": "Modem User ID"
+  },
+  {
+   "fieldname": "webportal_user_name",
+   "fieldtype": "Data",
+   "label": "Webportal User Name"
+  },
+  {
+   "fieldname": "column_break_koqv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "webportal_password",
+   "fieldtype": "Data",
+   "label": "Webportal Password"
+  },
+  {
+   "fieldname": "mode",
+   "fieldtype": "Data",
+   "label": "Mode"
+  },
+  {
+   "fieldname": "modem_password",
+   "fieldtype": "Password",
+   "label": "Modem Password"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-04-26 00:31:16.238796",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Installation LMS Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -11,16 +11,15 @@
  "fields": [
   {
    "fieldname": "rca",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "RCA",
-   "options": "Resolution Detail"
+   "fieldtype": "Data",
+   "label": "RCA"
   }
  ],
+ "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-02-14 12:39:47.404302",
+ "modified": "2025-12-14 23:47:00.527185",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "RCA",
