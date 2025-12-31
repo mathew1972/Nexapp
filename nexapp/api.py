@@ -4590,9 +4590,9 @@ def get_tickets(filters=None, page=1, page_size=20):
     2️⃣ custom_pos_customer Logic:
         For each customer:
             If custom_pos_customer = 1:
-                Only tickets with custom_customer_type = 'POC Customer'
+                Only tickets where Site.customer_type = 'POC Customer'
             If custom_pos_customer = 0:
-                custom_customer_type IN ('POC Customer', 'Paid Customer', '')
+                Site.customer_type IN ('POC Customer', 'Paid Customer', '')
 
     3️⃣ Dynamic UI Filters:
         ticket_no, channel, circuit_id, customer, site_name, status
@@ -4668,20 +4668,26 @@ def get_tickets(filters=None, page=1, page_size=20):
         debug_messages.append(f"DEBUG: Customer '{cust}' has POS flag: {pos_flag}")
 
         if pos_flag == 1:
-            # Only POC customer tickets for this user
+            # Only tickets where Site.customer_type = 'POC Customer'
             per_customer_conditions.append(
-                "(customer=%s AND custom_customer_type='POC Customer')"
+                """(customer=%s AND EXISTS (
+                    SELECT 1 FROM `tabSite` s 
+                    WHERE s.name = `tabHD Ticket`.custom_circuit_id 
+                    AND s.customer_type = 'POC Customer'
+                ))"""
             )
             per_customer_params.append(cust)
-
         else:
-            # POC or Paid or Empty for this user
+            # POC or Paid or Empty customer type from Site
             per_customer_conditions.append(
                 """(customer=%s AND (
-                        custom_customer_type='POC Customer'
-                        OR custom_customer_type='Paid Customer'
-                        OR custom_customer_type IS NULL
-                        OR custom_customer_type=''
+                    NOT EXISTS (
+                        SELECT 1 FROM `tabSite` s 
+                        WHERE s.name = `tabHD Ticket`.custom_circuit_id 
+                        AND s.customer_type NOT IN ('POC Customer', 'Paid Customer', '')
+                    )
+                    OR `tabHD Ticket`.custom_circuit_id IS NULL
+                    OR `tabHD Ticket`.custom_circuit_id = ''
                 ))"""
             )
             per_customer_params.append(cust)
@@ -4784,7 +4790,7 @@ def get_tickets(filters=None, page=1, page_size=20):
         if tickets:
             # Log only the first 3 tickets to avoid too much data
             for i, ticket in enumerate(tickets[:3]):
-                debug_messages.append(f"DEBUG: Ticket {i+1}: {ticket.get('name')} - Customer: {ticket.get('customer')} - Type: {ticket.get('custom_customer_type')} - Status: {ticket.get('status')}")
+                debug_messages.append(f"DEBUG: Ticket {i+1}: {ticket.get('name')} - Customer: {ticket.get('customer')} - Status: {ticket.get('status')}")
     except Exception as e:
         debug_messages.append(f"DEBUG: Error in data query: {str(e)}")
         tickets = []
@@ -4860,9 +4866,6 @@ def get_permission_query_conditions(user):
         # User has no permissions, show nothing
         return """(`tabHD Ticket`.customer = '' AND `tabHD Ticket`.customer IS NOT NULL)"""
     
-    # Build customer list with quotes
-    customer_list = ", ".join([f"'{customer}'" for customer in allowed_customers])
-    
     # Apply POS logic for each customer
     conditions = []
     
@@ -4871,15 +4874,22 @@ def get_permission_query_conditions(user):
         
         if pos_flag == 1:
             conditions.append(
-                f"""(customer='{cust}' AND custom_customer_type='POC Customer')"""
+                f"""(customer='{cust}' AND EXISTS (
+                    SELECT 1 FROM `tabSite` s 
+                    WHERE s.name = `tabHD Ticket`.custom_circuit_id 
+                    AND s.customer_type = 'POC Customer'
+                ))"""
             )
         else:
             conditions.append(
                 f"""(customer='{cust}' AND (
-                    custom_customer_type='POC Customer'
-                    OR custom_customer_type='Paid Customer'
-                    OR custom_customer_type IS NULL
-                    OR custom_customer_type=''
+                    NOT EXISTS (
+                        SELECT 1 FROM `tabSite` s 
+                        WHERE s.name = `tabHD Ticket`.custom_circuit_id 
+                        AND s.customer_type NOT IN ('POC Customer', 'Paid Customer', '')
+                    )
+                    OR `tabHD Ticket`.custom_circuit_id IS NULL
+                    OR `tabHD Ticket`.custom_circuit_id = ''
                 ))"""
             )
     
@@ -4912,11 +4922,19 @@ def has_permission(doc, user):
     pos_flag = frappe.db.get_value("Customer", doc.customer, "custom_pos_customer")
     
     if pos_flag == 1:
-        # User can only see POC tickets for this customer
-        return doc.custom_customer_type == 'POC Customer'
+        # Check if Site exists and has customer_type = 'POC Customer'
+        if doc.custom_circuit_id:
+            site_customer_type = frappe.db.get_value("Site", doc.custom_circuit_id, "customer_type")
+            return site_customer_type == 'POC Customer'
+        else:
+            return False
     else:
-        # User can see POC, Paid, or empty customer type
-        return doc.custom_customer_type in ['POC Customer', 'Paid Customer', None, '']
+        # User can see tickets where Site.customer_type is POC, Paid, or empty
+        if doc.custom_circuit_id:
+            site_customer_type = frappe.db.get_value("Site", doc.custom_circuit_id, "customer_type")
+            return site_customer_type in ['POC Customer', 'Paid Customer', None, '']
+        else:
+            return True
 
 
 # =============================================================================
@@ -4951,17 +4969,26 @@ def get_ticket_stats():
             pos_flag = frappe.db.get_value("Customer", cust, "custom_pos_customer")
 
             if pos_flag == 1:
+                # Only tickets where Site.customer_type = 'POC Customer'
                 per_customer_conditions.append(
-                    "(customer=%s AND custom_customer_type='POC Customer')"
+                    """(customer=%s AND EXISTS (
+                        SELECT 1 FROM `tabSite` s 
+                        WHERE s.name = `tabHD Ticket`.custom_circuit_id 
+                        AND s.customer_type = 'POC Customer'
+                    ))"""
                 )
                 per_customer_params.append(cust)
             else:
+                # POC or Paid or Empty customer type from Site
                 per_customer_conditions.append(
                     """(customer=%s AND (
-                            custom_customer_type='POC Customer'
-                            OR custom_customer_type='Paid Customer'
-                            OR custom_customer_type IS NULL
-                            OR custom_customer_type=''
+                        NOT EXISTS (
+                            SELECT 1 FROM `tabSite` s 
+                            WHERE s.name = `tabHD Ticket`.custom_circuit_id 
+                            AND s.customer_type NOT IN ('POC Customer', 'Paid Customer', '')
+                        )
+                        OR `tabHD Ticket`.custom_circuit_id IS NULL
+                        OR `tabHD Ticket`.custom_circuit_id = ''
                     ))"""
                 )
                 per_customer_params.append(cust)
@@ -5034,7 +5061,7 @@ def get_ticket_activity(ticket_name):
     # Check if user has permission to view this ticket
     user = frappe.session.user
     if user != "Administrator":
-        ticket = frappe.db.get_value("HD Ticket", ticket_name, ["customer", "custom_customer_type"], as_dict=True)
+        ticket = frappe.db.get_value("HD Ticket", ticket_name, ["customer", "custom_circuit_id"], as_dict=True)
         if ticket:
             allowed_customers = get_allowed_customers_for_user(user)
             if ticket.customer not in allowed_customers:
@@ -5042,8 +5069,12 @@ def get_ticket_activity(ticket_name):
             
             # Check POS logic
             pos_flag = frappe.db.get_value("Customer", ticket.customer, "custom_pos_customer")
-            if pos_flag == 1 and ticket.custom_customer_type != 'POC Customer':
-                return {"activity": [], "error": "Permission denied"}
+            if pos_flag == 1:
+                # Check if Site has customer_type = 'POC Customer'
+                if ticket.custom_circuit_id:
+                    site_customer_type = frappe.db.get_value("Site", ticket.custom_circuit_id, "customer_type")
+                    if site_customer_type != 'POC Customer':
+                        return {"activity": [], "error": "Permission denied"}
 
     # -----------------------------------
     # Communications (Email) Logs
@@ -5161,7 +5192,7 @@ def update_ticket_status(ticket_name, new_status):
         # Check if user has permission to update this ticket
         user = frappe.session.user
         if user != "Administrator":
-            ticket = frappe.db.get_value("HD Ticket", ticket_name, ["customer", "custom_customer_type"], as_dict=True)
+            ticket = frappe.db.get_value("HD Ticket", ticket_name, ["customer", "custom_circuit_id"], as_dict=True)
             if ticket:
                 allowed_customers = get_allowed_customers_for_user(user)
                 if ticket.customer not in allowed_customers:
@@ -5169,8 +5200,12 @@ def update_ticket_status(ticket_name, new_status):
                 
                 # Check POS logic
                 pos_flag = frappe.db.get_value("Customer", ticket.customer, "custom_pos_customer")
-                if pos_flag == 1 and ticket.custom_customer_type != 'POC Customer':
-                    return {"status": "error", "message": "Permission denied to update this ticket"}
+                if pos_flag == 1:
+                    # Check if Site has customer_type = 'POC Customer'
+                    if ticket.custom_circuit_id:
+                        site_customer_type = frappe.db.get_value("Site", ticket.custom_circuit_id, "customer_type")
+                        if site_customer_type != 'POC Customer':
+                            return {"status": "error", "message": "Permission denied to update this ticket"}
             
         ticket = frappe.get_doc("HD Ticket", ticket_name)
         ticket.status = new_status
@@ -5207,6 +5242,65 @@ def get_ticket_status_options():
 
 
 # =============================================================================
+#  CHECK CREATE TICKET PERMISSION
+# =============================================================================
+@frappe.whitelist()
+def check_create_ticket_permission():
+    """
+    Check if current user can create tickets
+    based on custom_create_ticket flag in Customer
+    """
+    try:
+        user = frappe.session.user
+        
+        if user == "Administrator":
+            # Administrator can always create tickets
+            return {
+                "can_create": True,
+                "customer_name": "Administrator",
+                "message": "Administrator has full access"
+            }
+        
+        # Get user's allowed customers
+        allowed_customers = get_allowed_customers_for_user(user)
+        
+        if not allowed_customers:
+            return {
+                "can_create": False,
+                "customer_name": None,
+                "message": "No customers assigned to user"
+            }
+        
+        # Check if any allowed customer has custom_create_ticket = 1
+        for cust in allowed_customers:
+            custom_create_ticket = frappe.db.get_value("Customer", cust, "custom_create_ticket")
+            customer_name = frappe.db.get_value("Customer", cust, "customer_name")
+            
+            if custom_create_ticket == 1:
+                return {
+                    "can_create": True,
+                    "customer_name": customer_name,
+                    "customer": cust,
+                    "message": f"User can create tickets for {customer_name}"
+                }
+        
+        # No customer with create permission
+        return {
+            "can_create": False,
+            "customer_name": None,
+            "message": "No customer with create ticket permission"
+        }
+        
+    except Exception as e:
+        frappe.log_error(f"Error checking create ticket permission: {str(e)}")
+        return {
+            "can_create": False,
+            "customer_name": None,
+            "error": str(e)
+        }
+
+
+# =============================================================================
 #  GET TICKETS BY STATUS (For debugging stats vs filtered results)
 # =============================================================================
 @frappe.whitelist()
@@ -5231,17 +5325,26 @@ def get_tickets_by_status(status):
             pos_flag = frappe.db.get_value("Customer", cust, "custom_pos_customer")
 
             if pos_flag == 1:
+                # Only tickets where Site.customer_type = 'POC Customer'
                 per_customer_conditions.append(
-                    "(customer=%s AND custom_customer_type='POC Customer')"
+                    """(customer=%s AND EXISTS (
+                        SELECT 1 FROM `tabSite` s 
+                        WHERE s.name = `tabHD Ticket`.custom_circuit_id 
+                        AND s.customer_type = 'POC Customer'
+                    ))"""
                 )
                 per_customer_params.append(cust)
             else:
+                # POC or Paid or Empty customer type from Site
                 per_customer_conditions.append(
                     """(customer=%s AND (
-                            custom_customer_type='POC Customer'
-                            OR custom_customer_type='Paid Customer'
-                            OR custom_customer_type IS NULL
-                            OR custom_customer_type=''
+                        NOT EXISTS (
+                            SELECT 1 FROM `tabSite` s 
+                            WHERE s.name = `tabHD Ticket`.custom_circuit_id 
+                            AND s.customer_type NOT IN ('POC Customer', 'Paid Customer', '')
+                        )
+                        OR `tabHD Ticket`.custom_circuit_id IS NULL
+                        OR `tabHD Ticket`.custom_circuit_id = ''
                     ))"""
                 )
                 per_customer_params.append(cust)
@@ -5337,17 +5440,26 @@ def get_all_status_values():
             pos_flag = frappe.db.get_value("Customer", cust, "custom_pos_customer")
 
             if pos_flag == 1:
+                # Only tickets where Site.customer_type = 'POC Customer'
                 per_customer_conditions.append(
-                    "(customer=%s AND custom_customer_type='POC Customer')"
+                    """(customer=%s AND EXISTS (
+                        SELECT 1 FROM `tabSite` s 
+                        WHERE s.name = `tabHD Ticket`.custom_circuit_id 
+                        AND s.customer_type = 'POC Customer'
+                    ))"""
                 )
                 per_customer_params.append(cust)
             else:
+                # POC or Paid or Empty customer type from Site
                 per_customer_conditions.append(
                     """(customer=%s AND (
-                            custom_customer_type='POC Customer'
-                            OR custom_customer_type='Paid Customer'
-                            OR custom_customer_type IS NULL
-                            OR custom_customer_type=''
+                        NOT EXISTS (
+                            SELECT 1 FROM `tabSite` s 
+                            WHERE s.name = `tabHD Ticket`.custom_circuit_id 
+                            AND s.customer_type NOT IN ('POC Customer', 'Paid Customer', '')
+                        )
+                        OR `tabHD Ticket`.custom_circuit_id IS NULL
+                        OR `tabHD Ticket`.custom_circuit_id = ''
                     ))"""
                 )
                 per_customer_params.append(cust)
@@ -5407,17 +5519,26 @@ def get_all_tickets_for_debug():
             pos_flag = frappe.db.get_value("Customer", cust, "custom_pos_customer")
 
             if pos_flag == 1:
+                # Only tickets where Site.customer_type = 'POC Customer'
                 per_customer_conditions.append(
-                    "(customer=%s AND custom_customer_type='POC Customer')"
+                    """(customer=%s AND EXISTS (
+                        SELECT 1 FROM `tabSite` s 
+                        WHERE s.name = `tabHD Ticket`.custom_circuit_id 
+                        AND s.customer_type = 'POC Customer'
+                    ))"""
                 )
                 per_customer_params.append(cust)
             else:
+                # POC or Paid or Empty customer type from Site
                 per_customer_conditions.append(
                     """(customer=%s AND (
-                            custom_customer_type='POC Customer'
-                            OR custom_customer_type='Paid Customer'
-                            OR custom_customer_type IS NULL
-                            OR custom_customer_type=''
+                        NOT EXISTS (
+                            SELECT 1 FROM `tabSite` s 
+                            WHERE s.name = `tabHD Ticket`.custom_circuit_id 
+                            AND s.customer_type NOT IN ('POC Customer', 'Paid Customer', '')
+                        )
+                        OR `tabHD Ticket`.custom_circuit_id IS NULL
+                        OR `tabHD Ticket`.custom_circuit_id = ''
                     ))"""
                 )
                 per_customer_params.append(cust)
@@ -5511,12 +5632,12 @@ def get_user_customer_permissions():
         
         allowed_customers = [x.for_value for x in user_permissions if x.for_value]
         
-        # Get customer details including POS flag
+        # Get customer details including POS flag and create ticket flag
         for cust in allowed_customers:
             customer_info = frappe.db.get_value(
                 "Customer", 
                 cust, 
-                ["customer_name", "custom_pos_customer", "custom_customer_type"],
+                ["customer_name", "custom_pos_customer", "custom_customer_type", "custom_create_ticket"],
                 as_dict=True
             )
             
@@ -5525,70 +5646,100 @@ def get_user_customer_permissions():
                     "customer": cust,
                     "customer_name": customer_info.get("customer_name"),
                     "pos_flag": customer_info.get("custom_pos_customer"),
-                    "customer_type": customer_info.get("custom_customer_type")
+                    "customer_type": customer_info.get("custom_customer_type"),
+                    "can_create_ticket": customer_info.get("custom_create_ticket")
                 })
         
-        # Count tickets for each customer
+        # Count tickets for each customer with new POS logic
         for cust_info in debug_info["customers"]:
             cust = cust_info["customer"]
             pos_flag = cust_info["pos_flag"]
             
             if pos_flag == 1:
-                # Only POC tickets
+                # Only tickets where Site.customer_type = 'POC Customer'
                 ticket_count = frappe.db.sql("""
                     SELECT COUNT(*) as count
-                    FROM `tabHD Ticket`
-                    WHERE customer=%s AND custom_customer_type='POC Customer'
-                """, (cust,), as_dict=True)[0]["count"]
-                
-                poc_count = frappe.db.sql("""
-                    SELECT COUNT(*) as count
-                    FROM `tabHD Ticket`
-                    WHERE customer=%s AND custom_customer_type='POC Customer'
-                """, (cust,), as_dict=True)[0]["count"]
-                
-                paid_count = frappe.db.sql("""
-                    SELECT COUNT(*) as count
-                    FROM `tabHD Ticket`
-                    WHERE customer=%s AND custom_customer_type='Paid Customer'
-                """, (cust,), as_dict=True)[0]["count"]
-                
-                cust_info["ticket_counts"] = {
-                    "total": ticket_count,
-                    "poc_tickets": poc_count,
-                    "paid_tickets": paid_count,
-                    "user_can_see": "Only POC tickets"
-                }
-            else:
-                # Both POC and Paid tickets
-                ticket_count = frappe.db.sql("""
-                    SELECT COUNT(*) as count
-                    FROM `tabHD Ticket`
-                    WHERE customer=%s AND (
-                        custom_customer_type='POC Customer'
-                        OR custom_customer_type='Paid Customer'
-                        OR custom_customer_type IS NULL
-                        OR custom_customer_type=''
+                    FROM `tabHD Ticket` t
+                    WHERE t.customer=%s 
+                    AND EXISTS (
+                        SELECT 1 FROM `tabSite` s 
+                        WHERE s.name = t.custom_circuit_id 
+                        AND s.customer_type = 'POC Customer'
                     )
                 """, (cust,), as_dict=True)[0]["count"]
                 
                 poc_count = frappe.db.sql("""
                     SELECT COUNT(*) as count
-                    FROM `tabHD Ticket`
-                    WHERE customer=%s AND custom_customer_type='POC Customer'
+                    FROM `tabHD Ticket` t
+                    WHERE t.customer=%s 
+                    AND EXISTS (
+                        SELECT 1 FROM `tabSite` s 
+                        WHERE s.name = t.custom_circuit_id 
+                        AND s.customer_type = 'POC Customer'
+                    )
                 """, (cust,), as_dict=True)[0]["count"]
                 
                 paid_count = frappe.db.sql("""
                     SELECT COUNT(*) as count
-                    FROM `tabHD Ticket`
-                    WHERE customer=%s AND custom_customer_type='Paid Customer'
+                    FROM `tabHD Ticket` t
+                    WHERE t.customer=%s 
+                    AND EXISTS (
+                        SELECT 1 FROM `tabSite` s 
+                        WHERE s.name = t.custom_circuit_id 
+                        AND s.customer_type = 'Paid Customer'
+                    )
                 """, (cust,), as_dict=True)[0]["count"]
                 
                 cust_info["ticket_counts"] = {
                     "total": ticket_count,
                     "poc_tickets": poc_count,
                     "paid_tickets": paid_count,
-                    "user_can_see": "Both POC & Paid tickets"
+                    "user_can_see": "Only POC tickets (from Site)"
+                }
+            else:
+                # Both POC and Paid tickets from Site
+                ticket_count = frappe.db.sql("""
+                    SELECT COUNT(*) as count
+                    FROM `tabHD Ticket` t
+                    WHERE t.customer=%s 
+                    AND (
+                        NOT EXISTS (
+                            SELECT 1 FROM `tabSite` s 
+                            WHERE s.name = t.custom_circuit_id 
+                            AND s.customer_type NOT IN ('POC Customer', 'Paid Customer', '')
+                        )
+                        OR t.custom_circuit_id IS NULL
+                        OR t.custom_circuit_id = ''
+                    )
+                """, (cust,), as_dict=True)[0]["count"]
+                
+                poc_count = frappe.db.sql("""
+                    SELECT COUNT(*) as count
+                    FROM `tabHD Ticket` t
+                    WHERE t.customer=%s 
+                    AND EXISTS (
+                        SELECT 1 FROM `tabSite` s 
+                        WHERE s.name = t.custom_circuit_id 
+                        AND s.customer_type = 'POC Customer'
+                    )
+                """, (cust,), as_dict=True)[0]["count"]
+                
+                paid_count = frappe.db.sql("""
+                    SELECT COUNT(*) as count
+                    FROM `tabHD Ticket` t
+                    WHERE t.customer=%s 
+                    AND EXISTS (
+                        SELECT 1 FROM `tabSite` s 
+                        WHERE s.name = t.custom_circuit_id 
+                        AND s.customer_type = 'Paid Customer'
+                    )
+                """, (cust,), as_dict=True)[0]["count"]
+                
+                cust_info["ticket_counts"] = {
+                    "total": ticket_count,
+                    "poc_tickets": poc_count,
+                    "paid_tickets": paid_count,
+                    "user_can_see": "Both POC & Paid tickets (from Site)"
                 }
         
         return debug_info
@@ -5629,36 +5780,40 @@ def get_tickets_by_customer(customer):
         pos_flag = frappe.db.get_value("Customer", customer, "custom_pos_customer")
         
         if pos_flag == 1:
-            # Only POC tickets
+            # Only tickets where Site.customer_type = 'POC Customer'
             tickets = frappe.db.sql("""
                 SELECT
-                    name,
-                    custom_customer_type,
-                    status,
-                    subject,
-                    opening_time
-                FROM `tabHD Ticket`
-                WHERE customer=%s AND custom_customer_type='POC Customer'
-                ORDER BY creation DESC
+                    t.name,
+                    s.customer_type,
+                    t.status,
+                    t.subject,
+                    t.opening_time
+                FROM `tabHD Ticket` t
+                LEFT JOIN `tabSite` s ON s.name = t.custom_circuit_id
+                WHERE t.customer=%s 
+                AND s.customer_type = 'POC Customer'
+                ORDER BY t.creation DESC
                 LIMIT 20
             """, (customer,), as_dict=True)
         else:
-            # Both POC and Paid tickets
+            # Both POC and Paid tickets from Site
             tickets = frappe.db.sql("""
                 SELECT
-                    name,
-                    custom_customer_type,
-                    status,
-                    subject,
-                    opening_time
-                FROM `tabHD Ticket`
-                WHERE customer=%s AND (
-                    custom_customer_type='POC Customer'
-                    OR custom_customer_type='Paid Customer'
-                    OR custom_customer_type IS NULL
-                    OR custom_customer_type=''
+                    t.name,
+                    s.customer_type,
+                    t.status,
+                    t.subject,
+                    t.opening_time
+                FROM `tabHD Ticket` t
+                LEFT JOIN `tabSite` s ON s.name = t.custom_circuit_id
+                WHERE t.customer=%s 
+                AND (
+                    s.customer_type IN ('POC Customer', 'Paid Customer', '')
+                    OR s.customer_type IS NULL
+                    OR t.custom_circuit_id IS NULL
+                    OR t.custom_circuit_id = ''
                 )
-                ORDER BY creation DESC
+                ORDER BY t.creation DESC
                 LIMIT 20
             """, (customer,), as_dict=True)
         
@@ -6333,7 +6488,7 @@ def create_customer_advance_payment_entry(
     if stmt:
         posting_date = stmt.date
         reference_date = stmt.date
-        reference_no = stmt.statement_details
+        reference_no = stmt.statement_details   
     else:
         posting_date = nowdate()
         reference_date = posting_date

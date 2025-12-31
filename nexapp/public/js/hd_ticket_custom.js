@@ -625,3 +625,28 @@ frappe.ui.form.on('HD Ticket', {
         frm.enable_save();
     }
 });
+
+///////////////////////////////////////////////////////////////////////////////////
+
+// nexapp/public/js/hd_ticket_list.js
+
+frappe.listview_settings['HD Ticket'] = {
+    onload(listview) {
+
+        // Listen ONLY when Actions dropdown is opened
+        listview.page.wrapper.on('show.bs.dropdown', '.actions-btn-group', function () {
+
+            const $dropdown = $(this).find('.dropdown-menu');
+
+            if (!$dropdown.length) return;
+
+            // Remove Edit safely
+            $dropdown.find('a, button').each(function () {
+                const label = $(this).text().trim();
+                if (label === __('Edit')) {
+                    $(this).remove();
+                }
+            });
+        });
+    }
+};
