@@ -434,18 +434,21 @@ from email.utils import getaddresses
 
 def create_hd_ticket_from_communication(doc, method):
     try:
-        # 🚫 Step 0A: Skip bounce or automated emails
-        if (
-            doc.sender
-            and (
-                "mailer-daemon" in doc.sender.lower()
-                or "postmaster@" in doc.sender.lower()
-                or "no-reply" in doc.sender.lower()
-                or "mailer@" in doc.sender.lower()
-            )
-        ):
-            frappe.logger().info(f"Ignored auto-generated email from {doc.sender}")
-            return
+        # 🚫 Step 0A: Skip bounce or automated emails (UPDATED - STRICT)
+        if doc.sender:
+            # Extract pure email if sender is like: Name <email>
+            match = re.search(r'<(.+?)>', doc.sender)
+            sender_email = (match.group(1) if match else doc.sender).lower()
+
+            if (
+                sender_email == "mailer-daemon@mail.zoho.com"
+                or "mailer-daemon" in sender_email
+                or "postmaster@" in sender_email
+                or "no-reply" in sender_email
+                or "mailer@" in sender_email
+            ):
+                frappe.logger().info(f"Ignored auto-generated email from {sender_email}")
+                return
 
         # 0️⃣ Pre-check: Only process relevant incoming emails
         recipient_emails = [email.strip() for _, email in getaddresses([doc.recipients])]
@@ -555,7 +558,7 @@ def create_hd_ticket_from_communication(doc, method):
 
         # 5️⃣ Circuit ID doesn't match HD Ticket or Site
         if doc.sender.lower() != "nms@nexapp.co.in":
-            # Trim email body to avoid overload (optional: adjust length)
+            # Trim email body to avoid overload
             original_body = frappe.utils.strip_html_tags(doc.content or "")
             snippet = (original_body[:500] + "...") if len(original_body) > 500 else original_body
 
@@ -577,7 +580,7 @@ def create_hd_ticket_from_communication(doc, method):
             )
             frappe.sendmail(
                 recipients=doc.sender,
-                cc=["ganpati.g@nexapp.co.in", "vaishali.k@nexapp.co.in", 'akshay.d@nexapp.co.in'],
+                cc=["ganpati.g@nexapp.co.in", "vaishali.k@nexapp.co.in", "akshay.d@nexapp.co.in"],
                 subject=email_subject,
                 message=email_message,
                 sender="techsupport@nexapp.co.in"
@@ -6611,4 +6614,150 @@ def sync_custom_agent_from_todo(doc, method):
         frappe.log_error(
             frappe.get_traceback(),
             "HD Ticket custom_agent sync failed"
+        )
+##############################################################################
+# LMS_HOLIDAY_LIST
+
+import frappe
+from datetime import date, datetime, timedelta
+
+HOLIDAY_LIST_NAME = "Holiday 2026"
+
+
+# --------------------------------------------------
+# UTIL: Normalize anything to datetime.date
+# --------------------------------------------------
+def to_date(value):
+    if not value:
+        return None
+
+    if isinstance(value, datetime):
+        return value.date()
+
+    if isinstance(value, date):
+        return value
+
+    if isinstance(value, str):
+        return datetime.strptime(value, "%Y-%m-%d").date()
+
+    return None
+
+
+# --------------------------------------------------
+# MAIN AGEING CALCULATION (NEW FLOW)
+# --------------------------------------------------
+def update_lms_ageing(doc):
+    """
+    FINAL RULE (NEW FLOW):
+
+    Start Date  : lms_requested_date (Lastmile Services Master)
+    End Date    :
+        - Delivered   -> lms_delivery_date
+        - All others  -> Today
+    """
+
+    # ---------------------------------------------
+    # START DATE
+    # ---------------------------------------------
+    start_date = to_date(doc.lms_requested_date)
+    if not start_date:
+        doc.ageing = None
+        return
+
+    # ---------------------------------------------
+    # END DATE
+    # ---------------------------------------------
+    if doc.lms_stage == "Delivered" and doc.lms_delivery_date:
+        end_date = to_date(doc.lms_delivery_date)
+    else:
+        end_date = date.today()
+
+    if not end_date:
+        doc.ageing = None
+        return
+
+    # ---------------------------------------------
+    # BUSINESS DAY CALCULATION
+    # ---------------------------------------------
+    holidays = get_holidays()
+    doc.ageing = calculate_business_days(start_date, end_date, holidays)
+
+
+# --------------------------------------------------
+# FETCH HOLIDAYS
+# --------------------------------------------------
+def get_holidays():
+    return {
+        to_date(h.holiday_date)
+        for h in frappe.get_all(
+            "Holiday",
+            filters={"parent": HOLIDAY_LIST_NAME},
+            fields=["holiday_date"]
+        )
+        if h.holiday_date
+    }
+
+
+# --------------------------------------------------
+# BUSINESS DAY CALCULATION
+# --------------------------------------------------
+def calculate_business_days(start_date, end_date, holidays):
+    if start_date > end_date:
+        return 0
+
+    days = 0
+    current = start_date
+
+    while current <= end_date:
+        weekday = current.weekday()  # Mon=0, Sun=6
+
+        # ❌ Sunday
+        if weekday == 6:
+            current += timedelta(days=1)
+            continue
+
+        # ❌ 2nd & 4th Saturday
+        if weekday == 5:
+            week_of_month = (current.day - 1) // 7 + 1
+            if week_of_month in (2, 4):
+                current += timedelta(days=1)
+                continue
+
+        # ❌ Holiday
+        if current in holidays:
+            current += timedelta(days=1)
+            continue
+
+        # ✅ Working day
+        days += 1
+        current += timedelta(days=1)
+
+    return days
+
+
+# --------------------------------------------------
+# DAILY SCHEDULER (SAFE)
+# --------------------------------------------------
+def recalculate_all_lms_ageing():
+    """
+    Runs daily via scheduler.
+    Updates ONLY the ageing field.
+    No validation issues.
+    """
+
+    records = frappe.get_all(
+        "Lastmile Services Master",
+        fields=["name"]
+    )
+
+    for r in records:
+        doc = frappe.get_doc("Lastmile Services Master", r.name)
+        update_lms_ageing(doc)
+
+        frappe.db.set_value(
+            "Lastmile Services Master",
+            doc.name,
+            "ageing",
+            doc.ageing,
+            update_modified=False
         )

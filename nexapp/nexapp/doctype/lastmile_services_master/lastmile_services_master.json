@@ -23,6 +23,7 @@
   "column_break_mctq",
   "custom_info",
   "lms_stage",
+  "ageing",
   "cancel_reason",
   "lms_payment_request",
   "supplier_contact",
@@ -313,8 +314,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "LMS Stage",
-   "options": "PO Pending\nPO Requested\nPO Released\nIn process\nDelivered\nCancelled\nDisconnected\nDisconnection In Process",
-   "read_only": 1
+   "options": "PO Pending\nPO Requested\nPO Released\nIn process\nDelivered\nCancelled\nDisconnected\nDisconnection In Process"
   },
   {
    "fieldname": "column_break_mctq",
@@ -791,6 +791,7 @@
   {
    "fieldname": "custom_info",
    "fieldtype": "HTML",
+   "hidden": 1,
    "label": "Info"
   },
   {
@@ -921,12 +922,20 @@
    "fieldname": "site_id__legal_code",
    "fieldtype": "Data",
    "label": "Site ID / Legal Code"
+  },
+  {
+   "bold": 1,
+   "fieldname": "ageing",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Ageing"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2025-11-21 15:34:48.951653",
+ "modified": "2026-01-03 17:12:34.532904",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Lastmile Services Master",

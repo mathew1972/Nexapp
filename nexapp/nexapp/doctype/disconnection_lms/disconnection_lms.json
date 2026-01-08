@@ -50,8 +50,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "LMS ID",
-   "options": "Lastmile Services Master",
-   "read_only": 1
+   "options": "Lastmile Services Master"
   },
   {
    "fieldname": "column_break_qaaz",
@@ -196,8 +195,7 @@
    "fieldname": "disconnection_request_id",
    "fieldtype": "Data",
    "in_standard_filter": 1,
-   "label": "Disconnection Request ID",
-   "read_only": 1
+   "label": "Disconnection Request ID"
   },
   {
    "fetch_from": "circuit_id.solution_name",
@@ -275,7 +273,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-12-05 12:59:50.951765",
+ "modified": "2026-01-03 17:19:06.831107",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Disconnection LMS",

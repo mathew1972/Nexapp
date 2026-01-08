@@ -32,11 +32,7 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
     },
     // NEW: Auto-refresh state
     autoRefreshInterval: null,
-    isRefreshing: false,
-    // NEW: User permissions and customer data
-    canCreateTicket: false,
-    currentCustomer: "Test Customer", // Temporary test customer
-    createTicketModal: null // Reference to create ticket modal
+    isRefreshing: false
   };
 
   // Utility functions (keep the same as before)
@@ -188,9 +184,6 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
   // Create UI components
   const UI = {
     async init() {
-      // First check user permissions using the new API endpoint
-      await this.checkUserPermissions();
-      
       this.renderLayout();
       this.bindEvents();
       this.setupStatusButton();
@@ -199,32 +192,7 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
       this.startAutoRefresh(); // Start auto-refresh
     },
 
-    async checkUserPermissions() {
-      try {
-        // For now, allow creation and set a test customer
-        state.canCreateTicket = true;
-        state.currentCustomer = "Test Customer";
-        
-        console.log('User permissions check complete:', {
-          canCreateTicket: state.canCreateTicket,
-          currentCustomer: state.currentCustomer
-        });
-        
-      } catch (error) {
-        console.error('Error checking user permissions:', error);
-        state.canCreateTicket = false;
-        state.currentCustomer = null;
-      }
-    },
-
     renderLayout() {
-      // Conditionally show Create Ticket button based on permissions
-      const createTicketButton = state.canCreateTicket ? `
-        <button id="create-ticket-btn" class="create-ticket-btn" title="Create Ticket">
-          <span>Create Ticket</span>
-        </button>
-      ` : '';
-      
       const layout = `
         <div class="helpdesk-container">
           <!-- Header - TOTALLY COMPACT -->
@@ -236,7 +204,7 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
                 <p class="subtitle">Stay updated on every ticket, anytime</p>               
               </div>
               <div class="header-actions">
-                ${createTicketButton}
+                <!-- Refresh button moved to tickets section -->
               </div>              
             </div>             
           </div>
@@ -788,37 +756,6 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
             display: flex;
             align-items: center;
             gap: 12px;
-          }
-
-          /* Create Ticket Button */
-          .create-ticket-btn {
-            background: #48525B;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 8px rgba(72, 82, 91, 0.2);
-          }
-
-          .create-ticket-btn:hover {
-            background: #3a4249;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(72, 82, 91, 0.3);
-          }
-
-          .create-ticket-btn:active {
-            transform: translateY(0);
-          }
-
-          .create-ticket-btn span {
-            font-weight: 700;
           }
 
           /* Refresh Button - Simple Round Button */
@@ -1741,11 +1678,11 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
 
           .contact-value {
             font-size: 14px;
-            font-weight: 500,
-            color: #374151,
-            line-height: 1.4,
-            min-height: 20px,
-            word-break: break-word,
+            font-weight: 500;
+            color: #374151;
+            line-height: 1.4;
+            min-height: 20px;
+            word-break: break-word;
             margin-left: 15px; 
           }
 
@@ -1760,9 +1697,9 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
 
           .activity-header h4 {
             margin: 0 0 16px 0;
-            font-size: 16px,
-            font-weight: 600,
-            color: #111827,
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
           }
 
           .activity-filters {
@@ -1866,8 +1803,8 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
           /* Email Timeline */
           .email-timeline {
             display: flex;
-            flex-direction: column,
-            gap: 16px,
+            flex-direction: column;
+            gap: 16px;
           }
 
           .email-item {
@@ -2025,316 +1962,6 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
             font-size: 14px,
           }
 
-          /* Create Ticket Modal Styles */
-          .create-ticket-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.3s ease;
-          }
-
-          @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-          }
-
-          .create-ticket-modal {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            width: 90%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            animation: slideUp 0.3s ease;
-          }
-
-          @keyframes slideUp {
-            from {
-              opacity: 0;
-              transform: translateY(30px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-
-          .create-ticket-header {
-            background: linear-gradient(135deg, #F75900 0%, #ff8c42 100%);
-            padding: 24px;
-            border-radius: 16px 16px 0 0;
-            color: white;
-          }
-
-          .create-ticket-header h3 {
-            margin: 0;
-            font-size: 20px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-          }
-
-          .create-ticket-header h3 svg {
-            width: 24px;
-            height: 24px;
-          }
-
-          .create-ticket-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            cursor: pointer;
-            font-size: 20px;
-            font-weight: 300;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-          }
-
-          .create-ticket-close:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: rotate(90deg);
-          }
-
-          .create-ticket-body {
-            padding: 32px;
-          }
-
-          .form-group {
-            margin-bottom: 24px;
-          }
-
-          .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #374151;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-          }
-
-          .form-label-required:after {
-            content: " *";
-            color: #dc2626;
-          }
-
-          .form-input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            font-size: 14px;
-            background: white;
-            color: #374151;
-            transition: all 0.2s ease;
-            box-sizing: border-box;
-          }
-
-          .form-input:focus {
-            outline: none;
-            border-color: #F75900;
-            box-shadow: 0 0 0 3px rgba(247, 89, 0, 0.1);
-          }
-
-          .form-input::placeholder {
-            color: #9ca3af;
-          }
-
-          .form-select {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            font-size: 14px;
-            background: white;
-            color: #374151;
-            transition: all 0.2s ease;
-            box-sizing: border-box;
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 16px;
-          }
-
-          .form-select:focus {
-            outline: none;
-            border-color: #F75900;
-            box-shadow: 0 0 0 3px rgba(247, 89, 0, 0.1);
-          }
-
-          .form-textarea {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            font-size: 14px;
-            background: white;
-            color: #374151;
-            transition: all 0.2s ease;
-            box-sizing: border-box;
-            min-height: 120px;
-            resize: vertical;
-            font-family: inherit;
-          }
-
-          .form-textarea:focus {
-            outline: none;
-            border-color: #F75900;
-            box-shadow: 0 0 0 3px rgba(247, 89, 0, 0.1);
-          }
-
-          .form-textarea::placeholder {
-            color: #9ca3af;
-          }
-
-          .create-ticket-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            padding-top: 20px;
-            border-top: 1px solid #e5e7eb;
-            margin-top: 8px;
-          }
-
-          .btn-cancel {
-            padding: 12px 24px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            background: white;
-            color: #374151;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-          }
-
-          .btn-cancel:hover {
-            border-color: #F75900;
-            color: #F75900;
-          }
-
-          .btn-submit {
-            padding: 12px 32px;
-            border: none;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #F75900 0%, #ff8c42 100%);
-            color: white;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 8px rgba(247, 89, 0, 0.2);
-          }
-
-          .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(247, 89, 0, 0.3);
-          }
-
-          .btn-submit:active {
-            transform: translateY(0);
-          }
-
-          .btn-submit:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none !important;
-            box-shadow: none !important;
-          }
-
-          .loading-spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s linear infinite;
-            margin-right: 8px;
-          }
-
-          .customer-info {
-            background: #f8fafc;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-          }
-
-          .customer-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #F75900 0%, #ff8c42 100%);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 16px;
-            flex-shrink: 0;
-          }
-
-          .customer-details {
-            flex: 1;
-          }
-
-          .customer-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: #111827;
-            margin-bottom: 4px;
-          }
-
-          .customer-type {
-            font-size: 12px;
-            color: #6b7280;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-          }
-
-          .error-message {
-            color: #dc2626;
-            font-size: 12px;
-            margin-top: 4px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-          }
-
-          .success-message {
-            color: #10b981;
-            font-size: 12px;
-            margin-top: 4px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-          }
-
           /* Responsive Design */
           @media (max-width: 1400px) {
             .stats-grid {
@@ -2473,11 +2100,6 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
               justify-content: space-between;
             }
             
-            .create-ticket-btn {
-              padding: 8px 16px;
-              font-size: 12px;
-            }
-            
             .refresh-btn {
               width: 36px;
               height: 36px;
@@ -2498,25 +2120,6 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
             
             .status-stage:not(:last-child)::after {
               display: none; /* Hide lines when wrapped on small screens */
-            }
-            
-            .create-ticket-modal {
-              width: 95%;
-              margin: 10px;
-            }
-            
-            .create-ticket-body {
-              padding: 24px;
-            }
-            
-            .create-ticket-actions {
-              flex-direction: column;
-            }
-            
-            .btn-cancel,
-            .btn-submit {
-              width: 100%;
-              text-align: center;
             }
           }
 
@@ -2564,10 +2167,6 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
               gap: 8px;
             }
             
-            .create-ticket-btn {
-              width: 100%;
-            }
-            
             .status-progress-stages {
               flex-direction: column;
             }
@@ -2575,18 +2174,6 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
             .status-stage {
               flex: 1;
               width: 100%;
-            }
-            
-            .create-ticket-header {
-              padding: 20px;
-            }
-            
-            .create-ticket-header h3 {
-              font-size: 18px;
-            }
-            
-            .create-ticket-body {
-              padding: 20px;
             }
           }
         </style>
@@ -2602,11 +2189,6 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
     },
 
     bindEvents() {
-      // Create Ticket button click (only if button exists)
-      $(document).on('click', '#create-ticket-btn', () => {
-        this.showCreateTicketModal();
-      });
-
       // Refresh button click
       $(document).on('click', '#refresh-btn', () => {
         this.manualRefresh();
@@ -2734,186 +2316,6 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
           }
         }
       });
-    },
-
-    // NEW: Show Create Ticket Modal - SIMPLIFIED VERSION
-    showCreateTicketModal() {
-      // For now, always show the modal with test data
-      const customerInitials = state.currentCustomer ? state.currentCustomer.charAt(0).toUpperCase() : 'C';
-      const customerName = state.currentCustomer || "Customer";
-      
-      const modalHtml = `
-        <div class="create-ticket-modal-overlay">
-          <div class="create-ticket-modal">
-            <div class="create-ticket-header">
-              <h3>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                </svg>
-                Create New Ticket
-              </h3>
-              <button class="create-ticket-close">&times;</button>
-            </div>
-            
-            <div class="create-ticket-body">
-              <!-- Customer Information -->
-              <div class="customer-info">
-                <div class="customer-icon">${customerInitials}</div>
-                <div class="customer-details">
-                  <div class="customer-name">${utils.escapeHtml(customerName)}</div>
-                  <div class="customer-type">Customer</div>
-                </div>
-              </div>
-              
-              <form id="create-ticket-form">
-                <!-- Circuit ID Field -->
-                <div class="form-group">
-                  <label class="form-label form-label-required">Circuit ID</label>
-                  <select id="circuit-id-select" class="form-select" required>
-                    <option value="">Select Circuit ID</option>
-                    <option value="CIRC-001">CIRC-001</option>
-                    <option value="CIRC-002">CIRC-002</option>
-                    <option value="CIRC-003">CIRC-003</option>
-                    <option value="CIRC-004">CIRC-004</option>
-                    <option value="CIRC-005">CIRC-005</option>
-                  </select>
-                  <div id="circuit-id-error" class="error-message" style="display:none;"></div>
-                </div>
-                
-                <!-- Subject Field -->
-                <div class="form-group">
-                  <label class="form-label form-label-required">Subject</label>
-                  <input type="text" id="ticket-subject" class="form-input" placeholder="Enter ticket subject" required>
-                  <div id="subject-error" class="error-message" style="display:none;"></div>
-                </div>
-                
-                <!-- Issue Description Field -->
-                <div class="form-group">
-                  <label class="form-label form-label-required">Issue Description</label>
-                  <textarea id="ticket-description" class="form-textarea" placeholder="Describe the issue in detail" required></textarea>
-                  <div id="description-error" class="error-message" style="display:none;"></div>
-                </div>
-                
-                <div class="create-ticket-actions">
-                  <button type="button" class="btn-cancel">Cancel</button>
-                  <button type="submit" class="btn-submit" id="submit-ticket-btn">
-                    <span>Create Ticket</span>
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      `;
-      
-      // Remove existing modal if any
-      if (state.createTicketModal) {
-        state.createTicketModal.remove();
-      }
-      
-      state.createTicketModal = $(modalHtml);
-      $('body').append(state.createTicketModal);
-      
-      // Bind modal events
-      this.bindCreateTicketModalEvents();
-    },
-
-    // NEW: Bind events for Create Ticket modal
-    bindCreateTicketModalEvents() {
-      if (!state.createTicketModal) return;
-      
-      // Close modal
-      state.createTicketModal.on('click', '.create-ticket-close, .btn-cancel', (e) => {
-        e.preventDefault();
-        state.createTicketModal.remove();
-        state.createTicketModal = null;
-      });
-      
-      // Close on background click
-      state.createTicketModal.on('click', '.create-ticket-modal-overlay', (e) => {
-        if (e.target === e.currentTarget) {
-          state.createTicketModal.remove();
-          state.createTicketModal = null;
-        }
-      });
-      
-      // Form submission
-      state.createTicketModal.on('submit', '#create-ticket-form', async (e) => {
-        e.preventDefault();
-        this.submitCreateTicketForm();
-      });
-      
-      // Form validation on input
-      state.createTicketModal.on('input', '#circuit-id-select, #ticket-subject, #ticket-description', function() {
-        const $field = $(this);
-        const $error = $('#' + $field.attr('id') + '-error');
-        if ($field.val().trim()) {
-          $error.hide();
-        }
-      });
-    },
-
-    // NEW: Submit Create Ticket form - SIMPLIFIED VERSION
-    submitCreateTicketForm() {
-      // Get form values
-      const circuitId = $('#circuit-id-select').val().trim();
-      const subject = $('#ticket-subject').val().trim();
-      const description = $('#ticket-description').val().trim();
-      
-      // Validate form
-      let isValid = true;
-      
-      if (!circuitId) {
-        $('#circuit-id-error').text('Please select a Circuit ID').show();
-        isValid = false;
-      }
-      
-      if (!subject) {
-        $('#subject-error').text('Please enter a subject').show();
-        isValid = false;
-      }
-      
-      if (!description) {
-        $('#description-error').text('Please enter issue description').show();
-        isValid = false;
-      }
-      
-      if (!isValid) return;
-      
-      // Disable submit button and show loading
-      const $submitBtn = $('#submit-ticket-btn');
-      $submitBtn.prop('disabled', true);
-      $submitBtn.html('<span class="loading-spinner"></span> Creating Ticket...');
-      
-      // Simulate API call with timeout
-      setTimeout(() => {
-        // Show success message
-        $('#create-ticket-form').html(`
-          <div class="success-message">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-              <polyline points="22,4 12,14.01 9,11.01"/>
-            </svg>
-            Ticket created successfully! (Demo Mode)
-          </div>
-          <div class="create-ticket-actions">
-            <button type="button" class="btn-cancel">Close</button>
-          </div>
-        `);
-        
-        // Auto close modal after 3 seconds
-        setTimeout(() => {
-          if (state.createTicketModal) {
-            state.createTicketModal.remove();
-            state.createTicketModal = null;
-          }
-        }, 3000);
-        
-        // Reset button state
-        $submitBtn.prop('disabled', false);
-        $submitBtn.html('<span>Create Ticket</span>');
-      }, 1500);
     },
 
     // MODIFIED: Start auto-refresh every 2 minutes

@@ -905,3 +905,25 @@ function show_feasibility_info_dialog() {
 
     dialog.show();
 }
+//////////////////////////////////////////////////////////////////////
+frappe.listview_settings['Site'] = {
+    onload(listview) {
+
+        // SAME hook that works for HD Ticket
+        listview.page.wrapper.on(
+            'show.bs.dropdown',
+            '.actions-btn-group',
+            function () {
+
+                const $dropdown = $(this).find('.dropdown-menu');
+                if (!$dropdown.length) return;
+
+                // 🔥 Remove Export (correct node)
+                $dropdown
+                    .find('span.menu-item-label[data-label="Export"]')
+                    .closest('li')
+                    .remove();
+            }
+        );
+    }
+};

@@ -178,23 +178,28 @@ app_license = "mit"
 #}
 
 scheduler_events = {
+
     "cron": {
         # Pull incoming emails every 1 minute
         "*/1 * * * *": [
             "frappe.email.doctype.email_account.email_account.pull"
         ],
 
-        # Flush outgoing emails every 10 minutes (reduce SMTP pressure on Zoho)
+        # Flush outgoing emails every 10 minutes
         "*/10 * * * *": [
             "frappe.email.queue.flush"
         ],
 
-        # Custom: email
+        # Custom: Engineer ticket report (8:20 PM)
         "20 20 * * *": [
             "nexapp.api.send_engineer_ticket_report"
         ]
-        
-    }
+    },
+
+    # DAILY LMS AGEING UPDATE
+    "daily": [
+        "nexapp.api.recalculate_all_lms_ageing"
+    ]
 }
 
 ##################################################################
@@ -331,6 +336,7 @@ doc_events = {
     "Lastmile Services Master": {
         "validate": "nexapp.api.update_site_child_table",
         "on_update": "nexapp.api.sync_lms_review_to_site"
+        
     },
     "Change Management Request": {
         "on_update": "nexapp.api.on_update"

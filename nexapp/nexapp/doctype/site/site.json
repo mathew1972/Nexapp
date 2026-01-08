@@ -21,7 +21,6 @@
   "customer_type",
   "site_id__legal_code",
   "territory",
-  "service_request",
   "column_break_dlsw",
   "info2",
   "running_days",
@@ -297,8 +296,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Site Status  ",
-   "options": "Pending\nIn-process\nInstallation Initiated\nOn Hold\nProvisioning\nPartially Provisioning Completed\nProvisioning Completed\nDelivered and Live\nAwaiting Customer Approval\nDisconnection In Process\nDisconnected\nCancelled\nSite Shifted to new location\nSite Upgraded to new Circuit\nSite degraded to new Circuit",
-   "read_only": 1
+   "options": "Pending\nIn-process\nInstallation Initiated\nOn Hold\nProvisioning\nPartially Provisioning Completed\nProvisioning Completed\nDelivered and Live\nAwaiting Customer Approval\nDisconnection In Process\nDisconnected\nCancelled\nSite Shifted to new location\nSite Upgraded to new Circuit\nSite degraded to new Circuit"
   },
   {
    "fieldname": "site_item",
@@ -524,7 +522,8 @@
    "description": "This date will consider for Invoice start Date",
    "fieldname": "date",
    "fieldtype": "Date",
-   "label": "Circuit Delivery Date"
+   "label": "Circuit Delivery Date",
+   "mandatory_depends_on": "eval:doc.site_status == \"Awaiting Customer Approval\"\n"
   },
   {
    "fieldname": "territory",
@@ -542,8 +541,7 @@
    "fieldtype": "Link",
    "label": "Solution Code",
    "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"Solution\"]]",
-   "options": "Item",
-   "read_only": 1
+   "options": "Item"
   },
   {
    "fetch_from": "solution_code.item_name",
@@ -1389,13 +1387,6 @@
    "label": "Project Manager Email"
   },
   {
-   "fieldname": "service_request",
-   "fieldtype": "Select",
-   "label": "Service request",
-   "options": "\nUpgrade requested\nDegrade requested\nShifting requested",
-   "read_only": 1
-  },
-  {
    "fieldname": "lms_feasibility_tab",
    "fieldtype": "Tab Break",
    "label": "LMS Feasibility"
@@ -1428,7 +1419,7 @@
  "is_calendar_and_gantt": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2025-12-24 18:22:09.360902",
+ "modified": "2026-01-05 23:36:40.018036",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",
