@@ -396,7 +396,7 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
                   </div>
                 </div>
 
-                <!-- Enhanced Tabs -->
+                <!-- UPDATED: Only Ticket Details Tab (Removed Email Activity Tab) -->
                 <div class="panel-tabs">
                   <button class="tab-btn active" data-tab="details">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -405,31 +405,24 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
                     </svg>
                     <span class="tab-label">Ticket Details</span>
                   </button>
-                  <button class="tab-btn" data-tab="activity">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                      <polyline points="22,6 12,13 2,6"/>
-                    </svg>
-                    <span class="tab-label">Email Activity</span>
-                    <span class="activity-count" id="activity-count">0</span>
-                  </button>
                 </div>
 
                 <div class="panel-content">
                   <!-- Enhanced Details Tab -->
                   <div id="tab-details" class="tab-content active">
-                    <!-- Quick Stats -->
+                    <!-- Quick Stats - UPDATED: Positions swapped (TICKET CREATED first, then CLOSED) -->
                     <div class="quick-stats">
+                      <!-- TICKET CREATED (now in first position) -->
                       <div class="stat-item">
                         <div class="stat-icon-sm">
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 8v4l3 3"/>
-                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
                           </svg>
                         </div>
                         <div class="stat-content">
-                          <div class="stat-title">FIRST RESPONSE</div>
-                          <div class="stat-value" id="first-response">-</div>
+                          <div class="stat-title">TICKET CREATED</div>
+                          <div class="stat-value" id="ticket-created">-</div>
                         </div>
                       </div>
                       <div class="stat-item">
@@ -440,7 +433,7 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
                           </svg>
                         </div>
                         <div class="stat-content">
-                          <div class="stat-title">RESOLUTION BY</div>
+                          <div class="stat-title">RESOLUTION BY (SLA)</div>
                           <div class="stat-value" id="resolution-by">-</div>
                         </div>
                       </div>
@@ -456,15 +449,16 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
                           <div class="stat-value" id="agent-response">-</div>
                         </div>
                       </div>
+                      <!-- CLOSED (now in fourth position) -->
                       <div class="stat-item">
                         <div class="stat-icon-sm">
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            <path d="M6 18L18 6M6 6l12 12"/>
                           </svg>
                         </div>
                         <div class="stat-content">
-                          <div class="stat-title">CHANNEL</div>
-                          <div class="stat-value" id="ticket-channel">-</div>
+                          <div class="stat-title">CLOSED</div>
+                          <div class="stat-value" id="closed-date">-</div>
                         </div>
                       </div>
                     </div>
@@ -558,7 +552,7 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
                         </div>
                       </div>
 
-                      <!-- Row 4: Ticket Info Grid -->
+                      <!-- Row 4: Ticket Info Grid - UPDATED: Removed TICKET CREATED, rearranged -->
                       <div class="detail-card info-grid-card">
                         <div class="detail-card-header">
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -593,12 +587,9 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
                             <div class="info-label">SITE ID</div>
                             <div class="info-value" id="detail-site-id">-</div>
                           </div>
+                          <!-- UPDATED: Removed TICKET CREATED row, moved RESOLUTION to take its place -->
                           <div class="info-item">
-                            <div class="info-label">TICKET CREATED</div>
-                            <div class="info-value" id="detail-created">-</div>
-                          </div>
-                          <div class="info-item">
-                            <div class="info-label">RESOLUTION</div>
+                            <div class="info-label">RCA</div>
                             <div class="info-value" id="detail-resolution">-</div>
                           </div>
                         </div>
@@ -660,46 +651,6 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
                             <div class="contact-value" id="detail-primary-contact-mobile">-</div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Enhanced Activity Tab - Email Focus -->
-                  <div id="tab-activity" class="tab-content">
-                    <div class="activity-header">
-                      <h4>Email Communications</h4>
-                      <div class="activity-filters">
-                        <div class="search-box">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"/>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                          </svg>
-                          <input type="text" id="activity-search" placeholder="Search emails...">
-                        </div>
-                        <div class="filter-actions">
-                          <select id="email-sort">
-                            <option value="newest">Newest First</option>
-                            <option value="oldest">Oldest First</option>
-                          </select>
-                          <label class="toggle-switch">
-                            <input type="checkbox" id="show-all-activity">
-                            <span class="slider"></span>
-                            Show all
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div id="activity-timeline" class="email-timeline">
-                      <div class="empty-state">
-                        <div class="empty-icon">
-                          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                            <polyline points="22,6 12,13 2,6"/>
-                          </svg>
-                        </div>
-                        <h4>No Email Activity</h4>
-                        <p>Select a ticket to view email communications</p>
                       </div>
                     </div>
                   </div>
@@ -1307,17 +1258,6 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
             font-weight: 600;
           }
 
-          .activity-count {
-            background: #ef4444;
-            color: white;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 10px;
-            min-width: 20px;
-            text-align: center;
-          }
-
           /* Panel Content */
           .panel-content {
             flex: 1;
@@ -1686,282 +1626,6 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
             margin-left: 15px; 
           }
 
-          /* Enhanced Activity Tab - Email Focus */
-          #tab-activity {
-            padding: 24px;
-          }
-
-          .activity-header {
-            margin-bottom: 24px;
-          }
-
-          .activity-header h4 {
-            margin: 0 0 16px 0;
-            font-size: 16px;
-            font-weight: 600;
-            color: #111827;
-          }
-
-          .activity-filters {
-            display: flex;
-            justify-content: space-between;
-            align-items: center,
-            gap: 16px,
-          }
-
-          .search-box {
-            flex: 1,
-            position: relative,
-          }
-
-          .search-box svg {
-            position: absolute,
-            left: 12px,
-            top: 50%,
-            transform: translateY(-50%),
-            color: #9ca3af,
-            width: 16px,
-            height: 16px,
-          }
-
-          .search-box input {
-            width: 100%,
-            padding: 10px 12px 10px 36px,
-            border: 1px solid #d1d5db,
-            border-radius: 8px,
-            font-size: 13px,
-            background: white,
-            color: #374151,
-            transition: all 0.2s ease,
-          }
-
-          .search-box input:focus {
-            outline: none,
-            border-color: #F75900,
-            box-shadow: 0 0 0 3px rgba(247, 89, 0, 0.1),
-          }
-
-          .filter-actions {
-            display: flex;
-            align-items: center,
-            gap: 16px,
-          }
-
-          #email-sort {
-            padding: 8px 12px,
-            border: 1px solid #d1d5db,
-            border-radius: 8px,
-            font-size: 12px,
-            background: white,
-            color: #374151,
-            min-width: 120px,
-          }
-
-          .toggle-switch {
-            display: flex;
-            align-items: center,
-            gap: 8px,
-            font-size: 12px,
-            color: #6b7280,
-            cursor: pointer,
-          }
-
-          .toggle-switch input {
-            display: none,
-          }
-
-          .slider {
-            position: relative,
-            display: inline-block,
-            width: 36px,
-            height: 20px,
-            background-color: #d1d5db,
-            border-radius: 34px,
-            transition: .4s,
-          }
-
-          .slider:before {
-            position: absolute,
-            content: "",
-            height: 14px,
-            width: 14px,
-            left: 3px,
-            bottom: 3px,
-            background-color: white,
-            border-radius: 50%,
-            transition: .4s,
-          }
-
-          input:checked + .slider {
-            background-color: #F75900,
-          }
-
-          input:checked + .slider:before {
-            transform: translateX(16px),
-          }
-
-          /* Email Timeline */
-          .email-timeline {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-          }
-
-          .email-item {
-            background: white,
-            border-radius: 12px,
-            border: 1px solid #e5e7eb,
-            overflow: hidden,
-            transition: all 0.2s ease,
-          }
-
-          .email-item:hover {
-            transform: translateY(-2px),
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1),
-            border-color: #F75900,
-          }
-
-          .email-header {
-            background: #f8fafc,
-            padding: 16px 20px,
-            border-bottom: 1px solid #e5e7eb,
-            display: flex,
-            justify-content: space-between,
-            align-items: center,
-          }
-
-          .email-sender {
-            display: flex,
-            align-items: center,
-            gap: 12px,
-          }
-
-          .sender-avatar {
-            width: 36px,
-            height: 36px,
-            border-radius: 50%,
-            background: linear-gradient(135deg, #F75900 0%, #ff8c42 100%),
-            color: white,
-            display: flex,
-            align-items: center,
-            justify-content: center,
-            font-weight: 600,
-            font-size: 14px,
-          }
-
-          .sender-info {
-            display: flex,
-            flex-direction: column,
-            gap: 2px,
-          }
-
-          .sender-name {
-            font-size: 14px,
-            font-weight: 600,
-            color: #111827,
-          }
-
-          .sender-email {
-            font-size: 12px,
-            color: #6b7280,
-          }
-
-          .email-time {
-            font-size: 12px,
-            color: #6b7280,
-            font-weight: 500,
-          }
-
-          .email-subject {
-            padding: 16px 20px,
-            border-bottom: 1px solid #e5e7eb,
-            font-size: 15px,
-            font-weight: 600,
-            color: #111827,
-          }
-
-          .email-body {
-            padding: 20px,
-          }
-
-          .email-preview {
-            font-size: 14px,
-            color: #374151,
-            line-height: 1.6,
-            max-height: 150px,
-            overflow: hidden,
-            position: relative,
-          }
-
-          .email-preview:after {
-            content: '',
-            position: absolute,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 40px,
-            background: linear-gradient(transparent, white),
-          }
-
-          .email-actions {
-            padding: 12px 20px,
-            border-top: 1px solid #e5e7eb,
-            background: #f8fafc,
-            display: flex,
-            gap: 12px,
-          }
-
-          .email-action-btn {
-            padding: 6px 12px,
-            border: 1px solid #d1d5db,
-            border-radius: 6px,
-            background: white,
-            color: #374151,
-            font-size: 12px,
-            font-weight: 500,
-            cursor: pointer,
-            transition: all 0.2s ease,
-            display: flex,
-            align-items: center,
-            gap: 6px,
-          }
-
-          .email-action-btn:hover {
-            border-color: #F75900,
-            color: #F75900,
-          }
-
-          .email-action-btn svg {
-            width: 14px,
-            height: 14px,
-          }
-
-          .empty-state {
-            text-align: center,
-            padding: 60px 20px,
-            color: #9ca3af,
-          }
-
-          .empty-icon {
-            margin-bottom: 20px,
-          }
-
-          .empty-icon svg {
-            color: #d1d5db,
-          }
-
-          .empty-state h4 {
-            margin: 0 0 8px 0,
-            font-size: 16px,
-            font-weight: 600,
-            color: #6b7280,
-          }
-
-          .empty-state p {
-            margin: 0,
-            font-size: 14px,
-          }
-
           /* Responsive Design */
           @media (max-width: 1400px) {
             .stats-grid {
@@ -2089,15 +1753,6 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
             
             .filter-input-group {
               grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .activity-filters {
-              flex-direction: column;
-              align-items: stretch;
-            }
-            
-            .filter-actions {
-              justify-content: space-between;
             }
             
             .refresh-btn {
@@ -2270,24 +1925,6 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
       $(document).on('click', '.tab-btn', (e) => {
         const tab = $(e.currentTarget).data('tab');
         this.switchTab(tab);
-      });
-
-      // Activity search
-      $(document).on('input', '#activity-search', (e) => {
-        this.filterActivity($(e.target).val().trim());
-      });
-
-      // Email sort
-      $(document).on('change', '#email-sort', () => {
-        if (state.current_ticket) {
-          this.loadActivity(state.current_ticket, true);
-        }
-      });
-
-      $(document).on('change', '#show-all-activity', () => {
-        if (state.current_ticket) {
-          this.loadActivity(state.current_ticket, true);
-        }
       });
 
       // Status ball click
@@ -2712,11 +2349,11 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
       // Update the status display
       $('#detail-ticket-status').html(utils.createStatusBadge(ticket.status || '-'));
       
-      // FIX: Use improved formatDate function for all date fields
-      $('#first-response').text(ticket.first_responded_on ? utils.formatDate(ticket.first_responded_on) : '-');
+      // UPDATED: Positions swapped - TICKET CREATED first, then CLOSED
+      $('#ticket-created').text(ticket.creation ? utils.formatDate(ticket.creation) : '-');
       $('#agent-response').text(ticket.custom_agent_responded_on ? utils.formatDate(ticket.custom_agent_responded_on) : '-');
       $('#resolution-by').text(ticket.resolution_by ? utils.formatDate(ticket.resolution_by) : '-');
-      $('#ticket-channel').text(ticket.custom_channel || '-');
+      $('#closed-date').text(ticket.custom_close_datetime ? utils.formatDate(ticket.custom_close_datetime) : '-');
 
       $('#detail-circuit').text(ticket.custom_circuit_id || '-');
       $('#detail-subject').text(ticket.subject || '-');
@@ -2737,11 +2374,8 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
 
       $('#detail-site-id').text(ticket.custom_site_id__legal_code || '-');
       
-      // FIXED: Format the TICKET CREATED date as DD-MM-YYYY HH:MM
-      const openingDate = ticket.opening_time ? utils.formatDate(ticket.opening_time) : '-';
-      $('#detail-created').text(openingDate);
-      
-      $('#detail-resolution').text(ticket.resolution_date ? utils.formatDate(ticket.resolution_date) : '-');
+      // UPDATED: Use custom_rca field for RESOLUTION (TICKET CREATED removed from info grid)
+      $('#detail-resolution').text(ticket.custom_rca || '-');
 
       // MODIFIED: Update Status Progress Indicator without percentage
       this.updateStatusProgress(ticket.status);
@@ -2841,374 +2475,17 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
       
       $('.tab-content').removeClass('active');
       $(`#tab-${tabName}`).addClass('active');
-      
-      if (tabName === 'activity' && state.current_ticket) {
-        this.loadActivity(state.current_ticket);
-      }
     },
 
+    // UPDATED: Removed all activity-related functions since Email Activity tab is removed
+    // The following functions are kept but not used since there's no activity tab anymore
     async loadActivity(ticketName, force = false) {
-      try {
-        $('#activity-timeline').html('<div style="padding:20px;text-align:center;color:#6b7280;">Loading email activity...</div>');
-        
-        console.log('Loading activity for ticket:', ticketName);
-        
-        if (state.cached_activity[ticketName] && !force) {
-          console.log('Using cached activity:', state.cached_activity[ticketName]);
-          this.renderActivity(state.cached_activity[ticketName]);
-          return;
-        }
-        
-        const response = await frappe.call({
-          method: "nexapp.api.get_ticket_activity",
-          args: { ticket_name: ticketName },
-          freeze: true,
-          freeze_message: "Loading email activity...",
-          callback: (r) => {
-            console.log('Activity API Response:', r);
-          }
-        });
-        
-        console.log('Raw API response:', response);
-        
-        let activities = [];
-        if (response && response.message) {
-          if (Array.isArray(response.message)) {
-            activities = response.message;
-          } else if (response.message.activity && Array.isArray(response.message.activity)) {
-            activities = response.message.activity;
-          } else if (response.message.data && Array.isArray(response.message.data)) {
-            activities = response.message.data;
-          } else if (response.message.result && Array.isArray(response.message.result)) {
-            activities = response.message.result;
-          } else if (typeof response.message === 'object') {
-            activities = Object.values(response.message);
-          }
-        }
-        
-        console.log('Processed activities:', activities);
-        
-        if (activities.length === 0) {
-          activities = await this.tryAlternativeActivityAPI(ticketName);
-        }
-        
-        state.cached_activity[ticketName] = activities;
-        this.renderActivity(activities);
-        $('#activity-count').text(activities.length);
-      } catch (error) {
-        console.error('Error loading activity:', error);
-        $('#activity-timeline').html(`
-          <div style="padding:40px;text-align:center;color:#ef4444;">
-            <p>Error loading email activity</p>
-            <p style="font-size:12px;margin-top:8px;">${error.message || 'Unknown error'}</p>
-            <button onclick="UI.loadActivity('${ticketName}', true)" class="email-action-btn" style="margin-top:10px;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/>
-              </svg>
-              Retry
-            </button>
-          </div>
-        `);
-        $('#activity-count').text('0');
-      }
+      // This function is kept for compatibility but not used
+      // since Email Activity tab has been removed
     },
 
-    async tryAlternativeActivityAPI(ticketName) {
-      try {
-        console.log('Trying alternative activity API methods...');
-        
-        // Try frappe.get_list method for emails
-        const altResponse = await frappe.call({
-          method: "frappe.client.get_list",
-          args: {
-            doctype: "Communication",
-            filters: [
-              ["reference_doctype", "=", "HD Ticket"],
-              ["reference_name", "=", ticketName],
-              ["communication_type", "=", "Communication"]
-            ],
-            fields: ["content", "sender", "creation", "subject", "communication_medium"],
-            order_by: "creation desc"
-          }
-        });
-        
-        if (altResponse && altResponse.message && Array.isArray(altResponse.message)) {
-          console.log('Found communications:', altResponse.message.length);
-          return altResponse.message.map(comm => ({
-            type: "Email",
-            content: comm.content,
-            subject: comm.subject,
-            sender: comm.sender,
-            creation: comm.creation,
-            communication_medium: comm.communication_medium
-          }));
-        }
-        
-        return [];
-      } catch (error) {
-        console.error('Alternative API error:', error);
-        return [];
-      }
-    },
-
-    renderActivity(activities) {
-      const container = $('#activity-timeline');
-      container.empty();
-      
-      if (!activities || activities.length === 0) {
-        container.append(`
-          <div class="empty-state">
-            <div class="empty-icon">
-              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                <polyline points="22,6 12,13 2,6"/>
-              </svg>
-            </div>
-            <h4>No Email Activity</h4>
-            <p>No email communications found for this ticket</p>
-          </div>
-        `);
-        return;
-      }
-      
-      // Sort activities
-      const sortOrder = $('#email-sort').val();
-      const sortedActivities = [...activities].sort((a, b) => {
-        const dateA = new Date(a.creation || a.modified || a.creation);
-        const dateB = new Date(b.creation || b.modified || b.creation);
-        return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
-      });
-      
-      // Filter activities based on search
-      const searchTerm = $('#activity-search').val().toLowerCase();
-      const filteredActivities = searchTerm 
-        ? sortedActivities.filter(activity => {
-            const searchable = [
-              activity.subject || '',
-              activity.content || '',
-              activity.sender || '',
-              activity.comment_by || ''
-            ].join(' ').toLowerCase();
-            return searchable.includes(searchTerm);
-          })
-        : sortedActivities;
-      
-      const showAll = $('#show-all-activity').is(':checked');
-      const itemsToShow = showAll ? filteredActivities : filteredActivities.slice(0, 5);
-      
-      itemsToShow.forEach(activity => {
-        try {
-          const item = this.createEmailItem(activity);
-          container.append(item);
-        } catch (error) {
-          console.error('Error creating email item:', error, activity);
-        }
-      });
-      
-      if (!showAll && filteredActivities.length > 5) {
-        const loadMore = $(`
-          <div style="padding:16px;text-align:center;">
-            <button class="email-action-btn" style="width:100%;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
-              Show ${filteredActivities.length - 5} more emails
-            </button>
-          </div>
-        `);
-        loadMore.find('button').on('click', () => {
-          $('#show-all-activity').prop('checked', true);
-          this.renderActivity(activities);
-        });
-        container.append(loadMore);
-      }
-    },
-
-    filterActivity(searchTerm) {
-      if (state.cached_activity[state.current_ticket]) {
-        this.renderActivity(state.cached_activity[state.current_ticket]);
-      }
-    },
-
-    createEmailItem(activity) {
-      const item = $('<div class="email-item"></div>');
-      
-      // Extract email data
-      const emailData = {
-        subject: activity.subject || 'No Subject',
-        content: activity.content || '',
-        sender: activity.sender || activity.comment_by || activity.modified_by || 'Unknown',
-        creation: activity.creation || activity.modified || new Date().toISOString(),
-        type: activity.communication_medium || activity.type || 'Email'
-      };
-      
-      // Format date and get initials
-      const formattedDate = utils.formatDate(emailData.creation);
-      const relativeTime = utils.formatRelativeTime(emailData.creation);
-      const senderInitials = emailData.sender.charAt(0).toUpperCase();
-      
-      // Create email header
-      const emailHeader = $(`
-        <div class="email-header">
-          <div class="email-sender">
-            <div class="sender-avatar">${senderInitials}</div>
-            <div class="sender-info">
-              <div class="sender-name">${utils.escapeHtml(emailData.sender)}</div>
-              <div class="sender-email">${utils.escapeHtml(emailData.sender)}</div>
-            </div>
-          </div>
-          <div class="email-time" title="${formattedDate}">${relativeTime}</div>
-        </div>
-      `);
-      
-      item.append(emailHeader);
-      
-      // Add subject
-      const emailSubject = $(`<div class="email-subject">${utils.escapeHtml(emailData.subject)}</div>`);
-      item.append(emailSubject);
-      
-      // Add email body
-      const emailBody = $('<div class="email-body"></div>');
-      const emailPreview = $('<div class="email-preview"></div>');
-      
-      // Clean HTML content
-      let cleanContent = utils.stripHtmlTags(emailData.content);
-      if (!cleanContent && emailData.content_html) {
-        cleanContent = utils.stripHtmlTags(emailData.content_html);
-      }
-      
-      // Truncate content for preview
-      const previewContent = utils.truncateText(cleanContent, 200);
-      emailPreview.text(previewContent);
-      emailBody.append(emailPreview);
-      
-      // Add actions - REMOVED REPLY BUTTON
-      const emailActions = $(`
-        <div class="email-actions">
-          <button class="email-action-btn view-email">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
-            View Full
-          </button>
-        </div>
-      `);
-      
-      // Add click handler for view action only
-      emailActions.find('.view-email').on('click', () => {
-        this.viewFullEmail(cleanContent, emailData.subject, emailData.sender, formattedDate);
-      });
-      
-      emailBody.append(emailActions);
-      item.append(emailBody);
-      
-      return item;
-    },
-
-    viewFullEmail(content, subject, sender, date) {
-      // Create modal for full email view
-      const modalHtml = `
-        <div class="email-modal">
-          <div class="modal-header">
-            <h3>${utils.escapeHtml(subject)}</h3>
-            <button class="modal-close">&times;</button>
-          </div>
-          <div class="modal-body">
-            <div class="email-meta">
-              <div><strong>From:</strong> ${utils.escapeHtml(sender)}</div>
-              <div><strong>Date:</strong> ${date}</div>
-            </div>
-            <div class="email-content">${utils.escapeHtml(content)}</div>
-          </div>
-        </div>
-        <style>
-          .email-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            z-index: 1002;
-            width: 90%;
-            max-width: 800px;
-            max-height: 90vh;
-            display: flex;
-            flex-direction: column;
-          }
-          .modal-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(135deg, #F75900 0%, #ff8c42 100%);
-            color: white;
-            border-radius: 12px 12px 0 0;
-          }
-          .modal-header h3 {
-            margin: 0;
-            font-size: 16px;
-            font-weight: 600;
-          }
-          .modal-close {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.1);
-            color: white;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: 300;
-            transition: all 0.2s ease;
-          }
-          .modal-close:hover {
-            background: rgba(255,255,255,0.2);
-          }
-          .modal-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 24px;
-          }
-          .email-meta {
-            background: #f8fafc;
-            padding: 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border: 1px solid #e5e7eb;
-          }
-          .email-content {
-            line-height: 1.6;
-            white-space: pre-wrap;
-            font-size: 14px;
-            color: #374151;
-            padding: 20px;
-            background: #f8fafc;
-            border-radius: 8px;
-            border: 1px solid #e5e7eb;
-            max-height: 400px;
-            overflow-y: auto;
-          }
-        </style>
-      `;
-      
-      const modal = $(modalHtml);
-      modal.find('.modal-close').on('click', () => modal.remove());
-      
-      // Close on background click
-      const overlay = $('<div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1001;"></div>');
-      overlay.on('click', (e) => {
-        if (e.target === overlay[0]) {
-          modal.remove();
-          overlay.remove();
-        }
-      });
-      
-      $('body').append(overlay, modal);
-    }
+    // Removed other activity-related functions since they're not needed anymore
+    // tryAlternativeActivityAPI, renderActivity, filterActivity, createEmailItem, viewFullEmail
   };
 
   // Initialize the application

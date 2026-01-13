@@ -8,6 +8,7 @@
  "field_order": [
   "circuits_section",
   "circuit_id",
+  "site_name",
   "customer",
   "solution",
   "order_type",
@@ -52,6 +53,7 @@
    "fetch_from": "circuit_id.customer",
    "fieldname": "customer",
    "fieldtype": "Data",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Customer"
   },
@@ -61,13 +63,20 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Order Type"
+  },
+  {
+   "fetch_from": "circuit_id.site_name",
+   "fieldname": "site_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Site Name"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-11-27 17:43:24.611615",
+ "modified": "2026-01-13 10:49:31.242660",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Circuit disconnection",

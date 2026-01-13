@@ -4749,7 +4749,7 @@ def get_tickets(filters=None, page=1, page_size=20):
         total = 0
 
     # ============================================================
-    # MAIN DATA QUERY
+    # MAIN DATA QUERY - UPDATED TO INCLUDE custom_rca (RESOLUTION FIELD)
     # ============================================================
     data_query = f"""
         SELECT
@@ -4764,12 +4764,14 @@ def get_tickets(filters=None, page=1, page_size=20):
             custom_agent_responded_on,
             resolution_by,
             first_responded_on,
-            opening_time,
+            creation,
+            custom_close_datetime,
             resolution_date,
             subject,
             description,
             custom_site_id__legal_code,
-            status
+            status,
+            custom_rca  -- ADDED: Resolution field from HD Ticket
         FROM `tabHD Ticket`
         WHERE 1=1
         {final_customer_clause}
@@ -4793,7 +4795,7 @@ def get_tickets(filters=None, page=1, page_size=20):
         if tickets:
             # Log only the first 3 tickets to avoid too much data
             for i, ticket in enumerate(tickets[:3]):
-                debug_messages.append(f"DEBUG: Ticket {i+1}: {ticket.get('name')} - Customer: {ticket.get('customer')} - Status: {ticket.get('status')}")
+                debug_messages.append(f"DEBUG: Ticket {i+1}: {ticket.get('name')} - Created: {ticket.get('creation')} - Closed: {ticket.get('custom_close_datetime')} - RCA: {ticket.get('custom_rca')}")
     except Exception as e:
         debug_messages.append(f"DEBUG: Error in data query: {str(e)}")
         tickets = []
@@ -5370,7 +5372,7 @@ def get_tickets_by_status(status):
             tuple(per_customer_params),
         )[0][0]
 
-        # Data query
+        # Data query - UPDATED TO INCLUDE custom_rca (RESOLUTION FIELD)
         tickets = frappe.db.sql(
             f"""
             SELECT
@@ -5385,12 +5387,14 @@ def get_tickets_by_status(status):
                 custom_agent_responded_on,
                 resolution_by,
                 first_responded_on,
-                opening_time,
+                creation,
+                custom_close_datetime,
                 resolution_date,
                 subject,
                 description,
                 custom_site_id__legal_code,
-                status
+                status,
+                custom_rca  -- ADDED: Resolution field from HD Ticket
             FROM `tabHD Ticket`
             WHERE 1=1
             {final_customer_clause}
@@ -5548,7 +5552,7 @@ def get_all_tickets_for_debug():
 
         final_customer_clause = " AND (" + " OR ".join(per_customer_conditions) + ")"
 
-        # Get all tickets without filters
+        # Get all tickets without filters - UPDATED TO INCLUDE custom_rca (RESOLUTION FIELD)
         tickets = frappe.db.sql(
             f"""
             SELECT
@@ -5563,12 +5567,14 @@ def get_all_tickets_for_debug():
                 custom_agent_responded_on,
                 resolution_by,
                 first_responded_on,
-                opening_time,
+                creation,
+                custom_close_datetime,
                 resolution_date,
                 subject,
                 description,
                 custom_site_id__legal_code,
-                status
+                status,
+                custom_rca  -- ADDED: Resolution field from HD Ticket
             FROM `tabHD Ticket`
             WHERE 1=1
             {final_customer_clause}
@@ -5733,8 +5739,8 @@ def get_user_customer_permissions():
                     WHERE t.customer=%s 
                     AND EXISTS (
                         SELECT 1 FROM `tabSite` s 
-                        WHERE s.name = t.custom_circuit_id 
-                        AND s.customer_type = 'Paid Customer'
+                            WHERE s.name = t.custom_circuit_id 
+                            AND s.customer_type = 'Paid Customer'
                     )
                 """, (cust,), as_dict=True)[0]["count"]
                 
@@ -5790,7 +5796,9 @@ def get_tickets_by_customer(customer):
                     s.customer_type,
                     t.status,
                     t.subject,
-                    t.opening_time
+                    t.creation,
+                    t.custom_close_datetime,
+                    t.custom_rca  -- ADDED: Resolution field from HD Ticket
                 FROM `tabHD Ticket` t
                 LEFT JOIN `tabSite` s ON s.name = t.custom_circuit_id
                 WHERE t.customer=%s 
@@ -5806,7 +5814,9 @@ def get_tickets_by_customer(customer):
                     s.customer_type,
                     t.status,
                     t.subject,
-                    t.opening_time
+                    t.creation,
+                    t.custom_close_datetime,
+                    t.custom_rca  -- ADDED: Resolution field from HD Ticket
                 FROM `tabHD Ticket` t
                 LEFT JOIN `tabSite` s ON s.name = t.custom_circuit_id
                 WHERE t.customer=%s 

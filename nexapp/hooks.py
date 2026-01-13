@@ -366,11 +366,10 @@ doc_events = {
     #}   
 }
 
-fixtures = [   
-    
-    {"dt": "DocType", "filters": [["module", "=", "Nexapp"], ["custom", "=", 1]]}, 
-    {"dt": "Custom Field"},
-    {"dt": "Property Setter"},    
+fixtures = [      
+    {"dt": "DocType", "filters": [["module", "=", "Nexapp"], ["custom", "=", 1]]},  # Fix: Only custom doctypes
+    {"dt": "Custom Field", "filters": [["module", "=", "Nexapp"]]},
+    {"dt": "Property Setter", "filters": [["module", "=", "Nexapp"]]},    
     {"dt": "Email Domain"}               
 ]
 
