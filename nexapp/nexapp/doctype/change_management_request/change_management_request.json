@@ -9,7 +9,11 @@
   "circuit_id",
   "column_break_rgex",
   "change_request_type",
+  "isp_change_reason",
   "stage",
+  "completed_datetime",
+  "hold_reason",
+  "hold_datetime",
   "disconnected_date",
   "section_break_awjs",
   "customer",
@@ -298,7 +302,7 @@
    "fieldname": "stage",
    "fieldtype": "Select",
    "label": "Stage",
-   "options": "Pending\nDisconnected"
+   "options": "Pending\nCompleted\nHold\nDisconnected"
   },
   {
    "depends_on": "eval:doc.stage==\"Disconnected\" ",
@@ -306,12 +310,43 @@
    "fieldtype": "Date",
    "label": "Disconnected Date",
    "read_only": 1
+  },
+  {
+   "default": "Today",
+   "depends_on": "eval:doc.stage==\"Completed\" ",
+   "fieldname": "completed_datetime",
+   "fieldtype": "Datetime",
+   "label": "Completed Datetime",
+   "mandatory_depends_on": "eval:doc.stage==\"Completed\" "
+  },
+  {
+   "depends_on": "eval:doc.stage==\"Hold\" ",
+   "fieldname": "hold_reason",
+   "fieldtype": "Data",
+   "label": "Hold Reason",
+   "mandatory_depends_on": "eval:doc.stage==\"Hold\" "
+  },
+  {
+   "default": "Now",
+   "depends_on": "eval:doc.stage==\"Hold\" ",
+   "fieldname": "hold_datetime",
+   "fieldtype": "Datetime",
+   "label": "Hold Datetime",
+   "mandatory_depends_on": "eval:doc.stage==\"Hold\" ",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.change_request_type==\"ISP Change\"",
+   "fieldname": "isp_change_reason",
+   "fieldtype": "Small Text",
+   "label": "ISP Change Reason",
+   "mandatory_depends_on": "eval:doc.change_request_type==\"ISP Change\""
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-12 11:29:38.581337",
+ "modified": "2026-02-07 10:32:40.509617",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Change Management Request",

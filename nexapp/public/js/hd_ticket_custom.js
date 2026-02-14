@@ -650,3 +650,21 @@ frappe.listview_settings['HD Ticket'] = {
         });
     }
 };
+////////////////////////////////////////////////////////////////////////////////
+frappe.ui.form.on('HD Ticket', {
+    status: function (frm) {
+
+        // Get current datetime (ERPNext standard)
+        let now = frappe.datetime.now_datetime();
+
+        // When status is set to On Hold
+        if (frm.doc.status === 'On Hold' && !frm.doc.custom_hold_datetime) {
+            frm.set_value('custom_hold_datetime', now);
+        }
+
+        // When status is set to Closed
+        if (frm.doc.status === 'Closed' && !frm.doc.custom_closed_datetime) {
+            frm.set_value('custom_closed_datetime', now);
+        }
+    }
+});

@@ -164,7 +164,8 @@
    "fieldtype": "Link",
    "label": "LMS Bandwith",
    "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"LMS Bandwidth\"]]",
-   "options": "Item"
+   "options": "Item",
+   "read_only": 1
   },
   {
    "fieldname": "media",
@@ -314,7 +315,8 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "LMS Stage",
-   "options": "PO Pending\nPO Requested\nPO Released\nIn process\nDelivered\nCancelled\nDisconnected\nDisconnection In Process"
+   "options": "PO Pending\nPO Requested\nPO Released\nIn process\nDelivered\nCancelled\nDisconnected\nDisconnection In Process",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_mctq",
@@ -935,7 +937,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2026-01-03 17:12:34.532904",
+ "modified": "2026-02-07 17:18:56.196380",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Lastmile Services Master",

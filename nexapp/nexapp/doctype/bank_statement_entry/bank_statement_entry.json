@@ -69,6 +69,7 @@
   {
    "fieldname": "reference_no",
    "fieldtype": "Data",
+   "in_standard_filter": 1,
    "label": "Reference Number\t"
   },
   {
@@ -134,7 +135,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-12-20 15:17:30.653396",
+ "modified": "2026-01-27 21:25:22.598797",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Bank Statement Entry",

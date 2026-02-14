@@ -434,26 +434,43 @@ from email.utils import getaddresses
 
 def create_hd_ticket_from_communication(doc, method):
     try:
-        # 🚫 Step 0A: Skip bounce or automated emails (UPDATED - STRICT)
-        if doc.sender:
-            # Extract pure email if sender is like: Name <email>
-            match = re.search(r'<(.+?)>', doc.sender)
-            sender_email = (match.group(1) if match else doc.sender).lower()
+        # 🚫 Step 0A: Skip bounce or automated emails (sender-based)
+        if (
+            doc.sender
+            and (
+                "mailer-daemon" in doc.sender.lower()
+                or "postmaster@" in doc.sender.lower()
+                or "no-reply" in doc.sender.lower()
+                or "mailer@" in doc.sender.lower()
+            )
+        ):
+            frappe.logger().info(f"Ignored auto-generated email from {doc.sender}")
+            return
 
-            if (
-                sender_email == "mailer-daemon@mail.zoho.com"
-                or "mailer-daemon" in sender_email
-                or "postmaster@" in sender_email
-                or "no-reply" in sender_email
-                or "mailer@" in sender_email
-            ):
-                frappe.logger().info(f"Ignored auto-generated email from {sender_email}")
-                return
+        # 🚫 Step 0B: Skip delivery failure / policy violation emails (content-based)
+        failure_keywords = [
+            "delivery failed",
+            "could not be delivered",
+            "email policy violation",
+            "mail delivery subsystem",
+            "554 5.7.7",
+            "message could not be delivered",
+            "permanent error"
+        ]
+
+        combined_failure_check = f"{doc.subject or ''} {doc.content or ''}".lower()
+
+        if any(keyword in combined_failure_check for keyword in failure_keywords):
+            frappe.logger().info(
+                f"Ignored email failure/bounce message from {doc.sender}"
+            )
+            return
 
         # 0️⃣ Pre-check: Only process relevant incoming emails
         recipient_emails = [email.strip() for _, email in getaddresses([doc.recipients])]
         if not ("techsupport@nexapp.co.in" in recipient_emails or doc.sender == "nms@nexapp.co.in"):
             return
+
         if not (doc.sent_or_received == "Received" and doc.status == "Open"):
             return
 
@@ -478,32 +495,24 @@ def create_hd_ticket_from_communication(doc, method):
 
         # 3️⃣ If matching open ticket found
         if existing_ticket and existing_ticket.status not in ["Closed", "Resolved"]:
-            # ✅ Safely link communication to existing ticket (no .save())
-            frappe.db.set_value(
-                "Communication",
-                doc.name,
-                {
-                    "reference_doctype": "HD Ticket",
-                    "reference_name": existing_ticket.name,
-                    "status": "Linked"
-                },
-                update_modified=False
-            )
-            frappe.db.commit()
+            doc.reference_doctype = "HD Ticket"
+            doc.reference_name = existing_ticket.name
+            doc.status = "Linked"
+            doc.save(ignore_permissions=True)
 
             # Send polite reply (only if not from NMS)
             if doc.sender.lower() != "nms@nexapp.co.in":
                 email_subject = f"Ticket Already Opened: {existing_ticket.name} (Circuit ID: {circuit_id})"
                 email_message = (
                     f"Dear Customer,<br><br>"
-                    f"Thank you for your email. We already have an open ticket <b>{existing_ticket.name}</b> "
-                    f"for your circuit ID <b>{circuit_id}</b>. Your email has been added to this ticket.<br><br>"
+                    f"Thank you for your email. We already have an open ticket "
+                    f"<b>{existing_ticket.name}</b> for your circuit ID "
+                    f"<b>{circuit_id}</b>. Your email has been added to this ticket.<br><br>"
                     f"Thanks & Regards,<br>"
                     f"Nexapp Technologies Private Limited<br>"
                     f"Support Team"
                 )
 
-                # ✅ CC the ticket owner (if not same as sender)
                 cc_list = []
                 ticket_owner = existing_ticket.owner
                 if ticket_owner and ticket_owner.lower() != doc.sender.lower():
@@ -517,12 +526,11 @@ def create_hd_ticket_from_communication(doc, method):
                     sender="techsupport@nexapp.co.in"
                 )
 
-            # Add internal comment
             frappe.get_doc("HD Ticket", existing_ticket.name).add_comment(
                 "Info",
                 f"New email from {doc.sender} linked to this ticket."
             )
-            return  # Stop here if ticket already exists
+            return
 
         # 4️⃣ No matching HD Ticket — check if circuit ID exists in Site
         circuit_valid = False
@@ -530,7 +538,6 @@ def create_hd_ticket_from_communication(doc, method):
             circuit_valid = frappe.db.exists("Site", circuit_id)
 
         if circuit_valid:
-            # ✅ Create new HD Ticket
             ticket = frappe.get_doc({
                 "doctype": "HD Ticket",
                 "subject": doc.subject,
@@ -542,23 +549,14 @@ def create_hd_ticket_from_communication(doc, method):
             })
             ticket.insert(ignore_permissions=True)
 
-            # ✅ Safely link communication to new ticket (no .save())
-            frappe.db.set_value(
-                "Communication",
-                doc.name,
-                {
-                    "reference_doctype": "HD Ticket",
-                    "reference_name": ticket.name,
-                    "status": "Linked"
-                },
-                update_modified=False
-            )
-            frappe.db.commit()
+            doc.reference_doctype = "HD Ticket"
+            doc.reference_name = ticket.name
+            doc.status = "Linked"
+            doc.save(ignore_permissions=True)
             return
 
         # 5️⃣ Circuit ID doesn't match HD Ticket or Site
         if doc.sender.lower() != "nms@nexapp.co.in":
-            # Trim email body to avoid overload
             original_body = frappe.utils.strip_html_tags(doc.content or "")
             snippet = (original_body[:500] + "...") if len(original_body) > 500 else original_body
 
@@ -570,23 +568,25 @@ def create_hd_ticket_from_communication(doc, method):
                 f"📌 <b>Original Sender:</b> {doc.sender}<br>"
                 f"📌 <b>Original Subject:</b> {doc.subject}<br><br>"
                 f"📌 <b>Original Message :</b><br>"
-                f"<div style='border:1px solid #ccc; padding:10px; margin-top:5px;'>{frappe.utils.escape_html(snippet)}</div><br>"
-                f"For assistance, please contact our support team at "
-                f"<a href='mailto:techsupport@nexapp.co.in'>techsupport@nexapp.co.in</a> or call 020-67629999.<br><br>"
-                f"We remain committed to resolving your concerns promptly and ensuring you receive the support you need.<br><br>"
+                f"<div style='border:1px solid #ccc; padding:10px;'>"
+                f"{frappe.utils.escape_html(snippet)}</div><br>"
+                f"For assistance, please contact "
+                f"<a href='mailto:techsupport@nexapp.co.in'>techsupport@nexapp.co.in</a> "
+                f"or call 020-67629999.<br><br>"
                 f"Thanks & Regards,<br>"
                 f"Nexapp Technologies Private Limited<br>"
                 f"Support Team"
             )
+
             frappe.sendmail(
                 recipients=doc.sender,
-                cc=["ganpati.g@nexapp.co.in", "vaishali.k@nexapp.co.in", "akshay.d@nexapp.co.in"],
+                cc=["ganpati.g@nexapp.co.in", "vaishali.k@nexapp.co.in"],
                 subject=email_subject,
                 message=email_message,
                 sender="techsupport@nexapp.co.in"
             )
 
-        return  # Silent exit if from NMS and no match
+        return
 
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "HD Ticket Auto-Creation Error")
@@ -3174,12 +3174,9 @@ def process_customer_payment(stmt, invoices, company, customer, tax_adjustments_
     statement_amount = abs(float(stmt.deposit or 0))
     total_allocated = sum(float(inv.get("amount") or 0) for inv in invoices)
 
-    if allow_overpayment:
-        paid_amount = total_allocated
-        received_amount = total_allocated
-    else:
-        paid_amount = total_allocated
-        received_amount = total_allocated
+    # ⭐ FIX — USE STATEMENT AMOUNT
+    paid_amount = statement_amount
+    received_amount = statement_amount
 
     # -------------------------------
     # 2. Build Payment Entry
@@ -4083,13 +4080,20 @@ def create_disconnection_lms(disconnection_request):
         frappe.msgprint("⚠️ Records already created for this Disconnection Request.", indicator="orange")
         return {"duplicate": True}
 
-    # Prefetch LMS & Site data
-    lms_map = frappe._dict({
-        d.circuit_id: d.name 
-        for d in frappe.get_all("Lastmile Services Master", fields=["name", "circuit_id"])
-    })
+    # ------------------------------------------------------------------
+    # ✅ ONLY LMS with lms_stage = "Delivered"
+    # ------------------------------------------------------------------
+    lms_map = frappe._dict()
+    for d in frappe.get_all(
+        "Lastmile Services Master",
+        filters={"lms_stage": "Delivered"},
+        fields=["name", "circuit_id"]
+    ):
+        if d.circuit_id:
+            lms_map.setdefault(d.circuit_id, []).append(d.name)
+
     site_map = frappe._dict({
-        d.circuit_id: d.name 
+        d.circuit_id: d.name
         for d in frappe.get_all("Site", fields=["name", "circuit_id"])
     })
 
@@ -4100,17 +4104,18 @@ def create_disconnection_lms(disconnection_request):
             continue
 
         try:
-            # --- Create Disconnection LMS ---
-            lms_name = lms_map.get(circuit_id)
-            if lms_name and not frappe.db.exists(
-                "Disconnection LMS",
-                {"lms_id": lms_name, "disconnection_request_id": doc.name}
-            ):
-                new_lms = frappe.new_doc("Disconnection LMS")
-                new_lms.circuit_id = circuit_id
-                new_lms.lms_id = lms_name
-                new_lms.disconnection_request_id = doc.name
-                new_lms.insert(ignore_permissions=True)
+            # --- Create Disconnection LMS (Delivered LMS only) ---
+            for lms_name in lms_map.get(circuit_id, []):
+
+                if not frappe.db.exists(
+                    "Disconnection LMS",
+                    {"lms_id": lms_name, "disconnection_request_id": doc.name}
+                ):
+                    new_lms = frappe.new_doc("Disconnection LMS")
+                    new_lms.circuit_id = circuit_id
+                    new_lms.lms_id = lms_name
+                    new_lms.disconnection_request_id = doc.name
+                    new_lms.insert(ignore_permissions=True)
 
             # --- Create/Update Stock Management ---
             site_name = site_map.get(circuit_id)
@@ -4141,7 +4146,6 @@ def create_disconnection_lms(disconnection_request):
 
             if not exists_child:
 
-                # Fetch all Site Items
                 site_items = frappe.get_all(
                     "Site Item",
                     filters={"parent": site_name},
@@ -4150,9 +4154,6 @@ def create_disconnection_lms(disconnection_request):
 
                 for it in site_items:
 
-                    # ===========================================
-                    #   A) NON-TELECOM → Stock Management Only
-                    # ===========================================
                     if it.item_group != "Telecom":
                         sm_doc.append("stock_management_disconnection", {
                             "item_code": it.item_code,
@@ -4162,10 +4163,6 @@ def create_disconnection_lms(disconnection_request):
                             "item_group": it.item_group,
                             "disconnection_request_id": doc.name
                         })
-
-                    # ===========================================
-                    #   B) TELECOM → SIM Disconnection Only
-                    # ===========================================
                     else:
                         sim_doc = frappe.new_doc("SIM Disconnection")
                         sim_doc.circuit_id = site_name
@@ -4174,7 +4171,6 @@ def create_disconnection_lms(disconnection_request):
                         sim_doc.disconnection_request_id = doc.name
                         sim_doc.insert(ignore_permissions=True)
 
-                        # ⭐ NEW — Ensure SIM Disconnection always maps to Disconnection Request
                         frappe.db.set_value(
                             "SIM Disconnection",
                             sim_doc.name,
@@ -4182,13 +4178,11 @@ def create_disconnection_lms(disconnection_request):
                             doc.name
                         )
 
-                # Save Stock Management updates
                 sm_doc.flags.ignore_mandatory = True
                 sm_doc.flags.ignore_validate = True
                 sm_doc.flags.dirty = True
                 sm_doc.save(ignore_permissions=True)
 
-            # ⭐ NEW — Update all existing SIM Disconnection entries for this circuit
             existing_sim_records = frappe.get_all(
                 "SIM Disconnection",
                 filters={"circuit_id": site_name},
@@ -4203,14 +4197,16 @@ def create_disconnection_lms(disconnection_request):
                     doc.name
                 )
 
-        except Exception as e:
-            frappe.log_error(frappe.get_traceback(), f"Error processing Circuit ID {circuit_id}")
+        except Exception:
+            frappe.log_error(
+                frappe.get_traceback(),
+                f"Error processing Circuit ID {circuit_id}"
+            )
             continue
 
     # ------------------ PART 4: UPDATE SITE & LMS STAGE IF APPROVED ------------------
     if doc.status == "Approved":
 
-        # Step 1: Update Site
         for row in doc.circuit_disconnection or []:
             if row.circuit_id:
                 try:
@@ -4219,18 +4215,22 @@ def create_disconnection_lms(disconnection_request):
                         "lms_stage": "Disconnection In Process"
                     })
                 except Exception as e:
-                    frappe.log_error(f"Error updating Site for circuit_id {row.circuit_id}", str(e))
+                    frappe.log_error(
+                        f"Error updating Site for circuit_id {row.circuit_id}",
+                        str(e)
+                    )
 
-        # Step 2: Update Lastmile Services Master
         for row in doc.circuit_disconnection or []:
-            lms_id = lms_map.get(row.circuit_id)
-            if lms_id:
+            for lms_id in lms_map.get(row.circuit_id, []):
                 try:
                     frappe.db.set_value("Lastmile Services Master", lms_id, {
                         "lms_stage": "Disconnection In Process"
                     })
                 except Exception as e:
-                    frappe.log_error(f"Error updating LMS for lms_id {lms_id}", str(e))
+                    frappe.log_error(
+                        f"Error updating LMS for lms_id {lms_id}",
+                        str(e)
+                    )
 
     return {"updated": True}
 
@@ -4247,6 +4247,7 @@ def process_disconnection_request_submit(doc, method):
         title="Update Complete",
         indicator="green"
     )
+
 
 ###############################################################################
 # LMS Cancel Code
@@ -4482,6 +4483,7 @@ import json
 def create_itemized_journal_entry(statement_name, items=None, itemized_entries=None):
     """
     Create and Submit Journal Entry for itemized multi-line accounts.
+    Supports BOTH Withdrawal and Deposit.
     """
 
     # Accept both argument names
@@ -4502,15 +4504,26 @@ def create_itemized_journal_entry(statement_name, items=None, itemized_entries=N
     stmt = frappe.get_doc("Bank Statement Entry", statement_name)
 
     withdrawal_amount = float(stmt.withdrawal or 0)
-    if withdrawal_amount <= 0:
-        return {"status": "fail", "error": "No withdrawal amount in statement"}
+    deposit_amount = float(stmt.deposit or 0)
+
+    # 🔴 Allow BOTH
+    if withdrawal_amount <= 0 and deposit_amount <= 0:
+        return {
+            "status": "fail",
+            "error": "No withdrawal or deposit amount in statement"
+        }
+
+    is_withdrawal = withdrawal_amount > 0
+    is_deposit = deposit_amount > 0
+
+    statement_amount = withdrawal_amount if is_withdrawal else deposit_amount
 
     # --- Validate total ---
     total_entered = sum(float(i.get("amount") or 0) for i in items)
-    if abs(total_entered - withdrawal_amount) > 0.001:
+    if abs(total_entered - statement_amount) > 0.001:
         return {
             "status": "fail",
-            "error": f"Itemized total ({total_entered}) does not match withdrawal ({withdrawal_amount})"
+            "error": f"Itemized total ({total_entered}) does not match statement amount ({statement_amount})"
         }
 
     # --- Bank Ledger ---
@@ -4523,17 +4536,21 @@ def create_itemized_journal_entry(statement_name, items=None, itemized_entries=N
     # --- Prepare JE Rows ---
     account_rows = []
 
+    # 🔁 Itemized accounts
     for row in items:
+        amount = float(row.get("amount") or 0)
+
         account_rows.append({
             "account": row["account"],
-            "debit_in_account_currency": float(row["amount"]),
-            "credit_in_account_currency": 0
+            "debit_in_account_currency": amount if is_withdrawal else 0,
+            "credit_in_account_currency": amount if is_deposit else 0
         })
 
+    # 🔁 Bank account (opposite side)
     account_rows.append({
         "account": bank_ledger,
-        "credit_in_account_currency": withdrawal_amount,
-        "debit_in_account_currency": 0
+        "debit_in_account_currency": statement_amount if is_deposit else 0,
+        "credit_in_account_currency": statement_amount if is_withdrawal else 0
     })
 
     # --- Create JE ---
@@ -4552,13 +4569,9 @@ def create_itemized_journal_entry(statement_name, items=None, itemized_entries=N
 
     je.flags.ignore_mandatory = True
 
-    # Save draft
+    # Save & Submit
     je.insert(ignore_permissions=True)
-
-    # 🔹 **Submit the Journal Entry**
-    je.submit()  
-    # Or force submit even without permissions:
-    # je.submit(ignore_permissions=True)
+    je.submit()
 
     # Mark statement as reconciled
     frappe.db.set_value("Bank Statement Entry", statement_name, "reconciled", 1)
@@ -4567,7 +4580,8 @@ def create_itemized_journal_entry(statement_name, items=None, itemized_entries=N
         "status": "ok",
         "journal_entry": je.name,
         "submitted": True,
-        "total": withdrawal_amount
+        "type": "Withdrawal" if is_withdrawal else "Deposit",
+        "total": statement_amount
     }
 
 #############################################################################
@@ -6390,193 +6404,7 @@ def get_customer_unallocated_amount(customer):
 
     return flt(total_paid) - flt(total_allocated)
 ###############################################################################
-# Fetching the Sales Order
-import frappe
-from frappe import _
 
-
-@frappe.whitelist()
-def get_submitted_sales_orders_by_customer(customer):
-    """
-    Fetch submitted Sales Orders for a given Customer.
-    Used in Bank Reconciliation -> Customer Advance flow.
-
-    Conditions:
-    - Customer must be provided
-    - Only Submitted Sales Orders (docstatus = 1)
-    """
-
-    if not customer:
-        return []
-
-    sales_orders = frappe.get_all(
-        "Sales Order",
-        filters={
-            "customer": customer,
-            "docstatus": 1
-        },
-        fields=[
-            "name",
-            "transaction_date",
-            "grand_total",
-            "base_grand_total",
-            "status"
-        ],
-        order_by="transaction_date desc"
-    )
-
-    return sales_orders
-
-###############################################################################
-# Customer Advance Entry
-
-@frappe.whitelist()
-def create_customer_advance_payment_entry(
-    customer,
-    sales_order,
-    amount,
-    bank_account,      # kept for frontend compatibility
-    statement_name=None
-):
-    import frappe
-    from frappe.utils import flt, nowdate
-
-    # --------------------------------------------------
-    # Basic validations
-    # --------------------------------------------------
-    if not customer:
-        frappe.throw("Customer is required")
-
-    if not sales_order:
-        frappe.throw("Sales Order is required")
-
-    amount = flt(amount)
-    if amount <= 0:
-        frappe.throw("Amount must be greater than zero")
-
-    # --------------------------------------------------
-    # Company
-    # --------------------------------------------------
-    company = frappe.defaults.get_user_default("Company")
-    if not company:
-        frappe.throw("Company is not set in User Defaults")
-
-    company_currency = frappe.get_cached_value(
-        "Company", company, "default_currency"
-    )
-
-    # --------------------------------------------------
-    # Resolve PAID TO ACCOUNT (GL Account)
-    # --------------------------------------------------
-    paid_to_account = frappe.get_value(
-        "Mode of Payment Account",
-        {
-            "parent": "Wire Transfer",
-            "company": company
-        },
-        "default_account"
-    )
-
-    if not paid_to_account:
-        frappe.throw(
-            f"No default account set for Mode of Payment 'Wire Transfer' for {company}"
-        )
-
-    # --------------------------------------------------
-    # Validate Sales Order
-    # --------------------------------------------------
-    if frappe.db.get_value("Sales Order", sales_order, "docstatus") != 1:
-        frappe.throw("Only submitted Sales Orders are allowed")
-
-    # --------------------------------------------------
-    # Fetch Bank Statement Entry (if provided)
-    # --------------------------------------------------
-    stmt = None
-    if statement_name:
-        stmt = frappe.get_doc("Bank Statement Entry", statement_name)
-
-    # --------------------------------------------------
-    # Dates & Reference (BANK-DRIVEN)
-    # --------------------------------------------------
-    if stmt:
-        posting_date = stmt.date
-        reference_date = stmt.date
-        reference_no = stmt.statement_details   
-    else:
-        posting_date = nowdate()
-        reference_date = posting_date
-        reference_no = sales_order
-
-    # --------------------------------------------------
-    # Create Payment Entry (Customer Advance)
-    # --------------------------------------------------
-    pe = frappe.get_doc({
-        "doctype": "Payment Entry",
-        "payment_type": "Receive",
-        "party_type": "Customer",
-        "party": customer,
-        "company": company,
-
-        # ✅ Bank-aligned fields
-        "posting_date": posting_date,
-        "reference_date": reference_date,
-        "reference_no": reference_no,
-
-        "mode_of_payment": "Wire Transfer",
-
-        # ✅ Must be GL Account
-        "paid_to": paid_to_account,
-
-        "paid_amount": amount,
-        "received_amount": amount,
-
-        "source_exchange_rate": 1,
-        "target_exchange_rate": 1,
-        "paid_to_account_currency": company_currency,
-    })
-
-    # --------------------------------------------------
-    # Advance against Sales Order
-    # --------------------------------------------------
-    pe.append("references", {
-        "reference_doctype": "Sales Order",
-        "reference_name": sales_order,
-        "allocated_amount": amount
-    })
-
-    # --------------------------------------------------
-    # Save & Submit
-    # --------------------------------------------------
-    pe.insert(ignore_permissions=True)
-    pe.submit()
-
-    # --------------------------------------------------
-    # Reconcile Bank Statement Entry
-    # --------------------------------------------------
-    if stmt:
-        frappe.db.set_value(
-            "Bank Statement Entry",
-            stmt.name,
-            {
-                "reconciled": 1,
-                "reference_doctype": "Payment Entry",
-                "reference_name": pe.name
-            }
-        )
-
-    # --------------------------------------------------
-    # Return response
-    # --------------------------------------------------
-    return {
-        "status": "success",
-        "payment_entry": pe.name,
-        "customer": customer,
-        "sales_order": sales_order,
-        "amount": amount,
-        "posting_date": posting_date
-    }
-
-###########################################################################
 # HD Ticket Assignment
 
 import frappe
@@ -6771,3 +6599,681 @@ def recalculate_all_lms_ageing():
             doc.ageing,
             update_modified=False
         )
+#########################################################################
+## Stop the bounce email to techsupport
+
+import frappe
+from email.utils import getaddresses
+
+def block_techsupport_bounce_emails(doc, method):
+    # 🟢 Step 1: Check if email is meant for Techsupport only
+    recipients = []
+    if doc.recipients:
+        recipients = [email.lower() for _, email in getaddresses([doc.recipients])]
+
+    is_techsupport = any(
+        email.startswith("techsupport@") or email.startswith("techsupport+")
+        for email in recipients
+    )
+
+    if not is_techsupport:
+        # Allow other department emails
+        return
+
+    # 🟢 Step 2: Detect bounce emails
+    bounce_senders = [
+        "mailer-daemon",
+        "postmaster",
+        "mail delivery subsystem"
+    ]
+
+    bounce_keywords = [
+        "undelivered mail returned to sender",
+        "delivery failed",
+        "email policy violation",
+        "554 5.7.7",
+        "permanent error",
+        "could not be delivered"
+    ]
+
+    text = f"{doc.sender or ''} {doc.subject or ''} {doc.content or ''}".lower()
+
+    if any(s in text for s in bounce_senders) or any(k in text for k in bounce_keywords):
+        # 🔇 SILENT BLOCK ONLY FOR TECHSUPPORT
+        doc.flags.ignore_permissions = True
+        doc.flags.ignore_links = True
+        doc.flags.ignore_mandatory = True
+
+        doc.communication_type = "Ignored"
+        doc.subject = "[IGNORED TECHSUPPORT BOUNCE EMAIL]"
+        doc.content = ""
+
+        frappe.logger().info(
+            f"Techsupport bounce email blocked silently: {doc.sender}"
+        )
+
+        # ❌ Abort insert cleanly (no error)
+        doc._cancel_insert = True
+#################################################################################
+# Purchase Order list Down - Supplier Advance
+
+import frappe
+from frappe import _
+
+@frappe.whitelist()
+def get_purchase_orders_by_supplier(supplier):
+    """
+    Fetch submitted Purchase Orders for a given supplier
+    Used in Bank Reconciliation → Supplier Advance
+    """
+
+    if not supplier:
+        return []
+
+    return frappe.get_all(
+        "Purchase Order",
+        filters={
+            "supplier": supplier,
+            "docstatus": 1
+        },
+        fields=["name"],
+        order_by="creation desc"
+    )
+##################################################################################
+# Supplier Advance - Payment Entry    
+@frappe.whitelist()
+def create_supplier_advance_payment(
+    supplier=None,
+    amount=None,
+    statement_entry=None,
+    purchase_order=None,
+):
+
+    if not supplier:
+        frappe.throw("Supplier is required")
+
+    if not amount:
+        frappe.throw("Amount is required")
+
+    if not statement_entry:
+        frappe.throw("Bank Statement Entry missing")
+
+    amount = float(amount)
+
+    stmt = frappe.get_doc("Bank Statement Entry", statement_entry)
+
+    # Company from Bank Account
+    company = frappe.db.get_value("Bank Account", stmt.bank_account, "company")
+
+    posting_date = stmt.transaction_date
+    reference_no = stmt.description
+
+    # 🔥 Correct Accounts
+    paid_from = frappe.db.get_value("Bank Account", stmt.bank_account, "account")
+    paid_to = frappe.db.get_value("Company", company, "default_payable_account")
+
+    if not paid_from or not paid_to:
+        frappe.throw("Bank or Payable account missing")
+
+    payment_entry = frappe.get_doc({
+        "doctype": "Payment Entry",
+        "payment_type": "Pay",
+        "mode_of_payment": "Wire Transfer",
+        "company": company,
+        "party_type": "Supplier",
+        "party": supplier,
+        "paid_amount": amount,
+        "received_amount": amount,
+        "posting_date": posting_date,
+        "reference_no": reference_no,
+        "reference_date": posting_date,
+        "paid_from": paid_from,   # GL account
+        "paid_to": paid_to,       # Payable account
+    })
+
+    if purchase_order:
+        payment_entry.append("references", {
+            "reference_doctype": "Purchase Order",
+            "reference_name": purchase_order,
+            "allocated_amount": amount
+        })
+
+    payment_entry.insert(ignore_permissions=True)
+    payment_entry.submit()
+
+    frappe.db.set_value("Bank Statement Entry", stmt.name, {
+        "reference_no": payment_entry.name,
+        "reconciled": 1
+    })
+
+    return {
+        "status": "success",
+        "payment_entry": payment_entry.name
+    }
+###############################################################################
+# Customer Advance
+@frappe.whitelist()
+def create_customer_advance_payment(
+    customer=None,
+    amount=None,
+    statement_entry=None,
+    sales_order=None
+):
+
+    if not customer:
+        frappe.throw("Customer is required")
+
+    if not amount:
+        frappe.throw("Amount is required")
+
+    stmt = frappe.get_doc("Bank Statement Entry", statement_entry)
+    company = frappe.db.get_value("Bank Account", stmt.bank_account, "company")
+
+    paid_to = frappe.db.get_value("Bank Account", stmt.bank_account, "account")
+    paid_from = frappe.db.get_value("Company", company, "default_receivable_account")
+
+    pe = frappe.get_doc({
+        "doctype": "Payment Entry",
+        "payment_type": "Receive",
+        "company": company,
+        "party_type": "Customer",
+        "party": customer,
+        "paid_from": paid_from,
+        "paid_to": paid_to,
+        "paid_amount": float(amount),
+        "received_amount": float(amount),
+        "posting_date": stmt.transaction_date,
+        "reference_no": stmt.description,
+        "reference_date": stmt.transaction_date
+    })
+
+    if sales_order:
+        pe.append("references", {
+            "reference_doctype": "Sales Order",
+            "reference_name": sales_order,
+            "allocated_amount": float(amount)
+        })
+
+    pe.insert(ignore_permissions=True)
+    pe.submit()
+
+    return {
+        "status": "success",
+        "payment_entry": pe.name
+    }
+
+##############################################################################
+#Customer Advance - Sales Order Fetch
+@frappe.whitelist()
+def get_sales_orders_by_customer(customer):
+
+    if not customer:
+        return []
+
+    return frappe.get_all(
+        "Sales Order",
+        filters={
+            "customer": customer,
+            "docstatus": 1
+        },
+        fields=["name"],
+        order_by="creation desc"
+    )
+############################################################################
+def set_industry_from_market_segment(doc, method):
+    frappe.throw("HOOK RUNNING")
+
+#############################################################################
+import frappe
+import json
+from frappe.utils import get_url, nowdate
+
+@frappe.whitelist()
+def get_hd_tickets(
+    page_length=20, 
+    start=0, 
+    search="", 
+    view="All Tickets", 
+    view_type="status", 
+    customer="", 
+    circuit_id="", 
+    ticket_id="", 
+    agent="",
+    status="",
+    stage="",
+    priority="",
+    channel="",
+    severity="",
+    created_from="",
+    created_to="",
+    closed_from="",
+    closed_to="",
+    onhold_from="",
+    onhold_to=""
+):
+    page_length = int(page_length)
+    start = int(start)
+
+    filters = {}
+
+    # ---------------------------
+    # STATUS FILTER MAP
+    # ---------------------------
+    view_status_map = {
+        "Open Tickets": "Open",
+        "Replied Tickets": "Replied",
+        "On Hold Tickets": "On Hold",
+        "Wrong Tickets": "Wrong Circuit",
+        "Resolved Tickets": "Resolved",
+        "Closed Tickets": "Closed"
+    }
+
+    # ---------------------------
+    # PRIORITY FILTER MAP
+    # ---------------------------
+    priority_map = {
+        "Urgent": "Urgent",
+        "High": "High",
+        "Medium": "Medium",
+        "Low": "Low"
+    }
+    
+    # ---------------------------
+    # SEVERITY FILTER MAP
+    # ---------------------------
+    severity_map = {
+        "Critical": "Critical",
+        "Major": "Major",
+        "Minor": "Minor"
+    }
+
+    # ---------------------------
+    # APPLY FILTER BASED ON TYPE
+    # ---------------------------
+    if view_type == "status":
+        if view in view_status_map:
+            filters["status"] = view_status_map[view]
+        elif view in priority_map:
+            filters["priority"] = priority_map[view]
+        elif view in severity_map:
+            filters["custom_severity"] = severity_map[view]
+
+    elif view_type == "channel":
+        filters["custom_channel"] = view
+
+    elif view_type == "stage":
+        filters["custom_stage"] = view
+
+    # ---------------------------
+    # CUSTOMER FILTER
+    # ---------------------------
+    if customer:
+        filters["customer"] = customer
+    
+    # ---------------------------
+    # CIRCUIT ID FILTER
+    # ---------------------------
+    if circuit_id:
+        filters["custom_circuit_id"] = ["like", f"%{circuit_id}%"]
+    
+    # ---------------------------
+    # TICKET ID FILTER
+    # ---------------------------
+    if ticket_id:
+        filters["name"] = ["like", f"%{ticket_id}%"]
+    
+    # ---------------------------
+    # STATUS FILTER (from sidebar) - handle multi-select
+    # ---------------------------
+    if status:
+        if ',' in status:
+            status_list = [s.strip() for s in status.split(',') if s.strip()]
+            if status_list:
+                filters["status"] = ["in", status_list]
+        else:
+            filters["status"] = status
+    
+    # ---------------------------
+    # STAGE FILTER - handle multi-select
+    # ---------------------------
+    if stage:
+        if ',' in stage:
+            stage_list = [s.strip() for s in stage.split(',') if s.strip()]
+            if stage_list:
+                filters["custom_stage"] = ["in", stage_list]
+        else:
+            filters["custom_stage"] = stage
+    
+    # ---------------------------
+    # PRIORITY FILTER - handle multi-select
+    # ---------------------------
+    if priority:
+        if ',' in priority:
+            priority_list = [p.strip() for p in priority.split(',') if p.strip()]
+            if priority_list:
+                filters["priority"] = ["in", priority_list]
+        else:
+            filters["priority"] = priority
+    
+    # ---------------------------
+    # CHANNEL FILTER - handle multi-select
+    # ---------------------------
+    if channel:
+        if ',' in channel:
+            channel_list = [c.strip() for c in channel.split(',') if c.strip()]
+            if channel_list:
+                filters["custom_channel"] = ["in", channel_list]
+        else:
+            filters["custom_channel"] = channel
+    
+    # ---------------------------
+    # SEVERITY FILTER - handle multi-select
+    # ---------------------------
+    if severity:
+        if ',' in severity:
+            severity_list = [s.strip() for s in severity.split(',') if s.strip()]
+            if severity_list:
+                filters["custom_severity"] = ["in", severity_list]
+        else:
+            filters["custom_severity"] = severity
+    
+    # ---------------------------
+    # DATE RANGE FILTERS
+    # ---------------------------
+    if created_from:
+        filters["creation"] = [">=", created_from + " 00:00:00"]
+    
+    if created_to:
+        if "creation" in filters:
+            filters["creation"] = ["between", [created_from + " 00:00:00", created_to + " 23:59:59"]]
+        else:
+            filters["creation"] = ["<=", created_to + " 23:59:59"]
+    
+    if closed_from or closed_to:
+        # Assuming there's a custom_closed_datetime field
+        if closed_from:
+            filters["custom_closed_datetime"] = [">=", closed_from + " 00:00:00"]
+        if closed_to:
+            if "custom_closed_datetime" in filters:
+                filters["custom_closed_datetime"] = ["between", [closed_from + " 00:00:00", closed_to + " 23:59:59"]]
+            else:
+                filters["custom_closed_datetime"] = ["<=", closed_to + " 23:59:59"]
+    
+    if onhold_from or onhold_to:
+        # Assuming there's a custom_hold_datetime field
+        if onhold_from:
+            filters["custom_hold_datetime"] = [">=", onhold_from + " 00:00:00"]
+        if onhold_to:
+            if "custom_hold_datetime" in filters:
+                filters["custom_hold_datetime"] = ["between", [onhold_from + " 00:00:00", onhold_to + " 23:59:59"]]
+            else:
+                filters["custom_hold_datetime"] = ["<=", onhold_to + " 23:59:59"]
+    
+    # ---------------------------
+    # AGENT FILTER
+    # ---------------------------
+    if agent:
+        # Get all tickets assigned to this agent
+        assigned_tickets = frappe.get_all(
+            "HD Ticket",
+            filters={},
+            fields=["name", "_assign"]
+        )
+        
+        ticket_names = []
+        for t in assigned_tickets:
+            if t.get("_assign"):
+                try:
+                    assigned = json.loads(t["_assign"])
+                    if assigned and agent in assigned:
+                        ticket_names.append(t.name)
+                except:
+                    pass
+        
+        if ticket_names:
+            filters["name"] = ["in", ticket_names]
+        else:
+            filters["name"] = ["in", []]
+
+    # ---------------------------
+    # SEARCH FILTER
+    # ---------------------------
+    if search:
+        filters["subject"] = ["like", f"%{search}%"]
+
+    # ---------------------------
+    # FETCH TICKETS (Pagination Safe)
+    # ---------------------------
+    tickets = frappe.get_all(
+        "HD Ticket",
+        fields=[
+            "name",
+            "subject",
+            "customer",
+            "status",
+            "priority",
+            "resolution_by",
+            "custom_stage",
+            "custom_channel",
+            "creation",
+            "_assign",
+            "custom_is_read",
+            "custom_severity",
+            "custom_circuit_id",
+            "custom_impact",
+            "custom_closed_datetime",
+            "custom_hold_datetime"
+        ],
+        filters=filters,
+        order_by="creation desc",
+        start=start,
+        limit_page_length=page_length
+    )
+
+    # ---------------------------
+    # ASSIGNMENT PROCESSING
+    # ---------------------------
+    users = set()
+
+    for t in tickets:
+        t["custom_is_read"] = 1 if str(t.get("custom_is_read")) == "1" else 0
+
+        if t.get("_assign"):
+            try:
+                assigned = json.loads(t["_assign"])
+                if assigned:
+                    t["assigned_to"] = assigned[0]
+                    users.add(assigned[0])
+                else:
+                    t["assigned_to"] = ""
+            except:
+                t["assigned_to"] = ""
+        else:
+            t["assigned_to"] = ""
+
+    # ---------------------------
+    # USER IMAGE FETCH
+    # ---------------------------
+    user_images = {}
+
+    if users:
+        user_data = frappe.get_all(
+            "User",
+            filters={"name": ["in", list(users)]},
+            fields=["name", "user_image"]
+        )
+
+        for u in user_data:
+            img = u.user_image or ""
+            if img and not img.startswith("http"):
+                img = get_url(img)
+            user_images[u.name] = img
+
+    for t in tickets:
+        t["user_image"] = user_images.get(t["assigned_to"], "")
+
+    # ---------------------------
+    # TOTAL COUNT
+    # ---------------------------
+    total_count = frappe.db.count("HD Ticket", filters=filters)
+
+    return {
+        "tickets": tickets,
+        "count": total_count
+    }
+
+
+@frappe.whitelist()
+def search_agents(text):
+    """Search for agents/users"""
+    if not text:
+        return []
+    
+    users = frappe.get_all(
+        "User",
+        filters={
+            "name": ["like", f"%{text}%"],
+            "enabled": 1
+        },
+        fields=["name", "full_name", "user_image"],
+        limit_page_length=10
+    )
+    
+    result = []
+    for user in users:
+        result.append({
+            "name": user.name,
+            "full_name": user.get("full_name") or user.name,
+            "user_image": user.get("user_image", "")
+        })
+    
+    return result
+
+
+@frappe.whitelist()
+def get_customer_circuits(customer, search_text=""):
+    """Get circuits for a specific customer"""
+    filters = {
+        "customer": customer
+    }
+    
+    if search_text:
+        filters["custom_circuit_id"] = ["like", f"%{search_text}%"]
+    
+    circuits = frappe.get_all(
+        "HD Ticket",
+        fields=["custom_circuit_id"],
+        filters=filters,
+        limit_page_length=20,
+        order_by="custom_circuit_id asc"
+    )
+    
+    # Get unique circuits
+    unique_circuits = []
+    seen = set()
+    for c in circuits:
+        if c.custom_circuit_id and c.custom_circuit_id not in seen:
+            seen.add(c.custom_circuit_id)
+            unique_circuits.append(c.custom_circuit_id)
+    
+    return unique_circuits
+
+
+@frappe.whitelist()
+def get_customer_tickets(customer, search_text=""):
+    """Get tickets for a specific customer"""
+    filters = {
+        "customer": customer
+    }
+    
+    if search_text:
+        filters["name"] = ["like", f"%{search_text}%"]
+    
+    tickets = frappe.get_all(
+        "HD Ticket",
+        fields=["name"],
+        filters=filters,
+        limit_page_length=20,
+        order_by="creation desc"
+    )
+    
+    return [t.name for t in tickets]
+
+
+@frappe.whitelist()
+def get_customer_agents(customer, search_text=""):
+    """Get agents for a specific customer"""
+    # Get all tickets for this customer
+    tickets = frappe.get_all(
+        "HD Ticket",
+        fields=["_assign"],
+        filters={"customer": customer},
+        limit_page_length=200
+    )
+    
+    agents = set()
+    for t in tickets:
+        if t.get("_assign"):
+            try:
+                assigned = json.loads(t["_assign"])
+                for agent in assigned:
+                    agents.add(agent)
+            except:
+                pass
+    
+    # If search text, filter agents
+    if search_text and agents:
+        filtered_agents = []
+        for agent in agents:
+            if search_text.lower() in agent.lower():
+                filtered_agents.append(agent)
+        return filtered_agents
+    
+    return list(agents)
+
+
+@frappe.whitelist()
+def get_filter_options(filter_type):
+    """Get options for various filter types"""
+    options = {
+        "status": ["Open", "Replied", "On Hold", "Wrong Circuit", "Resolved", "Closed"],
+        "priority": ["Urgent", "High", "Medium", "Low"],
+        "severity": ["Critical", "Major", "Minor"],
+        "channel": ["Email", "Portal", "Chat", "Phone", "Web Form", "SSP", "NMS", "NMS-API"],
+        "stage": [
+            "Inprocess", "Finance Issue", "Customer Issue", "Hardware Dispatch",
+            "MBB Issue", "LMS-Re-Feasibility", "Maintenance Visit", "Wrong Circuit",
+            "Other", "Configuration Change", "Project"
+        ]
+    }
+    
+    return options.get(filter_type, [])
+###################################################################################
+# Cloud 2.0 ↔ ERPNext HD Ticket Integration
+
+import frappe
+
+@frappe.whitelist(allow_guest=True)
+def create_hd_ticket(subject, message, circuit_id):
+    ticket = frappe.get_doc({
+        "doctype": "HD Ticket",
+        "subject": subject,
+        "description": message,
+        "custom_circuit_id": circuit_id,
+        "custom_channel": "NMS-API"
+    }).insert(ignore_permissions=True)
+
+    frappe.db.commit()
+
+    return {"status": "success", "ticket_number": ticket.name}
+
+###############################################################################
+@frappe.whitelist()
+def toggle_ticket_read_status(ticket_id):
+    current = frappe.db.get_value("HD Ticket", ticket_id, "custom_is_read") or 0
+    new_value = 0 if current else 1
+
+    frappe.db.set_value("HD Ticket", ticket_id, "custom_is_read", new_value)
+    frappe.db.commit()
+
+    return new_value

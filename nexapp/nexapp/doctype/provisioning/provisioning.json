@@ -110,8 +110,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Status",
-   "options": "Pending\nPartially Completed\nCompleted\nOn hold",
-   "read_only": 1
+   "options": "Pending\nPartially Completed\nCompleted\nOn hold"
   },
   {
    "fieldname": "ip_information_section",
@@ -241,7 +240,6 @@
    "label": "DR Server IP 2"
   },
   {
-   "depends_on": "eval: doc.solution_name && (doc.solution_name.toLowerCase().includes('smart') || doc.solution_name.toLowerCase().includes('hybrid') || doc.solution_name.toLowerCase().includes('dual') || doc.solution_name.toLowerCase().includes('solo') || doc.solution_name.toLowerCase().includes('intelligent'))\n",
    "fieldname": "wan_ip_info_primary_section",
    "fieldtype": "Section Break",
    "label": "WAN IP Info Primary"
@@ -289,8 +287,7 @@
    "fieldname": "lms_id_1",
    "fieldtype": "Link",
    "label": "LMS ID 1",
-   "link_filters": "[[\"Lastmile Services Master\",\"customer\",\"=\",\"eval:doc.customer\"],[\"Lastmile Services Master\",\"circuit_id\",\"=\",\"eval:doc.circuit_id\"],[\"Lastmile Services Master\",\"lms_stage\",\"=\",\"Delivered\"]]",
-   "mandatory_depends_on": "eval: doc.solution_name && (doc.solution_name.toLowerCase().includes('smart') || doc.solution_name.toLowerCase().includes('hybrid') || doc.solution_name.toLowerCase().includes('dual') || doc.solution_name.toLowerCase().includes('solo') || doc.solution_name.toLowerCase().includes('intelligent'))\n",
+   "link_filters": "[[\"Lastmile Services Master\",\"customer\",\"=\",\"eval:doc.customer\"],[\"Lastmile Services Master\",\"circuit_id\",\"=\",\"eval:doc.circuit_id\"]]",
    "options": "Lastmile Services Master"
   },
   {
@@ -458,7 +455,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-01-09 19:03:57.681500",
+ "modified": "2026-02-13 22:43:27.701872",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Provisioning",

@@ -26,6 +26,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Circuit Id",
+   "link_filters": "[[\"Site\",\"customer\",\"=\",\"eval:parent.customer_name_2\"]]",
    "options": "Site"
   },
   {
@@ -76,7 +77,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-01-13 10:49:31.242660",
+ "modified": "2026-02-03 15:46:26.033509",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Circuit disconnection",

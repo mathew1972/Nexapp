@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"lCKhTmzFsa\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Open Deal\",\"col\":3}},{\"id\":\"CWy1nTexYf\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"New Deals\",\"col\":3}},{\"id\":\"K-LQ6qXUPG\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Won Deals\",\"col\":3}},{\"id\":\"NJsnYkF3hR\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Lost Deal This Months\",\"col\":3}},{\"id\":\"Qanw-wHMIM\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"New Meeting This Month\",\"col\":4}},{\"id\":\"0Tyjw2cChi\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Followup Meeting This month\",\"col\":3}},{\"id\":\"XGIwEUStw_\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"id\":\"69RN0XsiJK\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Lead\",\"col\":3}},{\"id\":\"t6PQ0vY-Iw\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Opportunity\",\"col\":3}},{\"id\":\"Gyoav5Hhcy\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Business Case\",\"col\":3}},{\"id\":\"VOFE0hqXRD\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer\",\"col\":3}},{\"id\":\"0ik53fuemG\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Analytics\",\"col\":3}},{\"id\":\"wdROEmB_XG\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"id\":\"AA6RdI8orJ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Quotes\",\"col\":3}},{\"id\":\"SdKxTzoaG0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Organization\",\"col\":3}},{\"id\":\"ngeADLy5NX\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Feasibility\",\"col\":3}},{\"id\":\"wv-aha2puI\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"PO Booking request\",\"col\":3}},{\"id\":\"9vyn3Vjyl7\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Task\",\"col\":3}},{\"id\":\"AMaks39KEy\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Site\",\"col\":3}},{\"id\":\"hoTTCHdZe7\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Order\",\"col\":3}},{\"id\":\"6Wr9pLl_ko\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer\",\"col\":3}},{\"id\":\"f6CSPyTZAz\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Data Import\",\"col\":3}},{\"id\":\"iYVY7cgN5E\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Employee\",\"col\":3}},{\"id\":\"r4OTvmzb7b\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Disconnection Request\",\"col\":3}},{\"id\":\"MKUmvSMqhy\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Expense Claim\",\"col\":3}},{\"id\":\"TL_RS1j4Ug\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\" Employee Advance\",\"col\":3}},{\"id\":\"-I9HhcgUKE\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"ttpROKW9vk\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"3buAGBphT1\",\"type\":\"card\",\"data\":{\"card_name\":\"Report\",\"col\":4}}]",
+ "content": "[{\"id\":\"lCKhTmzFsa\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Open Deal\",\"col\":3}},{\"id\":\"CWy1nTexYf\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"New Deals\",\"col\":3}},{\"id\":\"K-LQ6qXUPG\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Won Deals\",\"col\":3}},{\"id\":\"NJsnYkF3hR\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Lost Deal This Months\",\"col\":3}},{\"id\":\"Qanw-wHMIM\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"New Meeting This Month\",\"col\":4}},{\"id\":\"0Tyjw2cChi\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Followup Meeting This month\",\"col\":3}},{\"id\":\"XGIwEUStw_\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"id\":\"69RN0XsiJK\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Lead\",\"col\":3}},{\"id\":\"t6PQ0vY-Iw\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Opportunity\",\"col\":3}},{\"id\":\"Gyoav5Hhcy\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Business Case\",\"col\":3}},{\"id\":\"VOFE0hqXRD\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer\",\"col\":3}},{\"id\":\"0ik53fuemG\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Analytics\",\"col\":3}},{\"id\":\"wdROEmB_XG\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"id\":\"AA6RdI8orJ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Quotes\",\"col\":3}},{\"id\":\"SdKxTzoaG0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Organization\",\"col\":3}},{\"id\":\"ngeADLy5NX\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Feasibility\",\"col\":3}},{\"id\":\"wv-aha2puI\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"PO Booking request\",\"col\":3}},{\"id\":\"9vyn3Vjyl7\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Task\",\"col\":3}},{\"id\":\"AMaks39KEy\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Site\",\"col\":3}},{\"id\":\"hoTTCHdZe7\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Order\",\"col\":3}},{\"id\":\"6Wr9pLl_ko\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer\",\"col\":3}},{\"id\":\"f6CSPyTZAz\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Data Import\",\"col\":3}},{\"id\":\"iYVY7cgN5E\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Employee\",\"col\":3}},{\"id\":\"r4OTvmzb7b\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Disconnection Request\",\"col\":3}},{\"id\":\"MKUmvSMqhy\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Expense Claim\",\"col\":3}},{\"id\":\"TL_RS1j4Ug\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\" Employee Advance\",\"col\":3}},{\"id\":\"skMuhaVuem\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Blanket Order\",\"col\":3}},{\"id\":\"-I9HhcgUKE\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"ttpROKW9vk\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"3buAGBphT1\",\"type\":\"card\",\"data\":{\"card_name\":\"Report\",\"col\":4}}]",
  "creation": "2025-01-08 21:45:04.469773",
  "custom_blocks": [],
  "docstatus": 0,
@@ -8,7 +8,7 @@
  "for_user": "",
  "hide_custom": 0,
  "icon": "crm",
- "idx": 3,
+ "idx": 17,
  "is_hidden": 0,
  "label": "CRM",
  "links": [
@@ -95,7 +95,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-01-07 11:37:17.355408",
+ "modified": "2026-02-02 11:59:02.791275",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "CRM",
@@ -169,6 +169,14 @@
    "doc_view": "List",
    "label": "Employee",
    "link_to": "Employee",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Blanket Order",
+   "link_to": "Blanket Order",
    "stats_filter": "[]",
    "type": "DocType"
   },

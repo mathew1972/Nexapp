@@ -109,7 +109,7 @@
    "fieldname": "customer",
    "fieldtype": "Link",
    "label": "Organization",
-   "options": "Prospect",
+   "options": "CRM Organization",
    "reqd": 1
   },
   {
@@ -165,7 +165,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-29 12:55:33.511628",
+ "modified": "2026-02-12 14:39:37.985811",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "CCR",

@@ -297,19 +297,23 @@ scheduler_events = {
 
 app_include_css = [
     "/assets/nexapp/css/custom.css",
-    "/assets/nexapp/css/Number_card.css"
+    "/assets/nexapp/css/Number_card.css"    
 ]
 
 app_include_js = [
     "/nexapp/page/bank_reconciliation/bank_reconciliation.js",
     "/nexapp/page/custom_helpdesk/custom_helpdesk.js",
     "/nexapp/page/billing_potal/billing_potal.js",
-    "public/js/crm_extensions.js"  
+    "public/js/crm_extensions.js",
+    "/assets/nexapp/js/deal_list_custom.js",
+    "/assets/nexapp/js/crm_extensions.js",
+    "/assets/nexapp/js/helpdesk/ticket_view.js"
 ]
 
 
 doctype_list_js = {
-    "Site": "public/js/Site_list.js"
+    "Site": "public/js/Site_list.js",
+    "CRM Deal": "public/js/crm_deal_list.js"    
 }
 
 
@@ -319,7 +323,8 @@ doc_events = {
         "before_save": "nexapp.api.validate_delivery_note"
     },
     "Communication": {
-        "after_insert": "nexapp.api.create_hd_ticket_from_communication"        
+        "after_insert": "nexapp.api.create_hd_ticket_from_communication",
+        "before_insert": "nexapp.api.block_techsupport_bounce_emails"        
     },
     "Customer": {
         "after_insert": "nexapp.api.customer_created"
@@ -356,7 +361,7 @@ doc_events = {
     },
     "Payment Entry": {
         "on_submit": "nexapp.api.update_expense_claim_status"
-    },     
+    },      
     "Sales Order": {
         "after_save": "nexapp.api.update_task_circuit_sales_order",
         #"before_submit": "nexapp.api.sales_order_to_site"
@@ -442,6 +447,9 @@ doctype_js = {
         "public/js/site_pincode.js",
         "public/js/site_contact.js"
     ],
+    "Blanket Order":[
+        "public/js/blanket_Order_custom.js"
+    ],
     "HD Ticket": [
         "public/js/hd_ticket_custom.js",
         "public/js/inhouse_ticket.js",
@@ -464,12 +472,10 @@ doctype_js = {
 }
 
 override_whitelisted_methods = {
-    "crm.api.navigation.get_navigation_items": "nexapp.crm_sidebar.get_crm_sidebar_items"
+    "crm.api.navigation.get_navigation_items": "nexapp.crm_sidebar.get_crm_sidebar_items",
+    "nexapp.create_hd_ticket": "nexapp.api.create_hd_ticket"
 }
     
-
-
-
 
 
 

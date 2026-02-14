@@ -1,0 +1,33 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2026-02-13 12:28:39.311528",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2026-02-13 12:48:59.914827",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Employee Update",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    e.employee_name AS \"Employee Name:Data:200\",\n    e.company_email AS \"Company Email:Data:220\",\n    e.status AS \"Status:Data:120\",\n    e.date_of_joining AS \"Date of Joining:Date:120\",\n    e.final_confirmation_date AS \"Final Confirmation Date:Date:160\",\n    e.designation AS \"Designation:Link/Designation:160\",\n    e.reports_to AS \"Reports To:Link/Employee:160\",\n    e.department AS \"Department:Link/Department:160\",\n    e.employment_type AS \"Employment Type:Data:140\",\n    e.grade AS \"Grade:Data:100\",\n    e.custom_sub_grade AS \"Sub Grade:Data:120\",\n\n    -- From User (matched by email)\n    (\n        SELECT u.role_profile_name\n        FROM `tabUser` u\n        WHERE u.email = e.company_email\n        LIMIT 1\n    ) AS \"Role Profile:Data:160\",\n\n    (\n        SELECT u.module_profile\n        FROM `tabUser` u\n        WHERE u.email = e.company_email\n        LIMIT 1\n    ) AS \"Module Profile:Data:160\",\n\n    (\n        SELECT \n            CASE \n                WHEN u.search_bar = 1 THEN 'Yes'\n                ELSE 'No'\n            END\n        FROM `tabUser` u\n        WHERE u.email = e.company_email\n        LIMIT 1\n    ) AS \"Search Bar:Data:100\"\n\nFROM `tabEmployee` e\nORDER BY e.employee_name;\n",
+ "ref_doctype": "Employee",
+ "report_name": "Employee Update",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "HR Manager"
+  },
+  {
+   "role": "Administrator"
+  }
+ ],
+ "timeout": 0
+}

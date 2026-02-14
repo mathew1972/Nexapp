@@ -1,22 +1,4 @@
 
-// ===== FORCE Paid Amount = Allocated (post-create safety) =====
-function __force_set_paid_amount__(pe_name) {
-    const allocated = parseFloat($('#allocated-amount-input').val() || 0);
-    if (!pe_name || !allocated) return;
-
-    frappe.call({
-        method: 'frappe.client.set_value',
-        args: {
-            doctype: 'Payment Entry',
-            name: pe_name,
-            fieldname: {
-                paid_amount: allocated,
-                received_amount: allocated
-            }
-        }
-    });
-}
-
 
 // Complete Bank Reconciliation System with Filters and Reverse Entry Button
 frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
@@ -26,6 +8,15 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
         title: '',  // Empty title since we'll add our own
         single_column: true
     });
+    //frappe.require('/assets/nexapp/js/supplier_advance_po.js');  
+
+    frappe.require([
+    '/assets/nexapp/js/supplier_advance_po.js',
+    '/assets/nexapp/js/customer_advance_so.js'   // ⭐ ADD THIS LINE
+    ]);
+
+
+    
 
     // Add custom header with icon - COMPACT VERSION
     $(`<div class="page-head">
@@ -1194,6 +1185,10 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
             margin-top: 5px;
             display: none;
         }
+        .amount-group {
+            margin-top: 15px;   /* this creates the space above Amount */
+        }
+    
         #outstanding-invoices {
     background-color: #F75900 !important;
     color: white !important;
@@ -1363,25 +1358,8 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
                                 <div class="dropdown-items" id="customer-items"></div>
                             </div>
                         </div>
-                        <input type="hidden" id="customer" value="">
+                        <input type="hidden" id="customer" value="">                    
                     
-                    <!-- CUSTOMER ADVANCE : SALES ORDER -->
-                    <div class="recon-form-group" id="sales-order-group" style="display: none;">
-                        <label for="sales-order">Sales Order</label>
-                        <div class="custom-dropdown">
-                            <div class="dropdown-toggle" id="sales-order-toggle">Select Sales Order</div>
-                            <div class="dropdown-list" id="sales-order-list" style="display: none;">
-                                <input type="text" class="dropdown-search" placeholder="Search Sales Order" id="sales-order-search">
-                                <div class="dropdown-items" id="sales-order-items"></div>
-                            </div>
-                        </div>
-                        <input type="hidden" id="sales-order" value="">
-                    </div>
-
-                    <div class="recon-form-group" id="customer-advance-amount-group" style="display: none;">
-                        <label>Advance Amount</label>
-                        <input type="number" id="customer-advance-amount" class="recon-form-control" step="0.01" placeholder="Enter advance amount">
-                    </div>
 </div>
                     
                     <div class="recon-form-group" id="supplier-group" style="display: none;">
@@ -1459,9 +1437,10 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
                         <div class="itemized-error" id="itemized-error">Total amount entered exceeds statement amount</div>
                     </div>
                     
-                    <div class="recon-form-group">
+                    <div class="recon-form-group amount-group">
                         <label>Amount</label>
-                        <input type="text" id="manual-amount" class="recon-form-control recon-amount-input readonly-field dark-highlight" readonly />
+                        <input type="text" id="manual-amount"
+                               class="recon-form-control recon-amount-input readonly-field dark-highlight" readonly />
                     </div>
                     
                     <div class="recon-form-group" id="invoice-info-section" style="display: none;">
@@ -1536,40 +1515,7 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
 
     $container.appendTo(page.body);
     $rightPanel.appendTo('body');
-    // ================= CUSTOMER ADVANCE UI (RUNTIME SAFE) =================
-    function ensure_customer_advance_block() {
-        const $container = $('#manual-categorize-section');
-        if (!$container.length) return;
-
-        if ($('#sales-order-group').length) return; // already added
-
-        const html = `
-            <div class="recon-form-group" id="sales-order-group" style="display:none;">
-                <label>Sales Order</label>
-                <div class="custom-dropdown">
-                    <div class="dropdown-toggle" id="sales-order-toggle">Select Sales Order</div>
-                    <div class="dropdown-list" id="sales-order-list" style="display:none;">
-                        <input type="text" class="dropdown-search" id="sales-order-search" placeholder="Search Sales Order">
-                        <div class="dropdown-items" id="sales-order-items"></div>
-                    </div>
-                </div>
-                <input type="hidden" id="sales-order">
-            </div>
-
-            <div class="recon-form-group" id="customer-advance-amount-group" style="display:none;">
-                <label>Enter advance amount</label>
-                <input type="number" id="customer-advance-amount"
-                       class="recon-form-control"
-                       step="0.01">
-            </div>
-        `;
-
-        $('#customer-group').after(html);
-
-        initialize_single_dropdown('sales-order');
-    }
-
-
+    
     // Variables
     let currentPage = 1;
     let perPage = 20;
@@ -1580,15 +1526,13 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
     let selectedStatementData = null;
     let taxAccounts = [];
     let expenseAccounts = [];
-    let transferAccounts = [];
-    let isCustomerPayment = false;
+    let transferAccounts = [];    
     let isSupplierPayment = false;
     let isEmployeeExpense = false;
     let isExpense = false;
     let isTransfer = false;
     let isItemized = false;
-    let isEmployeeAdvance = false;
-    let isCustomerAdvance = false;
+    let isEmployeeAdvance = false;    
     let salesOrders = [];
 
     let employees = [];
@@ -1617,6 +1561,26 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
     let reverseEntries = [];
     let selectedReverseEntries = [];
 
+
+    // ⭐ Sync From Account = Selected Bank Account
+function sync_from_account_with_bank() {
+
+    if (!selectedBankAccount) return;
+
+    // Find selected bank account object
+    const acc = bankAccounts.find(a => a.name === selectedBankAccount);
+    if (!acc) return;
+
+    const displayName = acc.custom_account_head || acc.name;
+
+    // Set hidden value (used in entry creation)
+    $('#from-account').val(acc.name);
+
+    // Show label text in UI
+    $('#from-account-toggle').text(displayName);
+}
+
+
     // Initialize date filters
     function initialize_date_filters() {
         $('#date-from').val('');
@@ -1627,47 +1591,72 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
 
     // Load bank accounts
     function load_bank_accounts() {
-        frappe.call({
-            method: "frappe.client.get_list",
-            args: {
-                doctype: "Bank Statement Entry",
-                fields: ["bank_account"],
-                limit_page_length: 0
-            },
-            callback: function(r) {
-                const uniqueBankAccounts = [...new Set(r.message.map(entry => entry.bank_account).filter(Boolean))];
-                bankAccounts = uniqueBankAccounts;
-                update_bank_account_dropdown();
-            
-            if (r && r.message && r.message.payment_entry) {
-                __force_set_paid_amount__(r.message.payment_entry);
-            }
+
+    // STEP A: Get bank accounts used in statements
+    frappe.call({
+        method: "frappe.client.get_list",
+        args: {
+            doctype: "Bank Statement Entry",
+            fields: ["bank_account"],
+            limit_page_length: 0
+        },
+        callback: function(res) {
+
+            const uniqueAccounts = [...new Set(
+                res.message.map(e => e.bank_account).filter(Boolean)
+            )];
+
+            if (!uniqueAccounts.length) return;
+
+            // STEP B: Fetch custom_account_head from Bank Account
+            frappe.call({
+                method: "frappe.client.get_list",
+                args: {
+                    doctype: "Bank Account",
+                    fields: ["name", "custom_account_head"],
+                    filters: {
+                        name: ["in", uniqueAccounts]
+                    },
+                    limit_page_length: 0
+                },
+                callback: function(r) {
+
+                    bankAccounts = r.message || [];
+                    update_bank_account_dropdown();
+                    load_transfer_accounts_from_bank_accounts();   // ⭐ ADD THIS
+
+                }
+            });
         }
-        });
-    }
+    });
+}
 
     // Update bank account dropdown
     function update_bank_account_dropdown() {
-        const $dropdown = $('#bank-account-select');
-        $dropdown.empty();
-        
-        if (bankAccounts.length === 0) {
-            $dropdown.append('<option value="">No bank accounts found in statements</option>');
-            return;
-        }
-        
-        $dropdown.append('<option value="">All Bank Accounts</option>');
-        
-        bankAccounts.forEach(account => {
-            $dropdown.append('<option value="' + account + '">' + account + '</option>');
-        });
-        
-        if (bankAccounts.length > 0) {
-            selectedBankAccount = bankAccounts[0];
-            $dropdown.val(selectedBankAccount);
-            $dropdown.trigger('change');
-        }
+    const $dropdown = $('#bank-account-select');
+    $dropdown.empty();
+
+    if (bankAccounts.length === 0) {
+        $dropdown.append('<option value="">No Bank Accounts Found</option>');
+        return;
     }
+
+    $dropdown.append('<option value="">All Bank Accounts</option>');
+
+    bankAccounts.forEach(acc => {
+
+        const displayName = acc.custom_account_head || acc.name;
+
+        $dropdown.append(
+            `<option value="${acc.name}">${displayName}</option>`
+        );
+    });
+
+    selectedBankAccount = bankAccounts[0].name;
+    $dropdown.val(selectedBankAccount);
+    $dropdown.trigger('change');
+}
+
 
     // Initialize table filter inputs
     function initialize_table_filters() {
@@ -1836,11 +1825,14 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
 
     // Bank account change handler
     $('#bank-account-select').change(function() {
-        selectedBankAccount = $(this).val();
-        currentPage = 1;
-        load_cards_data();
-        load_bank_statement_entries();
-    });
+    selectedBankAccount = $(this).val();
+    currentPage = 1;
+
+    sync_from_account_with_bank();   // ⭐ ADD THIS LINE
+
+    load_cards_data();
+    load_bank_statement_entries();
+});
 
     // Date filter handlers
     $('#apply-date-filter').click(function() {
@@ -2107,17 +2099,39 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
 
     // Initialize transfer dropdowns with validation
     function initialize_transfer_dropdowns() {
-        initialize_single_dropdown('from-account');
-        initialize_single_dropdown('to-account');
-        
-        $('#from-account').on('change', function() {
-            update_to_account_dropdown();
-        });
-        
-        $('#to-account').on('change', function() {
-            validate_transfer_accounts();
-        });
-    }
+
+    // ❌ REMOVE generic loader for From Account
+    // initialize_single_dropdown('from-account');
+
+    // ✅ Keep To Account generic
+    initialize_single_dropdown('to-account');
+    
+    $('#from-account').on('change', function() {
+        update_to_account_dropdown();
+    });
+    
+    $('#to-account').on('change', function() {
+        validate_transfer_accounts();
+    });
+}
+
+
+    function load_transfer_accounts_from_bank_accounts() {
+
+    const $items = $('#from-account-items');
+    $items.empty();
+
+    bankAccounts.forEach(acc => {
+        const displayName = acc.custom_account_head || acc.name;
+
+        $items.append(
+            `<div class="dropdown-item" data-value="${acc.name}">
+                ${displayName}
+            </div>`
+        );
+    });
+}
+
 
     // Initialize itemized dropdowns
     function initialize_itemized_dropdowns() {
@@ -2228,11 +2242,7 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
             $list.hide();
             
             if (type === 'customer') {
-                $('#customer').trigger('change');
-
-        if ($('#category').val() === 'Customer Advance') {
-            load_sales_orders_for_customer(customer);
-        }
+                $('#customer').trigger('change');        
 
             } else if (type === 'supplier') {
                 $('#supplier').trigger('change');
@@ -2318,14 +2328,16 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
         if (isWithdrawal) {
             $category.append('<option value="Employee Expense Claim">Employee Expense Claim</option>');
             $category.append('<option value="Employee Advance">Employee Advance</option>');
-            $category.append('<option value="Supplier Payment">Supplier Payment</option>');
+                    $category.append('<option value=\"Supplier Advance\">Supplier Advance</option>');
+$category.append('<option value="Supplier Payment">Supplier Payment</option>');
             $category.append('<option value="Expense">Expense</option>');
             $category.append('<option value="Transfer To Another Account">Transfer To Another Account</option>');
             $category.append('<option value="Itemized Journal Entry">Itemized Journal Entry');
         } else if (isDeposit) {
-            $category.append('<option value="Customer Payment">Customer Payment</option>');
-            $category.append('<option value="Customer Advance">Customer Advance</option>');
+            $category.append('<option value="Customer Payment">Customer Payment</option>');            
             $category.append('<option value="Transfer To Another Account">Transfer To Another Account</option>');
+            $category.append('<option value="Itemized Journal Entry">Itemized Journal Entry');
+            $category.append('<option value="Customer Advance">Customer Advance</option>');
         }
     }
 
@@ -2347,6 +2359,53 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
         $('#payment-amount-display-section').hide();
         $('#match-now-section').hide();
         $('#employee-advance-list').hide();
+
+        // ================= SUPPLIER ADVANCE (WITHDRAWAL ONLY) =================
+        if (category === 'Supplier Advance' && isWithdrawal) {
+            // Show Supplier & PO
+            $('#supplier-group').show();
+            if ($('#purchase-order-group').length) {
+                $('#purchase-order-group').show();
+            }
+
+            // Show amount & match
+            $('#payment-amount-display-section').show();
+            $('#match-now-section').show();
+
+            // Set advance amount from statement withdrawal
+            if (typeof statementAmount !== 'undefined') {
+                $('#manual-amount').val(parseFloat(statementAmount || 0).toFixed(2));
+            }
+
+            // Load suppliers using existing util
+            if (typeof load_suppliers === 'function') {
+                load_suppliers();
+            }
+
+            return;
+        }
+
+        // ================= CUSTOMER ADVANCE =================
+    if (category === 'Customer Advance' && isDeposit) {
+
+           // Show fields
+           $('#customer-group').show();
+           $('#sales-order-group').show();   // optional
+           $('#customer-advance-amount-group').show();
+           $('#payment-amount-display-section').show();
+           $('#match-now-section').show();
+
+           // Hide invoice table
+           $('#invoice-info-section').hide();
+           $('#customer-payment-table-section').hide();
+
+           // Set amount = Deposit Amount
+           $('#customer-advance-amount').val(statementAmount.toFixed(2));
+           $('#manual-amount').val(statementAmount.toFixed(2));
+           $('#payment-amount-display').text(statementAmount.toFixed(2));
+
+           return;
+        }
         
         // Reset dropdowns
         $('#employee-toggle').text('Select Employee');
@@ -2356,9 +2415,7 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
         $('#supplier-toggle').text('Select Supplier');
         $('#supplier').val('');
         $('#expense-toggle').text('Select Expense Account');
-        $('#expense').val('');
-        $('#from-account-toggle').text('Select From Account');
-        $('#from-account').val('');
+        $('#expense').val('');        
         $('#to-account-toggle').text('Select To Account');
         $('#to-account').val('');
         $('#transfer-description').val('');
@@ -2415,18 +2472,27 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
             $('#match-now-section').show();
             isExpense = true;
         } else if (category === 'Transfer To Another Account') {
-            $('#from-account-group').show();
-            $('#to-account-group').show();
-            $('#transfer-description-group').show();
-            $('#match-now-section').show();
-            isTransfer = true;
-            
-            update_to_account_dropdown();
-            
-            if (selectedStatementData && selectedStatementData.description) {
-                $('#transfer-description').val(selectedStatementData.description);
-            }
-        } else if (category === 'Itemized Journal Entry') {
+    $('#from-account-group').show();
+    $('#to-account-group').show();
+    $('#transfer-description-group').show();
+    $('#match-now-section').show();
+
+    // ⭐ AUTO SET From Account = Bank Account
+    const bankAccount = $('#bank-account-select').val();
+    if (bankAccount) {
+        $('#from-account').val(bankAccount);
+        $('#from-account-toggle').text(bankAccount);
+    }
+
+    isTransfer = true;
+    
+    update_to_account_dropdown();
+    
+    if (selectedStatementData && selectedStatementData.description) {
+        $('#transfer-description').val(selectedStatementData.description);
+    }
+}
+ else if (category === 'Itemized Journal Entry') {
             $('#itemized-group').show();
             $('#match-now-section').show();
             isItemized = true;
@@ -2540,7 +2606,9 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
 
     // SINGLE MATCH NOW BUTTON HANDLER - UPDATED FOR EMPLOYEE ADVANCE PAYMENT ENTRY
     $(document).on('click', '#match-now-btn', function () {
-        const category = $('#category').val();
+    const category = $('#category').val();
+
+    // ==========================================================================
         
         if (category === 'Expense') {
             const expenseAccount = $('#expense').val();
@@ -3690,9 +3758,11 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
         
         selectedStatement = entry.name;
         selectedStatementData = entry;
+        window.selected_statement_entry = entry.name;
         $tr.data('statement', entry.name);
         
         toggleRightPanel(true);
+        sync_from_account_with_bank();
         
         const amount = entry.withdrawal || entry.deposit;
         $('#manual-amount').val('₹ ' + format_currency(amount));
@@ -3712,9 +3782,7 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
         $('#supplier-toggle').text('Select Supplier');
         $('#supplier').val('');
         $('#expense-toggle').text('Select Expense Account');
-        $('#expense').val('');
-        $('#from-account-toggle').text('Select From Account');
-        $('#from-account').val('');
+        $('#expense').val('');        
         $('#to-account-toggle').text('Select To Account');
         $('#to-account').val('');
         $('#transfer-description').val('');
@@ -4529,234 +4597,92 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
     load_bank_statement_entries();
 };
 
-    // FIX: Re-show Customer Advance fields when switching back to Categorize tab
-    $('.recon-tab').on('click', function () {
-        const tab = $(this).data('tab');
-        if (tab === 'categorize' && $('#category').val() === 'Customer Advance') {
-            $('#customer-group').show();
-            $('#sales-order-group').show();
-            $('#customer-advance-amount-group').show();
-            $('#payment-amount-display-section').show();
-            $('#match-now-section').show();
-        }
-    });
+// =====================================================
+// AUTO SET FROM ACCOUNT = SELECTED BANK ACCOUNT
+// =====================================================
 
-    $('#customer-advance-amount').on('input', function () {
-        const amt = parseFloat($(this).val()) || 0;
-        $('#manual-amount').val(amt.toFixed(2));
-        $('#payment-amount-display').text(amt.toFixed(2));
-    });
+function set_from_account_as_bank() {
+    const bankAccount = $('#bank-account-select').val();
+    if (!bankAccount) return;
 
-    function show_customer_advance_fields() {
-        ensure_customer_advance_block();
-        $('#customer-group').show();
-        $('#sales-order-group').show();
-        $('#customer-advance-amount-group').show();
-        $('#invoice-info-section').hide();
-        $('#payment-amount-display-section').show();
-        $('#match-now-section').show();
+    // Set hidden field value
+    $('#from-account').val(bankAccount);
+
+    // Set display text and lock field
+    $('#from-account-toggle')
+        .text(bankAccount)
+        .addClass('readonly-field')
+        .css({
+            'pointer-events': 'none',
+            'background': '#f5f5f5',
+            'color': '#555'
+        });
+}
+
+// When Category changes
+$(document).on('change', '#category', function () {
+    const category = $(this).val();
+
+    if (category === "Transfer To Another Account") {
+
+        $('#from-account-group').show();
+        $('#to-account-group').show();
+        $('#transfer-description-group').show();
+
+
+        set_from_account_as_bank();   // ⭐ AUTO SET HERE
+    } 
+    else {
+        // Reset when not transfer
+        $('#from-account-group').hide();
+        $('#to-account-group').hide();
+        $('#transfer-description-group').hide();
+
+        $('#from-account-toggle')
+            .text('Select From Account')
+            .removeClass('readonly-field')
+            .css({'pointer-events': '', 'background': '', 'color': ''});
+
+        $('#from-account').val('');
     }
+});
 
-    $('.recon-tab').on('click', function () {
-        const tab = $(this).data('tab');
-        if (tab === 'categorize' && $('#category').val() === 'Customer Advance') {
-            show_customer_advance_fields();
-        }
-    });
-
-    $(document).on('input', '#customer-advance-amount', function () {
-        const amt = parseFloat($(this).val()) || 0;
-        $('#manual-amount').val(amt.toFixed(2));
-        $('#payment-amount-display').text(amt.toFixed(2));
-    });
+// If Bank Account filter changes, update From Account
+$(document).on('change', '#bank-account-select', function () {
+    if ($('#category').val() === "Transfer To Another Account") {
+        set_from_account_as_bank();
+    }
+});
 
 
-// ================= LOAD SALES ORDERS FROM PY (Customer Advance) =================
-function load_sales_orders_for_customer(customer) {
-    if (!customer) return;
+
+// ================= SUPPLIER ADVANCE PO LOADER =================
+$(document).off('change.supplierAdvance').on('change.supplierAdvance', '#supplier', function () {
+    if ($('#category').val() !== 'Supplier Advance') return;
+
+    const supplier = $(this).val();
+    const $po = $('#purchase-order');
+    if (!$po.length) return;
+
+    $po.val('');
+    $po.find('option').remove();
+    $po.append('<option value="">Select Purchase Order</option>');
+
+    if (!supplier) return;
 
     frappe.call({
-        method: "nexapp.api.get_submitted_sales_orders_by_customer",
+        method: 'frappe.client.get_list',
         args: {
-            customer: customer
+            doctype: 'Purchase Order',
+            filters: { supplier: supplier, docstatus: 1 },
+            fields: ['name'],
+            limit_page_length: 0
         },
         callback: function (r) {
-            const orders = r.message || [];
-            const $items = $('#sales-order-items');
-            $items.empty();
-
-            if (!orders.length) {
-                $items.append('<div class="dropdown-item no-click">No submitted Sales Orders</div>');
-                return;
-            }
-
-            orders.forEach(so => {
-                $items.append(`
-                    <div class="dropdown-item"
-                         data-value="${so.name}"
-                         data-amount="${so.grand_total}">
-                        ${so.name} — ₹ ${so.grand_total.toFixed(2)}
-                    </div>
-                `);
+            (r.message || []).forEach(function (po) {
+                $po.append('<option value="' + po.name + '">' + po.name + '</option>');
             });
         }
     });
-}
-
-
-
-    // =========================================================
-    // Load Sales Orders for Customer (Customer Advance) - CLEAN
-    // =========================================================
-    function load_sales_orders_for_customer(customer) {
-        if (!customer) return;
-
-        frappe.call({
-            method: "nexapp.api.get_submitted_sales_orders_by_customer",
-            args: {
-                customer: customer
-            },
-            callback: function (r) {
-                const orders = r.message || [];
-                const $items = $('#sales-order-items');
-                $items.empty();
-
-                if (!orders.length) {
-                    $items.append('<div class="dropdown-item no-click">No submitted Sales Orders</div>');
-                    return;
-                }
-
-                orders.forEach(so => {
-                    const amount = parseFloat(so.grand_total || 0);
-                    $items.append(
-                        '<div class="dropdown-item" ' +
-                        'data-value="' + so.name + '" ' +
-                        'data-amount="' + amount + '">' +
-                        so.name + ' — ₹ ' + amount.toFixed(2) +
-                        '</div>'
-                    );
-                });
-            }
-        });
-    }
-
-
-// ================= ABSOLUTE OVERRIDE: CUSTOMER ADVANCE VISIBILITY =================
-function __force_customer_advance_ui__() {
-    if ($('#category').val() !== 'Customer Advance') return;
-
-    // Ensure blocks exist
-    if (!$('#sales-order-group').length) {
-        ensure_customer_advance_block();
-    }
-
-    // FORCE SHOW (override all previous hide logic)
-    $('#manual-categorize-section').show();
-    $('#customer-group').css('display', 'block');
-    $('#sales-order-group').css('display', 'block');
-    $('#customer-advance-amount-group').css('display', 'block');
-    $('#invoice-info-section').css('display', 'none');
-    $('#payment-amount-display-section').css('display', 'block');
-    $('#match-now-section').css('display', 'block');
-}
-
-// Hook everywhere (cannot be overridden)
-$(document).on('change', '#category', __force_customer_advance_ui__);
-$(document).on('click', '.recon-tab', function () {
-    setTimeout(__force_customer_advance_ui__, 50);
 });
-$(document).on('click', '.statement-row', function () {
-    setTimeout(__force_customer_advance_ui__, 50);
-});
-
-$(document).on('change', '#customer', function () {
-    if ($('#category').val() === 'Customer Advance') {
-        load_sales_orders_for_customer($(this).val());
-    }
-});
-
-$(document).on('change', '#sales-order', function () {
-    const $row = $('#sales-order-items').find('[data-value="' + this.value + '"]');
-    const amount = parseFloat($row.data('amount')) || 0;
-
-    $('#customer-advance-amount').val(amount.toFixed(2));
-    $('#manual-amount').val(amount.toFixed(2));
-    $('#payment-amount-display').text(amount.toFixed(2));
-});
-
-
-/* ================= CUSTOMER ADVANCE : MATCH NOW -> PAYMENT ENTRY =================
-   This block integrates with existing UI and uses:
-   PY: nexapp.api.create_customer_advance_payment_entry
-   It DOES NOT remove or change any existing logic.
-=============================================================================== */
-
-(function () {
-    function isCustomerAdvanceSelected() {
-        return $('#category').val() === 'Customer Advance';
-    }
-
-    function getCustomerAdvancePayload() {
-        return {
-            bank_statement_entry: window.selectedStatement,
-            customer: $('#customer').val(),
-            sales_order: $('#sales-order').val(),
-            amount: parseFloat($('#customer-advance-amount').val() || 0),
-            bank_account: $('#bank-account-select').val()
-        };
-    }
-
-    function validateCustomerAdvance() {
-        if (!$('#customer').val()) {
-            frappe.msgprint('Please select Customer');
-            return false;
-        }
-        if (!$('#sales-order').val()) {
-            frappe.msgprint('Please select Sales Order');
-            return false;
-        }
-        const amt = parseFloat($('#customer-advance-amount').val() || 0);
-        if (!amt || amt <= 0) {
-            frappe.msgprint('Advance amount must be greater than zero');
-            return false;
-        }
-        return true;
-    }
-
-    $(document).on('click', '#match-now-btn', function () {
-        if (!isCustomerAdvanceSelected()) return;
-        if (!validateCustomerAdvance()) return;
-
-        const payload = getCustomerAdvancePayload();
-
-        frappe.call({
-            method: 'nexapp.api.create_customer_advance_payment_entry',
-            args: payload,
-            freeze: true,
-            freeze_message: 'Creating Customer Advance Payment Entry...',
-            callback: function (r) {
-                if (!r || !r.message) return;
-
-                if (r.message.status === 'success') {
-                    frappe.show_alert({
-                        message: 'Payment Entry ' + r.message.payment_entry + ' created successfully',
-                        indicator: 'green'
-                    });
-
-                    // Update paid/received = allocated (safety)
-                    if (typeof __force_set_paid_amount__ === 'function') {
-                        __force_set_paid_amount__(r.message.payment_entry);
-                    }
-
-                    // Close panel + reload data
-                    $('.close-panel').trigger('click');
-                    if (typeof load_bank_statement_entries === 'function') {
-                        load_bank_statement_entries();
-                    }
-                } else {
-                    frappe.msgprint(r.message.error || 'Failed to create Payment Entry');
-                }
-            }
-        });
-    });
-})();
+// ================= END SUPPLIER ADVANCE PO LOADER =================

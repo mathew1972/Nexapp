@@ -464,7 +464,7 @@
    "fieldname": "feaseibility_from",
    "fieldtype": "Link",
    "label": "Feasibility From",
-   "link_filters": "[[\"DocType\", \"name\", \"in\", [\"Customer\", \"Prospect\"]]]",
+   "link_filters": "[[\"DocType\",\"name\",\"in\",[\"Customer\",\"CRM Organization\"]]]",
    "options": "DocType"
   },
   {
@@ -706,7 +706,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2025-12-19 10:37:28.242385",
+ "modified": "2026-02-02 21:57:44.057534",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",

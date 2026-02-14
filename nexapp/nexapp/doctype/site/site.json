@@ -241,7 +241,6 @@
    "fieldtype": "Data",
    "in_standard_filter": 1,
    "label": "Site Name  ",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -495,13 +494,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "project_manager",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Project Manager ID",
-   "options": "User"
-  },
-  {
    "fieldname": "column_break_lryq",
    "fieldtype": "Column Break"
   },
@@ -538,7 +530,8 @@
    "fieldtype": "Link",
    "label": "Solution Code",
    "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"Solution\"]]",
-   "options": "Item"
+   "options": "Item",
+   "read_only": 1
   },
   {
    "fetch_from": "solution_code.item_name",
@@ -886,8 +879,7 @@
    "fieldtype": "Link",
    "label": "Provisioning ID",
    "link_filters": "[[\"Provisioning\",\"customer\",\"=\",\"eval:doc.customer\"],[\"Provisioning\",\"circuit_id\",\"=\",\"eval:doc.name\"],[\"Provisioning\",\"status\",\"=\",\"Completed\"]]",
-   "options": "Provisioning",
-   "read_only": 1
+   "options": "Provisioning"
   },
   {
    "fieldname": "column_break_hclh",
@@ -1393,13 +1385,18 @@
    "fieldtype": "Link",
    "label": "HD Customer Type",
    "options": "Customer Type"
+  },
+  {
+   "fieldname": "project_manager",
+   "fieldtype": "Data",
+   "label": "Project Manager"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_calendar_and_gantt": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2026-01-09 00:39:53.473721",
+ "modified": "2026-02-06 10:51:43.661383",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

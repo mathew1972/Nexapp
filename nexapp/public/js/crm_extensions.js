@@ -35,9 +35,11 @@ function handleCCRAction({ doc, call, createToast }) {
                 createToast, 
                 options: values 
             });
-            dialog.hide();
+            dialog.hide();  
         }
     });
     
     dialog.show();
 }
+
+

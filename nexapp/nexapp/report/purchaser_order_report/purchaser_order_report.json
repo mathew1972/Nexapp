@@ -1,0 +1,57 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2026-01-14 17:00:07.400213",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2026-01-14 17:00:07.400213",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Purchaser Order Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    -- Purchase Order Details\n    po.name AS \"Purchase Order No:Link/Purchase Order:180\",\n    po.custom_lms_id AS \"LMS ID::140\",\n    po.circuit_id AS \"Circuit ID::160\",\n\n    -- Site Details\n    s.name AS \"Site Name:Link/Site:180\",\n    s.site_status AS \"Site Status::120\",\n\n    -- Supplier & PO Financials\n    po.supplier AS \"Supplier Name:Link/Supplier:180\",\n    po.rounded_total AS \"PO Value:Currency:120\",\n    po.status AS \"PO Status::120\",\n\n    -- LMS Details\n    lms.lms_stage AS \"LMS Stage::140\",\n\n    -- Purchase Invoice Details (Against PO)\n    pi.name AS \"Purchase Invoice No:Link/Purchase Invoice:180\",\n    pi.status AS \"Purchase Invoice Status::140\",\n    pi.custom_dutation_from AS \"Period From:Date:120\",\n    pi.custom_duration_to AS \"Period To:Date:120\"\n\nFROM `tabPurchase Order` po\n\n-- \ud83d\udd17 Site linked via Circuit ID\nLEFT JOIN `tabSite` s\n    ON s.name = po.circuit_id\n\n-- \ud83d\udd17 LMS linked via LMS ID\nLEFT JOIN `tabLastmile Services Master` lms\n    ON lms.name = po.custom_lms_id\n\n-- \ud83d\udd17 Purchase Invoice Item linked via Purchase Order\nLEFT JOIN `tabPurchase Invoice Item` pii\n    ON pii.purchase_order = po.name\n\n-- \ud83d\udd17 Purchase Invoice Header\nLEFT JOIN `tabPurchase Invoice` pi\n    ON pi.name = pii.parent\n    AND pi.docstatus = 1\n\nWHERE\n    po.docstatus = 1\n\nORDER BY\n    po.transaction_date DESC;\n",
+ "ref_doctype": "Purchase Order",
+ "report_name": "Purchaser Order Report",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Purchase User"
+  },
+  {
+   "role": "Purchase Manager"
+  },
+  {
+   "role": "Stock User"
+  },
+  {
+   "role": "Accounts  & Finance Manager"
+  },
+  {
+   "role": "Account Payable"
+  },
+  {
+   "role": "accounts receivable"
+  },
+  {
+   "role": "Account Receivable User"
+  },
+  {
+   "role": "Product Engineer"
+  },
+  {
+   "role": "Support Manager"
+  },
+  {
+   "role": "Projects User"
+  }
+ ],
+ "timeout": 0
+}
