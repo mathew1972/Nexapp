@@ -7,57 +7,48 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "hd_ticket_information_section",
-  "customer_ticket_id",
-  "customer_ticket_status",
-  "column_break_upsw",
-  "circuit_id",
-  "customer",
   "lms_ticket_information_section",
   "lms_id",
-  "product_item",
+  "lms_bandwith",
   "lms_supplier",
-  "lms_ticket_internal",
-  "subcategory",
-  "created_date_and_time",
-  "payment_escalation_task",
   "column_break_ccpe",
   "lms_ticket_status",
+  "channel",
+  "bandwith_type",
+  "section_break_xpca",
+  "subcategory",
+  "lms_ticket_internal",
+  "created_date_and_time",
   "closed_on",
+  "column_break_zeec",
   "rca",
-  "mode",
+  "payment_escalation_task",
   "lms_ticket_id",
   "attachment",
+  "hd_ticket_information_section",
+  "circuit_id",
+  "site_type",
+  "site_id__legal_code",
+  "column_break_upsw",
+  "customer",
+  "customer_type",
+  "solution_name",
   "lms_1_partner_contact_details_section",
   "contact_person_1",
   "email_1",
   "column_break_zkuu",
   "phone_1",
   "mobile_1",
-  "descriptions_section",
+  "ticket_details_section",
+  "subject",
   "description",
   "escalation_matrix_tab",
-  "table_gqpg"
+  "escalation_matrix"
  ],
  "fields": [
   {
-   "columns": 2,
-   "fetch_from": "lms_id.supplier",
-   "fieldname": "lms_supplier",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "LMS Supplier",
-   "options": "Supplier"
-  },
-  {
    "fieldname": "column_break_ccpe",
    "fieldtype": "Column Break"
-  },
-  {
-   "fetch_from": "customer_ticket_id.status",
-   "fieldname": "customer_ticket_status",
-   "fieldtype": "Data",
-   "label": "Customer Ticket status"
   },
   {
    "fieldname": "lms_ticket_information_section",
@@ -69,21 +60,16 @@
    "fieldname": "lms_id",
    "fieldtype": "Link",
    "label": "LMS ID",
-   "link_filters": "[[\"Lastmile Services Master\",\"lms_stage\",\"=\",\"Delivered\"],[\"Lastmile Services Master\",\"circuit_id\",\"=\",\"eval:doc.circuit_id\"]]",
+   "link_filters": "[]",
    "options": "Lastmile Services Master"
-  },
-  {
-   "fetch_from": "customer_ticket_id.custom_circuit_id",
-   "fieldname": "circuit_id",
-   "fieldtype": "Link",
-   "label": "Circuit ID",
-   "options": "Site"
   },
   {
    "default": "Open",
    "fieldname": "lms_ticket_status",
    "fieldtype": "Select",
-   "label": "LMS ticket Status",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "LMS Ticket Status",
    "options": "Open\nreported to ISP\nReplied\nResolved\nWrong Circuit\nClosed"
   },
   {
@@ -98,16 +84,6 @@
    "fieldname": "escalation_matrix_tab",
    "fieldtype": "Tab Break",
    "label": "Escalation matrix"
-  },
-  {
-   "fieldname": "table_gqpg",
-   "fieldtype": "Table",
-   "options": "LMS Contact Escalation"
-  },
-  {
-   "fieldname": "descriptions_section",
-   "fieldtype": "Section Break",
-   "label": "Descriptions"
   },
   {
    "fieldname": "description",
@@ -148,31 +124,19 @@
    "label": "Mobile 1"
   },
   {
-   "fieldname": "customer_ticket_id",
-   "fieldtype": "Link",
-   "label": "Customer Ticket ID",
-   "options": "HD Ticket"
-  },
-  {
    "fieldname": "column_break_upsw",
    "fieldtype": "Column Break"
   },
   {
+   "collapsible": 1,
    "fieldname": "hd_ticket_information_section",
    "fieldtype": "Section Break",
-   "label": "Customer Ticket Information"
+   "label": "Site Information"
   },
   {
    "fieldname": "lms_ticket_internal",
    "fieldtype": "Data",
    "label": "LMS Ticket Internal"
-  },
-  {
-   "fieldname": "mode",
-   "fieldtype": "Select",
-   "label": "Mode",
-   "mandatory_depends_on": "eval:doc.lms_ticket_status=='reported to ISP'",
-   "options": "\nEmail\nPortal"
   },
   {
    "depends_on": "eval:doc.mode=='Email'",
@@ -185,6 +149,8 @@
    "fetch_from": "circuit_id.customer",
    "fieldname": "customer",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Customer"
   },
   {
@@ -219,16 +185,92 @@
    "options": "\nBackhaul down"
   },
   {
-   "fetch_from": "lms_id.lms_brandwith_name",
-   "fieldname": "product_item",
+   "fieldname": "escalation_matrix",
+   "fieldtype": "Table",
+   "label": " Escalation Matrix",
+   "options": "HD  Escalation matrix"
+  },
+  {
+   "fetch_from": "lms_id.supplier",
+   "fieldname": "lms_supplier",
+   "fieldtype": "Link",
+   "label": "LMS Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fetch_from": "lms_id.bandwith_type",
+   "fieldname": "bandwith_type",
    "fieldtype": "Data",
-   "label": "Product Item"
+   "label": "Bandwith Type"
+  },
+  {
+   "fieldname": "subject",
+   "fieldtype": "Data",
+   "label": "Subject"
+  },
+  {
+   "fieldname": "channel",
+   "fieldtype": "Select",
+   "label": "Channel",
+   "mandatory_depends_on": "eval:doc.lms_ticket_status=='reported to ISP'",
+   "options": "\nEmail\nPortal\nNMS"
+  },
+  {
+   "fetch_from": "circuit_id.site_type",
+   "fieldname": "site_type",
+   "fieldtype": "Data",
+   "label": "Site Type "
+  },
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Circuit ID",
+   "options": "Site"
+  },
+  {
+   "fetch_from": "circuit_id.customer_type",
+   "fieldname": "customer_type",
+   "fieldtype": "Data",
+   "label": "Customer Type "
+  },
+  {
+   "fetch_from": "circuit_id.site_id__legal_code",
+   "fieldname": "site_id__legal_code",
+   "fieldtype": "Data",
+   "label": "Site ID / Legal Code"
+  },
+  {
+   "fetch_from": "circuit_id.solution_name",
+   "fieldname": "solution_name",
+   "fieldtype": "Data",
+   "label": "Solution Name"
+  },
+  {
+   "fieldname": "section_break_xpca",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_zeec",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "lms_id.lms_brandwith_name",
+   "fieldname": "lms_bandwith",
+   "fieldtype": "Data",
+   "label": "LMS Bandwith"
+  },
+  {
+   "fieldname": "ticket_details_section",
+   "fieldtype": "Section Break",
+   "label": "Ticket Details "
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-11-17 15:07:53.932419",
+ "modified": "2026-03-04 17:23:41.085341",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "HD LMS Ticket",

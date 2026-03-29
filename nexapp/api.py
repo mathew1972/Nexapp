@@ -5,6 +5,32 @@
 import re
 import frappe
 import json
+import datetime as dt
+import requests
+import zipfile
+import io
+import os
+
+def get_bank_gl_account(bank_account_name):
+    """
+    Returns the GL Account name for a given Bank Account doc name.
+    Prioritizes custom_account_head if it exists as a valid GL Account.
+    """
+    if not bank_account_name:
+        return None
+    
+    # Check if this is a Bank Account record
+    acc_data = frappe.db.get_value("Bank Account", bank_account_name, ["account", "custom_account_head"], as_dict=1)
+    if not acc_data:
+        # If not a Bank Account doc, assume it's already a GL Account or raw string
+        return bank_account_name
+        
+    # Priority 1: custom_account_head (must exist in Account doctype)
+    if acc_data.get("custom_account_head") and frappe.db.exists("Account", acc_data.custom_account_head):
+        return acc_data.custom_account_head
+        
+    # Priority 2: Standard account field
+    return acc_data.account
 
 @frappe.whitelist()
 def handle_ticket_master(ticket_master):
@@ -427,171 +453,316 @@ def update_site_status_on_delivery_note_save(doc, method):
                 # Save the updated Site document
                 site_doc.save(ignore_permissions=True)
 
-################################# HelpDesk ############################################
+################################# HelpDesk ############################################import frappe
 import frappe
 import re
+from datetime import timedelta
 from email.utils import getaddresses
+
+
+REOPEN_WINDOW = timedelta(hours=4)
+
 
 def create_hd_ticket_from_communication(doc, method):
     try:
-        # 🚫 Step 0A: Skip bounce or automated emails (sender-based)
-        if (
-            doc.sender
-            and (
-                "mailer-daemon" in doc.sender.lower()
-                or "postmaster@" in doc.sender.lower()
-                or "no-reply" in doc.sender.lower()
-                or "mailer@" in doc.sender.lower()
-            )
-        ):
-            frappe.logger().info(f"Ignored auto-generated email from {doc.sender}")
+
+        # =========================================================
+        # 0️⃣ PROCESS ONLY INCOMING EMAILS
+        # =========================================================
+        if doc.sent_or_received != "Received":
             return
 
-        # 🚫 Step 0B: Skip delivery failure / policy violation emails (content-based)
-        failure_keywords = [
-            "delivery failed",
-            "could not be delivered",
-            "email policy violation",
-            "mail delivery subsystem",
-            "554 5.7.7",
-            "message could not be delivered",
-            "permanent error"
+        sender = (doc.sender or "").lower()
+        recipients = doc.recipients or ""
+
+        recipient_emails = [
+            email.strip().lower()
+            for _, email in getaddresses([recipients])
         ]
+
+        # =========================================================
+        # 1️⃣ ONLY SUPPORT / NMS EMAILS
+        # =========================================================
+        if (
+            "techsupport@nexapp.co.in" not in recipient_emails
+            and "nms@nexapp.co.in" not in sender
+        ):
+            return
+
+        # =========================================================
+        # 2️⃣ SKIP AUTO / BOUNCE EMAILS
+        # =========================================================
+        auto_senders = ["mailer-daemon", "postmaster@", "no-reply", "mailer@"]
+
+        if any(x in sender for x in auto_senders):
+            return
 
         combined_failure_check = f"{doc.subject or ''} {doc.content or ''}".lower()
 
+        failure_keywords = [
+            "delivery failed",
+            "could not be delivered",
+            "mail delivery subsystem",
+            "permanent error",
+        ]
+
         if any(keyword in combined_failure_check for keyword in failure_keywords):
-            frappe.logger().info(
-                f"Ignored email failure/bounce message from {doc.sender}"
-            )
             return
 
-        # 0️⃣ Pre-check: Only process relevant incoming emails
-        recipient_emails = [email.strip() for _, email in getaddresses([doc.recipients])]
-        if not ("techsupport@nexapp.co.in" in recipient_emails or doc.sender == "nms@nexapp.co.in"):
-            return
+        # =========================================================
+        # 3️⃣ EXTRACT CIRCUIT ID
+        # =========================================================
+        combined_text = f"{doc.subject or ''} {doc.content or ''}"
 
-        if not (doc.sent_or_received == "Received" and doc.status == "Open"):
-            return
-
-        # 1️⃣ Extract 5-digit circuit ID from subject + content
-        combined_text = f"{doc.subject} {doc.content}"
         circuit_match = re.search(
-            r'(?:circuit[#_ ]|^|[^0-9])(\d{5})(?=[^0-9]|$)',
+            r"(?:circuit[#_ ]|^|[^0-9])(\d{5})(?=[^0-9]|$)",
             combined_text,
-            flags=re.IGNORECASE
+            flags=re.IGNORECASE,
         )
+
         circuit_id = circuit_match.group(1) if circuit_match else ""
 
-        # 2️⃣ Try to find existing HD Ticket with matching circuit ID
-        existing_ticket = None
-        if circuit_id:
-            existing_ticket = frappe.db.get_value(
-                "HD Ticket",
-                {"custom_circuit_id": circuit_id},
-                ["name", "status", "owner"],
-                as_dict=True
-            )
-
-        # 3️⃣ If matching open ticket found
-        if existing_ticket and existing_ticket.status not in ["Closed", "Resolved"]:
-            doc.reference_doctype = "HD Ticket"
-            doc.reference_name = existing_ticket.name
-            doc.status = "Linked"
-            doc.save(ignore_permissions=True)
-
-            # Send polite reply (only if not from NMS)
-            if doc.sender.lower() != "nms@nexapp.co.in":
-                email_subject = f"Ticket Already Opened: {existing_ticket.name} (Circuit ID: {circuit_id})"
-                email_message = (
-                    f"Dear Customer,<br><br>"
-                    f"Thank you for your email. We already have an open ticket "
-                    f"<b>{existing_ticket.name}</b> for your circuit ID "
-                    f"<b>{circuit_id}</b>. Your email has been added to this ticket.<br><br>"
-                    f"Thanks & Regards,<br>"
-                    f"Nexapp Technologies Private Limited<br>"
-                    f"Support Team"
-                )
-
-                cc_list = []
-                ticket_owner = existing_ticket.owner
-                if ticket_owner and ticket_owner.lower() != doc.sender.lower():
-                    cc_list = [ticket_owner]
-
-                frappe.sendmail(
-                    recipients=doc.sender,
-                    cc=cc_list,
-                    subject=email_subject,
-                    message=email_message,
-                    sender="techsupport@nexapp.co.in"
-                )
-
-            frappe.get_doc("HD Ticket", existing_ticket.name).add_comment(
-                "Info",
-                f"New email from {doc.sender} linked to this ticket."
-            )
+        if not circuit_id:
             return
 
-        # 4️⃣ No matching HD Ticket — check if circuit ID exists in Site
-        circuit_valid = False
-        if circuit_id:
-            circuit_valid = frappe.db.exists("Site", circuit_id)
+        # =========================================================
+        # 4️⃣ GET LATEST TICKET
+        # =========================================================
+        existing_ticket = frappe.db.get_value(
+            "HD Ticket",
+            {"custom_circuit_id": circuit_id},
+            ["name", "status", "custom_close_datetime", "resolution_date"],
+            as_dict=True,
+            order_by="creation desc",
+        )
 
-        if circuit_valid:
+        # =========================================================
+        # 🟢 CASE A — OPEN TICKET EXISTS
+        # =========================================================
+        if existing_ticket and existing_ticket.status not in ["Closed", "Resolved"]:
+
+            frappe.db.set_value(
+                "Communication",
+                doc.name,
+                {
+                    "reference_doctype": "HD Ticket",
+                    "reference_name": existing_ticket.name,
+                    "status": "Linked",
+                },
+            )
+
+            if sender != "nms@nexapp.co.in":
+                frappe.enqueue(
+                    send_ticket_reply,
+                    queue="short",
+                    enqueue_after_commit=True,
+                    communication_name=doc.name,
+                    sender=sender,
+                    ticket_name=existing_ticket.name,
+                    circuit_id=circuit_id,
+                    status=existing_ticket.status,
+                    template="existing",
+                )
+
+            return
+
+        # =========================================================
+        # 🟡 CASE B — CLOSED / RESOLVED
+        # =========================================================
+        if existing_ticket and existing_ticket.status in ["Closed", "Resolved"]:
+
+            close_time = (
+                existing_ticket.custom_close_datetime
+                or existing_ticket.resolution_date
+            )
+
+            if close_time:
+
+                close_dt = frappe.utils.get_datetime(close_time)
+                now_dt = frappe.utils.now_datetime()
+
+                if now_dt - close_dt <= REOPEN_WINDOW:
+
+                    ticket_doc = frappe.get_doc("HD Ticket", existing_ticket.name)
+
+                    ticket_doc.status = "Open"
+                    ticket_doc.add_comment(
+                        "Info",
+                        "Ticket reopened automatically due to new email within allowed time.",
+                    )
+
+                    ticket_doc.save(ignore_permissions=True)
+
+                    frappe.db.set_value(
+                        "Communication",
+                        doc.name,
+                        {
+                            "reference_doctype": "HD Ticket",
+                            "reference_name": ticket_doc.name,
+                            "status": "Linked",
+                        },
+                    )
+
+                    if sender != "nms@nexapp.co.in":
+                        frappe.enqueue(
+                            send_ticket_reply,
+                            queue="short",
+                            enqueue_after_commit=True,
+                            communication_name=doc.name,
+                            sender=sender,
+                            ticket_name=ticket_doc.name,
+                            circuit_id=circuit_id,
+                            status="Reopened",
+                            template="reopened",
+                        )
+
+                    return
+
+        # =========================================================
+        # 🔴 CASE C — CREATE NEW TICKET
+        # =========================================================
+        if frappe.db.exists("Site", circuit_id):
+
+            # =====================================================
+            # 🆕 EXTRACT LMS ID FROM SUBJECT (IMPROVED)
+            # =====================================================
+            custom_lms_id = ""
+            subject_text = doc.subject or ""
+
+            if "offline alert" in subject_text.lower():
+
+                lms_match = re.search(
+                    r"(?:MBB|ILL)[_\-\s]?(\d{6})",
+                    subject_text,
+                    re.IGNORECASE,
+                )
+
+                if lms_match:
+                    var = lms_match.group(1)
+                    custom_lms_id = f"LMS- {var}"
+
+            # =====================================================
+            # CREATE TICKET
+            # =====================================================
             ticket = frappe.get_doc({
                 "doctype": "HD Ticket",
                 "subject": doc.subject,
                 "description": doc.content,
-                "raised_by": doc.sender,
+                "raised_by": sender,
                 "status": "Open",
                 "custom_circuit_id": circuit_id,
-                "custom_channel": "NMS" if "nms@nexapp.co.in" in doc.sender else "Email"
+                "custom_lms_id": custom_lms_id,
+                "custom_channel": "NMS"
+                if "nms@nexapp.co.in" in sender
+                else "Email",
             })
+
             ticket.insert(ignore_permissions=True)
 
-            doc.reference_doctype = "HD Ticket"
-            doc.reference_name = ticket.name
-            doc.status = "Linked"
-            doc.save(ignore_permissions=True)
+            frappe.db.set_value(
+                "Communication",
+                doc.name,
+                {
+                    "reference_doctype": "HD Ticket",
+                    "reference_name": ticket.name,
+                    "status": "Linked",
+                },
+            )
+
+            if sender != "nms@nexapp.co.in":
+                frappe.enqueue(
+                    send_ticket_reply,
+                    queue="short",
+                    enqueue_after_commit=True,
+                    communication_name=doc.name,
+                    sender=sender,
+                    ticket_name=ticket.name,
+                    circuit_id=circuit_id,
+                    status="Open",
+                    template="new",
+                )
+
             return
 
-        # 5️⃣ Circuit ID doesn't match HD Ticket or Site
-        if doc.sender.lower() != "nms@nexapp.co.in":
-            original_body = frappe.utils.strip_html_tags(doc.content or "")
-            snippet = (original_body[:500] + "...") if len(original_body) > 500 else original_body
+    except Exception:
+        frappe.log_error(
+            frappe.get_traceback(),
+            "HD Ticket Auto-Creation Error",
+        )
 
-            email_subject = f"[Invalid Circuit ID] From: {doc.sender} | Subject: {doc.subject}"
-            email_message = (
-                f"Dear Customer,<br><br>"
-                f"The circuit number you provided does not match our records, "
-                f"and we are unable to open a ticket in our system.<br><br>"
-                f"📌 <b>Original Sender:</b> {doc.sender}<br>"
-                f"📌 <b>Original Subject:</b> {doc.subject}<br><br>"
-                f"📌 <b>Original Message :</b><br>"
-                f"<div style='border:1px solid #ccc; padding:10px;'>"
-                f"{frappe.utils.escape_html(snippet)}</div><br>"
-                f"For assistance, please contact "
-                f"<a href='mailto:techsupport@nexapp.co.in'>techsupport@nexapp.co.in</a> "
-                f"or call 020-67629999.<br><br>"
-                f"Thanks & Regards,<br>"
-                f"Nexapp Technologies Private Limited<br>"
-                f"Support Team"
-            )
 
-            frappe.sendmail(
-                recipients=doc.sender,
-                cc=["ganpati.g@nexapp.co.in", "vaishali.k@nexapp.co.in"],
-                subject=email_subject,
-                message=email_message,
-                sender="techsupport@nexapp.co.in"
-            )
+# =========================================================
+# 📧 EMAIL REPLY FUNCTION
+# =========================================================
 
-        return
+def send_ticket_reply(communication_name, sender, ticket_name, circuit_id, status, template):
 
-    except Exception as e:
-        frappe.log_error(frappe.get_traceback(), "HD Ticket Auto-Creation Error")
-        frappe.throw(f"Error creating ticket: {str(e)}")
+    subject = f"Re: Circuit {circuit_id} — Ticket {ticket_name}"
 
+    if template == "reopened":
+        body = f"""
+        Your previous ticket has been reopened.<br><br>
+        <b>Ticket:</b> {ticket_name}<br>
+        <b>Circuit:</b> {circuit_id}<br><br>
+        Our team will continue working on this issue.
+        """
+
+    elif template == "new":
+        body = f"""
+        Your previous ticket could not be reopened because the 4-hour reopening window had already expired.
+        As a result, a new support ticket has been created to address your request.<br><br>
+
+        <b>New Ticket Number:</b> {ticket_name}<br>
+        <b>Circuit ID:</b> {circuit_id}<br><br>
+
+        Our support team will continue working on this issue under the new ticket.
+        All further updates will be shared through this ticket.<br><br>
+
+        Thank you for your cooperation.
+        """
+
+    else:
+        body = f"""
+        Your email has been linked to the existing ticket.<br><br>
+        <b>Ticket:</b> {ticket_name}<br>
+        <b>Circuit:</b> {circuit_id}<br>
+        <b>Status:</b> {status}
+        """
+
+    message = f"""
+    Dear Customer,<br><br>
+    Thank you for contacting Nexapp Support.<br><br>
+    {body}<br><br>
+    Thanks & Regards,<br>
+    Nexapp Technologies Private Limited<br>
+    Support Team
+    Phone: 02067629999
+    """
+
+    reply = frappe.get_doc({
+        "doctype": "Communication",
+        "communication_type": "Communication",
+        "communication_medium": "Email",
+        "sent_or_received": "Sent",
+        "subject": subject,
+        "content": message,
+        "sender": "techsupport@nexapp.co.in",
+        "recipients": sender,
+        "in_reply_to": communication_name,
+        "reference_doctype": "HD Ticket",
+        "reference_name": ticket_name,
+    })
+
+    reply.insert(ignore_permissions=True)
+
+    frappe.sendmail(
+        recipients=[sender],
+        subject=subject,
+        message=message,
+        reference_doctype="HD Ticket",
+        reference_name=ticket_name,
+        communication=reply.name,
+    )
 ################################# End of HelpDesk Code################################
 import frappe
 from frappe.utils import get_url
@@ -2495,6 +2666,19 @@ def process_customer_payment(stmt, invoices, company, customer, tax_adjustments_
     paid_amount = total_allocated  # This should be 14062.00 in your example
     received_amount = total_allocated  # Same as paid_amount
     
+    # Resolve paid_from from first invoice's debit_to (Debtors account)
+    customer_receivable = None
+    for inv in invoices:
+        if inv.get("doctype") == "Sales Invoice" and inv.get("invoice"):
+            customer_receivable = frappe.db.get_value("Sales Invoice", inv["invoice"], "debit_to")
+            if customer_receivable:
+                break
+    if not customer_receivable:
+        customer_receivable = frappe.db.get_value("Company", company, "default_receivable_account")
+
+    # Resolve Bank GL Account
+    bank_account_gl = get_bank_gl_account(stmt.bank_account)
+
     # For Payment Entry, we use the allocated amount for paid_amount/received_amount
     # The deductions will be handled separately in the taxes table
     payment_entry = frappe.get_doc(
@@ -2505,12 +2689,14 @@ def process_customer_payment(stmt, invoices, company, customer, tax_adjustments_
             "company": company,
             "party_type": "Customer",
             "party": customer,
-            "paid_amount": paid_amount,  # Set to allocated amount (14062.00)
-            "received_amount": received_amount,  # Set to allocated amount (14062.00)
+            "paid_amount": paid_amount,  # Set to allocated amount
+            "received_amount": received_amount,  # Set to allocated amount
             "reference_no": stmt.description,
             "reference_date": stmt.transaction_date,
             "posting_date": stmt.transaction_date,
-            "paid_to": get_default_bank_account(company, "Receive"),
+            "paid_from": customer_receivable,  # Debtors account
+            "paid_to": bank_account_gl or get_default_bank_account(company, "Receive"),  # Bank GL account
+            "bank_account": (to_account or from_account or stmt.bank_account)
         }
     )
 
@@ -2543,9 +2729,12 @@ def process_customer_payment(stmt, invoices, company, customer, tax_adjustments_
     payment_entry.insert()
     payment_entry.submit()
 
-    # NEW: update Bank Statement Entry reference_no and reconciled
-    frappe.db.set_value("Bank Statement Entry", stmt.name, "reference_no", payment_entry.name)
-    frappe.db.set_value("Bank Statement Entry", stmt.name, "reconciled", 1)
+    # Update Bank Statement Entry
+    frappe.db.set_value("Bank Statement Entry", stmt.name, {
+        "reference_no": payment_entry.name,
+        "reconciled": 1,
+        "match_type": "Auto"
+    })
 
     return {
         "status": "ok",
@@ -2578,7 +2767,9 @@ def categorize_manually(
     from_account=None,
     to_account=None,
     transfer_description=None,
-    allow_overpayment=False
+    allow_overpayment=False,
+    purchase_order=None,
+    sales_order=None
 ):
     try:
         if not isinstance(invoices, list):
@@ -2589,16 +2780,29 @@ def categorize_manually(
         if not company:
             company = frappe.db.get_value("Bank Account", stmt.bank_account, "company")
 
+        # Resolve Bank Account GL Head from Statement or passed values
+        bank_account_gl = get_bank_gl_account(stmt.bank_account)
+
+        # Save original names for linking in Payment Entry
+        from_account_orig = from_account
+        to_account_orig = to_account
+
+        # Resolve UI passed accounts
+        from_account = get_bank_gl_account(from_account)
+        to_account = get_bank_gl_account(to_account)
+
         is_deposit = bool(stmt.deposit and float(stmt.deposit) > 0)
 
         if is_deposit:
             payment_type = "Receive"
-            paid_to = get_default_bank_account(company, payment_type)
-            paid_from = None
+            # Prioritize UI passed to_account, then Statement bank account, then Default
+            paid_to = (to_account or bank_account_gl or get_default_bank_account(company, payment_type))
+            paid_from = from_account
         else:
             payment_type = "Pay"
-            paid_from = get_default_bank_account(company, payment_type)
-            paid_to = None
+            # Prioritize UI passed from_account, then Statement bank account, then Default
+            paid_from = (from_account or bank_account_gl or get_default_bank_account(company, payment_type))
+            paid_to = to_account
 
         statement_amount = abs(float(stmt.deposit or stmt.withdrawal) or 0.0)
 
@@ -2623,7 +2827,8 @@ def categorize_manually(
                 company=company,
                 customer=customer,
                 tax_adjustments_list=tax_adjustments_list,
-                allow_overpayment=allow_overpayment
+                allow_overpayment=allow_overpayment,
+                bank_account=to_account_orig # ⭐ Pass UI selection
             )
 
         # -----------------------------------------------------------
@@ -2636,6 +2841,16 @@ def categorize_manually(
             # Validate employee exists
             if not frappe.db.exists("Employee", employee):
                 return {"status": "fail", "error": f"Employee {employee} not found"}
+
+            # Resolve paid_to from expense claim's payable_account
+            emp_payable = None
+            for inv in invoices:
+                if inv.get("invoice"):
+                    emp_payable = frappe.db.get_value("Expense Claim", inv["invoice"], "payable_account")
+                    if emp_payable:
+                        break
+            if not emp_payable:
+                emp_payable = frappe.db.get_value("Company", company, "default_payable_account")
 
             # For Employee Expense Claim, use allocated amount NOT statement amount
             paid_amount = total_allocated
@@ -2654,8 +2869,8 @@ def categorize_manually(
                     "reference_no": stmt.description,
                     "reference_date": stmt.transaction_date,
                     "posting_date": stmt.transaction_date,
-                    "paid_from": paid_from,
-                    "paid_to": paid_to,
+                    "paid_from": (bank_account_gl or get_default_bank_account(company, "Pay")),  # Bank GL account
+                    "paid_to": emp_payable,  # Employee's payable account
                 }
             )
 
@@ -2679,6 +2894,16 @@ def categorize_manually(
             if not supplier:
                 return {"status": "fail", "error": "Supplier is required for Supplier Payment"}
 
+            # Resolve paid_to from invoice's credit_to (Creditors account)
+            supplier_payable = None
+            for inv in invoices:
+                if inv.get("doctype") == "Purchase Invoice" and inv.get("invoice"):
+                    supplier_payable = frappe.db.get_value("Purchase Invoice", inv["invoice"], "credit_to")
+                    if supplier_payable:
+                        break
+            if not supplier_payable:
+                supplier_payable = frappe.db.get_value("Company", company, "default_payable_account")
+
             # For Supplier Payment, use allocated amount NOT statement amount
             paid_amount = total_allocated
             received_amount = total_allocated
@@ -2696,8 +2921,9 @@ def categorize_manually(
                     "reference_no": stmt.description,
                     "reference_date": stmt.transaction_date,
                     "posting_date": stmt.transaction_date,
-                    "paid_from": paid_from,
-                    "paid_to": paid_to,
+                    "paid_from": (bank_account_gl or get_default_bank_account(company, "Pay")),  # Bank GL account
+                    "paid_to": supplier_payable,  # Supplier's Creditors account
+                    "bank_account": (from_account_orig or to_account_orig or stmt.bank_account)
                 }
             )
 
@@ -2744,6 +2970,36 @@ def categorize_manually(
                 company=company
             )
 
+        # -----------------------------------------------------------
+        # SUPPLIER ADVANCE
+        # -----------------------------------------------------------
+        elif category == "Supplier Advance":
+            if not supplier:
+                return {"status": "fail", "error": "Supplier is required for Supplier Advance"}
+            
+            return create_supplier_advance_payment(
+                supplier=supplier,
+                amount=statement_amount,
+                statement_entry=statement_name,
+                purchase_order=purchase_order,
+                bank_account=from_account # ⭐ Pass from UI
+            )
+
+        # -----------------------------------------------------------
+        # CUSTOMER ADVANCE
+        # -----------------------------------------------------------
+        elif category == "Customer Advance":
+            if not customer:
+                return {"status": "fail", "error": "Customer is required for Customer Advance"}
+            
+            return create_customer_advance_payment(
+                customer=customer,
+                amount=statement_amount,
+                statement_entry=statement_name,
+                sales_order=sales_order,
+                bank_account=to_account # ⭐ Pass from UI
+            )
+
         else:
             return {"status": "fail", "error": f"Unknown category: {category}"}
 
@@ -2762,9 +3018,12 @@ def categorize_manually(
         payment_entry.insert()
         payment_entry.submit()
 
-        # NEW: update reference_no and reconciled on Bank Statement Entry
-        frappe.db.set_value("Bank Statement Entry", statement_name, "reference_no", payment_entry.name)
-        frappe.db.set_value("Bank Statement Entry", statement_name, "reconciled", 1)
+        # Update Bank Statement Entry
+        frappe.db.set_value("Bank Statement Entry", statement_name, {
+            "reference_no": payment_entry.name,
+            "reconciled": 1,
+            "match_type": "Auto"
+        })
 
         # Create reconciliation log
         if frappe.db.exists("DocType", "Bank Reconciliation Log"):
@@ -2840,9 +3099,12 @@ def create_expense_journal_entry(stmt, expense_account, amount, company):
         journal_entry.insert()
         journal_entry.submit()
 
-        # NEW: update reference_no and reconciled on Bank Statement Entry
-        frappe.db.set_value("Bank Statement Entry", stmt.name, "reference_no", journal_entry.name)
-        frappe.db.set_value("Bank Statement Entry", stmt.name, "reconciled", 1)
+        # Update Bank Statement Entry
+        frappe.db.set_value("Bank Statement Entry", stmt.name, {
+            "reference_no": journal_entry.name,
+            "reconciled": 1,
+            "match_type": "Auto"
+        })
 
         return {
             "status": "ok",
@@ -2897,9 +3159,12 @@ def create_bank_transfer_journal(stmt, from_account, to_account, description, co
         journal_entry.insert()
         journal_entry.submit()
 
-        # NEW: update reference_no and reconciled on Bank Statement Entry
-        frappe.db.set_value("Bank Statement Entry", stmt.name, "reference_no", journal_entry.name)
-        frappe.db.set_value("Bank Statement Entry", stmt.name, "reconciled", 1)
+        # Update Bank Statement Entry
+        frappe.db.set_value("Bank Statement Entry", stmt.name, {
+            "reference_no": journal_entry.name,
+            "reconciled": 1,
+            "match_type": "Auto"
+        })
 
         return {
             "status": "ok",
@@ -2919,7 +3184,12 @@ def create_bank_transfer_journal(stmt, from_account, to_account, description, co
 # ------------------------------------------------------------
 
 @frappe.whitelist()
-def create_itemized_journal_entry(statement_name, itemized_entries, company=None):
+def create_itemized_journal_entry(
+    statement_name=None,
+    itemized_entries=None,
+    from_account=None, # ⭐ Added
+    company=None
+):
     try:
         if not company:
             company = frappe.defaults.get_default("company")
@@ -2947,6 +3217,7 @@ def create_itemized_journal_entry(statement_name, itemized_entries, company=None
             "cheque_no": stmt.description,
             "cheque_date": stmt.transaction_date,
             "user_remark": f"Itemized expense payment from bank statement: {stmt.description}",
+            "bank_account": (from_account or stmt.bank_account) # ⭐ Set the Bank Account doc name
         })
 
         # Add debit entries for each expense account
@@ -2960,9 +3231,14 @@ def create_itemized_journal_entry(statement_name, itemized_entries, company=None
                 "cost_center": get_default_cost_center(company)
             })
 
+        # Resolve Bank Account GL Head
+        # Prioritize UI passed from_account, then statement bank
+        final_bank_account = from_account or stmt.bank_account
+        bank_account_gl = get_bank_gl_account(final_bank_account)
+
         # Credit Bank Account
         journal_entry.append("accounts", {
-            "account": get_default_bank_account(company, "Pay"),
+            "account": bank_account_gl or get_default_bank_account(company, "Pay"),
             "debit_in_account_currency": 0,
             "credit_in_account_currency": total_amount,
             "party_type": "",
@@ -2973,9 +3249,12 @@ def create_itemized_journal_entry(statement_name, itemized_entries, company=None
         journal_entry.insert()
         journal_entry.submit()
 
-        # NEW: update reference_no and reconciled on Bank Statement Entry
-        frappe.db.set_value("Bank Statement Entry", stmt.name, "reference_no", journal_entry.name)
-        frappe.db.set_value("Bank Statement Entry", stmt.name, "reconciled", 1)
+        # Update Bank Statement Entry
+        frappe.db.set_value("Bank Statement Entry", stmt.name, {
+            "reference_no": journal_entry.name,
+            "reconciled": 1,
+            "match_type": "Auto"
+        })
 
         return {
             "status": "ok",
@@ -3079,7 +3358,8 @@ def reconcile_transaction(invoice, amount, statement_name, allocated_amount=0, t
                 company=company,
                 customer=party,
                 tax_adjustments_list=tax_adjustments_list,
-                allow_overpayment=False
+                allow_overpayment=False,
+                bank_account=stmt.bank_account # ⭐ For auto-match, use statement bank
             )
         else:
             # For Purchase Invoice, create Supplier Payment
@@ -3157,13 +3437,17 @@ def get_default_cost_center(company):
 @frappe.whitelist()
 def undo_reconciliation(statement_name):
     try:
-        frappe.db.set_value("Bank Statement Entry", statement_name, "reconciled", 0)
+        frappe.db.set_value("Bank Statement Entry", statement_name, {
+            "reconciled": 0,
+            "reference_no": "",
+            "match_type": ""
+        })
         return {"status": "ok"}
     except Exception as e:
         frappe.log_error(title="BR_UNDO_ERROR", message=frappe.get_traceback())
         return {"status": "fail", "error": str(e)}
 ##################SEPARATE FUNCTION: process_customer_payment()#################
-def process_customer_payment(stmt, invoices, company, customer, tax_adjustments_list, allow_overpayment=False):
+def process_customer_payment(stmt, invoices, company, customer, tax_adjustments_list, allow_overpayment=False, bank_account=None):
     """
     Clean & independent Customer Payment processor.
     """
@@ -3177,6 +3461,21 @@ def process_customer_payment(stmt, invoices, company, customer, tax_adjustments_
     # ⭐ FIX — USE STATEMENT AMOUNT
     paid_amount = statement_amount
     received_amount = statement_amount
+
+    # Resolve Bank Account GL Head
+    # Prioritize passed bank_account, then stmt.bank_account
+    final_bank_account = bank_account or stmt.bank_account
+    bank_account_gl = get_bank_gl_account(final_bank_account)
+
+    # Resolve paid_from from first invoice's debit_to (Debtors account)
+    customer_receivable = None
+    for inv in invoices:
+        if inv.get("doctype") == "Sales Invoice" and inv.get("invoice"):
+            customer_receivable = frappe.db.get_value("Sales Invoice", inv["invoice"], "debit_to")
+            if customer_receivable:
+                break
+    if not customer_receivable:
+        customer_receivable = frappe.db.get_value("Company", company, "default_receivable_account")
 
     # -------------------------------
     # 2. Build Payment Entry
@@ -3194,7 +3493,9 @@ def process_customer_payment(stmt, invoices, company, customer, tax_adjustments_
             "reference_no": stmt.description,
             "reference_date": stmt.transaction_date,
             "posting_date": stmt.transaction_date,
-            "paid_to": get_default_bank_account(company, "Receive"),
+            "paid_from": customer_receivable,  # Debtors account
+            "paid_to": bank_account_gl or get_default_bank_account(company, "Receive"),  # Bank GL account
+            "bank_account": final_bank_account, # ⭐ Use doc name
         }
     )
 
@@ -3242,8 +3543,11 @@ def process_customer_payment(stmt, invoices, company, customer, tax_adjustments_
     # -------------------------------
     # 7. Update Bank Statement Entry
     # -------------------------------
-    frappe.db.set_value("Bank Statement Entry", stmt.name, "reference_no", payment_entry.name)  # NEW
-    frappe.db.set_value("Bank Statement Entry", stmt.name, "reconciled", 1)
+    frappe.db.set_value("Bank Statement Entry", stmt.name, {
+        "reference_no": payment_entry.name,
+        "reconciled": 1,
+        "match_type": "Auto"
+    })
 
     # -------------------------------
     # 8. Return response
@@ -3876,14 +4180,20 @@ def create_employee_expense_payment(statement_name, invoices, employee, company=
     pe.party_type = "Employee"
     pe.party = employee
 
-    # Paid From (Bank account)
+    # Paid From (Bank GL account)
     if statement.bank_account:
-        pe.paid_from = statement.bank_account
+        pe.paid_from = get_bank_gl_account(statement.bank_account)
     else:
         return {"status": "error", "error": "Bank account missing in statement"}
 
-    # Paid To (Expense Claim Account)
-    pe.paid_to = "Advance - " + company  # Or use Expense Claim default account
+    # Paid To (Employee's payable account from Expense Claim or Company default)
+    emp_payable = None
+    for inv in invoices:
+        if inv.get("invoice"):
+            emp_payable = frappe.db.get_value("Expense Claim", inv["invoice"], "payable_account")
+            if emp_payable:
+                break
+    pe.paid_to = emp_payable or frappe.db.get_value("Company", company, "default_payable_account")
 
     pe.paid_amount = total_allocated
     pe.received_amount = amount
@@ -3901,7 +4211,11 @@ def create_employee_expense_payment(statement_name, invoices, employee, company=
     pe.submit()
 
     # Mark statement as reconciled
-    statement.db_set("reconciled", 1)
+    frappe.db.set_value("Bank Statement Entry", statement_name, {
+        "reference_no": pe.name,
+        "reconciled": 1,
+        "match_type": "Auto"
+    })
 
     return {
         "status": "ok",
@@ -4385,7 +4699,11 @@ def match_now_create_journal(statement_name, expense_account):
     je.submit()
 
     # 🔹 Mark Bank Statement as Reconciled
-    frappe.db.set_value("Bank Statement Entry", statement_name, "reconciled", 1)
+    frappe.db.set_value("Bank Statement Entry", statement_name, {
+        "reference_no": je.name,
+        "reconciled": 1,
+        "match_type": "Auto"
+    })
 
     return {
         "status": "ok",
@@ -4458,11 +4776,11 @@ def create_bank_transfer(statement_name, from_account, to_account, amount, descr
         # ----------------------------
         # 3. Mark Statement as Reconciled
         # ----------------------------
-        statement.reconciled = 1
-        statement.reference_document = je.name
-        statement.reference_doctype = "Journal Entry"
-        statement.save(ignore_permissions=True)
-        statement.db_update()
+        frappe.db.set_value("Bank Statement Entry", statement_name, {
+            "reconciled": 1,
+            "reference_no": je.name,
+            "match_type": "Auto"
+        })
 
         return {
             "status": "ok",
@@ -4480,109 +4798,21 @@ import frappe
 import json
 
 @frappe.whitelist()
-def create_itemized_journal_entry(statement_name, items=None, itemized_entries=None):
+def reconcile_bank_statement_with_payment(statement_name, payment_entry):
     """
-    Create and Submit Journal Entry for itemized multi-line accounts.
-    Supports BOTH Withdrawal and Deposit.
+    Utility function to reconcile a bank statement entry with a payment entry.
+    Updates reference_no, reconciled=1 and match_type='Auto'.
     """
-
-    # Accept both argument names
-    data = items or itemized_entries
-    if not data:
-        return {"status": "fail", "error": "Itemized entries not received"}
-
-    # Convert JSON string to list
-    if isinstance(data, str):
-        try:
-            data = json.loads(data)
-        except Exception:
-            return {"status": "fail", "error": "Invalid itemized entries format"}
-
-    items = data
-
-    # --- Load Bank Statement Entry ---
-    stmt = frappe.get_doc("Bank Statement Entry", statement_name)
-
-    withdrawal_amount = float(stmt.withdrawal or 0)
-    deposit_amount = float(stmt.deposit or 0)
-
-    # 🔴 Allow BOTH
-    if withdrawal_amount <= 0 and deposit_amount <= 0:
-        return {
-            "status": "fail",
-            "error": "No withdrawal or deposit amount in statement"
-        }
-
-    is_withdrawal = withdrawal_amount > 0
-    is_deposit = deposit_amount > 0
-
-    statement_amount = withdrawal_amount if is_withdrawal else deposit_amount
-
-    # --- Validate total ---
-    total_entered = sum(float(i.get("amount") or 0) for i in items)
-    if abs(total_entered - statement_amount) > 0.001:
-        return {
-            "status": "fail",
-            "error": f"Itemized total ({total_entered}) does not match statement amount ({statement_amount})"
-        }
-
-    # --- Bank Ledger ---
-    bank_ledger = stmt.bank_account_head
-    if not bank_ledger:
-        return {"status": "fail", "error": "Bank Ledger (bank_account_head) missing"}
-
-    company = frappe.db.get_value("Account", bank_ledger, "company")
-
-    # --- Prepare JE Rows ---
-    account_rows = []
-
-    # 🔁 Itemized accounts
-    for row in items:
-        amount = float(row.get("amount") or 0)
-
-        account_rows.append({
-            "account": row["account"],
-            "debit_in_account_currency": amount if is_withdrawal else 0,
-            "credit_in_account_currency": amount if is_deposit else 0
+    try:
+        frappe.db.set_value("Bank Statement Entry", statement_name, {
+            "reference_no": payment_entry,
+            "reconciled": 1,
+            "match_type": "Auto"
         })
-
-    # 🔁 Bank account (opposite side)
-    account_rows.append({
-        "account": bank_ledger,
-        "debit_in_account_currency": statement_amount if is_deposit else 0,
-        "credit_in_account_currency": statement_amount if is_withdrawal else 0
-    })
-
-    # --- Create JE ---
-    je = frappe.get_doc({
-        "doctype": "Journal Entry",
-        "voucher_type": "Bank Entry",
-        "company": company,
-        "posting_date": stmt.transaction_date,
-        "cheque_no": stmt.description or "",
-        "cheque_date": stmt.transaction_date,
-        "remark": stmt.description or "",
-        "mode_of_payment": "Wire Transfer",
-        "user_remark": f"Auto-created from Bank Statement {statement_name}",
-        "accounts": account_rows
-    })
-
-    je.flags.ignore_mandatory = True
-
-    # Save & Submit
-    je.insert(ignore_permissions=True)
-    je.submit()
-
-    # Mark statement as reconciled
-    frappe.db.set_value("Bank Statement Entry", statement_name, "reconciled", 1)
-
-    return {
-        "status": "ok",
-        "journal_entry": je.name,
-        "submitted": True,
-        "type": "Withdrawal" if is_withdrawal else "Deposit",
-        "total": statement_amount
-    }
+        return {"status": "ok"}
+    except Exception as e:
+        frappe.log_error(title="BR_RECONCILE_Utility_Error", message=frappe.get_traceback())
+        return {"status": "error", "error": str(e)}
 
 #############################################################################
 # HD Ticket Customer Potal
@@ -6073,7 +6303,7 @@ def create_payment_entry_for_employee_advance(statement_name, employee, advance_
     # -------------------------------
     # Convert Bank Account DocType → GL Account
     # -------------------------------
-    gl_bank_account = frappe.db.get_value("Bank Account", bank_account, "account")
+    gl_bank_account = get_bank_gl_account(bank_account)
 
     if not gl_bank_account:
         return {
@@ -6106,6 +6336,7 @@ def create_payment_entry_for_employee_advance(statement_name, employee, advance_
     pe = frappe.new_doc("Payment Entry")
     pe.payment_type = "Pay"            # Company paying employee
     pe.company = company
+    pe.bank_account = bank_account_name # ⭐ Added
     pe.posting_date = posting_date
     pe.mode_of_payment = "Wire Transfer"
     pe.reference_no = statement.name
@@ -6138,7 +6369,11 @@ def create_payment_entry_for_employee_advance(statement_name, employee, advance_
     pe.submit()
 
     # Mark the bank statement entry as reconciled
-    statement.db_set("reconciled", 1)
+    frappe.db.set_value("Bank Statement Entry", statement_name, {
+        "reconciled": 1,
+        "reference_no": pe.name,
+        "match_type": "Auto"
+    })
 
     return {
         "status": "ok",
@@ -6687,6 +6922,7 @@ def create_supplier_advance_payment(
     amount=None,
     statement_entry=None,
     purchase_order=None,
+    bank_account=None, # ⭐ Added
 ):
 
     if not supplier:
@@ -6708,8 +6944,10 @@ def create_supplier_advance_payment(
     posting_date = stmt.transaction_date
     reference_no = stmt.description
 
-    # 🔥 Correct Accounts
-    paid_from = frappe.db.get_value("Bank Account", stmt.bank_account, "account")
+    # Prioritize passed bank_account, then stmt.bank_account
+    final_bank_account = bank_account or stmt.bank_account
+    paid_from = get_bank_gl_account(final_bank_account)
+
     paid_to = frappe.db.get_value("Company", company, "default_payable_account")
 
     if not paid_from or not paid_to:
@@ -6729,6 +6967,7 @@ def create_supplier_advance_payment(
         "reference_date": posting_date,
         "paid_from": paid_from,   # GL account
         "paid_to": paid_to,       # Payable account
+        "bank_account": final_bank_account # ⭐ Set the Bank Account doc name
     })
 
     if purchase_order:
@@ -6743,11 +6982,12 @@ def create_supplier_advance_payment(
 
     frappe.db.set_value("Bank Statement Entry", stmt.name, {
         "reference_no": payment_entry.name,
-        "reconciled": 1
+        "reconciled": 1,
+        "match_type": "Auto"
     })
 
     return {
-        "status": "success",
+        "status": "ok",
         "payment_entry": payment_entry.name
     }
 ###############################################################################
@@ -6757,7 +6997,8 @@ def create_customer_advance_payment(
     customer=None,
     amount=None,
     statement_entry=None,
-    sales_order=None
+    sales_order=None,
+    bank_account=None, # ⭐ Added
 ):
 
     if not customer:
@@ -6769,7 +7010,10 @@ def create_customer_advance_payment(
     stmt = frappe.get_doc("Bank Statement Entry", statement_entry)
     company = frappe.db.get_value("Bank Account", stmt.bank_account, "company")
 
-    paid_to = frappe.db.get_value("Bank Account", stmt.bank_account, "account")
+    # Prioritize passed bank_account, then stmt.bank_account
+    final_bank_account = bank_account or stmt.bank_account
+    paid_to = get_bank_gl_account(final_bank_account)
+
     paid_from = frappe.db.get_value("Company", company, "default_receivable_account")
 
     pe = frappe.get_doc({
@@ -6797,8 +7041,15 @@ def create_customer_advance_payment(
     pe.insert(ignore_permissions=True)
     pe.submit()
 
+    # Update Bank Statement Entry
+    frappe.db.set_value("Bank Statement Entry", statement_entry, {
+        "reference_no": pe.name,
+        "reconciled": 1,
+        "match_type": "Auto"
+    })
+
     return {
-        "status": "success",
+        "status": "ok",
         "payment_entry": pe.name
     }
 
@@ -7277,3 +7528,2243 @@ def toggle_ticket_read_status(ticket_id):
     frappe.db.commit()
 
     return new_value
+
+######################################################################
+# Solution Chnage
+import frappe
+
+def solution_change_update(doc, method):
+
+    circuit_id = doc.circuit_id
+    new_code = doc.new_solution_code
+    new_name = doc.new_solution_name
+
+    if not circuit_id or not new_code or not new_name:
+        frappe.msgprint("Missing Circuit ID or Solution details.")
+        return
+
+    updates = 0
+
+    # =====================================================
+    # 1) SITE
+    # circuit_id = name (Site)
+    # =====================================================
+    if frappe.db.exists("Site", circuit_id):
+        frappe.db.set_value(
+            "Site",
+            circuit_id,
+            {
+                "solution_code": new_code,
+                "solution_name": new_name
+            }
+        )
+        updates += 1
+
+    # =====================================================
+    # 2) LASTMILE SERVICES MASTER
+    # circuit_id = circuit_id
+    # =====================================================
+    lastmile_docs = frappe.get_all(
+        "Lastmile Services Master",
+        filters={"circuit_id": circuit_id},
+        fields=["name"]
+    )
+
+    for lm in lastmile_docs:
+        frappe.db.set_value(
+            "Lastmile Services Master",
+            lm.name,
+            "solution",
+            new_name
+        )
+        updates += 1
+
+    # =====================================================
+    # 3) SALES ORDER ITEM (Child table)
+    # custom_feasibility = circuit_id
+    # =====================================================
+    sales_items = frappe.get_all(
+        "Sales Order Item",
+        filters={"custom_feasibility": circuit_id},
+        fields=["name"]
+    )
+
+    for item in sales_items:
+        frappe.db.set_value(
+            "Sales Order Item",
+            item.name,
+            "custom_solution",
+            new_code
+        )
+        updates += 1
+
+    # =====================================================
+    # 4) STOCK MANAGEMENT
+    # circuit_id = circuit_id
+    # =====================================================
+    stock_docs = frappe.get_all(
+        "Stock Management",
+        filters={"circuit_id": circuit_id},
+        fields=["name"]
+    )
+
+    for stock in stock_docs:
+        frappe.db.set_value(
+            "Stock Management",
+            stock.name,
+            {
+                "solution_code": new_code,
+                "solution": new_name
+            }
+        )
+        updates += 1
+
+    # =====================================================
+    # 5) FEASIBILITY
+    # circuit_id = name (Feasibility)
+    # =====================================================
+    if frappe.db.exists("Feasibility", circuit_id):
+        frappe.db.set_value(
+            "Feasibility",
+            circuit_id,
+            {
+                "solution_code": new_code,
+                "solution_name": new_name
+            }
+        )
+        updates += 1
+
+    # =====================================================
+    # 6) PROVISIONING
+    # circuit_id = circuit_id
+    # Update solution_name + refresh open form
+    # =====================================================
+    provisioning_docs = frappe.get_all(
+        "Provisioning",
+        filters={"circuit_id": circuit_id},
+        fields=["name"]
+    )
+
+    for prov in provisioning_docs:
+
+        prov_doc = frappe.get_doc("Provisioning", prov.name)
+
+        # Update field
+        prov_doc.solution_name = new_name
+
+        # Save to trigger Provisioning logic/workflows
+        prov_doc.save(ignore_permissions=True)
+
+        # 🔥 Refresh open form in browser
+        prov_doc.notify_update()
+
+        updates += 1
+
+    # =====================================================
+    # ✅ CONFIRMATION MESSAGE
+    # =====================================================
+    frappe.msgprint(
+        f"""
+        <b>Solution Updated Successfully</b><br><br>
+        Circuit ID: <b>{circuit_id}</b><br>
+        New Solution Code: <b>{new_code}</b><br>
+        New Solution Name: <b>{new_name}</b><br><br>
+        Records Updated: <b>{updates}</b>
+        """
+    )
+############################################################################
+# HD LMS Ticket Createing from HD Ticket
+
+import frappe
+import re
+
+
+def create_lms_ticket(doc, method):
+
+    # Avoid duplicate LMS ticket
+    if frappe.db.exists("HD LMS Ticket", {"customer_ticket_id": doc.name}):
+        return
+
+    if not doc.custom_circuit_id:
+        return
+
+    # --------------------------------------------------
+    # 🔎 Extract LMS ID from Subject
+    # --------------------------------------------------
+    lms_id_value = None
+
+    if doc.subject:
+        match = re.search(r'(ILL|MBB)_(\d{5,})', doc.subject)
+
+        if match:
+            extracted_number = match.group(2)
+
+            # ✅ WITH SPACE AFTER LMS-
+            lms_id_value = f"LMS- {extracted_number}"
+
+    # --------------------------------------------------
+    # 🆕 Create HD LMS Ticket
+    # --------------------------------------------------
+    lms = frappe.new_doc("HD LMS Ticket")
+
+    lms.circuit_id = doc.custom_circuit_id
+    lms.customer_ticket_id = doc.name
+
+    if lms_id_value:
+        lms.lms_id = lms_id_value
+
+    lms.insert(ignore_permissions=True)
+
+#################################################################################
+# AI for Purchase Invoice Creation
+
+import frappe
+import fitz  # PyMuPDF
+import requests
+import json
+import re
+import difflib
+from datetime import datetime
+
+
+# =================================================
+# 🔧 Helper: Normalize date to YYYY-MM-DD (ERPNext)
+# =================================================
+def normalize_date(date_str):
+    if not date_str:
+        return None
+
+    # Initial cleanup: handle ISO T-format and remove commas/punctuation
+    date_str = str(date_str).strip().split("T")[0]
+    date_str = re.sub(r"[,;.]", " ", date_str).strip()
+    # Normalize multiple spaces
+    date_str = re.sub(r"\s+", " ", date_str)
+
+    formats = [
+        "%Y-%m-%d",
+        "%d-%m-%Y",
+        "%m-%d-%Y",
+        "%d/%m/%Y",
+        "%m/%d/%Y",
+        "%Y/%m/%d",
+        "%d.%m.%Y",
+        "%Y.%m.%d",
+        "%d %b %Y",
+        "%d %B %Y",
+        "%b %d %Y",
+        "%B %d %Y",
+    ]
+
+    for fmt in formats:
+        try:
+            return datetime.strptime(date_str, fmt).strftime("%Y-%m-%d")
+        except Exception:
+            continue
+
+    return None
+
+
+# =================================================
+# 🔧 Helper: Safe float conversion
+# =================================================
+def safe_float(val):
+    try:
+        return float(val)
+    except Exception:
+        return 0.0
+
+
+# =================================================
+# 🔧 Helper: Get Prompt from AI Prompt Template
+# =================================================
+def get_ai_prompt(prompt_code):
+
+    prompt = frappe.get_all(
+        "AI Prompt Template",
+        filters={
+            "prompt_code": prompt_code,
+            "active": 1
+        },
+        fields=["prompt_text"],
+        limit=1
+    )
+
+    if not prompt:
+        frappe.throw(f"Active AI Prompt not found for code: {prompt_code}")
+
+    return prompt[0].prompt_text
+
+
+# =================================================
+# 🚀 UNIVERSAL AI CALLER — NO HARDCODE
+# =================================================
+def call_ai_model(prompt_text):
+
+    # -------------------------------------------------
+    # 🔎 Get active configuration from UI
+    # -------------------------------------------------
+    try:
+        config = frappe.get_doc(
+            "API Configuration",
+            {"enable_ai_extraction": 1}
+        )
+    except Exception:
+        frappe.throw("No active API Configuration found")
+
+    url = config.api_base_url
+    model = config.model_name
+    temperature = config.temperature or 0
+    max_tokens = config.max_tokens or 1200
+    debug = config.debug_mode
+
+    api_key = config.get_password("api_key")
+
+    # ---------------- VALIDATION ----------------
+    if not url:
+        frappe.throw("API Base URL not configured")
+
+    if not api_key:
+        frappe.throw("API Key missing")
+
+    if not model:
+        frappe.throw("Model name not configured")
+
+    # -------------------------------------------------
+    # 🧠 Universal OpenAI-compatible headers
+    # -------------------------------------------------
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+
+    # -------------------------------------------------
+    # 🧠 Universal payload
+    # -------------------------------------------------
+    payload = {
+        "model": model,
+        "messages": [
+            {"role": "user", "content": prompt_text}
+        ],
+        "temperature": temperature,
+        "max_tokens": max_tokens
+    }
+
+    if debug:
+        frappe.logger().info(f"AI URL: {url}")
+        frappe.logger().info(f"AI Payload: {payload}")
+
+    # -------------------------------------------------
+    # 🚀 Call AI API
+    # -------------------------------------------------
+    try:
+        r = requests.post(url, headers=headers, json=payload, timeout=60)
+    except requests.exceptions.Timeout:
+        frappe.throw("The AI service took too long to respond. Please try again in a moment.")
+    except Exception as e:
+        frappe.throw("Could not connect to the AI service. Please check your network connection and try again.")
+
+    if r.status_code == 429:
+        frappe.throw(
+            "The AI service is currently busy or your usage limit has been reached. "
+            "Please wait a moment and try again, or contact your system administrator to review the API quota."
+        )
+    elif r.status_code == 401:
+        frappe.throw(
+            "The AI service rejected the request due to an invalid or expired API key. "
+            "Please update the API key in the API Configuration settings."
+        )
+    elif r.status_code != 200:
+        frappe.throw(
+            f"The AI service returned an unexpected response (code {r.status_code}). "
+            "Please try again or contact your system administrator if the issue persists."
+        )
+
+    data = r.json()
+
+    # -------------------------------------------------
+    # Universal response parsing
+    # -------------------------------------------------
+    try:
+        return data["choices"][0]["message"]["content"]
+    except Exception:
+        frappe.throw(
+            "The AI service returned an unrecognised response format. "
+            "Please check the model configuration and try again."
+        )
+
+
+# =================================================
+# 🚀 MAIN FUNCTION — PURCHASE INVOICE EXTRACTION
+# =================================================
+@frappe.whitelist()
+def extract_purchase_invoice_from_data(file_url, prompt_code, po=None):
+
+    if not file_url:
+        frappe.throw("Please attach Supplier Invoice PDF")
+
+    # -------------------------------------------------
+    # 🔥 Load prompt from AI Prompt Template
+    # -------------------------------------------------
+    prompt = get_ai_prompt(prompt_code)
+
+    # -------------------------------------------------
+    # 1️⃣ Get file path
+    # -------------------------------------------------
+    try:
+        file_doc = frappe.get_doc("File", {"file_url": file_url})
+        file_path = file_doc.get_full_path()
+    except Exception:
+        frappe.throw("Could not find attached file")
+
+    # -------------------------------------------------
+    # 2️⃣ Extract text (FIRST 2 PAGES ONLY)
+    # -------------------------------------------------
+    text = ""
+
+    try:
+        pdf = fitz.open(file_path)
+
+        for page in pdf[:2]:
+            text += page.get_text()
+
+        pdf.close()
+
+    except Exception as e:
+        frappe.throw(f"PDF read error: {str(e)}")
+
+    if not text.strip():
+        frappe.throw("Could not extract text from PDF")
+
+    # ⭐ Trim text for speed
+    text = text[:5000]
+
+    # -------------------------------------------------
+    # 3️⃣ Build AI Prompt
+    # -------------------------------------------------
+    full_prompt = f"""
+{prompt}
+
+STRICT INSTRUCTIONS:
+Return ONLY valid JSON.
+Do NOT include explanations.
+Do NOT include markdown.
+Do NOT include ```.
+
+INVOICE TEXT:
+{text}
+"""
+
+    # -------------------------------------------------
+    # 4️⃣ Call AI
+    # -------------------------------------------------
+    ai_text = call_ai_model(full_prompt)
+
+    if not ai_text:
+        frappe.throw("AI returned empty response")
+
+    # -------------------------------------------------
+    # 5️⃣ Clean AI formatting
+    # -------------------------------------------------
+    cleaned = ai_text.strip()
+
+    cleaned = re.sub(r"^```json", "", cleaned)
+    cleaned = re.sub(r"^```", "", cleaned)
+    cleaned = re.sub(r"```$", "", cleaned)
+
+    cleaned = re.sub(r",\s*}", "}", cleaned)
+    cleaned = re.sub(r",\s*]", "]", cleaned)
+
+    # -------------------------------------------------
+    # 6️⃣ Parse JSON safely
+    # -------------------------------------------------
+    try:
+        data = json.loads(cleaned)
+    except Exception:
+        frappe.throw(f"AI did not return valid JSON:\n\n{cleaned}")
+
+    # -------------------------------------------------
+    # 7️⃣ Normalize & sanitize data
+    # -------------------------------------------------
+
+    # Normalize invoice date
+    if "invoice_date" in data:
+        normalized = normalize_date(data["invoice_date"])
+        data["invoice_date"] = normalized if normalized else frappe.utils.today()
+
+    # Convert total to float
+    if "total" in data:
+        data["total"] = safe_float(data.get("total"))
+
+    # Cleanup: Company vs Customer
+    # AI might return company, customer or neither. 
+    # We want to favor any non-empty value found.
+    extracted_company = data.get("company") or data.get("customer") or ""
+    data["company"] = extracted_company
+    if "customer" in data: data.pop("customer")
+
+    # Map duration fields (handle potential AI key variants and DocType typo)
+    for k in ["custom_duration_from", "custom_dutation_from", "from_date", "validity_from"]:
+        if k in data and data[k]:
+            data["custom_dutation_from"] = normalize_date(data[k])
+            break
+            
+    for k in ["custom_duration_to", "to_date", "validity_to"]:
+        if k in data and data[k]:
+            data["custom_duration_to"] = normalize_date(data[k])
+            break
+
+    # If PO is provided, override LMS data from PO
+    if po:
+        try:
+            po_doc = frappe.get_doc("Purchase Order", po)
+            if po_doc.custom_lms_id:
+                data["lms_id"] = po_doc.custom_lms_id
+                # Also fetch circuit_id from LMS if possible
+                if not data.get("circuit_id"):
+                    data["circuit_id"] = frappe.db.get_value("Lastmile Services Master", po_doc.custom_lms_id, "circuit_id")
+        except frappe.DoesNotExistError:
+            frappe.logger().error(f"Purchase Order {po} not found during extraction")
+            # Fallback: don't crash, just proceed with AI data
+            pass
+        except Exception as e:
+            frappe.logger().error(f"Error fetching PO doc: {str(e)}")
+            pass
+
+    # Clean items
+    if "items" not in data or not isinstance(data["items"], list):
+        data["items"] = []
+    else:
+        cleaned_items = []
+        for item in data["items"]:
+            cleaned_items.append({
+                "description": item.get("description") if isinstance(item, dict) else "",
+                "qty": safe_float(item.get("qty")) if isinstance(item, dict) else 1,
+                "rate": safe_float(item.get("rate")) if isinstance(item, dict) else 0,
+            })
+        data["items"] = cleaned_items
+
+    # Clean taxes
+    if "taxes" not in data or not isinstance(data["taxes"], list):
+        data["taxes"] = []
+    else:
+        cleaned_taxes = []
+        for tax in data["taxes"]:
+            cleaned_taxes.append({
+                "account_head": tax.get("account_head") if isinstance(tax, dict) else "",
+                "description": tax.get("description") if isinstance(tax, dict) else "Tax",
+                "rate": safe_float(tax.get("rate")) if isinstance(tax, dict) else 0,
+                "tax_amount": safe_float(tax.get("tax_amount")) if isinstance(tax, dict) else 0,
+            })
+        data["taxes"] = cleaned_taxes
+
+    # -------------------------------------------------
+    # 🔟 Return clean JSON string
+    # -------------------------------------------------
+    return json.dumps(data)
+###############################################################################
+#ai for Purchase Invoice - Matching Company
+@frappe.whitelist()
+def match_company(name):
+    """
+    Carefully match a company name to an existing Company record.
+    Includes suffix cleaning, word-by-word matching, and fuzzy matching.
+    """
+    if not name:
+        return None
+        
+    name_str = str(name).strip()
+    # Clean common suffixes like "Private Limited", "Pvt Ltd", etc.
+    clean_regexp = r"(?i)\b(pvt\.?\s+ltd\.?|p\s+ltd\.?|ltd\.?|private\s+limited|limited|corporation|inc\.?|solutions|llp|group|enterprises|systems|services)\b"
+    clean_name = re.sub(clean_regexp, "", name_str).strip()
+
+    # 1. Exact Match (case-insensitive)
+    for target in [name_str, clean_name]:
+        if not target: continue
+        c = frappe.db.get_value("Company", {"company_name": ["like", f"%{target}%"]}, "name")
+        if not c: c = frappe.db.get_value("Company", {"name": ["like", f"%{target}%"]}, "name")
+        if c: return c
+    
+    # 2. Fetch all companies for advanced matching
+    companies = frappe.get_all("Company", fields=["name", "company_name"])
+    name_map = {}
+    for comp in companies:
+        name_map[comp.name.lower()] = comp.name
+        if comp.company_name:
+            name_map[comp.company_name.lower()] = comp.name
+            
+    all_targets = list(name_map.keys())
+    
+    # 3. Substring Match (Case-insensitive)
+    for target in [name_str.lower(), clean_name.lower()]:
+        if not target: continue
+        for t in all_targets:
+            if len(target) > 3 and (target in t or t in target):
+                return name_map[t]
+
+    # 4. Fuzzy match original and clean name
+    for target in [name_str.lower(), clean_name.lower()]:
+        if not target: continue
+        matches = difflib.get_close_matches(target, all_targets, n=1, cutoff=0.5)
+        if matches: return name_map[matches[0]]
+        
+    # 5. Word-by-word fallback
+    # Filter out common small words
+    stop_words = {"and", "the", "of", "for", "in", "on", "at", "by"}
+    words = [w.lower() for w in clean_name.split() if len(w) > 2 and w.lower() not in stop_words]
+    
+    if words:
+        for t in all_targets:
+            # Check if any significant word from extracted name matches a significant word in target
+            t_words = set(t.split())
+            if any(w in t_words for w in words):
+                return name_map[t]
+
+    return None
+############################################################################
+# Covert POC To Paid
+import frappe
+
+
+def update_feasibility_and_site_on_so_save(doc, method):
+
+    if not doc.items:
+        return
+
+    updated_records = []
+
+    for item in doc.items:
+
+        ref_name = item.custom_feasibility
+
+        if not ref_name:
+            continue
+
+        # -------------------------------
+        # Update Feasibility
+        # -------------------------------
+        if frappe.db.exists("Feasibility", ref_name):
+
+            frappe.db.set_value(
+                "Feasibility",
+                ref_name,
+                {
+                    "customer_type": "Paid Customer",
+                    "sales_order": doc.name,
+                    "sales_order_date": doc.transaction_date
+                }
+            )
+
+            updated_records.append(f"Feasibility: {ref_name}")
+
+        # -------------------------------
+        # Update Site
+        # -------------------------------
+        if frappe.db.exists("Site", ref_name):
+
+            frappe.db.set_value(
+                "Site",
+                ref_name,
+                {
+                    "customer_type": "Paid Customer",
+                    "sales_order": doc.name,
+                    "sales_order_date": doc.transaction_date,
+                    "customer_po_no": doc.po_no,
+                    "customer_po_date": doc.po_date,
+                    "po_end_date": doc.custom_po_end_date
+                }
+            )
+
+            updated_records.append(f"Site: {ref_name}")
+
+    if updated_records:
+        frappe.msgprint(
+            "Updated records:<br><b>" + "<br>".join(updated_records) + "</b>"
+        )
+#################################################################################
+# Updateing Billing status to 'Circuit Delivery Backdate' and 'Site
+
+import frappe
+
+
+def update_billing_status_from_invoice(doc, method=None):
+
+    # Loop through Sales Invoice Items (child table)
+    for item in doc.items:
+
+        # Skip if no Sales Order Item link
+        if not item.so_detail:
+            continue
+
+        # Get custom_feasibility from Sales Order Item
+        circuit_id = frappe.db.get_value(
+            "Sales Order Item",
+            item.so_detail,
+            "custom_feasibility"
+        )
+
+        if not circuit_id:
+            continue
+
+        # ------------------------------------
+        # Update Circuit Delivery Backdate
+        # ------------------------------------
+        backdate_records = frappe.get_all(
+            "Circuit Delivery Backdate",
+            filters={"circuit_id": circuit_id},
+            fields=["name"]
+        )
+
+        for row in backdate_records:
+            frappe.db.set_value(
+                "Circuit Delivery Backdate",
+                row.name,
+                "billing_status",
+                "Billed"
+            )
+
+        # ------------------------------------
+        # Update Site
+        # ------------------------------------
+        if frappe.db.exists("Site", circuit_id):
+            frappe.db.set_value(
+                "Site",
+                circuit_id,
+                "billing_status",
+                "Billed"
+            )
+##################################################################################
+# Updateing the HD Ticket From Task
+
+import frappe
+from frappe.utils import now_datetime
+
+def update_hd_ticket_from_task(doc, method=None):
+
+    # Find HD Ticket linked to this Task
+    hd_ticket = frappe.db.get_value(
+        "HD Ticket",
+        {"custom_task": doc.name},
+        "name"
+    )
+
+    if not hd_ticket:
+        return
+
+    # If Task status = Rejected
+    if doc.status == "Rejected":
+
+        frappe.db.set_value(
+            "HD Ticket",
+            hd_ticket,
+            {
+                "custom_task_status": doc.status,
+                "custom_rejected_reason": doc.custom_rejected_reason,
+                "custom_rejected_datetime": now_datetime()
+            }
+        )
+
+    # If Task status = Completed
+    elif doc.status == "Completed":
+
+        frappe.db.set_value(
+            "HD Ticket",
+            hd_ticket,
+            {
+                "custom_task_status": doc.status,
+                "custom_task_closed_datetime": doc.completed_on,
+                "custom_completed_by_name": doc.custom_completed_by_name
+            }
+        )
+
+    # If Task status NOT Rejected or Completed
+    else:
+
+        frappe.db.set_value(
+            "HD Ticket",
+            hd_ticket,
+            {
+                "custom_task_status": doc.status
+            }
+        )
+
+####################################################################################
+# AI chat user 
+
+@frappe.whitelist()
+def get_user_first_name():
+    user = frappe.session.user
+    user_doc = frappe.get_doc("User", user)
+
+    if user_doc.first_name:
+        return user_doc.first_name
+
+    if user_doc.full_name:
+        return user_doc.full_name.split(" ")[0]
+
+    return "User"
+#####################################################################################    
+
+# AI Chatbot for HD Ticket
+
+import frappe
+import json
+import datetime as dt
+import difflib
+
+# No top-level FAISS import – lazy import in the endpoint
+
+# ---------------------------------------------------------
+# FEATURE FLAG
+# ---------------------------------------------------------
+def is_faiss_enabled():
+    return frappe.conf.get("enable_faiss_ai", 0)
+
+@frappe.whitelist()
+def is_chatbot_enabled():
+    try:
+        active = frappe.db.get_value(
+            "AI Prompt Template",
+            {"prompt_code": "HD_TICKET_CHAT"},
+            "active"
+        )
+        return 1 if active else 0
+    except Exception:
+        return 0
+
+# ---------------------------------------------------------
+# MEMORY (per user + ticket)
+# ---------------------------------------------------------
+def get_memory_limit():
+    try:
+        config = frappe.get_single("API Configuration")
+        return int(config.memory_limit or 10)
+    except Exception:
+        return 10
+
+def get_user_memory(user, ticket):
+    key = f"chat_memory:{user}:{ticket}"
+    return frappe.cache().get_value(key) or []
+
+def set_user_memory(user, ticket, memory):
+    key = f"chat_memory:{user}:{ticket}"
+    frappe.cache().set_value(key, memory)
+
+def clear_user_memory(user, ticket):
+    key = f"chat_memory:{user}:{ticket}"
+    frappe.cache().delete_value(key)
+
+def update_memory(user, ticket, question, answer):
+    memory = get_user_memory(user, ticket)
+    memory.append({"question": question, "answer": answer})
+    limit = get_memory_limit()
+    memory = memory[-limit:]
+    set_user_memory(user, ticket, memory)
+
+def build_memory_context(user, ticket):
+    memory = get_user_memory(user, ticket)
+    context = ""
+    for m in memory:
+        context += f"User: {m['question']}\n"
+        context += f"Assistant: {m['answer']}\n"
+    return context
+
+# ---------------------------------------------------------
+# FIELD LABEL MAP & HELPER FUNCTIONS
+# ---------------------------------------------------------
+FIELD_LABEL_MAP = {
+    "name": "ID",
+    "subject": "Subject",
+    "status": "Status",
+    "priority": "Priority",
+    "customer": "Customer",
+    "custom_circuit_id": "Circuit ID",
+    "custom_stage": "Stage",
+    "custom_sub_stage": "Sub Stage",
+    "custom_solution_name": "Solution Name",
+    "site_status": "Site Status",
+    "custom_lms_ticket_status": "LMS Ticket Status",
+    "lms_stage": "LMS Stage",
+}
+
+STOP_WORDS = {
+    "what","is","the","of","a","an","please","give","show","tell","me","about"
+}
+
+def normalize_word(word):
+    word = word.lower()
+    replacements = {
+        "natted": "nat",
+        "nated": "nat",
+        "natting": "nat",
+    }
+    return replacements.get(word, word)
+
+def format_value(value):
+    if isinstance(value, dt.datetime):
+        return value.strftime("%d-%m-%Y %H:%M")
+    if isinstance(value, dt.date):
+        return value.strftime("%d-%m-%Y")
+    return value
+
+def get_doc_label_map(doctype):
+    """Dynamically get the label map for a doctype."""
+    meta = frappe.get_meta(doctype)
+    label_map = FIELD_LABEL_MAP.copy()
+    for f in meta.fields:
+        if f.label:
+            label_map[f.fieldname] = f.label
+    return label_map
+
+def identify_entity(question):
+    """Identifies target entity from question keywords."""
+    q = question.lower()
+    if any(k in q for k in ["site", "address", "location", "customer type", "lms type"]):
+        return "Site"
+    if any(k in q for k in ["lms", "supplier", "lastmile", "escalation", "contact"]):
+        return "Lastmile Services Master"
+    if any(k in q for k in ["provisioning", "ip address", "router ip"]):
+        return "Provisioning"
+    if any(k in q for k in ["installation", "installed", "engineer visit"]):
+        return "Installation Master"
+    return None
+
+def get_clean_doc_data(doc):
+    """Enhanced version: uses metadata-based labels and includes child table data."""
+    label_map = get_doc_label_map(doc.doctype)
+    exclude_fields = [
+        "owner","creation","modified","modified_by",
+        "docstatus","idx","_comments","_assign",
+        "_liked_by","_seen","_user_tags","__unsaved",
+        "doctype"
+    ]
+    data = {}
+    
+    # Process main fields
+    for field, value in doc.as_dict().items():
+        if field in exclude_fields or value in [None, "", []]:
+            continue
+            
+        if field not in label_map and not field == "name":
+            continue
+            
+        label = label_map.get(field, field.replace('_', ' ').title())
+        
+        # Format values
+        if isinstance(value, (dt.datetime, dt.date)):
+            value = format_value(value)
+        elif isinstance(value, str) and ("<" in value and ">" in value):
+            value = frappe.utils.strip_html_tags(value)
+            
+        data[label] = value
+
+    # Process child tables
+    meta = frappe.get_meta(doc.doctype)
+    for f in meta.fields:
+        if f.fieldtype == "Table":
+            child_docs = doc.get(f.fieldname)
+            if child_docs:
+                child_label = f.label or f.fieldname.replace('_', ' ').title()
+                table_data = []
+                for child in child_docs:
+                    # Use get_clean_doc_data recursively but without deep nesting for efficiency
+                    # Just get simple labeled dict for child
+                    child_label_map = get_doc_label_map(child.doctype)
+                    child_dict = {}
+                    for cf, cv in child.as_dict().items():
+                        if cf in exclude_fields or cv in [None, "", []]: continue
+                        clabel = child_label_map.get(cf, cf.replace('_', ' ').title())
+                        child_dict[clabel] = format_value(cv) if isinstance(cv, (dt.date, dt.datetime)) else cv
+                    table_data.append(child_dict)
+                
+                if table_data:
+                    data[child_label] = table_data
+        
+    return data
+
+# ---------------------------------------------------------
+# IMPROVED FIELD MATCHING (with synonyms)
+# ---------------------------------------------------------
+def search_field_answer(doc, question):
+    meta = frappe.get_meta(doc.doctype)
+    q_lower = question.lower().strip()
+
+    # Synonym mapping
+    synonyms = {
+        "agent": ["assigned to", "owner", "support agent", "technician"],
+        "address": ["address", "location", "site address", "street", "city", "district", "pin code"],
+        "impact": ["impact", "severity", "business impact"],
+        "stage": ["stage", "status", "state"],
+        "installation": ["installation", "activation", "commissioning"],
+        "completion": ["completion", "done", "finished", "closed"],
+        "escalation": ["escalation matrix", "matrix", "escalation level", "support levels", "contact", "support info", "lms contact"],
+        "contact": ["escalation matrix", "matrix", "support info", "support person"]
+    }
+
+    def get_label_words(label):
+        words = [normalize_word(w) for w in label.split()]
+        extra = []
+        for w in words:
+            for key, syns in synonyms.items():
+                if w in syns or w == key:
+                    extra.extend(syns)
+        return set(words + extra)
+
+    best_match = None
+    best_score = 0
+
+    for field in meta.fields:
+        label_original = field.label or ""
+        if not label_original:
+            continue
+
+        label = label_original.lower().strip()
+        label_words = get_label_words(label)
+        value = doc.get(field.fieldname)
+
+        # Skip empty values unless we are certain
+        if value in [None, "", []] and field.fieldtype not in ("Select", "Data", "Link", "Table"):
+            continue
+
+        score = 0
+        # Label in Question (Phrase Match)
+        if label in q_lower:
+            # Score based on number of words in the match - favors more specific labels
+            # Boost for phrase match significantly
+            score += len(label.split()) * 15
+        
+        # Word overlap (catch-all for jumbled words)
+        q_words = set(normalize_word(w) for w in q_lower.split())
+        overlap = len(q_words & label_words)
+        score += overlap * 2
+
+        # Boost for priority fields
+        priority_fields = ["address", "agent", "status", "stage", "impact", "customer type", "escalation"]
+        if any(p in label for p in priority_fields):
+            score += 2
+
+        if score > best_score:
+            best_score = score
+            best_match = (label_original, value, field)
+        elif score == best_score and best_match:
+            # Tie-breaker: prefer longer labels (more specific)
+            if len(label_original) > len(best_match[0]):
+                best_match = (label_original, value, field)
+
+    if best_match and best_score >= 2:
+        label, value, field = best_match
+        if value in [None, "", []]:
+            return best_score, f"There is no <b>{label}</b>"
+            
+        # Handle child tables (e.g. Escalation Matrix)
+        if field.fieldtype == "Table" and isinstance(value, list) and len(value) > 0:
+            header = f"<b>{label}</b>"
+            supplier = doc.get("supplier")
+            if supplier:
+                header += f" for <b>{supplier}</b>"
+            
+            rows_html = []
+            for row in value:
+                row_dict = row.as_dict()
+                parts = []
+                # Map common child fields to readable labels
+                field_map = [
+                    ("level", "Level"),
+                    ("link_zitr", "Name"),
+                    ("contact_phone", "Phone"),
+                    ("link_syot", "Email"),
+                    ("designation", "Designation")
+                ]
+                for fname, flabel in field_map:
+                    v = row_dict.get(fname)
+                    if v:
+                        parts.append(f"{flabel}: {v}")
+                if parts:
+                    rows_html.append(" • " + ", ".join(parts))
+            
+            if rows_html:
+                return best_score, f"{header}:<br>" + "<br>".join(rows_html)
+
+        return best_score, f"{label}: <b>{format_value(value)}</b>"
+
+    return 0, None
+
+def get_logged_user_info():
+    user = frappe.session.user
+    user_doc = frappe.get_doc("User", user)
+    return f"""
+<b>User Information</b><br><br>
+First Name: <b>{user_doc.first_name or ""}</b><br>
+Full Name: <b>{user_doc.full_name or ""}</b><br>
+Login Email: <b>{user_doc.name}</b>
+"""
+
+def create_finance_issue_task(ticket):
+    task = frappe.new_doc("Task")
+    task.type = "Finance Issue"
+    task.subject = "Finance Issue Task"
+    task.insert(ignore_permissions=True)
+    return {"task": task.name, "message": f"Task {task.name} created (Finance Issue)"}
+
+def create_hardware_dispatch_task(ticket):
+    task = frappe.new_doc("Task")
+    task.type = "Hardware Dispatch"
+    task.subject = "Hardware Dispatch Task"
+    task.insert(ignore_permissions=True)
+    return {"task": task.name, "message": f"Task {task.name} created (Hardware Dispatch)"}
+
+# ---------------------------------------------------------
+# DYNAMIC REPORT FOR CLOSED TICKETS
+# ---------------------------------------------------------
+@frappe.whitelist()
+def get_filtered_closed_tickets(filters=None, current_ticket=None):
+    if isinstance(filters, str):
+        try:
+            filters = json.loads(filters)
+        except:
+            filters = {}
+    elif not filters:
+        filters = {}
+    
+    query_filters = {"status": "Closed"}
+    limit = None
+    
+    # Handle History Request
+    if filters.get("is_history") and current_ticket:
+        circuit_id = frappe.db.get_value("HD Ticket", current_ticket, "custom_circuit_id")
+        if circuit_id:
+            query_filters["custom_circuit_id"] = circuit_id
+            limit = 10 # Last 10 as requested
+    else:
+        # Standard filter logic
+        if filters.get("customer"):
+            query_filters["customer"] = ["LIKE", f"%{filters['customer']}%"]
+        
+        from_date = filters.get("from_date")
+        to_date = filters.get("to_date")
+        months = filters.get("months")
+        specific_month = filters.get("specific_month")
+        
+        if from_date and to_date:
+            query_filters["custom_close_datetime"] = ["between", [from_date, to_date]]
+        elif from_date:
+            query_filters["custom_close_datetime"] = [">=", from_date]
+        elif to_date:
+            query_filters["custom_close_datetime"] = ["<=", to_date]
+        elif months:
+            try:
+                start_date = dt.datetime.now() - dt.timedelta(days=int(months)*30)
+                query_filters["custom_close_datetime"] = [">=", start_date]
+            except: pass
+        elif specific_month:
+            try:
+                now = dt.datetime.now()
+                m_names = ["january", "february", "march", "april", "may", "june", 
+                           "july", "august", "september", "october", "november", "december"]
+                m_idx = -1
+                sm = specific_month.lower()
+                for i, name in enumerate(m_names):
+                    if name in sm:
+                        m_idx = i + 1
+                        break
+                
+                if m_idx != -1:
+                    year = now.year
+                    if m_idx > now.month:
+                        year -= 1
+                    
+                    import calendar
+                    last_day = calendar.monthrange(year, m_idx)[1]
+                    m_start = dt.datetime(year, m_idx, 1)
+                    m_end = dt.datetime(year, m_idx, last_day, 23, 59, 59)
+                    query_filters["custom_close_datetime"] = ["between", [m_start, m_end]]
+            except: pass
+        
+        # If no date filter provided, default to last 3 months
+        if "custom_close_datetime" not in query_filters:
+             start_date = dt.datetime.now() - dt.timedelta(days=90)
+             query_filters["custom_close_datetime"] = [">=", start_date]
+
+    fields = [
+        "name", "customer", 
+        "custom_agent", "custom_channel", "custom_close_datetime", "agreement_status", "custom_rca"
+    ]
+    
+    tickets = frappe.get_all("HD Ticket", filters=query_filters, fields=fields, order_by="custom_close_datetime desc", limit=limit)
+    
+    # Format date fields
+    for t in tickets:
+        if t.get("custom_close_datetime"):
+            t["custom_close_datetime"] = format_value(t["custom_close_datetime"])
+
+    labels = {
+        "name": "Ticket No",
+        "customer": "Customer",
+        "custom_agent": "Agent",
+        "custom_channel": "Channel",
+        "custom_close_datetime": "Closed Datetime",
+        "agreement_status": "SLA Status",
+        "custom_rca": "RCA"
+    }
+    
+    return {"tickets": tickets, "labels": labels}
+
+@frappe.whitelist()
+def download_closed_tickets_csv(filters=None, current_ticket=None):
+    res = get_filtered_closed_tickets(filters, current_ticket)
+    tickets = res["tickets"]
+    labels = res["labels"]
+    
+    from frappe.utils.xlsxutils import make_xlsx
+    
+    # Prepare rows for XLSX
+    header = list(labels.values())
+    rows = [header]
+    
+    for t in tickets:
+        row = []
+        for key in labels.keys():
+            val = t.get(key)
+            if isinstance(val, (dt.datetime, dt.date)):
+                val = val.strftime("%d-%m-%Y %H:%M")
+            row.append(val or "")
+        rows.append(row)
+    
+    xlsx_data = make_xlsx(rows, "Closed Tickets Report")
+    
+    filename = f"Closed_Tickets_{dt.datetime.now().strftime('%Y%m%d_%H%M')}.xlsx"
+    
+    frappe.response['filename'] = filename
+    frappe.response['filecontent'] = xlsx_data.getvalue()
+    frappe.response['type'] = 'binary'
+
+# ---------------------------------------------------------
+# AI MODEL CALL USING API CONFIGURATION DOCTYPE
+# ---------------------------------------------------------
+def call_ai_model(prompt):
+    try:
+        config_name = frappe.db.get_value("API Configuration", None, "name")
+        if not config_name:
+            return "API Configuration not found. Please set up API Configuration."
+
+        config = frappe.get_doc("API Configuration", config_name)
+
+        # Assuming fieldnames: api_key (Password), model_name, api_base_url, temperature, max_tokens
+        api_key = config.get_password("api_key")
+        model_name = config.model_name
+        api_base_url = config.api_base_url
+        temperature = config.temperature or 0.7
+        max_tokens = config.max_tokens or 500
+
+        if not api_key or not model_name or not api_base_url:
+            return "Incomplete API Configuration. Please check API Key, Model Name, and Base URL."
+
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+
+        payload = {
+            "model": model_name,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": temperature,
+            "max_tokens": max_tokens
+        }
+
+        response = requests.post(api_base_url, headers=headers, json=payload, timeout=60)
+        response.raise_for_status()
+
+        result = response.json()
+        if "choices" in result and len(result["choices"]) > 0:
+            return result["choices"][0]["message"]["content"]
+        elif "response" in result:
+            return result["response"]
+        else:
+            return "Unexpected API response format."
+
+    except requests.exceptions.RequestException as e:
+        frappe.log_error(f"API request failed: {str(e)}", "AI Model Call")
+        return f"Error calling AI model: {str(e)}"
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "AI Model Call")
+        return f"Unexpected error: {str(e)}"
+
+# ---------------------------------------------------------
+# MAIN CHAT ENDPOINT
+# ---------------------------------------------------------
+@frappe.whitelist()
+def hd_ticket_ai_chat(ticket, question):
+    frappe.flags.mute_messages = True
+
+    if not ticket or not question:
+        return "Please provide both ticket and question."
+
+    q_lower = question.strip().lower()
+    user = frappe.session.user
+
+    # Clear memory
+    if q_lower.strip() in ["clear", "clear memory"]:
+        clear_user_memory(user, ticket)
+        return "✅ Memory cleared. Starting fresh."
+
+    # Task creation flow (unchanged)
+    task_state_key = f"hd_ai_task_state_{user}_{ticket}"
+    waiting = frappe.cache().get_value(task_state_key)
+
+    if waiting and (q_lower == "1" or "finance" in q_lower):
+        frappe.cache().delete_value(task_state_key)
+        result = create_finance_issue_task(ticket)
+        return f"✅ {result['message']}<br>Task ID: <b>{result['task']}</b>"
+
+    if waiting and (q_lower == "2" or "hardware" in q_lower):
+        frappe.cache().delete_value(task_state_key)
+        result = create_hardware_dispatch_task(ticket)
+        return f"✅ {result['message']}<br>Task ID: <b>{result['task']}</b>"
+
+    if "create task" in q_lower:
+        frappe.cache().set_value(task_state_key, True, expires_in_sec=300)
+        return (
+            "Which task do you want to create?<br><br>"
+            "<b>1.</b> Finance Issue<br>"
+            "<b>2.</b> Hardware Dispatch Request<br><br>"
+            "Reply with <b>1</b> or <b>2</b>"
+        )
+
+    # DYNAMIC REPORT INTENT DETECTION (More flexible keywords)
+    report_keywords = [
+        "closed ticket", "report", "tickets last", "tickets for", "tickets from", 
+        "list of", "closed tickets", "tickets report", "fetch", "show me", "give me tickets",
+        "history"
+    ]
+    is_report_query = any(k in q_lower for k in report_keywords)
+    
+    if is_report_query:
+        # Augment prompt with examples for better NLU
+        report_extra = """
+If the user is asking for a list, history, or report of closed tickets, you MUST respond in this format:
+ACTION:REPORT|{"months": 3, "customer": null, "specific_month": null, "from_date": null, "to_date": null, "is_history": false}
+
+IMPORTANT: Even if the user's phrasing is informal or has poor grammar (e.g., "tickets march", "customer x list", "3 month closed", "history of this ticket"), you must identify the intent and extract the parameters:
+- "tickets march" -> specific_month: "March", is_history: false
+- "customer x report" -> customer: "Customer X", is_history: false
+- "give me 6 month" -> months: 6, is_history: false
+- "history of this ticket" or "show history" -> is_history: true
+- "from jan to feb" -> from_date: "2024-01-01", to_date: "2024-02-29", is_history: false
+
+Do not return any other text, just the ACTION:REPORT line.
+"""
+    else:
+        report_extra = ""
+
+    if "my name" in q_lower:
+        return get_logged_user_info()
+
+    # Get ticket
+    ticket_doc = frappe.get_doc("HD Ticket", ticket)
+    circuit_id = ticket_doc.custom_circuit_id
+
+    # Smart Context Building
+    # We will build context from multiple linked entities if circuit_id exists
+    context_data = {"ticket_details": get_clean_doc_data(ticket_doc)}
+    entities_found = []
+
+    if circuit_id and not is_report_query:
+        # Define field map for related entities
+        ENTITY_FIELD_MAP = {
+            "Site": "circuit_id",
+            "Lastmile Services Master": "circuit_id",
+            "Provisioning": "circuit_id",
+            "Installation Master": "circuit_id"
+        }
+
+        # Targeted Field Search (across all entities)
+        best_match_answer = None
+        best_match_score = 0
+        
+        # Check the Ticket itself first
+        t_score, ticket_answer = search_field_answer(ticket_doc, question)
+        if ticket_answer:
+            best_match_answer = ticket_answer
+            best_match_score = t_score
+            
+        # Check all related entities
+        related_docs = {} 
+        for doctype, field_map in ENTITY_FIELD_MAP.items():
+            docname = frappe.db.get_value(doctype, {field_map: circuit_id}, "name")
+            if docname:
+                doc = frappe.get_doc(doctype, docname)
+                related_docs[doctype] = doc
+                
+                # Run matching on this doc
+                e_score, entity_answer = search_field_answer(doc, question)
+                if entity_answer:
+                    # If this is a very strong match (phrase match for 1+ words), and user specifically 
+                    # mentions the entity or it beats the previous best score.
+                    target_entity = identify_entity(question)
+                    
+                    if target_entity == doctype and e_score >= 15:
+                        return entity_answer
+                    
+                    if e_score > best_match_score:
+                        best_match_answer = entity_answer
+                        best_match_score = e_score
+                    elif e_score == best_match_score and best_match_answer:
+                         # Tie-breaker: prefer anything other than Ticket if scores are equal
+                         best_match_answer = entity_answer
+
+        if best_match_answer:
+            return best_match_answer
+
+        # If no direct match found, build context for AI for those found entities
+        for doctype, doc in related_docs.items():
+            context_data[doctype] = get_clean_doc_data(doc)
+            entities_found.append(doctype)
+    elif circuit_id and is_report_query:
+        # Build minimal context for report if needed, but the report logic handles it
+        pass
+
+    # Priority 2: FAISS (if no target identified or as fallback)
+    if not entities_found and is_faiss_enabled() and not is_report_query:
+        try:
+            from nexapp.ai.faiss_engine import faiss_search, fetch_data_by_circuit
+            items = faiss_search(question, top_k=3) 
+            
+            # Fetch data and ensure it's labeled
+            faiss_data = fetch_data_by_circuit(circuit_id, items)
+            
+            # Convert raw fieldnames to labels in FAISS data
+            for dtype, ddata in faiss_data.items():
+                if dtype in entities_found: continue
+                label_map = get_doc_label_map(dtype)
+                labeled_ddata = {}
+                for f, v in ddata.items():
+                    label = label_map.get(f, f.replace('_', ' ').title())
+                    labeled_ddata[label] = v
+                context_data[dtype] = labeled_ddata
+                entities_found.append(dtype)
+                
+        except Exception as e:
+            frappe.log_error(f"FAISS Context Error: {str(e)}", "AI Chat")
+
+        # Fallback: Minimum context if nothing found (Site is often needed)
+        if not entities_found:
+             docname = frappe.db.get_value("Site", {"circuit_id": circuit_id}, "name")
+             if docname:
+                 doc = frappe.get_doc("Site", docname)
+                 context_data["Site"] = get_clean_doc_data(doc)
+
+    # Prompt template
+    prompt_text = frappe.db.get_value(
+        "AI Prompt Template",
+        {"prompt_code": "HD_TICKET_CHAT"},
+        "prompt_text"
+    )
+    if not prompt_text:
+        prompt_text = (
+            "You are an AI assistant for helpdesk tickets. "
+            "Answer the user's question based on the provided context. "
+            "Use a friendly tone and format with HTML <b> and <br> where appropriate."
+        )
+
+    # Build memory context (per ticket)
+    memory_context = build_memory_context(user, ticket)
+
+    full_prompt = f"""
+{prompt_text}
+{report_extra}
+
+CONVERSATION HISTORY:
+{memory_context}
+
+CONTEXT:
+{json.dumps(context_data, default=str, indent=2)}
+
+QUESTION:
+{question}
+"""
+
+    # Call AI model
+    response = call_ai_model(full_prompt)
+
+    # HANDLING REPORT ACTION
+    if "ACTION:REPORT|" in response:
+        try:
+            parts = response.split("ACTION:REPORT|")
+            report_json = parts[1].strip()
+            # Just return a trigger for the frontend
+            return f'<div class="hd-ai-report-trigger" data-filters=\'{report_json}\'>' \
+                   f'I can generate a report for the closed tickets you requested.<br>' \
+                   f'<button class="hd-ai-report-btn">View Report</button></div>'
+        except:
+            pass
+
+    # Clean up response
+    response = response.replace("**", "").replace("###", "")
+    response = response.replace("\\n", "<br>").replace("\n", "<br>")
+
+    if not response or response.strip() == "":
+        response = "I'm sorry, I couldn't find an answer to your question."
+
+    update_memory(user, ticket, question, response)
+
+    return response
+############################################################################
+# Unallocated PAge
+import frappe
+
+# ======================================================
+# UNALLOCATED RECONCILIATION PAGE METHODS
+# ======================================================
+
+@frappe.whitelist()
+def get_unallocated_payment_entries(company=None, from_date=None, to_date=None, party=None):
+    """
+    Returns a list of Payment Entries with unallocated_amount > 0.
+    Filters by company, date range and optional party.
+    """
+    filters = {
+        "unallocated_amount": [">", 0],
+        "docstatus": 1
+    }
+    if company:
+        filters["company"] = company
+    if from_date:
+        filters["posting_date"] = [">=", from_date]
+    if to_date:
+        if "posting_date" in filters:
+            filters["posting_date"] = ["between", [from_date, to_date]]
+        else:
+            filters["posting_date"] = ["<=", to_date]
+    if party:
+        filters["party"] = party
+
+    fields = ["name", "posting_date", "party", "party_type", "reference_no", "unallocated_amount"]
+    entries = frappe.get_list("Payment Entry", filters=filters, fields=fields, order_by="posting_date desc")
+    return entries
+
+
+@frappe.whitelist()
+def get_unallocated_parties(company=None, from_date=None, to_date=None):
+    """
+    Returns a list of distinct party names from Payment Entries
+    that have unallocated_amount > 0 and match the filters.
+    """
+    filters = {
+        "unallocated_amount": [">", 0],
+        "docstatus": 1
+    }
+    if company:
+        filters["company"] = company
+    if from_date:
+        filters["posting_date"] = [">=", from_date]
+    if to_date:
+        if "posting_date" in filters:
+            filters["posting_date"] = ["between", [from_date, to_date]]
+        else:
+            filters["posting_date"] = ["<=", to_date]
+
+    parties = frappe.get_all("Payment Entry", filters=filters, fields=["party"], distinct=True)
+    return [p.party for p in parties if p.party]
+
+
+@frappe.whitelist()
+def get_outstanding_invoices(doctype, party_field, party_name, company):
+    """
+    Returns list of unpaid, uncancelled invoices for a given party.
+    doctype: "Purchase Invoice" or "Sales Invoice"
+    party_field: "supplier" or "customer"
+    party_name: name of the party
+    company: company name
+    """
+    filters = {
+        party_field: party_name,
+        "company": company,
+        "docstatus": 1,
+        "status": ["not in", ["Paid", "Cancelled"]],
+        "outstanding_amount": [">", 0]
+    }
+    fields = ["name", "outstanding_amount", "posting_date"]
+    if doctype == "Purchase Invoice":
+        fields.extend(["bill_no", "bill_date"])
+
+    invoices = frappe.get_all(doctype, filters=filters, fields=fields)
+    return invoices
+
+
+@frappe.whitelist()
+def allocate_payment_to_invoices(payment_entry, allocations, company):
+    """
+    Allocate amounts from a Payment Entry to one or more invoices.
+    Edits the existing submitted Payment Entry by appending references.
+    allocations: list of dicts with keys 'invoice', 'allocated_amount', 'doctype'
+    """
+    try:
+        if isinstance(allocations, str):
+            allocations = frappe.parse_json(allocations)
+
+        pe = frappe.get_doc("Payment Entry", payment_entry)
+
+        # Append new invoice references (preserve existing ones)
+        for alloc in allocations:
+            invoice_doctype = alloc.get("doctype")
+            if not invoice_doctype:
+                invoice_doctype = "Purchase Invoice" if alloc["invoice"].startswith("PINV") else "Sales Invoice"
+
+            inv = frappe.get_doc(invoice_doctype, alloc["invoice"])
+            
+            # Use appropriate account field based on doctype
+            account = inv.debit_to if invoice_doctype == "Sales Invoice" else inv.credit_to
+
+            pe.append("references", {
+                "reference_doctype": invoice_doctype,
+                "reference_name": alloc["invoice"],
+                "account": account,
+                "due_date": inv.due_date,
+                "total_amount": inv.grand_total,
+                "outstanding_amount": inv.outstanding_amount,
+                "allocated_amount": flt(alloc["allocated_amount"]),
+                "exchange_rate": flt(inv.conversion_rate) or 1.0
+            })
+
+        # Recalculate totals (total_allocated_amount, unallocated_amount, etc.)
+        pe.setup_party_account_field()
+        pe.set_amounts()
+
+        # Update GL Entries for submitted document to fix invoice outstanding amounts
+        # 1. Reverse old GL entries
+        pe.make_gl_entries(cancel=1)
+
+        # Allow saving a submitted document
+        pe.flags.ignore_validate_update_after_submit = True
+        pe.save(ignore_permissions=True)
+
+        # 2. Create new GL entries (this also updates invoice outstanding)
+        pe.make_gl_entries(cancel=0)
+        
+        frappe.db.commit()
+
+        return {"status": "success", "payment_entry": pe.name}
+    except Exception as e:
+        frappe.db.rollback()
+        return {"status": "error", "error": str(e)}
+
+#########################################################################
+# Provisioning Update to Site
+import frappe
+
+@frappe.whitelist()
+def update_site_from_provisioning(provisioning_name):
+
+    if not provisioning_name:
+        frappe.throw("Provisioning document is required")
+
+    # -----------------------------------
+    # Get Provisioning document
+    # -----------------------------------
+    provisioning = frappe.get_doc("Provisioning", provisioning_name)
+
+    if not provisioning.circuit_id:
+        frappe.throw("Circuit ID is missing in Provisioning")
+
+    # -----------------------------------
+    # Get Site (circuit_id = Site.name)
+    # -----------------------------------
+    try:
+        site = frappe.get_doc("Site", provisioning.circuit_id)
+    except frappe.DoesNotExistError:
+        frappe.throw(f"Site not found with name: {provisioning.circuit_id}")
+
+    # -----------------------------------
+    # CONDITION: Only if provisioning_id is blank
+    # -----------------------------------
+    if site.provisioning_id:
+        frappe.msgprint(f"Site already linked with Provisioning: {site.provisioning_id}")
+        return
+
+    # -----------------------------------
+    # Prepare update dict (BEST PRACTICE)
+    # -----------------------------------
+    update_fields = {}
+
+    # -----------------------------------
+    # PARTIALLY COMPLETED
+    # -----------------------------------
+    if provisioning.status == "Partially Completed":
+
+        update_fields = {
+            "site_status": "Partially Provisioning Completed",
+            "provisioning_partially_completed_date": provisioning.provisioning_partially_completed_date,
+            "branch_router_ip": provisioning.branch_router_ip,
+            "provisioning_status": provisioning.status
+        }
+
+    # -----------------------------------
+    # COMPLETED
+    # -----------------------------------
+    elif provisioning.status == "Completed":
+
+        update_fields = {
+            "site_status": "Provisioning Completed",
+            "provisioning_id": provisioning.name,
+            "provisioning_date": provisioning.provisioning_date,
+            "provisioning_status": provisioning.status,
+            "branch_router_ip": provisioning.branch_router_ip   # ✅ FIX ADDED
+        }
+
+    else:
+        return
+
+    # -----------------------------------
+    # SINGLE UPDATE (Better than multiple db_set)
+    # -----------------------------------
+    frappe.db.set_value("Site", site.name, update_fields)
+
+    frappe.db.commit()
+
+    return site.name  # returning for JS use (optional)
+
+#################################################################################
+# Shifting Code
+import frappe
+from frappe.utils import nowdate
+
+@frappe.whitelist()
+def update_site_shift(site_name):
+    try:
+        doc = frappe.get_doc("Site", site_name)
+
+        if (
+            doc.order_type == "Shifting"
+            and doc.site_status == "Delivered and Live"
+            and doc.existing_circuit_id == doc.name
+            and not doc.site_shifted_date
+        ):
+            doc.site_status = "Site Shifted to new location"
+            doc.shifted_circuit_id = doc.name
+            doc.site_shifted_date = nowdate()
+
+            doc.save(ignore_permissions=True)
+
+        return "Success"
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Site Shift Error")
+        return str(e)
+
+#########################################################################
+# Employee Survey
+import frappe
+import json
+from frappe.utils import now_datetime
+
+
+# =========================
+# GET SURVEY QUESTIONS
+# =========================
+@frappe.whitelist(allow_guest=False)
+def get_survey_details(survey):
+
+    doc = frappe.get_doc("Employee Survey", survey)
+    user = frappe.session.user
+    employee = frappe.db.get_value("Employee", {"user_id": user}, "name")
+
+    existing_answers = {}
+    if employee:
+        response = frappe.db.get_value("Survey Response", {
+            "survey": survey,
+            "employee": employee
+        }, "name")
+
+        if response:
+            res_doc = frappe.get_doc("Survey Response", response)
+            for ans in res_doc.answers:
+                # Store answer by question text to match frontend data-question attribute
+                existing_answers[ans.question] = ans.answer
+
+    return {
+        "title": doc.name,
+        "description": doc.description,
+        "start_date": doc.start_date,
+        "end_date": doc.end_date,
+        "is_active": doc.is_active,
+        "existing_answers": existing_answers,
+        "questions": [{
+            "question": q.question,
+            "type": q.question_type,
+            "options": q.options,
+            "mandatory": q.is_mandatory
+        } for q in doc.questions]
+    }
+
+
+# =========================
+# SAVE SURVEY RESPONSE (FIXED)
+# =========================
+@frappe.whitelist()
+def save_survey_response(survey, answers):
+
+    try:
+        if isinstance(answers, str):
+            answers = json.loads(answers)
+
+        user = frappe.session.user
+
+        if user == "Guest":
+            frappe.throw("Please login to submit the survey")
+
+        employee = frappe.db.get_value("Employee", {"user_id": user}, "name")
+
+        if not employee:
+            frappe.throw("No Employee linked to this user")
+
+        # Prevent duplicate
+        existing = frappe.db.exists("Survey Response", {
+            "survey": survey,
+            "employee": employee
+        })
+
+        if existing:
+            frappe.throw("You already submitted this survey")
+
+        # =========================
+        # CREATE DOC
+        # =========================
+        doc = frappe.new_doc("Survey Response")
+        doc.survey = survey
+        doc.employee = employee
+        doc.submitted_on = now_datetime()
+
+        for ans in answers:
+            value = ans.get("answer")
+
+            doc.append("answers", {
+                "question": ans.get("question"),
+                "answer": value,
+                "rating_value": int(value) if str(value).isdigit() else 0
+            })
+
+        # 🔥 IMPORTANT
+        doc.insert(ignore_permissions=True)
+
+        # 🔥 DEBUG LOG
+        frappe.log_error(f"Survey Saved: {doc.name}", "SURVEY SUCCESS")
+
+        return {
+            "status": "success",
+            "name": doc.name
+        }
+
+    except Exception as e:
+
+        # 🔥 LOG ERROR (VERY IMPORTANT)
+        frappe.log_error(frappe.get_traceback(), "SURVEY ERROR")
+
+        return {
+            "status": "error",
+            "message": str(e)
+        }
+#############################################################################    
+
+import frappe
+from frappe.utils import formatdate, now
+
+@frappe.whitelist()
+def send_survey_to_employees(survey, send_to=None, department=None, employees=None):
+    """
+    Enqueue the survey email sending task.
+    Returns immediately to avoid blocking the client.
+    """
+    if not survey:
+        return {"status": "error", "message": "Survey not found"}
+
+    survey_doc = frappe.get_doc("Employee Survey", survey)
+
+    # Check if the survey is active
+    if not survey_doc.is_active:
+        return {
+            "status": "error",
+            "message": "Survey is not active. Please activate the survey before sending."
+        }
+
+    # Enqueue the actual email sending to a background queue
+    frappe.enqueue(
+        method=process_survey_emails,
+        queue="long",
+        timeout=600,
+        survey=survey,
+        send_to=send_to,
+        department=department,
+        employees=employees,
+        job_name=f"send_survey_{survey}"
+    )
+
+    return {
+        "status": "success",
+        "message": "Emails are being sent in background"
+    }
+
+
+def process_survey_emails(survey, send_to=None, department=None, employees=None):
+    """
+    Actual background task that sends emails and creates survey logs.
+    """
+    try:
+        survey_doc = frappe.get_doc("Employee Survey", survey)
+
+        survey_url = f"https://erp.nexapp.co.in/app/employee-survey-page?survey={survey}"
+        description = survey_doc.description or ""
+        end_date = formatdate(survey_doc.end_date) if survey_doc.end_date else "N/A"
+
+        # Build the list of employees based on send_to option
+        base_filters = {
+            "status": "Active",
+            "user_id": ["is", "set"]      # user_id must not be null/empty
+        }
+
+        if send_to == "All Employees":
+            employee_list = frappe.get_all(
+                "Employee",
+                filters=base_filters,
+                fields=["name", "employee_name", "user_id"]
+            )
+        elif send_to == "By Department":
+            if not department:
+                frappe.log_error("No department provided for 'By Department'", "Survey Email Error")
+                return
+            filters = base_filters.copy()
+            filters["department"] = department
+            employee_list = frappe.get_all(
+                "Employee",
+                filters=filters,
+                fields=["name", "employee_name", "user_id"]
+            )
+        elif send_to == "Selected Employees":
+            if not employees:
+                frappe.log_error("No employees provided for 'Selected Employees'", "Survey Email Error")
+                return
+            if isinstance(employees, str):
+                employees = frappe.parse_json(employees)
+            employee_list = frappe.get_all(
+                "Employee",
+                filters={
+                    "name": ["in", employees],
+                    "status": "Active",
+                    "user_id": ["is", "set"]
+                },
+                fields=["name", "employee_name", "user_id"]
+            )
+        else:
+            frappe.log_error(f"Invalid send_to option: {send_to}", "Survey Email Error")
+            return
+
+        if not employee_list:
+            frappe.log_error("No active employees with valid user_id found", "Survey Email Error")
+            return
+
+        # Send emails and create logs
+        for emp in employee_list:
+            # Skip if the user is disabled
+            user_enabled = frappe.db.get_value("User", emp.user_id, "enabled")
+            if not user_enabled:
+                continue
+
+            try:
+                # Send the email
+                frappe.sendmail(
+                    recipients=[emp.user_id],
+                    sender="notification@nexapp.co.in",
+                    subject=f"Employee Survey: {survey_doc.title}",
+                    message=f"""
+                        Dear {emp.employee_name or "Employee"},<br><br>
+                        {description}<br><br>
+                        <b>📅 Please complete the survey before:</b> {end_date}<br><br>
+                        👉 <a href="{survey_url}">Click here to fill the survey</a><br><br>
+                        Your feedback is very important to us.<br><br>
+                        Regards,<br>
+                        HR Team
+                    """
+                )
+
+                # Avoid duplicate logs
+                if not frappe.db.exists("Survey Log", {"survey": survey, "employee": emp.name}):
+                    frappe.get_doc({
+                        "doctype": "Survey Log",
+                        "survey": survey,
+                        "employee": emp.name,
+                        "employee_name": emp.employee_name,
+                        "email": emp.user_id,
+                        "status": "Sent",
+                        "sent_on": now()
+                    }).insert(ignore_permissions=True)
+
+            except Exception as e:
+                frappe.log_error(
+                    f"Failed to send survey to {emp.name} ({emp.user_id}): {str(e)}",
+                    "Survey Email Error"
+                )
+
+    except Exception as e:
+        frappe.log_error(f"Survey email background job failed: {str(e)}", "Survey Email Error")
+
+##########################################################################
+# AI Customer Potal
+
+import frappe
+import re
+import os
+import requests
+
+# =========================================================
+# AI CALL
+# =========================================================
+def call_ai_model(prompt):
+    try:
+        config_name = frappe.db.get_value("API Configuration", None, "name")
+        if not config_name:
+            return ""
+
+        config = frappe.get_doc("API Configuration", config_name)
+
+        api_key = config.get_password("api_key")
+        model_name = config.model_name
+        api_base_url = config.api_base_url
+
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+
+        payload = {
+            "model": model_name,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.2,
+            "max_tokens": 100
+        }
+
+        response = requests.post(api_base_url, headers=headers, json=payload, timeout=10)
+        result = response.json()
+
+        return result.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
+
+    except Exception:
+        return ""
+
+
+# =========================================================
+# MAIN FUNCTION
+# =========================================================
+@frappe.whitelist(allow_guest=True)
+def ai_installation_query(question):
+
+    try:
+        question_lower = question.lower()
+
+        # =========================================================
+        # 🔥 DETECT IMAGE TYPE
+        # =========================================================
+        image_type = None
+
+        if "ir" in question_lower:
+            image_type = "IR Report"
+        elif "router" in question_lower:
+            image_type = "Router Photo"
+        elif "testing" in question_lower:
+            image_type = "Testing Photo"
+        elif "rack" in question_lower:
+            image_type = "Server Rack Photo"
+        elif "cable" in question_lower:
+            image_type = "Cable Labeling Photo"
+        elif "isp" in question_lower:
+            image_type = "ISP Device Photo"
+        elif "installation" in question_lower or "report" in question_lower:
+            image_type = None  # fetch all
+
+        # =========================================================
+        # 🔥 EXTRACT INPUTS (NUMBERS + WORDS)
+        # =========================================================
+        numbers = re.findall(r'\d+', question)
+        words = re.findall(r'[A-Za-z0-9]+', question)
+
+        circuit_ids = set()
+
+        # 🔥 1. Direct Circuit ID (numbers)
+        for num in numbers:
+            if frappe.db.exists("Site", num):
+                circuit_ids.add(num)
+
+        # 🔥 2. Legal Code → convert to Circuit ID
+        for word in words:
+            site = frappe.db.get_value(
+                "Site",
+                {"site_id__legal_code": word.upper()},
+                "name"
+            )
+            if site:
+                circuit_ids.add(site)
+
+        all_images = []
+        valid_circuits = []
+
+        # =========================================================
+        # 🔥 PROCESS EACH CIRCUIT
+        # =========================================================
+        for circuit_id in circuit_ids:
+
+            installation = frappe.db.get_value(
+                "Installation Note",
+                {"custom_circuit_id": circuit_id},
+                "name"
+            )
+
+            if not installation:
+                continue
+
+            # =========================================================
+            # 🔥 GET LEGAL CODE FROM SITE
+            # =========================================================
+            legal_code = frappe.db.get_value(
+                "Site",
+                {"name": circuit_id},
+                "site_id__legal_code"
+            ) or "NA"
+
+            # =========================================================
+            # 🔥 GET ATTACHMENTS
+            # =========================================================
+            attachments = frappe.get_all(
+                "Installation Note Attachment",
+                filters={"parent": installation},
+                fields=["attachment", "select_mqjl"]
+            )
+
+            for att in attachments:
+
+                if not att.attachment:
+                    continue
+
+                # =========================================================
+                # 🔥 FILTER ONLY IF SPECIFIC TYPE REQUESTED
+                # =========================================================
+                if image_type and att.select_mqjl != image_type:
+                    continue
+
+                all_images.append({
+                    "image": att.attachment,
+                    "label": att.select_mqjl,
+                    "circuit_id": circuit_id,
+                    "legal_code": legal_code
+                })
+
+            valid_circuits.append(circuit_id)
+
+        # =========================================================
+        # 🔥 AI REPLY
+        # =========================================================
+        if not all_images:
+            if valid_circuits:
+                ai_reply = f"No installation images or attachments found for Circuit ID(s): {', '.join(valid_circuits)}."
+            else:
+                ai_reply = "No data found for the given Circuit ID or Legal Code."
+        else:
+            if image_type:
+                ai_reply = f"Here is the {image_type} for Circuit ID(s): {', '.join(valid_circuits)}"
+            else:
+                ai_reply = f"Here is the full installation report (all attachments) for Circuit ID(s): {', '.join(valid_circuits)}"
+
+        return {
+            "status": "success",
+            "images": all_images,
+            "circuit_ids": list(valid_circuits),
+            "image_type": image_type,
+            "ai_reply": ai_reply
+        }
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "AI INSTALLATION ERROR")
+        return {"status": "error", "message": str(e)}
+
+@frappe.whitelist()
+def download_multi_images(files):
+    """
+    Creates a ZIP file of multiple images and returns the download URL.
+    """
+    frappe.logger().info(f"MULTI DOWNLOAD REQUEST: {files}")
+    
+    if not files:
+        return {"status": "error", "message": "No files selected"}
+
+    try:
+        if isinstance(files, str):
+            files = json.loads(files)
+
+        # ZIP filename from first file metadata
+        first_file = files[0] if files else {}
+        z_cid = first_file.get("cid", "Unknown")
+        z_lc = first_file.get("lc", "NA")
+        zip_display_name = f"Installation_Report_{z_cid}_{z_lc}.zip"
+
+        zip_buffer = io.BytesIO()
+        files_added = 0
+        
+        with zipfile.ZipFile(zip_buffer, "w") as zip_file:
+            for file_data in files:
+                url = file_data.get("url")
+                if not url:
+                    continue
+                
+                label = file_data.get("label", "Image")
+                fcid = file_data.get("cid", "Unknown")
+                flc = file_data.get("lc", "NA")
+                
+                # Resolve file path
+                clean_path = url.lstrip("/")
+                site_path = frappe.get_site_path()
+                
+                possible_paths = [
+                    os.path.join(site_path, "public", clean_path),
+                    os.path.join(site_path, clean_path),
+                    frappe.get_site_path("public", clean_path),
+                    frappe.get_site_path("private", clean_path)
+                ]
+                
+                resolved_path = None
+                for p in possible_paths:
+                    if os.path.exists(p) and os.path.isfile(p):
+                        resolved_path = p
+                        break
+                
+                if resolved_path:
+                    _, ext = os.path.splitext(resolved_path)
+                    # Use provided metadata for internal name
+                    internal_name = f"{label}_{fcid}_{flc}{ext}".replace(" ", "_")
+                    zip_file.write(resolved_path, internal_name)
+                    files_added += 1
+                else:
+                    frappe.logger().warning(f"Could not resolve file: {url}")
+
+        if files_added == 0:
+            return {"status": "error", "message": "None of the selected images could be found on the server."}
+
+        zip_buffer.seek(0)
+        
+        # Save ZIP to file manager with randomized internal name but return pretty display name
+        from frappe.utils import random_string
+        fn = f"report_{random_string(6)}.zip"
+        
+        _file = frappe.get_doc({
+            "doctype": "File",
+            "file_name": fn,
+            "content": zip_buffer.getvalue(),
+            "is_private": 0
+        })
+        _file.insert(ignore_permissions=True)
+        frappe.db.commit()
+
+        return {
+            "status": "success", 
+            "url": _file.file_url,
+            "filename": zip_display_name
+        }
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "MULTI DOWNLOAD ERROR")
+        return {"status": "error", "message": f"Server Error: {str(e)}"}

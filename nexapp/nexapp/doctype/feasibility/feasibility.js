@@ -10,7 +10,7 @@ frappe.ui.form.on('Feasibility', {
             'site_type', 'street', 'city', 'country', 
             'longitude', 'site_id__legal_code', 'pincode', 
             'district', 'state', 'latitude', 'primary_contact', 
-            'contact_html', 'alternate_contact', 'contact_html2', 
+            'alternate_contact', 
             'description', 'lms_provider','sales_order', 'sales_order_date', 
             'amended_from', 'solution_code', 'managed_services', 'config_type',
             'solution_name', 'address', 'organization', 'territory', 'customer_type',
@@ -707,4 +707,5 @@ frappe.ui.form.on('LMS Feasibility', {
             });
     }
 });
+
 /////////////////////////////////////////////////////////////////

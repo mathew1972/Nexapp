@@ -1,7 +1,7 @@
 
 
 // Complete Bank Reconciliation System with Filters and Reverse Entry Button
-frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
+frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
     // Create page without default title
     const page = frappe.ui.make_app_page({
         parent: wrapper,
@@ -11,12 +11,12 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
     //frappe.require('/assets/nexapp/js/supplier_advance_po.js');  
 
     frappe.require([
-    '/assets/nexapp/js/supplier_advance_po.js',
-    '/assets/nexapp/js/customer_advance_so.js'   // ⭐ ADD THIS LINE
+        '/assets/nexapp/js/supplier_advance_po.js',
+        '/assets/nexapp/js/customer_advance_so.js'   // ⭐ ADD THIS LINE
     ]);
 
 
-    
+
 
     // Add custom header with icon - COMPACT VERSION
     $(`<div class="page-head">
@@ -1515,7 +1515,7 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
 
     $container.appendTo(page.body);
     $rightPanel.appendTo('body');
-    
+
     // Variables
     let currentPage = 1;
     let perPage = 20;
@@ -1526,13 +1526,13 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
     let selectedStatementData = null;
     let taxAccounts = [];
     let expenseAccounts = [];
-    let transferAccounts = [];    
+    let transferAccounts = [];
     let isSupplierPayment = false;
     let isEmployeeExpense = false;
     let isExpense = false;
     let isTransfer = false;
     let isItemized = false;
-    let isEmployeeAdvance = false;    
+    let isEmployeeAdvance = false;
     let salesOrders = [];
 
     let employees = [];
@@ -1545,7 +1545,7 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
     let statementAmount = 0;
     let isWithdrawal = false;
     let isDeposit = false;
-    
+
     // Table filter variables
     let tableFilters = {
         date: '',
@@ -1553,32 +1553,34 @@ frappe.pages['bank-reconciliation'].on_page_load = function(wrapper) {
         withdrawalAmount: '',
         depositAmount: ''
     };
-    
+
     // Filter timeout variable for debounce
     let filterTimeout;
-    
+
     // Reverse Entry variables
     let reverseEntries = [];
     let selectedReverseEntries = [];
 
 
     // ⭐ Sync From Account = Selected Bank Account
-function sync_from_account_with_bank() {
+    function sync_from_account_with_bank() {
 
-    if (!selectedBankAccount) return;
+        if (!selectedBankAccount) return;
 
-    // Find selected bank account object
-    const acc = bankAccounts.find(a => a.name === selectedBankAccount);
-    if (!acc) return;
+        // Find selected bank account object
+        const acc = bankAccounts.find(a => a.name === selectedBankAccount);
+        if (!acc) return;
 
-    const displayName = acc.custom_account_head || acc.name;
+        const displayName = acc.custom_account_head || acc.name;
 
-    // Set hidden value (used in entry creation)
-    $('#from-account').val(acc.name);
+        // Set hidden values (used in entry creation)
+        $('#from-account').val(acc.name);
+        $('#to-account').val(acc.name);
 
-    // Show label text in UI
-    $('#from-account-toggle').text(displayName);
-}
+        // Show label text in UI
+        $('#from-account-toggle').text(displayName);
+        $('#to-account-toggle').text(displayName);
+    }
 
 
     // Initialize date filters
@@ -1592,70 +1594,70 @@ function sync_from_account_with_bank() {
     // Load bank accounts
     function load_bank_accounts() {
 
-    // STEP A: Get bank accounts used in statements
-    frappe.call({
-        method: "frappe.client.get_list",
-        args: {
-            doctype: "Bank Statement Entry",
-            fields: ["bank_account"],
-            limit_page_length: 0
-        },
-        callback: function(res) {
+        // STEP A: Get bank accounts used in statements
+        frappe.call({
+            method: "frappe.client.get_list",
+            args: {
+                doctype: "Bank Statement Entry",
+                fields: ["bank_account"],
+                limit_page_length: 0
+            },
+            callback: function (res) {
 
-            const uniqueAccounts = [...new Set(
-                res.message.map(e => e.bank_account).filter(Boolean)
-            )];
+                const uniqueAccounts = [...new Set(
+                    res.message.map(e => e.bank_account).filter(Boolean)
+                )];
 
-            if (!uniqueAccounts.length) return;
+                if (!uniqueAccounts.length) return;
 
-            // STEP B: Fetch custom_account_head from Bank Account
-            frappe.call({
-                method: "frappe.client.get_list",
-                args: {
-                    doctype: "Bank Account",
-                    fields: ["name", "custom_account_head"],
-                    filters: {
-                        name: ["in", uniqueAccounts]
+                // STEP B: Fetch custom_account_head from Bank Account
+                frappe.call({
+                    method: "frappe.client.get_list",
+                    args: {
+                        doctype: "Bank Account",
+                        fields: ["name", "custom_account_head"],
+                        filters: {
+                            name: ["in", uniqueAccounts]
+                        },
+                        limit_page_length: 0
                     },
-                    limit_page_length: 0
-                },
-                callback: function(r) {
+                    callback: function (r) {
 
-                    bankAccounts = r.message || [];
-                    update_bank_account_dropdown();
-                    load_transfer_accounts_from_bank_accounts();   // ⭐ ADD THIS
+                        bankAccounts = r.message || [];
+                        update_bank_account_dropdown();
+                        load_transfer_accounts_from_bank_accounts();   // ⭐ ADD THIS
 
-                }
-            });
-        }
-    });
-}
+                    }
+                });
+            }
+        });
+    }
 
     // Update bank account dropdown
     function update_bank_account_dropdown() {
-    const $dropdown = $('#bank-account-select');
-    $dropdown.empty();
+        const $dropdown = $('#bank-account-select');
+        $dropdown.empty();
 
-    if (bankAccounts.length === 0) {
-        $dropdown.append('<option value="">No Bank Accounts Found</option>');
-        return;
+        if (bankAccounts.length === 0) {
+            $dropdown.append('<option value="">No Bank Accounts Found</option>');
+            return;
+        }
+
+        $dropdown.append('<option value="">All Bank Accounts</option>');
+
+        bankAccounts.forEach(acc => {
+
+            const displayName = acc.custom_account_head || acc.name;
+
+            $dropdown.append(
+                `<option value="${acc.name}">${displayName}</option>`
+            );
+        });
+
+        selectedBankAccount = bankAccounts[0].name;
+        $dropdown.val(selectedBankAccount);
+        $dropdown.trigger('change');
     }
-
-    $dropdown.append('<option value="">All Bank Accounts</option>');
-
-    bankAccounts.forEach(acc => {
-
-        const displayName = acc.custom_account_head || acc.name;
-
-        $dropdown.append(
-            `<option value="${acc.name}">${displayName}</option>`
-        );
-    });
-
-    selectedBankAccount = bankAccounts[0].name;
-    $dropdown.val(selectedBankAccount);
-    $dropdown.trigger('change');
-}
 
 
     // Initialize table filter inputs
@@ -1680,7 +1682,7 @@ function sync_from_account_with_bank() {
             filteredBankEntries = filteredBankEntries.filter(entry => {
                 const entryDate = entry.date || entry.posting_date || entry.creation;
                 if (!entryDate) return false;
-                
+
                 const formattedDate = frappe.datetime.str_to_user(entryDate).toLowerCase();
                 return formattedDate.includes(searchDate);
             });
@@ -1698,7 +1700,7 @@ function sync_from_account_with_bank() {
             const searchWithdrawal = tableFilters.withdrawalAmount.toLowerCase();
             filteredBankEntries = filteredBankEntries.filter(entry => {
                 if (!entry.withdrawal) return false;
-                
+
                 const withdrawal = '₹ ' + format_currency(entry.withdrawal);
                 return withdrawal.toLowerCase().includes(searchWithdrawal);
             });
@@ -1708,7 +1710,7 @@ function sync_from_account_with_bank() {
             const searchDeposit = tableFilters.depositAmount.toLowerCase();
             filteredBankEntries = filteredBankEntries.filter(entry => {
                 if (!entry.deposit) return false;
-                
+
                 const deposit = '₹ ' + format_currency(entry.deposit);
                 return deposit.toLowerCase().includes(searchDeposit);
             });
@@ -1725,7 +1727,7 @@ function sync_from_account_with_bank() {
         const startIdx = (currentPage - 1) * perPage;
         const endIdx = Math.min(startIdx + perPage, totalRecords);
         const pageEntries = filteredBankEntries.slice(startIdx, endIdx);
-        
+
         const $tbody = $('#bank-statement-body');
         $tbody.empty();
 
@@ -1738,23 +1740,23 @@ function sync_from_account_with_bank() {
             const withdrawal = entry.withdrawal ? '₹ ' + format_currency(entry.withdrawal) : '';
             const deposit = entry.deposit ? '₹ ' + format_currency(entry.deposit) : '';
             const entryDate = entry.date || entry.posting_date || entry.creation;
-            
+
             const tr = $(
                 '<tr class="statement-row" style="cursor: pointer;" data-statement="' + entry.name + '">' +
-                    '<td>' + frappe.datetime.str_to_user(entryDate) + '</td>' +
-                    '<td>' + (entry.description || '') + '</td>' +
-                    '<td style="text-align: right;">' + withdrawal + '</td>' +
-                    '<td style="text-align: right;">' + deposit + '</td>' +
+                '<td>' + frappe.datetime.str_to_user(entryDate) + '</td>' +
+                '<td>' + (entry.description || '') + '</td>' +
+                '<td style="text-align: right;">' + withdrawal + '</td>' +
+                '<td style="text-align: right;">' + deposit + '</td>' +
                 '</tr>'
             );
 
-            tr.on('click', function(e) {
+            tr.on('click', function (e) {
                 e.stopPropagation();
                 if ($(e.target).is('input, button, select, textarea') || $(e.target).hasClass('no-click') || $(e.target).closest('.no-click').length) return;
                 select_statement_row(entry, tr);
             });
 
-            tr.find('td:nth-child(3), td:nth-child(4)').on('click', function(e) {
+            tr.find('td:nth-child(3), td:nth-child(4)').on('click', function (e) {
                 e.stopPropagation();
                 select_statement_row(entry, tr);
             });
@@ -1792,66 +1794,66 @@ function sync_from_account_with_bank() {
         if (selectedBankAccount) {
             filters.bank_account = selectedBankAccount;
         }
-        
+
         frappe.call({
             method: 'nexapp.api.get_bank_statement_entries',
             args: filters,
             callback: function (r) {
                 let allEntries = r.message || [];
-                
+
                 if (dateFrom && dateTo) {
                     allEntries = allEntries.filter(entry => {
                         const entryDate = entry.date || entry.posting_date || entry.creation;
                         if (!entryDate) return true;
-                        
+
                         const entryDateObj = new Date(entryDate);
                         const fromDateObj = new Date(dateFrom);
                         const toDateObj = new Date(dateTo);
-                        
+
                         return entryDateObj >= fromDateObj && entryDateObj <= toDateObj;
                     });
                 }
-                
+
                 allBankEntries = allEntries.sort((a, b) => {
                     const dateA = new Date(a.date || a.posting_date || a.creation);
                     const dateB = new Date(b.date || b.posting_date || b.creation);
                     return dateB - dateA;
                 });
-                
+
                 filter_bank_entries();
             }
         });
     }
 
     // Bank account change handler
-    $('#bank-account-select').change(function() {
-    selectedBankAccount = $(this).val();
-    currentPage = 1;
+    $('#bank-account-select').change(function () {
+        selectedBankAccount = $(this).val();
+        currentPage = 1;
 
-    sync_from_account_with_bank();   // ⭐ ADD THIS LINE
+        sync_from_account_with_bank();   // ⭐ ADD THIS LINE
 
-    load_cards_data();
-    load_bank_statement_entries();
-});
+        load_cards_data();
+        load_bank_statement_entries();
+    });
 
     // Date filter handlers
-    $('#apply-date-filter').click(function() {
+    $('#apply-date-filter').click(function () {
         dateFrom = $('#date-from').val();
         dateTo = $('#date-to').val();
-        
+
         if (dateFrom && dateTo) {
             if (new Date(dateFrom) > new Date(dateTo)) {
                 frappe.msgprint('Date From cannot be greater than Date To');
                 return;
             }
         }
-        
+
         currentPage = 1;
         load_cards_data();
         load_bank_statement_entries();
     });
 
-    $('#reset-date-filter').click(function() {
+    $('#reset-date-filter').click(function () {
         initialize_date_filters();
         currentPage = 1;
         load_cards_data();
@@ -1861,24 +1863,24 @@ function sync_from_account_with_bank() {
     // Format currency
     function format_indian_currency(amount) {
         if (!amount) return '₹ 0.00';
-        
+
         const num = parseFloat(amount);
         if (isNaN(num)) return '₹ 0.00';
-        
+
         if (num < 1000) {
             return '₹ ' + num.toFixed(2);
         }
-        
+
         if (num >= 1000 && num < 100000) {
             const inThousands = num / 1000;
             return '₹ ' + inThousands.toFixed(3) + ' K';
         }
-        
+
         if (num >= 100000 && num < 10000000) {
             const inLakhs = num / 100000;
             return '₹ ' + inLakhs.toFixed(3) + ' L';
         }
-        
+
         const inCrores = num / 10000000;
         return '₹ ' + inCrores.toFixed(3) + ' Cr';
     }
@@ -1898,7 +1900,7 @@ function sync_from_account_with_bank() {
     }
 
     // Close panel when clicking X button
-    $('.close-panel').click(function() {
+    $('.close-panel').click(function () {
         toggleRightPanel(false);
     });
 
@@ -1982,7 +1984,7 @@ function sync_from_account_with_bank() {
                 fields: ["name", "employee_name"],
                 limit_page_length: 0
             },
-            callback: function(r) {
+            callback: function (r) {
                 employees = r.message || [];
                 update_employee_dropdown_items();
             }
@@ -1993,14 +1995,14 @@ function sync_from_account_with_bank() {
     function update_employee_dropdown_items() {
         const $items = $('#employee-items');
         $items.empty();
-        
+
         employees.forEach(employee => {
             const displayName = employee.employee_name ? `${employee.employee_name} (${employee.name})` : employee.name;
             $items.append('<div class="dropdown-item" data-value="' + employee.name + '">' + displayName + '</div>');
         });
     }
 
-    
+
     // Load customers
     function load_customers() {
         frappe.call({
@@ -2010,7 +2012,7 @@ function sync_from_account_with_bank() {
                 fields: ["name"],
                 limit_page_length: 0
             },
-            callback: function(r) {
+            callback: function (r) {
                 customers = r.message || [];
                 update_dropdown_items('customer', customers);
             }
@@ -2026,7 +2028,7 @@ function sync_from_account_with_bank() {
                 fields: ["name"],
                 limit_page_length: 0
             },
-            callback: function(r) {
+            callback: function (r) {
                 suppliers = r.message || [];
                 update_dropdown_items('supplier', suppliers);
             }
@@ -2046,7 +2048,7 @@ function sync_from_account_with_bank() {
                 fields: ["name", "account_name"],
                 limit_page_length: 0
             },
-            callback: function(r) {
+            callback: function (r) {
                 expenseAccounts = r.message || [];
                 update_expense_account_dropdown();
                 update_itemized_account_dropdowns();
@@ -2080,7 +2082,7 @@ function sync_from_account_with_bank() {
     function update_dropdown_items(type, items) {
         const $items = $('#' + type + '-items');
         $items.empty();
-        
+
         items.forEach(item => {
             $items.append('<div class="dropdown-item" data-value="' + item.name + '">' + item.name + '</div>');
         });
@@ -2100,42 +2102,42 @@ function sync_from_account_with_bank() {
     // Initialize transfer dropdowns with validation
     function initialize_transfer_dropdowns() {
 
-    // ❌ REMOVE generic loader for From Account
-    // initialize_single_dropdown('from-account');
+        // ❌ REMOVE generic loader for From Account
+        // initialize_single_dropdown('from-account');
 
-    // ✅ Keep To Account generic
-    initialize_single_dropdown('to-account');
-    
-    $('#from-account').on('change', function() {
-        update_to_account_dropdown();
-    });
-    
-    $('#to-account').on('change', function() {
-        validate_transfer_accounts();
-    });
-}
+        // ✅ Keep To Account generic
+        initialize_single_dropdown('to-account');
+
+        $('#from-account').on('change', function () {
+            update_to_account_dropdown();
+        });
+
+        $('#to-account').on('change', function () {
+            validate_transfer_accounts();
+        });
+    }
 
 
     function load_transfer_accounts_from_bank_accounts() {
 
-    const $items = $('#from-account-items');
-    $items.empty();
+        const $items = $('#from-account-items');
+        $items.empty();
 
-    bankAccounts.forEach(acc => {
-        const displayName = acc.custom_account_head || acc.name;
+        bankAccounts.forEach(acc => {
+            const displayName = acc.custom_account_head || acc.name;
 
-        $items.append(
-            `<div class="dropdown-item" data-value="${acc.name}">
+            $items.append(
+                `<div class="dropdown-item" data-value="${acc.name}">
                 ${displayName}
             </div>`
-        );
-    });
-}
+            );
+        });
+    }
 
 
     // Initialize itemized dropdowns
     function initialize_itemized_dropdowns() {
-        $('.itemized-account-toggle').click(function(e) {
+        $('.itemized-account-toggle').click(function (e) {
             e.stopPropagation();
             const $list = $(this).siblings('.itemized-account-list');
             $('.itemized-account-list').not($list).hide();
@@ -2145,16 +2147,16 @@ function sync_from_account_with_bank() {
             }
         });
 
-        $('.itemized-account-search').on('input', function() {
+        $('.itemized-account-search').on('input', function () {
             const searchTerm = $(this).val().toLowerCase();
             const $items = $(this).siblings('.dropdown-items');
-            $items.find('.dropdown-item').each(function() {
+            $items.find('.dropdown-item').each(function () {
                 const text = $(this).text().toLowerCase();
                 $(this).toggle(text.includes(searchTerm));
             });
         });
 
-        $('.itemized-account-items').on('click', '.dropdown-item', function() {
+        $('.itemized-account-items').on('click', '.dropdown-item', function () {
             const value = $(this).data('value');
             const text = $(this).text();
             const $toggle = $(this).closest('.itemized-account-list').siblings('.itemized-account-toggle');
@@ -2163,7 +2165,7 @@ function sync_from_account_with_bank() {
             $(this).closest('.itemized-account-list').hide();
         });
 
-        $(document).click(function(e) {
+        $(document).click(function (e) {
             if (!$(e.target).closest('.itemized-account-list').length && !$(e.target).is('.itemized-account-toggle')) {
                 $('.itemized-account-list').hide();
             }
@@ -2178,7 +2180,7 @@ function sync_from_account_with_bank() {
         const $hidden = $('#employee');
         const $items = $('#employee-items');
 
-        $toggle.click(function(e) {
+        $toggle.click(function (e) {
             e.stopPropagation();
             $list.toggle();
             if ($list.is(':visible')) {
@@ -2186,15 +2188,15 @@ function sync_from_account_with_bank() {
             }
         });
 
-        $search.on('input', function() {
+        $search.on('input', function () {
             const searchTerm = $(this).val().toLowerCase();
-            $items.find('.dropdown-item').each(function() {
+            $items.find('.dropdown-item').each(function () {
                 const text = $(this).text().toLowerCase();
                 $(this).toggle(text.includes(searchTerm));
             });
         });
 
-        $items.on('click', '.dropdown-item', function() {
+        $items.on('click', '.dropdown-item', function () {
             const value = $(this).data('value');
             const text = $(this).text();
             $toggle.text(text);
@@ -2203,7 +2205,7 @@ function sync_from_account_with_bank() {
             $('#employee').trigger('change');
         });
 
-        $(document).click(function(e) {
+        $(document).click(function (e) {
             if (!$(e.target).closest('#employee-list').length && !$(e.target).is('#employee-toggle')) {
                 $list.hide();
             }
@@ -2218,7 +2220,7 @@ function sync_from_account_with_bank() {
         const $hidden = $('#' + type);
         const $items = $('#' + type + '-items');
 
-        $toggle.click(function(e) {
+        $toggle.click(function (e) {
             e.stopPropagation();
             $list.toggle();
             if ($list.is(':visible')) {
@@ -2226,23 +2228,23 @@ function sync_from_account_with_bank() {
             }
         });
 
-        $search.on('input', function() {
+        $search.on('input', function () {
             const searchTerm = $(this).val().toLowerCase();
-            $items.find('.dropdown-item').each(function() {
+            $items.find('.dropdown-item').each(function () {
                 const text = $(this).text().toLowerCase();
                 $(this).toggle(text.includes(searchTerm));
             });
         });
 
-        $items.on('click', '.dropdown-item', function() {
+        $items.on('click', '.dropdown-item', function () {
             const value = $(this).data('value');
             const text = $(this).text();
             $toggle.text(text);
             $hidden.val(value);
             $list.hide();
-            
+
             if (type === 'customer') {
-                $('#customer').trigger('change');        
+                $('#customer').trigger('change');
 
             } else if (type === 'supplier') {
                 $('#supplier').trigger('change');
@@ -2251,7 +2253,7 @@ function sync_from_account_with_bank() {
             }
         });
 
-        $(document).click(function(e) {
+        $(document).click(function (e) {
             if (!$(e.target).closest('#' + type + '-list').length && !$(e.target).is('#' + type + '-toggle')) {
                 $list.hide();
             }
@@ -2270,7 +2272,7 @@ function sync_from_account_with_bank() {
                 fields: ["name"],
                 limit_page_length: 0
             },
-            callback: function(r) {
+            callback: function (r) {
                 taxAccounts = r.message || [];
                 populate_tax_dropdowns();
             }
@@ -2282,17 +2284,17 @@ function sync_from_account_with_bank() {
         const tdsDefault = "TDS Receivable - NTPL";
         const writeOffDefault = "Write Off - NTPL";
         const roundedOffDefault = "Rounded Off - NTPL";
-        
+
         $('#tds-account-select').empty();
         taxAccounts.forEach(account => {
             $('#tds-account-select').append('<option value="' + account.name + '" ' + (account.name === tdsDefault ? 'selected' : '') + '>' + account.name + '</option>');
         });
-        
+
         $('#writeoff-account-select').empty();
         taxAccounts.forEach(account => {
             $('#writeoff-account-select').append('<option value="' + account.name + '" ' + (account.name === writeOffDefault ? 'selected' : '') + '>' + account.name + '</option>');
         });
-        
+
         $('#roundedoff-account-select').empty();
         taxAccounts.forEach(account => {
             $('#roundedoff-account-select').append('<option value="' + account.name + '" ' + (account.name === roundedOffDefault ? 'selected' : '') + '>' + account.name + '</option>');
@@ -2300,10 +2302,10 @@ function sync_from_account_with_bank() {
     }
 
     // Tab switching
-    $('.recon-tab').click(function() {
+    $('.recon-tab').click(function () {
         $('.recon-tab').removeClass('active');
         $(this).addClass('active');
-        
+
         const tab = $(this).data('tab');
         if (tab === 'match') {
             $('#match-info-section').show();
@@ -2322,19 +2324,19 @@ function sync_from_account_with_bank() {
     function update_category_dropdown() {
         const $category = $('#category');
         $category.empty();
-        
+
         $category.append('<option value="">Select Category</option>');
-        
+
         if (isWithdrawal) {
             $category.append('<option value="Employee Expense Claim">Employee Expense Claim</option>');
             $category.append('<option value="Employee Advance">Employee Advance</option>');
-                    $category.append('<option value=\"Supplier Advance\">Supplier Advance</option>');
-$category.append('<option value="Supplier Payment">Supplier Payment</option>');
+            $category.append('<option value=\"Supplier Advance\">Supplier Advance</option>');
+            $category.append('<option value="Supplier Payment">Supplier Payment</option>');
             $category.append('<option value="Expense">Expense</option>');
             $category.append('<option value="Transfer To Another Account">Transfer To Another Account</option>');
             $category.append('<option value="Itemized Journal Entry">Itemized Journal Entry');
         } else if (isDeposit) {
-            $category.append('<option value="Customer Payment">Customer Payment</option>');            
+            $category.append('<option value="Customer Payment">Customer Payment</option>');
             $category.append('<option value="Transfer To Another Account">Transfer To Another Account</option>');
             $category.append('<option value="Itemized Journal Entry">Itemized Journal Entry');
             $category.append('<option value="Customer Advance">Customer Advance</option>');
@@ -2342,9 +2344,9 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
     }
 
     // Category change
-    $('#category').change(function() {
+    $('#category').change(function () {
         const category = $(this).val();
-        
+
         // Reset all groups
         $('#from-account-group').hide();
         $('#employee-group').hide();
@@ -2386,27 +2388,27 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
         }
 
         // ================= CUSTOMER ADVANCE =================
-    if (category === 'Customer Advance' && isDeposit) {
+        if (category === 'Customer Advance' && isDeposit) {
 
-           // Show fields
-           $('#customer-group').show();
-           $('#sales-order-group').show();   // optional
-           $('#customer-advance-amount-group').show();
-           $('#payment-amount-display-section').show();
-           $('#match-now-section').show();
+            // Show fields
+            $('#customer-group').show();
+            $('#sales-order-group').show();   // optional
+            $('#customer-advance-amount-group').show();
+            $('#payment-amount-display-section').show();
+            $('#match-now-section').show();
 
-           // Hide invoice table
-           $('#invoice-info-section').hide();
-           $('#customer-payment-table-section').hide();
+            // Hide invoice table
+            $('#invoice-info-section').hide();
+            $('#customer-payment-table-section').hide();
 
-           // Set amount = Deposit Amount
-           $('#customer-advance-amount').val(statementAmount.toFixed(2));
-           $('#manual-amount').val(statementAmount.toFixed(2));
-           $('#payment-amount-display').text(statementAmount.toFixed(2));
+            // Set amount = Deposit Amount
+            $('#customer-advance-amount').val(statementAmount.toFixed(2));
+            $('#manual-amount').val(statementAmount.toFixed(2));
+            $('#payment-amount-display').text(statementAmount.toFixed(2));
 
-           return;
+            return;
         }
-        
+
         // Reset dropdowns
         $('#employee-toggle').text('Select Employee');
         $('#employee').val('');
@@ -2415,16 +2417,16 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
         $('#supplier-toggle').text('Select Supplier');
         $('#supplier').val('');
         $('#expense-toggle').text('Select Expense Account');
-        $('#expense').val('');        
+        $('#expense').val('');
         $('#to-account-toggle').text('Select To Account');
         $('#to-account').val('');
         $('#transfer-description').val('');
         $('#outstanding-invoices-container').empty();
-        
+
         // Reset error messages
         $('#from-account-error').hide();
         $('#to-account-error').hide();
-        
+
         // Reset payment amounts
         $('#allocated-amount-input').val('0.00');
         $('#tds-amount-input').val('');
@@ -2432,10 +2434,10 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
         $('#roundedoff-amount-input').val('');
         $('#customer-total-highlight').text('');
         $('#payment-amount-display').text('');
-        
+
         // Reset itemized journal entry
         reset_itemized_journal_entry();
-        
+
         isCustomerPayment = false;
         isSupplierPayment = false;
         isEmployeeExpense = false;
@@ -2443,7 +2445,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
         isTransfer = false;
         isItemized = false;
         isEmployeeAdvance = false;
-        
+
         // Show/hide fields based on category
         if (category === 'Employee Expense Claim') {
             $('#employee-group').show();
@@ -2472,31 +2474,31 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
             $('#match-now-section').show();
             isExpense = true;
         } else if (category === 'Transfer To Another Account') {
-    $('#from-account-group').show();
-    $('#to-account-group').show();
-    $('#transfer-description-group').show();
-    $('#match-now-section').show();
+            $('#from-account-group').show();
+            $('#to-account-group').show();
+            $('#transfer-description-group').show();
+            $('#match-now-section').show();
 
-    // ⭐ AUTO SET From Account = Bank Account
-    const bankAccount = $('#bank-account-select').val();
-    if (bankAccount) {
-        $('#from-account').val(bankAccount);
-        $('#from-account-toggle').text(bankAccount);
-    }
+            // ⭐ AUTO SET From Account = Bank Account
+            const bankAccount = $('#bank-account-select').val();
+            if (bankAccount) {
+                $('#from-account').val(bankAccount);
+                $('#from-account-toggle').text(bankAccount);
+            }
 
-    isTransfer = true;
-    
-    update_to_account_dropdown();
-    
-    if (selectedStatementData && selectedStatementData.description) {
-        $('#transfer-description').val(selectedStatementData.description);
-    }
-}
- else if (category === 'Itemized Journal Entry') {
+            isTransfer = true;
+
+            update_to_account_dropdown();
+
+            if (selectedStatementData && selectedStatementData.description) {
+                $('#transfer-description').val(selectedStatementData.description);
+            }
+        }
+        else if (category === 'Itemized Journal Entry') {
             $('#itemized-group').show();
             $('#match-now-section').show();
             isItemized = true;
-            
+
             initialize_itemized_journal_entry();
         }
     });
@@ -2504,7 +2506,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
     // Initialize itemized journal entry
     function initialize_itemized_journal_entry() {
         $('#itemized-accounts-container').empty();
-        
+
         $('#itemized-accounts-container').append(`
             <div class="itemized-row">
                 <div class="custom-dropdown">
@@ -2518,7 +2520,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
                 <button class="add-row-btn">+</button>
             </div>
         `);
-        
+
         update_itemized_account_dropdowns();
         update_itemized_balance_display();
         initialize_itemized_event_listeners();
@@ -2531,19 +2533,19 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
 
     // Initialize itemized event listeners
     function initialize_itemized_event_listeners() {
-        $(document).off('click', '.add-row-btn').on('click', '.add-row-btn', function() {
+        $(document).off('click', '.add-row-btn').on('click', '.add-row-btn', function () {
             add_itemized_row();
         });
-        
-        $(document).off('click', '.remove-row-btn').on('click', '.remove-row-btn', function() {
+
+        $(document).off('click', '.remove-row-btn').on('click', '.remove-row-btn', function () {
             $(this).closest('.itemized-row').remove();
             update_itemized_balance_display();
         });
-        
-        $(document).off('input', '.itemized-amount').on('input', '.itemized-amount', function() {
+
+        $(document).off('input', '.itemized-amount').on('input', '.itemized-amount', function () {
             update_itemized_balance_display();
         });
-        
+
         initialize_itemized_dropdowns();
     }
 
@@ -2562,7 +2564,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
                 <button class="remove-row-btn">×</button>
             </div>
         `;
-        
+
         $('#itemized-accounts-container').append(rowHtml);
         update_itemized_account_dropdowns();
         initialize_itemized_dropdowns();
@@ -2571,23 +2573,23 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
     // Update itemized balance display
     function update_itemized_balance_display() {
         if (!isItemized) return;
-        
+
         const amountText = $('#manual-amount').val().replace(/[₹,]/g, '').trim();
         statementAmount = parseFloat(amountText) || 0;
-        
+
         let totalEntered = 0;
-        $('.itemized-amount').each(function() {
+        $('.itemized-amount').each(function () {
             const amount = parseFloat($(this).val()) || 0;
             totalEntered += amount;
         });
-        
+
         const balance = statementAmount - totalEntered;
-        
+
         $('#total-entered-display').text('₹ ' + format_currency(totalEntered));
-        
+
         const $balanceDisplay = $('#balance-display');
         $balanceDisplay.text('₹ ' + format_currency(Math.abs(balance)));
-        
+
         if (Math.abs(balance) < 0.01) {
             $balanceDisplay.removeClass('itemized-balance-positive itemized-balance-negative').addClass('itemized-balance-zero');
         } else if (balance > 0) {
@@ -2595,7 +2597,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
         } else {
             $balanceDisplay.removeClass('itemized-balance-positive itemized-balance-zero').addClass('itemized-balance-negative');
         }
-        
+
         const $error = $('#itemized-error');
         if (balance < -0.01) {
             $error.show();
@@ -2604,114 +2606,15 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
         }
     }
 
-    // SINGLE MATCH NOW BUTTON HANDLER - UPDATED FOR EMPLOYEE ADVANCE PAYMENT ENTRY
+    // SINGLE MATCH NOW BUTTON HANDLER - UPDATED FOR UNIVERSAL MATCHING
     $(document).on('click', '#match-now-btn', function () {
-    const category = $('#category').val();
+        const category = $('#category').val();
 
-    // ==========================================================================
-        
-        if (category === 'Expense') {
-            const expenseAccount = $('#expense').val();
-            if (!expenseAccount) {
-                frappe.msgprint('Please select an Expense Account');
-                return;
-            }
-
-            const amountText = $('#manual-amount').val().replace(/[₹,]/g, '').trim();
-            const amount = parseFloat(amountText) || 0;
-
-            if (!selectedStatement) {
-                frappe.msgprint("No bank statement selected.");
-                return;
-            }
-
-            frappe.confirm(
-                `Create Journal Entry?<br><br>
-                 <strong>Debit:</strong> ${expenseAccount}<br>         
-                 <strong>Amount:</strong> ₹ ${amount.toFixed(2)}`,
-                function() {
-                    frappe.call({
-                        method: "nexapp.api.match_now_create_journal",
-                        args: {
-                            statement_name: selectedStatement,
-                            expense_account: expenseAccount
-                        },
-                        callback: function(r) {
-                            if (r.message.status === 'ok') {
-                                frappe.msgprint("Journal Entry Created: " + r.message.journal_entry);
-                                load_bank_statement_entries();
-                                load_cards_data();
-                                toggleRightPanel(false);
-                            } else {
-                                frappe.msgprint("Error: " + r.message.error);
-                            }
-                        }
-                    });
-                }
-            );
-        } 
-        else if (category === 'Transfer To Another Account') {
-            const fromAccount = $('#from-account').val();
-            const toAccount = $('#to-account').val();
-            const transferDescription = $('#transfer-description').val();
-            
-            if (!fromAccount) {
-                frappe.msgprint('Please select a from account');
-                return;
-            }
-            
-            if (!toAccount) {
-                frappe.msgprint('Please select a to account');
-                return;
-            }
-            
-            if (!validate_transfer_accounts()) {
-                frappe.msgprint('From Account and To Account cannot be the same');
-                return;
-            }
-            
-            if (!transferDescription) {
-                frappe.msgprint('Please enter a transfer description');
-                return;
-            }
-            
-            const amountText = $('#manual-amount').val().replace(/[₹,]/g, '').trim();
-            const amount = parseFloat(amountText) || 0;
-            
-            if (!selectedStatement) {
-                frappe.msgprint("No bank statement selected.");
-                return;
-            }
-            
-            frappe.confirm(
-                `Create Bank Transfer?<br><br>
-                 <strong>From Account:</strong> ${fromAccount}<br>
-                 <strong>To Account:</strong> ${toAccount}<br>
-                 <strong>Amount:</strong> ₹ ${amount.toFixed(2)}<br>
-                 <strong>Description:</strong> ${transferDescription}`,
-                function() {
-                    frappe.call({
-                        method: "nexapp.api.create_bank_transfer",
-                        args: {
-                            statement_name: selectedStatement,
-                            from_account: fromAccount,
-                            to_account: toAccount,
-                            amount: amount,
-                            description: transferDescription
-                        },
-                        callback: function(r) {
-                            if (r.message.status === 'ok') {
-                                frappe.msgprint("Bank Transfer Created: " + r.message.journal_entry);
-                                load_bank_statement_entries();
-                                load_cards_data();
-                                toggleRightPanel(false);
-                            } else {
-                                frappe.msgprint("Error: " + r.message.error);
-                            }
-                        }
-                    });
-                }
-            );
+        if (category === 'Supplier Advance' || category === 'Customer Advance') {
+            handleAdvanceMatchNow();
+        }
+        else if (category === 'Expense' || category === 'Transfer To Another Account') {
+            handleManualCategorization();
         }
         else if (category === 'Itemized Journal Entry') {
             handle_itemized_journal_entry();
@@ -2723,6 +2626,68 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
             handleManualCategorization();
         }
     });
+
+    // Handle Supplier/Customer Advance Match Now
+    function handleAdvanceMatchNow() {
+        const category = $('#category').val();
+        const supplier = $('#supplier').val();
+        const customer = $('#customer').val();
+        const po = $('#purchase-order').val();
+        const so = $('#sales-order-new').val();
+
+        if (category === 'Supplier Advance' && !supplier) {
+            frappe.msgprint('Please select a Supplier');
+            return;
+        }
+        if (category === 'Customer Advance' && !customer) {
+            frappe.msgprint('Please select a Customer');
+            return;
+        }
+
+        if (!selectedStatement) {
+            frappe.msgprint("No bank statement selected.");
+            return;
+        }
+
+        const amountText = $('#manual-amount').val().replace(/[₹,]/g, '').trim();
+        const amount = parseFloat(amountText) || 0;
+
+        let partyName = (category === 'Supplier Advance') ? supplier : customer;
+        let refDoc = (category === 'Supplier Advance') ? (po ? `<br><strong>PO:</strong> ${po}` : '') : (so ? `<br><strong>SO:</strong> ${so}` : '');
+
+        frappe.confirm(
+            `Create ${category}?<br><br>
+             <strong>Party:</strong> ${partyName}<br>
+             <strong>Amount:</strong> ₹ ${amount.toFixed(2)}${refDoc}`,
+            function () {
+                frappe.call({
+                    method: "nexapp.api.categorize_manually",
+                    args: {
+                        statement_name: selectedStatement,
+                        invoices: [],
+                        category: category,
+                        supplier: supplier,
+                        customer: customer,
+                        purchase_order: po,
+                        sales_order: so,
+                        from_account: $('#from-account').val(),
+                        to_account: $('#to-account').val(), // ⭐ Pass selected bank for both
+                        company: frappe.defaults.get_default('company')
+                    },
+                    callback: function (r) {
+                        if (r.message && r.message.status === 'ok') {
+                            frappe.msgprint(`${category} Created successfully`);
+                            load_bank_statement_entries();
+                            load_cards_data();
+                            toggleRightPanel(false);
+                        } else {
+                            frappe.msgprint("Error: " + (r.message ? r.message.error : "Unknown error"));
+                        }
+                    }
+                });
+            }
+        );
+    }
 
     // Handle employee advance payment entry (UPDATED FOR PAYMENT ENTRY)
     function handle_employee_advance_payment_entry() {
@@ -2737,7 +2702,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
         let enteredAmount = 0;
 
         // Find the first advance with a valid amount
-        $('#employee-advance-list').find('input[type="number"]').each(function() {
+        $('#employee-advance-list').find('input[type="number"]').each(function () {
             const payment = parseFloat($(this).val()) || 0;
             if (payment > 0 && !selectedAdvanceName) {
                 selectedAdvanceName = $(this).data('adv');
@@ -2765,12 +2730,12 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
 
         // Get company from defaults
         const company = frappe.defaults.get_default("company");
-        
+
         // Get selected bank account
         const bankAccount = selectedBankAccount;
 
         let confirmationMessage = '<p>Create Payment Entry for Employee Advance?</p><div style="margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 4px; background: #f9f9f9;">';
-        
+
         confirmationMessage += '<strong>Employee Advance:</strong> ' + selectedAdvanceName + '<br>';
         confirmationMessage += '<strong>Payment Amount:</strong> ₹ ' + format_currency(enteredAmount) + '<br>';
         confirmationMessage += '<strong>Bank Account:</strong> ' + bankAccount + '<br>';
@@ -2778,7 +2743,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
 
         frappe.confirm(
             confirmationMessage,
-            function() {
+            function () {
                 frappe.call({
                     method: "nexapp.api.create_payment_entry_for_employee_advance",
                     args: {
@@ -2789,17 +2754,17 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
                         company: company,
                         bank_account: bankAccount
                     },
-                    callback: function(r) {
+                    callback: function (r) {
                         if (r.message.status === 'success') {
                             frappe.msgprint({
                                 title: __('Success'),
                                 indicator: 'green',
                                 message: __('Payment Entry Created: ' + r.message.payment_entry)
                             });
-                            
+
                             // Also reconcile the bank statement entry
                             reconcileBankStatementAfterPayment(r.message.payment_entry);
-                            
+
                             load_bank_statement_entries();
                             load_cards_data();
                             toggleRightPanel(false);
@@ -2819,14 +2784,14 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
     // Reconcile bank statement after successful payment entry creation
     function reconcileBankStatementAfterPayment(paymentEntryName) {
         if (!selectedStatement) return;
-        
+
         frappe.call({
             method: "nexapp.api.reconcile_bank_statement_with_payment",
             args: {
                 statement_name: selectedStatement,
                 payment_entry: paymentEntryName
             },
-            callback: function(r) {
+            callback: function (r) {
                 if (r.message.status !== 'success') {
                     console.warn('Could not reconcile bank statement:', r.message.error);
                 }
@@ -2839,67 +2804,67 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
         const itemizedEntries = [];
         let totalAmount = 0;
         let hasErrors = false;
-        
-        $('.itemized-row').each(function(index) {
+
+        $('.itemized-row').each(function (index) {
             const accountToggle = $(this).find('.itemized-account-toggle');
             const account = accountToggle.attr('data-value');
             const accountName = accountToggle.text();
             const amount = parseFloat($(this).find('.itemized-amount').val()) || 0;
-            
+
             if (!account || account === 'Select Expense Account') {
                 frappe.msgprint('Please select an expense account for all rows');
                 hasErrors = true;
                 return false;
             }
-            
+
             if (amount <= 0) {
                 frappe.msgprint('Please enter a valid payment amount for all rows');
                 hasErrors = true;
                 return false;
             }
-            
+
             itemizedEntries.push({
                 account: account,
                 account_name: accountName,
                 amount: amount
             });
-            
+
             totalAmount += amount;
         });
-        
+
         if (hasErrors) return;
-        
+
         if (itemizedEntries.length === 0) {
             frappe.msgprint('Please add at least one itemized account entry');
             return;
         }
-        
+
         const bankAmountText = $('#manual-amount').val().replace(/[₹,]/g, '').trim();
         const bankAmount = parseFloat(bankAmountText) || 0;
-        
+
         if (Math.abs(totalAmount - bankAmount) > 0.01) {
             frappe.msgprint(`Total itemized amount (₹ ${totalAmount.toFixed(2)}) does not match bank transaction amount (₹ ${bankAmount.toFixed(2)})`);
             return;
         }
-        
+
         if (!selectedStatement) {
             frappe.msgprint("No bank statement selected.");
             return;
         }
-        
+
         let confirmationMessage = '<p>Create Itemized Journal Entry?</p><div style="margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 4px; background: #f9f9f9;">';
-        
+
         confirmationMessage += '<strong>Itemized Accounts:</strong><br>';
         itemizedEntries.forEach(entry => {
             confirmationMessage += `- ${entry.account_name}: ₹ ${format_currency(entry.amount)}<br>`;
         });
-        
+
         confirmationMessage += `<br><strong>Total Amount: ₹ ${format_currency(totalAmount)}</strong>`;
         confirmationMessage += '</div>';
-        
+
         frappe.confirm(
             confirmationMessage,
-            function() {
+            function () {
                 frappe.call({
                     method: "nexapp.api.create_itemized_journal_entry",
                     args: {
@@ -2907,7 +2872,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
                         itemized_entries: itemizedEntries,
                         company: frappe.defaults.get_default("company")
                     },
-                    callback: function(r) {
+                    callback: function (r) {
                         if (r.message.status === 'ok') {
                             frappe.msgprint("Itemized Journal Entry Created: " + r.message.journal_entry);
                             load_bank_statement_entries();
@@ -2937,7 +2902,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
         const invoicePayments = [];
         let invoiceDetails = [];
 
-        $('.payment-amount-input').each(function() {
+        $('.payment-amount-input').each(function () {
             const payment = parseFloat($(this).val()) || 0;
             if (payment > 0) {
                 let doctype = '';
@@ -3311,14 +3276,14 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
     }
 
     // Employee change handler
-    $('#employee').change(function() {
+    $('#employee').change(function () {
         const employee = $(this).val();
         if (!employee) {
             $('#outstanding-invoices-container').html('<div class="no-invoices">Select an employee to view outstanding expense claims</div>');
             $('#employee-advance-list').hide();
             return;
         }
-        
+
         // Load based on selected category
         const category = $('#category').val();
         if (category === 'Employee Expense Claim') {
@@ -3329,25 +3294,25 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
     });
 
     // Customer change
-    $('#customer').change(function() {
+    $('#customer').change(function () {
         const customer = $(this).val();
         if (!customer) {
             $('#outstanding-invoices-container').html('<div class="no-invoices">Select a customer to view outstanding invoices</div>');
             update_allocated_amount();
             return;
         }
-        
+
         load_outstanding_invoices('Sales Invoice', 'customer', customer);
     });
 
     // Supplier change
-    $('#supplier').change(function() {
+    $('#supplier').change(function () {
         const supplier = $(this).val();
         if (!supplier) {
             $('#outstanding-invoices-container').html('<div class="no-invoices">Select a supplier to view outstanding invoices</div>');
             return;
         }
-        
+
         load_outstanding_invoices('Purchase Invoice', 'supplier', supplier);
     });
 
@@ -3359,41 +3324,41 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
                 employee: employee,
                 company: frappe.defaults.get_default("company")
             },
-            callback: function(r) {
+            callback: function (r) {
                 const expenseClaims = r.message || [];
                 const $container = $('#outstanding-invoices-container');
                 $container.empty();
-                
+
                 if (expenseClaims.length === 0) {
                     $container.append('<div class="no-invoices">No outstanding expense claims found</div>');
                     return;
                 }
-                
+
                 expenseClaims.forEach(claim => {
-                    let claimHtml = 
+                    let claimHtml =
                         '<div class="invoice-payment-container" data-invoice="' + claim.name + '">' +
-                            '<div class="invoice-payment-header">' +
-                                '<div>' +
-                                    '<strong>Expense Claim:</strong> ' + claim.name + '<br>' +
-                                    '<strong>Claim Date:</strong> ' + frappe.datetime.str_to_user(claim.posting_date) + '<br>' +
-                                    '<strong>Description:</strong> ' + (claim.description || 'No description') +
-                                '</div>' +
-                                '<div style="text-align: right;">' +
-                                    '<strong>Due:</strong> ₹ ' + format_currency(claim.total_sanctioned_amount || claim.outstanding_amount) +
-                                '</div>' +
-                            '</div>' +
-                            '<div class="payment-input-container">' +
-                                '<input type="number" class="payment-amount-input" ' +
-                                       'data-invoice="' + claim.name + '" ' +
-                                       'data-max="' + (claim.total_sanctioned_amount || claim.outstanding_amount) + '" ' +
-                                       'placeholder="Enter payment amount" ' +
-                                       'step="0.01" />' +
-                            '</div>' +
+                        '<div class="invoice-payment-header">' +
+                        '<div>' +
+                        '<strong>Expense Claim:</strong> ' + claim.name + '<br>' +
+                        '<strong>Claim Date:</strong> ' + frappe.datetime.str_to_user(claim.posting_date) + '<br>' +
+                        '<strong>Description:</strong> ' + (claim.description || 'No description') +
+                        '</div>' +
+                        '<div style="text-align: right;">' +
+                        '<strong>Due:</strong> ₹ ' + format_currency(claim.total_sanctioned_amount || claim.outstanding_amount) +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="payment-input-container">' +
+                        '<input type="number" class="payment-amount-input" ' +
+                        'data-invoice="' + claim.name + '" ' +
+                        'data-max="' + (claim.total_sanctioned_amount || claim.outstanding_amount) + '" ' +
+                        'placeholder="Enter payment amount" ' +
+                        'step="0.01" />' +
+                        '</div>' +
                         '</div>';
                     $container.append(claimHtml);
                 });
-                
-                $('.payment-amount-input').on('input', function() {
+
+                $('.payment-amount-input').on('input', function () {
                     if (isEmployeeExpense) {
                         validate_expense_payment_amounts();
                     }
@@ -3404,28 +3369,28 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
 
     // Load Employee Advances for selected employee
     function load_employee_advances_for_selected_employee() {
-    const employee = $("#employee").val();
-    if (!employee) return;
+        const employee = $("#employee").val();
+        if (!employee) return;
 
-    frappe.call({
-        method: "nexapp.api.get_unpaid_employee_advances",
-        args: {
-            employee: employee
-        },
-        callback: function(r) {
-            const advances = r.message || [];
-            const $container = $("#employee-advance-list");
-            $container.empty();
+        frappe.call({
+            method: "nexapp.api.get_unpaid_employee_advances",
+            args: {
+                employee: employee
+            },
+            callback: function (r) {
+                const advances = r.message || [];
+                const $container = $("#employee-advance-list");
+                $container.empty();
 
-            if (advances.length === 0) {
-                $container.hide();
-                return;
-            }
+                if (advances.length === 0) {
+                    $container.hide();
+                    return;
+                }
 
-            $container.show();
+                $container.show();
 
-            advances.forEach(adv => {
-    const html = `
+                advances.forEach(adv => {
+                    const html = `
         <div style="padding: 12px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 18px;">
 
             <!-- Orange Badge Heading -->
@@ -3470,13 +3435,13 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
 
         </div>
     `;
-    $container.append(html);
-});
+                    $container.append(html);
+                });
 
 
-        }
-    });
-}
+            }
+        });
+    }
 
 
     // Load outstanding invoices
@@ -3489,41 +3454,42 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
                 party_name: party_name,
                 company: frappe.defaults.get_default("company")
             },
-            callback: function(r) {
+            callback: function (r) {
                 const invoices = r.message || [];
                 const $container = $('#outstanding-invoices-container');
                 $container.empty();
-                
+
                 if (invoices.length === 0) {
                     $container.append('<div class="no-invoices">No outstanding invoices found</div>');
                     update_allocated_amount();
                     return;
                 }
-                
+
                 invoices.forEach(invoice => {
-                    let invoiceHtml = 
+                    let invoiceHtml =
                         '<div class="invoice-payment-container" data-invoice="' + invoice.name + '">' +
-                            '<div class="invoice-payment-header">' +
-                                '<div>' +
-                                    '<strong>Invoice No:</strong> ' + (invoice.bill_no || invoice.name) + '<br>' +
-                                    '<strong>Invoice Date:</strong> ' + frappe.datetime.str_to_user(invoice.posting_date) +
-                                '</div>' +
-                                '<div style="text-align: right;">' +
-                                    '<strong>Due:</strong> ₹ ' + format_currency(invoice.outstanding_amount) +
-                                '</div>' +
-                            '</div>' +
-                            '<div class="payment-input-container">' +
-                                '<input type="number" class="payment-amount-input" ' +
-                                       'data-invoice="' + invoice.name + '" ' +
-                                       'data-max="' + invoice.outstanding_amount + '" ' +
-                                       'placeholder="Enter payment amount" ' +
-                                       'step="0.01" />' +
-                            '</div>' +
+                        '<div class="invoice-payment-header">' +
+                        '<div>' +
+                        '<strong>Supplier Invoice No:</strong> ' + (invoice.bill_no || '—') + '<br>' +
+                        '<strong>Purchase Invoice ID:</strong> ' + invoice.name + '<br>' +
+                        '<strong>Invoice Date:</strong> ' + (invoice.bill_date ? frappe.datetime.str_to_user(invoice.bill_date) : '—') +
+                        '</div>' +
+                        '<div style="text-align: right;">' +
+                        '<strong>Due:</strong> ₹ ' + format_currency(invoice.outstanding_amount) +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="payment-input-container">' +
+                        '<input type="number" class="payment-amount-input" ' +
+                        'data-invoice="' + invoice.name + '" ' +
+                        'data-max="' + invoice.outstanding_amount + '" ' +
+                        'placeholder="Enter payment amount" ' +
+                        'step="0.01" />' +
+                        '</div>' +
                         '</div>';
                     $container.append(invoiceHtml);
                 });
-                
-                $('.payment-amount-input').on('input', function() {
+
+                $('.payment-amount-input').on('input', function () {
                     if (isCustomerPayment) {
                         validate_customer_payment_amounts();
                     } else if (isSupplierPayment) {
@@ -3532,7 +3498,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
                         validate_expense_payment_amounts();
                     }
                 });
-                
+
                 if (isCustomerPayment) {
                     update_allocated_amount();
                 }
@@ -3548,7 +3514,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
         let totalAllocated = 0;
         let stopProcess = false;
 
-        $('.payment-amount-input').each(function() {
+        $('.payment-amount-input').each(function () {
             const payment = parseFloat($(this).val()) || 0;
             const maxAmount = parseFloat($(this).data('max'));
 
@@ -3578,14 +3544,14 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
     // Validate expense payment amounts for Employee Expense Claim
     function validate_expense_payment_amounts() {
         if (!isEmployeeExpense) return;
-        
+
         const bankAmount = parseFloat($('#manual-amount').val().replace(/₹\s?/, '') || 0);
         let totalPayment = 0;
-        
-        $('.payment-amount-input').each(function() {
+
+        $('.payment-amount-input').each(function () {
             const payment = parseFloat($(this).val()) || 0;
             const maxAmount = parseFloat($(this).data('max'));
-            
+
             if (payment > maxAmount) {
                 frappe.msgprint('Payment amount cannot exceed expense claim outstanding amount (₹ ' + maxAmount + ')');
                 $(this).val(maxAmount);
@@ -3594,9 +3560,9 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
                 totalPayment += payment;
             }
         });
-        
+
         $('#payment-amount-display').text(totalPayment.toFixed(2));
-        
+
         if (totalPayment > bankAmount) {
             frappe.msgprint('Total payment amount (₹ ' + totalPayment + ') cannot exceed bank transaction amount (₹ ' + bankAmount + ')');
         }
@@ -3605,49 +3571,49 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
     // Update allocated amount for Customer Payment
     function update_allocated_amount() {
         if (!isCustomerPayment) return;
-        
+
         let totalAllocated = 0;
-        
-        $('.payment-amount-input').each(function() {
+
+        $('.payment-amount-input').each(function () {
             const payment = parseFloat($(this).val()) || 0;
             totalAllocated += payment;
         });
-        
+
         $('#allocated-amount-input').val(totalAllocated.toFixed(2));
-        
+
         update_total_payment();
-        
+
         const bankAmount = parseFloat($('#manual-amount').val().replace(/₹\s?/, '') || 0);
         if (totalAllocated > bankAmount) {
-            frappe.msgprint({title:'Warning',message:'Total allocated amount (₹ ' + totalAllocated + ') exceeds bank transaction amount (₹ ' + bankAmount + ')',indicator:'orange'});
+            frappe.msgprint({ title: 'Warning', message: 'Total allocated amount (₹ ' + totalAllocated + ') exceeds bank transaction amount (₹ ' + bankAmount + ')', indicator: 'orange' });
         }
     }
 
     // Update total payment for Customer Payment
     function update_total_payment() {
         if (!isCustomerPayment) return;
-        
+
         const allocated = parseFloat($('#allocated-amount-input').val()) || 0;
         const tds = parseFloat($('#tds-amount-input').val()) || 0;
         const writeoff = parseFloat($('#writeoff-amount-input').val()) || 0;
         const roundedoff = parseFloat($('#roundedoff-amount-input').val()) || 0;
-        
+
         const totalPayment = allocated - tds - writeoff - roundedoff;
-        
+
         $('#customer-total-highlight').text(format_currency(totalPayment));
     }
 
     // Validate payment amounts for Supplier Payment
     function validate_payment_amounts() {
         if (!isSupplierPayment) return;
-        
+
         const bankAmount = parseFloat($('#manual-amount').val().replace(/₹\s?/, '') || 0);
         let totalPayment = 0;
-        
-        $('.payment-amount-input').each(function() {
+
+        $('.payment-amount-input').each(function () {
             const payment = parseFloat($(this).val()) || 0;
             const maxAmount = parseFloat($(this).data('max'));
-            
+
             if (payment > maxAmount) {
                 frappe.msgprint('Payment amount cannot exceed invoice outstanding amount (₹ ' + maxAmount + ')');
                 $(this).val(maxAmount);
@@ -3656,9 +3622,9 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
                 totalPayment += payment;
             }
         });
-        
+
         $('#payment-amount-display').text(totalPayment.toFixed(2));
-        
+
         if (totalPayment > bankAmount) {
             frappe.msgprint('Total payment amount (₹ ' + totalPayment + ') cannot exceed bank transaction amount (₹ ' + bankAmount + ')');
         }
@@ -3669,40 +3635,40 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
         const totalPages = Math.ceil(totalRecords / perPage);
         const startItem = (currentPage - 1) * perPage + 1;
         const endItem = Math.min(currentPage * perPage, totalRecords);
-        
+
         $('#start-item').text(startItem);
         $('#end-item').text(endItem);
         $('#total-items').text(totalRecords);
-        
+
         const $pageNumbers = $('#page-numbers');
         $pageNumbers.empty();
-        
+
         const maxVisiblePages = 5;
         let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
         let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-        
+
         if (endPage - startPage + 1 < maxVisiblePages) {
             startPage = Math.max(1, endPage - maxVisiblePages + 1);
         }
-        
+
         if (startPage > 1) {
             $pageNumbers.append('<button class="page-btn" data-page="1">1</button>');
             if (startPage > 2) {
                 $pageNumbers.append('<span>...</span>');
             }
         }
-        
+
         for (let i = startPage; i <= endPage; i++) {
             $pageNumbers.append('<button class="page-btn ' + (i === currentPage ? 'active' : '') + '" data-page="' + i + '">' + i + '</button>');
         }
-        
+
         if (endPage < totalPages) {
             if (endPage < totalPages - 1) {
                 $pageNumbers.append('<span>...</span>');
             }
             $pageNumbers.append('<button class="page-btn" data-page="' + totalPages + '">' + totalPages + '</button>');
         }
-        
+
         $('#first-page').prop('disabled', currentPage === 1);
         $('#prev-page').prop('disabled', currentPage === 1);
         $('#next-page').prop('disabled', currentPage === totalPages);
@@ -3739,13 +3705,13 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
         update_pagination();
     });
 
-    $(document).on('click', '#page-numbers .page-btn', function() {
+    $(document).on('click', '#page-numbers .page-btn', function () {
         currentPage = parseInt($(this).data('page'));
         render_current_page();
         update_pagination();
     });
 
-    $('#per-page').change(function() {
+    $('#per-page').change(function () {
         perPage = parseInt($(this).val());
         currentPage = 1;
         render_current_page();
@@ -3755,25 +3721,25 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
     function select_statement_row(entry, $tr) {
         $('.statement-row').removeClass('selected-row');
         $tr.addClass('selected-row');
-        
+
         selectedStatement = entry.name;
         selectedStatementData = entry;
         window.selected_statement_entry = entry.name;
         $tr.data('statement', entry.name);
-        
+
         toggleRightPanel(true);
         sync_from_account_with_bank();
-        
+
         const amount = entry.withdrawal || entry.deposit;
         $('#manual-amount').val('₹ ' + format_currency(amount));
-        
+
         statementAmount = parseFloat(amount) || 0;
-        
+
         isWithdrawal = !!entry.withdrawal;
         isDeposit = !!entry.deposit;
-        
+
         update_category_dropdown();
-        
+
         $('#category').val('');
         $('#employee-toggle').text('Select Employee');
         $('#employee').val('');
@@ -3782,7 +3748,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
         $('#supplier-toggle').text('Select Supplier');
         $('#supplier').val('');
         $('#expense-toggle').text('Select Expense Account');
-        $('#expense').val('');        
+        $('#expense').val('');
         $('#to-account-toggle').text('Select To Account');
         $('#to-account').val('');
         $('#transfer-description').val('');
@@ -3800,19 +3766,19 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
         $('#customer-payment-table-section').hide();
         $('#payment-amount-display-section').hide();
         $('#match-now-section').hide();
-        
+
         $('#from-account-error').hide();
         $('#to-account-error').hide();
-        
+
         $('#allocated-amount-input').val('0.00');
         $('#tds-amount-input').val('0.00');
         $('#writeoff-amount-input').val('0.00');
         $('#roundedoff-amount-input').val('0.00');
         $('#customer-total-highlight').text('0.00');
         $('#payment-amount-display').text('0.00');
-        
+
         reset_itemized_journal_entry();
-        
+
         isCustomerPayment = false;
         isSupplierPayment = false;
         isEmployeeExpense = false;
@@ -3820,7 +3786,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
         isTransfer = false;
         isItemized = false;
         isEmployeeAdvance = false;
-        
+
         if ($('.recon-tab.active').data('tab') === 'match') {
             fetch_matches(amount, entry.name, entry.description, null, entry.deposit);
         }
@@ -3836,8 +3802,8 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
         const $firstRow = $('.statement-row:first');
         if ($firstRow.length) {
             $firstRow.find('td').css('padding-top', '15px');
-            
-            $firstRow.off('click.firstRow').on('click.firstRow', function(e) {
+
+            $firstRow.off('click.firstRow').on('click.firstRow', function (e) {
                 e.stopPropagation();
                 const entryName = $(this).data('statement');
                 const entry = allBankEntries.find(entry => entry.name === entryName);
@@ -3849,7 +3815,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
     }
 
     // Event listeners for tax adjustment inputs
-    $('#tds-amount-input, #writeoff-amount-input, #roundedoff-amount-input').on('input', function() {
+    $('#tds-amount-input, #writeoff-amount-input, #roundedoff-amount-input').on('input', function () {
         update_total_payment();
     });
 
@@ -3869,15 +3835,15 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
                 const bestMatch = invoices[0];
                 const otherMatches = invoices.slice(1);
 
-                let html = 
+                let html =
                     '<div style="background-color: #f5faff; padding: 15px; border-radius: 6px; border-left: 4px solid #F75900; margin-bottom: 15px;">' +
-                        '<strong style="color: #F75900;">Best Match (' + bestMatch.match_score + '% match)</strong><br>' +
-                        '<div style="margin-top: 10px;">' +
-                            '<div>Invoice: ' + (bestMatch.bill_no || bestMatch.name) + '</div>' +
-                            '<div>Invoice Date: ' + (bestMatch.bill_date ? frappe.datetime.str_to_user(bestMatch.bill_date) : '-') + '</div>' +
-                            '<div>Party: ' + (bestMatch.party || '-') + '</div>' +
-                            '<div style="margin-bottom: 10px;"><strong>Amount: ₹ ' + format_currency(bestMatch.outstanding_amount) + '</strong></div>' +
-                        '</div>';
+                    '<strong style="color: #F75900;">Best Match (' + bestMatch.match_score + '% match)</strong><br>' +
+                    '<div style="margin-top: 10px;">' +
+                    '<div>Invoice: ' + (bestMatch.bill_no || bestMatch.name) + '</div>' +
+                    '<div>Invoice Date: ' + (bestMatch.bill_date ? frappe.datetime.str_to_user(bestMatch.bill_date) : '-') + '</div>' +
+                    '<div>Party: ' + (bestMatch.party || '-') + '</div>' +
+                    '<div style="margin-bottom: 10px;"><strong>Amount: ₹ ' + format_currency(bestMatch.outstanding_amount) + '</strong></div>' +
+                    '</div>';
 
                 if (isDeposit) {
                     html += create_tax_adjustments_table(bestMatch.outstanding_amount, bestMatch.name);
@@ -3889,13 +3855,13 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
                 if (otherMatches.length > 0) {
                     html += '<div style="font-weight: bold; color: #555; margin-bottom: 10px;">Other Possible Matches:</div>';
                     otherMatches.forEach(inv => {
-                        html += 
+                        html +=
                             '<div style="margin-bottom: 15px; border: 1px solid #eee; padding: 10px; border-radius: 4px;">' +
-                                '<div>Invoice: ' + (inv.bill_no || inv.name) + '</div>' +
-                                '<div>Invoice Date: ' + (inv.bill_date ? frappe.datetime.str_to_user(inv.bill_date) : '-') + '</div>' +
-                                '<div>Party: ' + (inv.party || '-') + '</div>' +
-                                '<div style="margin-bottom: 10px;"><strong>Amount: ₹ ' + format_currency(inv.outstanding_amount) + '</strong></div>' +
-                                '<div>Match: ' + inv.match_score + '%</div>';
+                            '<div>Invoice: ' + (inv.bill_no || inv.name) + '</div>' +
+                            '<div>Invoice Date: ' + (inv.bill_date ? frappe.datetime.str_to_user(inv.bill_date) : '-') + '</div>' +
+                            '<div>Party: ' + (inv.party || '-') + '</div>' +
+                            '<div style="margin-bottom: 10px;"><strong>Amount: ₹ ' + format_currency(inv.outstanding_amount) + '</strong></div>' +
+                            '<div>Match: ' + inv.match_score + '%</div>';
 
                         if (isDeposit) {
                             html += create_tax_adjustments_table(inv.outstanding_amount, inv.name);
@@ -3987,71 +3953,71 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
         const tdsDefault = "TDS Receivable - NTPL";
         const writeOffDefault = "Write Off - NTPL";
         const roundedOffDefault = "Rounded Off - NTPL";
-        
-        let html = 
+
+        let html =
             '<div class="tax-adjustments-container" data-invoice="' + invoiceName + '">' +
-                '<table class="tax-adjustments-table">' +
-                    '<thead>' +
-                        '<tr>' +
-                            '<th>Type</th>' +
-                            '<th>Amount</th>' +
-                            '<th>Account</th>' +
-                        '</tr>' +
-                    '</thead>' +
-                    '<tbody>' +
-                        '<tr>' +
-                            '<td><strong>Allocated Amount</strong></td>' +
-                            '<td>' +
-                                '<input type="number" class="tax-adjustment-input base-amount" value="' + format_currency(invoiceAmount) + '" step="0.01" />' +
-                            '</td>' +
-                            '<td><em>Invoice Amount (editable)</em></td>' +
-                        '</tr>' +
-                        '<tr>' +
-                            '<td><strong>TDS</strong></td>' +
-                            '<td><input type="number" class="tax-adjustment-input tds-amount" data-type="tds" placeholder="0.00" step="0.01" /></td>' +
-                            '<td>' +
-                                '<select class="tax-adjustment-select tds-account">';
-        
+            '<table class="tax-adjustments-table">' +
+            '<thead>' +
+            '<tr>' +
+            '<th>Type</th>' +
+            '<th>Amount</th>' +
+            '<th>Account</th>' +
+            '</tr>' +
+            '</thead>' +
+            '<tbody>' +
+            '<tr>' +
+            '<td><strong>Allocated Amount</strong></td>' +
+            '<td>' +
+            '<input type="number" class="tax-adjustment-input base-amount" value="' + format_currency(invoiceAmount) + '" step="0.01" />' +
+            '</td>' +
+            '<td><em>Invoice Amount (editable)</em></td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td><strong>TDS</strong></td>' +
+            '<td><input type="number" class="tax-adjustment-input tds-amount" data-type="tds" placeholder="0.00" step="0.01" /></td>' +
+            '<td>' +
+            '<select class="tax-adjustment-select tds-account">';
+
         taxAccounts.forEach(account => {
             html += '<option value="' + account.name + '" ' + (account.name === tdsDefault ? 'selected' : '') + '>' + account.name + '</option>';
         });
-        
-        html += 
-                                '</select>' +
-                            '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                            '<td><strong>Write Off</strong></td>' +
-                            '<td><input type="number" class="tax-adjustment-input writeoff-amount" data-type="writeoff" placeholder="0.00" step="0.01" /></td>' +
-                            '<td>' +
-                                '<select class="tax-adjustment-select writeoff-account">';
-        
+
+        html +=
+            '</select>' +
+            '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td><strong>Write Off</strong></td>' +
+            '<td><input type="number" class="tax-adjustment-input writeoff-amount" data-type="writeoff" placeholder="0.00" step="0.01" /></td>' +
+            '<td>' +
+            '<select class="tax-adjustment-select writeoff-account">';
+
         taxAccounts.forEach(account => {
             html += '<option value="' + account.name + '" ' + (account.name === writeOffDefault ? 'selected' : '') + '>' + account.name + '</option>';
         });
-        
-        html += 
-                                '</select>' +
-                            '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                            '<td><strong>Rounded Off</strong></td>' +
-                            '<td><input type="number" class="tax-adjustment-input roundedoff-amount" data-type="roundedoff" placeholder="0.00" step="0.01" /></td>' +
-                            '<td>' +
-                                '<select class="tax-adjustment-select roundedoff-account">';
-        
+
+        html +=
+            '</select>' +
+            '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td><strong>Rounded Off</strong></td>' +
+            '<td><input type="number" class="tax-adjustment-input roundedoff-amount" data-type="roundedoff" placeholder="0.00" step="0.01" /></td>' +
+            '<td>' +
+            '<select class="tax-adjustment-select roundedoff-account">';
+
         taxAccounts.forEach(account => {
             html += '<option value="' + account.name + '" ' + (account.name === roundedOffDefault ? 'selected' : '') + '>' + account.name + '</option>';
         });
-        
-        html += 
-                                '</select>' +
-                            '</td>' +
-                        '</tr>' +
-                    '</tbody>' +
-                '</table>' +
+
+        html +=
+            '</select>' +
+            '</td>' +
+            '</tr>' +
+            '</tbody>' +
+            '</table>' +
             '</div>';
-        
+
         return html;
     }
 
@@ -4069,7 +4035,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
                 fields: ["name", "account_name"],
                 limit_page_length: 0
             },
-            callback: function(r) {
+            callback: function (r) {
                 transferAccounts = r.message || [];
                 update_transfer_account_dropdowns();
             }
@@ -4080,7 +4046,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
     function update_transfer_account_dropdowns() {
         const $fromItems = $('#from-account-items');
         const $toItems = $('#to-account-items');
-        
+
         $fromItems.empty();
         $toItems.empty();
 
@@ -4097,16 +4063,16 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
         const toAccount = $('#to-account').val();
         const $fromError = $('#from-account-error');
         const $toError = $('#to-account-error');
-        
+
         $fromError.hide();
         $toError.hide();
-        
+
         if (fromAccount && toAccount && fromAccount === toAccount) {
             $fromError.text('From Account and To Account cannot be the same').show();
             $toError.text('From Account and To Account cannot be the same').show();
             return false;
         }
-        
+
         return true;
     }
 
@@ -4114,7 +4080,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
     function update_to_account_dropdown() {
         const fromAccount = $('#from-account').val();
         const $toItems = $('#to-account-items');
-        
+
         $toItems.empty();
 
         if (!fromAccount) {
@@ -4129,14 +4095,14 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
                     $toItems.append(`<div class="dropdown-item" data-value="${acc.name}">${name}</div>`);
                 }
             });
-            
+
             const currentToAccount = $('#to-account').val();
             if (currentToAccount === fromAccount) {
                 $('#to-account-toggle').text('Select To Account');
                 $('#to-account').val('');
             }
         }
-        
+
         validate_transfer_accounts();
     }
 
@@ -4162,14 +4128,14 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
                 fields: ["name", "description", "withdrawal", "deposit", "transaction_date", "bank_account"],
                 limit_page_length: 0
             },
-            callback: function(r) {
+            callback: function (r) {
                 reverseEntries = r.message || [];
-                
+
                 if (reverseEntries.length === 0) {
                     frappe.msgprint("No reconciled entries found to reverse.");
                     return;
                 }
-                
+
                 // Show selection popup
                 showEntrySelectionPopup();
             }
@@ -4257,10 +4223,10 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
         `);
 
         $popupOverlay.appendTo('body');
-        
+
         // Render entries
         renderReverseEntriesForSelection();
-        
+
         // Setup event listeners for selection popup
         setupReverseSelectionPopupEvents();
     }
@@ -4287,7 +4253,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
             const withdrawal = entry.withdrawal ? '₹ ' + format_currency(entry.withdrawal) : '-';
             const deposit = entry.deposit ? '₹ ' + format_currency(entry.deposit) : '-';
             const transactionDate = entry.transaction_date ? frappe.datetime.str_to_user(entry.transaction_date) : '-';
-            
+
             const row = $(`
                 <tr data-entry-id="${entry.name}" class="${isSelected ? 'selected' : ''}">
                     <td>
@@ -4306,32 +4272,32 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
 
             $tbody.append(row);
         });
-        
+
         updateReverseSelectButton();
     }
 
     // Setup reverse selection popup events
     function setupReverseSelectionPopupEvents() {
         // Close popup when clicking X button
-        $('.close-popup-btn').click(function() {
+        $('.close-popup-btn').click(function () {
             $('#reverse-entry-selection-popup').remove();
             selectedReverseEntries = [];
         });
 
         // Close popup when clicking cancel button
-        $('#reverse-cancel-btn').click(function() {
+        $('#reverse-cancel-btn').click(function () {
             $('#reverse-entry-selection-popup').remove();
             selectedReverseEntries = [];
         });
 
         // Select all checkbox
-        $(document).on('change', '#select-all-reverse', function() {
+        $(document).on('change', '#select-all-reverse', function () {
             const isChecked = $(this).is(':checked');
             $('.entry-checkbox').prop('checked', isChecked);
-            
+
             if (isChecked) {
                 // Add all visible entries to selection
-                $('.entry-checkbox').each(function() {
+                $('.entry-checkbox').each(function () {
                     const entryId = $(this).data('entry-id');
                     if (!selectedReverseEntries.includes(entryId)) {
                         selectedReverseEntries.push(entryId);
@@ -4341,16 +4307,16 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
                 // Clear all selections
                 selectedReverseEntries = [];
             }
-            
+
             $('tr[data-entry-id]').toggleClass('selected', isChecked);
             updateReverseSelectButton();
         });
 
         // Individual entry checkbox
-        $(document).on('change', '.entry-checkbox', function() {
+        $(document).on('change', '.entry-checkbox', function () {
             const entryId = $(this).data('entry-id');
             const isChecked = $(this).is(':checked');
-            
+
             if (isChecked) {
                 if (!selectedReverseEntries.includes(entryId)) {
                     selectedReverseEntries.push(entryId);
@@ -4361,19 +4327,19 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
                     selectedReverseEntries.splice(index, 1);
                 }
             }
-            
+
             $(this).closest('tr').toggleClass('selected', isChecked);
-            
+
             // Update select all checkbox state
             const totalVisible = $('.entry-checkbox').length;
             const totalSelected = $('.entry-checkbox:checked').length;
             $('#select-all-reverse').prop('checked', totalSelected === totalVisible && totalVisible > 0);
-            
+
             updateReverseSelectButton();
         });
 
         // Row click to toggle selection
-        $(document).on('click', 'tr[data-entry-id]', function(e) {
+        $(document).on('click', 'tr[data-entry-id]', function (e) {
             if (!$(e.target).is('input, button, select, textarea') && !$(e.target).closest('input, button, select, textarea').length) {
                 const checkbox = $(this).find('.entry-checkbox');
                 checkbox.prop('checked', !checkbox.is(':checked')).trigger('change');
@@ -4381,7 +4347,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
         });
 
         // Reverse selected entries button
-        $('#reverse-select-btn').click(function() {
+        $('#reverse-select-btn').click(function () {
             if (selectedReverseEntries.length === 0) {
                 frappe.msgprint('Please select at least one entry to reverse');
                 return;
@@ -4389,7 +4355,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
 
             // Close the selection popup first
             $('#reverse-entry-selection-popup').remove();
-            
+
             // Now show the simple confirmation
             showSimpleConfirmation();
         });
@@ -4401,8 +4367,8 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
     // Setup reverse filters for selection
     function setupReverseFiltersForSelection() {
         let reverseFilterTimeout;
-        
-        $('.reverse-filter-input').on('input', function() {
+
+        $('.reverse-filter-input').on('input', function () {
             clearTimeout(reverseFilterTimeout);
             reverseFilterTimeout = setTimeout(() => {
                 filterReverseEntriesForSelection();
@@ -4426,37 +4392,37 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
             if (filters.name && (!entry.name || !entry.name.toLowerCase().includes(filters.name))) {
                 return false;
             }
-            
+
             // Description filter
             if (filters.description && (!entry.description || !entry.description.toLowerCase().includes(filters.description))) {
                 return false;
             }
-            
+
             // Withdrawal filter
             if (filters.withdrawal) {
                 if (!entry.withdrawal) return false;
                 const withdrawalStr = '₹ ' + format_currency(entry.withdrawal).toLowerCase();
                 if (!withdrawalStr.includes(filters.withdrawal)) return false;
             }
-            
+
             // Deposit filter
             if (filters.deposit) {
                 if (!entry.deposit) return false;
                 const depositStr = '₹ ' + format_currency(entry.deposit).toLowerCase();
                 if (!depositStr.includes(filters.deposit)) return false;
             }
-            
+
             // Transaction date filter
             if (filters.transaction_date && entry.transaction_date) {
                 const dateStr = frappe.datetime.str_to_user(entry.transaction_date).toLowerCase();
                 if (!dateStr.includes(filters.transaction_date)) return false;
             }
-            
+
             // Bank account filter
             if (filters.bank_account && (!entry.bank_account || !entry.bank_account.toLowerCase().includes(filters.bank_account))) {
                 return false;
             }
-            
+
             return true;
         });
 
@@ -4466,17 +4432,17 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
     // Show simple confirmation dialog
     function showSimpleConfirmation() {
         const entryCount = selectedReverseEntries.length;
-        const confirmationMessage = entryCount === 1 
+        const confirmationMessage = entryCount === 1
             ? `Are you sure you want to reverse this entry?`
             : `Are you sure you want to reverse ${entryCount} selected entries?`;
 
         frappe.confirm(
             confirmationMessage,
-            function() {
+            function () {
                 // Proceed with reversal
                 reverseSelectedEntries();
             },
-            function() {
+            function () {
                 // Cancelled - do nothing
                 selectedReverseEntries = [];
             }
@@ -4495,7 +4461,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
             args: {
                 entry_names: selectedReverseEntries
             },
-            callback: function(r) {
+            callback: function (r) {
                 if (r.message) {
                     if (r.message.status === 'success') {
                         const successCount = r.message.success_count || 0;
@@ -4504,31 +4470,31 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
                             indicator: 'green',
                             message: __(successCount + ' entry' + (successCount === 1 ? '' : 'ies') + ' reversed successfully!')
                         });
-                        
+
                         // Clear selection
                         selectedReverseEntries = [];
-                        
+
                         // Refresh data
                         load_bank_statement_entries();
                         load_cards_data();
                     } else if (r.message.status === 'partial') {
                         const successCount = r.message.success_count || 0;
                         const failedCount = r.message.failed_count || 0;
-                        
+
                         let message = successCount + ' entry' + (successCount === 1 ? '' : 'ies') + ' reversed successfully';
                         if (failedCount > 0) {
                             message += ', ' + failedCount + ' entry' + (failedCount === 1 ? '' : 'ies') + ' failed';
                         }
-                        
+
                         frappe.msgprint({
                             title: __('Partial Success'),
                             indicator: 'orange',
                             message: __(message)
                         });
-                        
+
                         // Clear selection
                         selectedReverseEntries = [];
-                        
+
                         // Refresh data
                         load_bank_statement_entries();
                         load_cards_data();
@@ -4564,7 +4530,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
     }
 
     // Reverse Entry Button Click Handler
-    $('#reverse-entry-btn').click(function() {
+    $('#reverse-entry-btn').click(function () {
         showReverseEntryPopup();
     });
 
@@ -4573,7 +4539,7 @@ $category.append('<option value="Supplier Payment">Supplier Payment</option>');
     // ============================================
 
     // Unreconciled Report Button Click Handler
-    $('#unreconciled-report-btn').click(function() {
+    $('#unreconciled-report-btn').click(function () {
         // Redirect to the Unreconciled Report page
         window.open("https://erp.nexapp.co.in/app/query-report/Bank%20Unreconciled%20Transactions", "_blank");
     });
@@ -4605,18 +4571,26 @@ function set_from_account_as_bank() {
     const bankAccount = $('#bank-account-select').val();
     if (!bankAccount) return;
 
-    // Set hidden field value
+    // Set hidden field values
     $('#from-account').val(bankAccount);
+    $('#to-account').val(bankAccount);
 
-    // Set display text and lock field
+    // Set display text and lock fields
+    const styles = {
+        'pointer-events': 'none',
+        'background': '#f5f5f5',
+        'color': '#555'
+    };
+
     $('#from-account-toggle')
         .text(bankAccount)
         .addClass('readonly-field')
-        .css({
-            'pointer-events': 'none',
-            'background': '#f5f5f5',
-            'color': '#555'
-        });
+        .css(styles);
+
+    $('#to-account-toggle')
+        .text(bankAccount)
+        .addClass('readonly-field')
+        .css(styles);
 }
 
 // When Category changes
@@ -4624,26 +4598,21 @@ $(document).on('change', '#category', function () {
     const category = $(this).val();
 
     if (category === "Transfer To Another Account") {
-
         $('#from-account-group').show();
         $('#to-account-group').show();
         $('#transfer-description-group').show();
 
-
         set_from_account_as_bank();   // ⭐ AUTO SET HERE
-    } 
+    }
     else {
         // Reset when not transfer
         $('#from-account-group').hide();
         $('#to-account-group').hide();
         $('#transfer-description-group').hide();
 
-        $('#from-account-toggle')
-            .text('Select From Account')
-            .removeClass('readonly-field')
-            .css({'pointer-events': '', 'background': '', 'color': ''});
-
-        $('#from-account').val('');
+        // ⭐ DON'T CLEAR from-account anymore, as we need it for other categories too
+        // We just keep it hidden but set it to the selected bank
+        set_from_account_as_bank();
     }
 });
 

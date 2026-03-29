@@ -1,0 +1,116 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:survey_name",
+ "creation": "2026-03-26 21:32:56.081507",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_qzem",
+  "survey_name",
+  "section_break_cfuj",
+  "description",
+  "section_break_vhvr",
+  "start_date",
+  "is_active",
+  "column_break_sqts",
+  "end_date",
+  "anonymous",
+  "section_break_dvqa",
+  "questions"
+ ],
+ "fields": [
+  {
+   "fieldname": "survey_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Survey Name",
+   "unique": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "End Date"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Active"
+  },
+  {
+   "default": "0",
+   "fieldname": "anonymous",
+   "fieldtype": "Check",
+   "label": "Anonymous"
+  },
+  {
+   "fieldname": "questions",
+   "fieldtype": "Table",
+   "label": "Questions",
+   "options": "Survey Question"
+  },
+  {
+   "fieldname": "column_break_sqts",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_cfuj",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_vhvr",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_dvqa",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_qzem",
+   "fieldtype": "Section Break"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-03-27 14:43:26.048228",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Employee Survey",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

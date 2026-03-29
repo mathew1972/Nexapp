@@ -123,18 +123,12 @@ frappe.ui.form.on('Customer', {
 
 frappe.ui.form.on('Customer', {
 
-    // --------------------------------------------------
-    // Load Outstanding Sales Invoices (Child Table)
-    // --------------------------------------------------
     load_outstanding_invoices(frm) {
-
         frm.clear_table('custom_outstanding_amount');
 
         frappe.call({
             method: 'nexapp.api.get_customer_outstanding_invoices',
-            args: {
-                customer: frm.doc.name
-            },
+            args: { customer: frm.doc.name },
             callback: function (r) {
                 if (!r.message) return;
 
@@ -143,7 +137,6 @@ frappe.ui.form.on('Customer', {
                     row.sales_invoice_no = inv.sales_invoice_no;
                     row.sales_invoice_date = inv.sales_invoice_date;
                     row.outstanding_amount = inv.outstanding_amount;
-                    // unallocated_amount is USER INPUT
                 });
 
                 frm.refresh_field('custom_outstanding_amount');
@@ -151,99 +144,355 @@ frappe.ui.form.on('Customer', {
         });
     },
 
-    // --------------------------------------------------
-    // Load Customer Unallocated Amount (TOP FIELD)
-    // Source: Ledger (Advance Balance)
-    // --------------------------------------------------
     load_customer_unallocated_amount(frm) {
-
         frappe.call({
             method: 'nexapp.api.get_customer_unallocated_amount',
-            args: {
-                customer: frm.doc.name
-            },
+            args: { customer: frm.doc.name },
             callback: function (r) {
                 if (r.message !== undefined && r.message !== null) {
-                    // ✅ THIS FIELD EXISTS
                     frm.set_value('custom_unallocated_amount', r.message);
                 }
             }
         });
     },
 
-    // --------------------------------------------------
-    // On Customer Form Refresh
-    // --------------------------------------------------
     refresh(frm) {
-
         if (frm.is_new()) return;
 
         frm.trigger('load_outstanding_invoices');
         frm.trigger('load_customer_unallocated_amount');
     },
 
-    // --------------------------------------------------
-    // Button: Create Unallocated Payment Entry
-    // --------------------------------------------------
     custom_create_unallocated_payment_entry(frm) {
 
-        let invoices = [];
+        let selected_entry = null;
+        let total_all_amount = 0;
 
-        frm.doc.custom_outstanding_amount.forEach(row => {
+        let d = new frappe.ui.Dialog({
+            title: 'Unallocated Payment Entries',
+            size: 'extra-large',
+            fields: [{ fieldname: 'html', fieldtype: 'HTML' }]
+        });
 
-            if (
-                row.sales_invoice_no &&
-                row.unallocated_amount &&
-                flt(row.unallocated_amount) > 0
-            ) {
+        d.show();
 
-                // 🔒 Validation
-                if (flt(row.unallocated_amount) > flt(row.outstanding_amount)) {
-                    frappe.throw(
-                        __('Unallocated Amount cannot exceed Outstanding Amount for Sales Invoice {0}', [
-                            row.sales_invoice_no
-                        ])
-                    );
+        let wrapper = d.fields_dict.html.$wrapper;
+
+        d.$wrapper.find('.modal-dialog').css({
+            'max-width': '90%',
+            'margin-top': '20px'
+        });
+
+        d.$wrapper.find('.modal-content').css({
+            'height': '85vh',
+            'display': 'flex',
+            'flex-direction': 'column'
+        });
+
+        wrapper.html(`
+            <div style="text-align:center; padding:40px;">
+                <div class="spinner-border text-primary"></div>
+                <p>Loading Payment Entries...</p>
+            </div>
+        `);
+
+        frappe.call({
+            method: 'frappe.client.get_list',
+            args: {
+                doctype: 'Payment Entry',
+                fields: ['name', 'posting_date', 'reference_no', 'unallocated_amount'],
+                filters: {
+                    party: frm.doc.name,
+                    unallocated_amount: ['>', 0],
+                    docstatus: 1
+                },
+                limit_page_length: 50
+            },
+            callback: function (r) {
+
+                let data = r.message || [];
+
+                if (!data.length) {
+                    wrapper.html(`<div style="padding:40px; text-align:center;">No records found</div>`);
+                    return;
                 }
 
-                invoices.push({
-                    sales_invoice_no: row.sales_invoice_no,
-                    amount: row.unallocated_amount
+                total_all_amount = 0;
+                data.forEach(row => {
+                    total_all_amount += flt(row.unallocated_amount);
+                });
+
+                let html = `
+                    <div style="display:flex; flex-direction:column; height:100%;">
+
+                        <div style="flex:1; overflow-y:auto; border:1px solid #e5e7eb; border-radius:8px;">
+                            <table class="table" style="margin:0;">
+                                <thead style="background:#f9fafb; position:sticky; top:0;">
+                                    <tr>
+                                        <th style="width:40px;"></th>
+                                        <th>Payment Entry</th>
+                                        <th>Posting Date</th>
+                                        <th>Reference No</th>
+                                        <th style="text-align:right;">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                `;
+
+                data.forEach(row => {
+                    html += `
+                        <tr data-name="${row.name}">
+                            <td><input type="checkbox" class="pe-check"></td>
+
+                            <td style="color:#2563eb; cursor:pointer;"
+                                onclick="frappe.set_route('Form','Payment Entry','${row.name}')">
+                                ${row.name}
+                            </td>
+
+                            <td>${frappe.datetime.str_to_user(row.posting_date) || '-'}</td>
+
+                            <td>${row.reference_no || '-'}</td>
+
+                            <td style="text-align:right; font-weight:600;">
+                                ${format_currency(row.unallocated_amount)}
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div style="border-top:1px solid #e5e7eb;padding:12px 16px;display:flex;justify-content:space-between;">
+                            <div style="font-weight:600;">
+                                Total Available: ${format_currency(total_all_amount)}
+                            </div>
+
+                            <button class="btn btn-primary continue-btn">
+                                Continue
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                wrapper.html(html);
+
+                wrapper.find('.pe-check').on('change', function () {
+                    wrapper.find('.pe-check').not(this).prop('checked', false);
+                    wrapper.find('tr').css('background', '');
+
+                    let row = $(this).closest('tr');
+                    let name = row.data('name');
+
+                    if (this.checked) {
+                        selected_entry = name;
+                        row.css('background', '#eef6ff');
+                    } else {
+                        selected_entry = null;
+                    }
+                });
+
+                wrapper.find('.continue-btn').on('click', function () {
+                    if (!selected_entry) {
+                        frappe.msgprint('Please select a Payment Entry.');
+                        return;
+                    }
+
+                    d.hide();
+                    open_allocation_window(selected_entry);
                 });
             }
         });
 
-        if (!invoices.length) {
-            frappe.msgprint(__('Enter Unallocated Amount for at least one invoice.'));
-            return;
-        }
+        function open_allocation_window(payment_entry_name) {
 
-        frappe.call({
-            method: 'nexapp.api.create_unallocated_payment_entry',
-            args: {
-                customer: frm.doc.name,
-                invoices: invoices
-            },
-            freeze: true,
-            freeze_message: __('Creating Payment Entry...'),
-            callback: function (r) {
+            frappe.call({
+                method: 'frappe.client.get',
+                args: {
+                    doctype: 'Payment Entry',
+                    name: payment_entry_name
+                },
+                callback: function (res) {
 
-                if (r.message && r.message.payment_entry) {
+                    let pe = res.message;
+                    let max_amount = flt(pe.unallocated_amount);
 
-                    frappe.msgprint({
-                        title: __('Success'),
-                        indicator: 'green',
-                        message: __(
-                            'Payment Entry <b>{0}</b> has been successfully created.',
-                            [r.message.payment_entry]
-                        )
+                    let dialog = new frappe.ui.Dialog({
+                        title: 'Allocate Payment Entry',
+                        size: 'extra-large',
+                        fields: [{ fieldname: 'html', fieldtype: 'HTML' }]
                     });
 
-                    // 🔑 Refresh after reconciliation
-                    frm.trigger('load_outstanding_invoices');
-                    frm.trigger('load_customer_unallocated_amount');
+                    dialog.show();
+
+                    let w = dialog.fields_dict.html.$wrapper;
+
+                    w.html(`
+                        <div style="display:flex;flex-direction:column;height:80vh;padding:20px;">
+                            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:15px;background:#f5f7fa;padding:15px;border-radius:10px;">
+                                <div><b>Payment Entry</b><br>${pe.name}</div>
+                                <div><b>Posting Date</b><br>${frappe.datetime.str_to_user(pe.posting_date)}</div>
+                                <div><b>Reference No</b><br>${pe.reference_no || '-'}</div>
+                                <div><b>Amount</b><br>${format_currency(max_amount)}</div>
+                            </div>
+
+                            <div id="remaining" style="font-weight:600;margin-bottom:10px;">
+                                Remaining: ${format_currency(max_amount)}
+                            </div>
+
+                            <div style="flex:1;overflow-y:auto;border:1px solid #e5e7eb;border-radius:10px;">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Sales Invoice</th>
+                                            <th>Outstanding Amount</th>
+                                            <th>Allocated Amount</th>
+                                            <th>Account Head</th>
+                                            <th>TDS Amount</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="alloc-body"></tbody>
+                                </table>
+                            </div>
+
+                            <div style="display:flex;justify-content:space-between;margin-top:10px;">
+                                <button class="btn btn-light add-row">+ Add Row</button>
+
+                                <div>
+                                    <b>Total Allocated:</b>
+                                    <span id="total-amount">₹ 0.00</span>
+
+                                    <button class="btn btn-primary create-btn">
+                                        Create Payment Entry
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+
+                    let invoices_list = [];
+
+                    frappe.call({
+                        method: 'nexapp.api.get_customer_outstanding_invoices',
+                        args: { customer: frm.doc.name },
+                        callback: function (r) {
+                            invoices_list = r.message || [];
+                            add_row();
+                        }
+                    });
+
+                    function update_total() {
+                        let total = 0;
+
+                        w.find('.amount-input').each(function () {
+                            total += flt($(this).val());
+                        });
+
+                        w.find('#total-amount').text(format_currency(total));
+                        return total;
+                    }
+
+                    function add_row() {
+
+                        let options = `<option value="">Select Invoice</option>`;
+                        invoices_list.forEach(inv => {
+                            options += `<option value="${inv.sales_invoice_no}" data-amount="${inv.outstanding_amount}">
+                                ${inv.sales_invoice_no}
+                            </option>`;
+                        });
+
+                        let row = $(`
+                            <tr>
+                                <td><select class="form-control invoice-select">${options}</select></td>
+                                <td><input type="number" class="form-control outstanding-amount" readonly value="0"></td>
+                                <td><input type="number" class="form-control amount-input" placeholder="Enter amount"></td>
+                                <td><input type="text" class="form-control account-head" value="TDS Receivable - NTPL"></td>
+                                <td><input type="number" class="form-control tds-input" value="0"></td>
+                                <td><button class="btn btn-danger btn-sm remove-row">✕</button></td>
+                            </tr>
+                        `);
+
+                        w.find('#alloc-body').append(row);
+
+                        row.find('.invoice-select').on('change', function () {
+                            let amt = $(this).find(':selected').data('amount') || 0;
+                            row.find('.outstanding-amount').val(amt);
+                        });
+
+                        row.find('.amount-input').on('input', update_total);
+
+                        row.find('.remove-row').on('click', function () {
+                            row.remove();
+                            update_total();
+                        });
+                    }
+
+                    w.find('.add-row').on('click', add_row);
+
+                    w.find('.create-btn').on('click', function () {
+
+                        let invoices = [];
+                        let taxes = [];
+
+                        w.find('#alloc-body tr').each(function () {
+
+                            let invoice = $(this).find('.invoice-select').val();
+                            let amount = flt($(this).find('.amount-input').val());
+                            let tds = flt($(this).find('.tds-input').val());
+                            let account = $(this).find('.account-head').val();
+
+                            if (invoice && amount > 0) {
+                                invoices.push({
+                                    sales_invoice_no: invoice,
+                                    amount: amount
+                                });
+                            }
+
+                            if (tds > 0) {
+                                taxes.push({
+                                    account_head: account,
+                                    amount: tds
+                                });
+                            }
+                        });
+
+                        if (!invoices.length && !taxes.length) {
+                            frappe.msgprint('Please add at least Invoice or TDS.');
+                            return;
+                        }
+
+                        frappe.call({
+                            method: 'nexapp.api.create_unallocated_payment_entry',
+                            args: {
+                                customer: frm.doc.name,
+                                invoices: invoices,
+                                taxes: taxes,
+                                selected_payment_entry: payment_entry_name
+                            },
+                            freeze: true,
+                            freeze_message: 'Creating Payment Entry...',
+                            callback: function (r) {
+
+                                if (r.message) {
+                                    frappe.msgprint({
+                                        title: 'Success',
+                                        indicator: 'green',
+                                        message: `Payment Entry <b>${r.message.payment_entry}</b> created`
+                                    });
+
+                                    dialog.hide();
+
+                                    frm.trigger('load_outstanding_invoices');
+                                    frm.trigger('load_customer_unallocated_amount');
+                                }
+                            }
+                        });
+                    });
                 }
-            }
-        });
+            });
+        }
     }
 });

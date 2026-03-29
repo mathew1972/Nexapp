@@ -110,7 +110,8 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Status",
-   "options": "Pending\nPartially Completed\nCompleted\nOn hold"
+   "options": "Pending\nPartially Completed\nCompleted\nOn hold",
+   "read_only": 1
   },
   {
    "fieldname": "ip_information_section",
@@ -455,7 +456,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-02-13 22:43:27.701872",
+ "modified": "2026-02-24 15:37:13.438329",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Provisioning",

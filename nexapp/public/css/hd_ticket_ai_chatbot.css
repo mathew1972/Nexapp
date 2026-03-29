@@ -1,0 +1,435 @@
+/* Nexapp AI Chatbot v8 - Balanced Goldilocks Refinement */
+
+/* AI Floating Button (FAB) */
+#hd-ai-fab-v12 {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    width: 32px !important;
+    /* Force Tiny */
+    height: 32px !important;
+    background: #7D32E8 !important;
+    /* Sendbird Purple */
+    color: white !important;
+    border-radius: 50% !important;
+    display: none;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 16px !important;
+    box-shadow: 0 4px 10px rgba(125, 50, 232, 0.25) !important;
+    cursor: pointer !important;
+    z-index: 10010 !important;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+#hd-ai-fab-v12:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 14px rgba(125, 50, 232, 0.35);
+}
+
+#hd-ai-fab-v12.active {
+    background: #6328c0;
+    transform: rotate(45deg);
+}
+
+/* Chatbot Positioning - Relative to FAB */
+#hd-ai-chatbot {
+    position: fixed;
+    bottom: 70px;
+    /* Adjusted for ultra-mini FAB */
+    right: 20px;
+    width: 320px;
+    height: 480px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    z-index: 10015;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    display: none;
+    /* Initially hidden */
+}
+
+#hd-ai-chatbot.visible {
+    display: flex;
+    animation: hd-slide-up 0.3s ease-out;
+}
+
+@keyframes hd-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header - Authentic Sendbird White Style */
+.hd-ai-header {
+    background: #ffffff !important;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f2f2f2;
+}
+
+.hd-ai-header-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.hd-ai-logo {
+    width: 28px;
+    height: 28px;
+    background: #7D32E8;
+    /* Sendbird Purple */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    box-shadow: 0 2px 6px rgba(125, 50, 232, 0.25);
+}
+
+.hd-ai-title {
+    color: #1a1c1e;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+}
+
+.hd-ai-actions {
+    display: flex;
+    gap: 15px;
+    color: #707070;
+    font-size: 16px;
+}
+
+.hd-ai-actions span {
+    cursor: pointer;
+    transition: color 0.2s, transform 0.1s;
+}
+
+.hd-ai-actions span:hover {
+    color: #1a1c1e;
+}
+
+/* Messages Area */
+#hd-ai-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Bot Message - Light Grey Rounded */
+.hd-ai-bot {
+    background: #f1f0f5;
+    color: #1a1c1e;
+    padding: 12px 18px;
+    border-radius: 18px;
+    /* Smooth corners */
+    max-width: 82%;
+    line-height: 1.5;
+    font-size: 14px;
+    align-self: flex-start;
+    border: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+/* User Message - Sendbird Purple Pill */
+.hd-ai-user {
+    background: #7D32E8;
+    color: #ffffff;
+    padding: 12px 18px;
+    border-radius: 20px;
+    /* Pill shape */
+    max-width: 82%;
+    line-height: 1.5;
+    font-size: 14px;
+    align-self: flex-end;
+    box-shadow: 0 4px 12px rgba(125, 50, 232, 0.25);
+}
+
+/* Input Area */
+.hd-ai-input-wrapper {
+    padding: 12px 16px 20px 16px;
+    background: #ffffff;
+}
+
+.hd-ai-input-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f8f8fb;
+    padding: 6px 6px 6px 14px;
+    /* Reduced right padding for button alignment */
+    border-radius: 24px;
+    border: 1.5px solid #eee;
+    transition: all 0.2s;
+}
+
+.hd-ai-input-container:focus-within {
+    border-color: #7D32E8;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(125, 50, 232, 0.1);
+}
+
+#hd-ai-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    outline: none;
+    color: #1a1c1e;
+    padding: 8px 0;
+}
+
+#hd-ai-send {
+    background: #7D32E8;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+#hd-ai-send:hover {
+    background: #6328c0;
+    transform: scale(1.05);
+}
+
+#hd-ai-send svg {
+    width: 15px;
+    height: 15px;
+    margin-left: 2px;
+}
+
+/* Loading Bubble */
+.hd-ai-loading {
+    background: #f1f0f5;
+    padding: 10px 16px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    align-self: flex-start;
+    max-width: 50px;
+    margin-bottom: 8px;
+}
+
+.hd-ai-dot {
+    width: 5px;
+    height: 5px;
+    background: #999;
+    border-radius: 50%;
+    animation: hd-dot-pulse 1.4s infinite ease-in-out;
+}
+
+@keyframes hd-dot-pulse {
+
+    0%,
+    80%,
+    100% {
+        transform: scale(0);
+    }
+
+    40% {
+        transform: scale(1);
+    }
+}
+
+/* Custom Scrollbar */
+#hd-ai-messages::-webkit-scrollbar {
+    width: 5px;
+}
+
+#hd-ai-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#hd-ai-messages::-webkit-scrollbar-thumb {
+    background: #e0e0e0;
+    border-radius: 10px;
+}
+
+#hd-ai-messages::-webkit-scrollbar-thumb:hover {
+    background: #ccc;
+}
+
+/* Task Selection Buttons */
+.hd-ai-task-btn {
+    display: block;
+    width: 100%;
+    margin: 6px 0;
+    padding: 10px 14px;
+    background: #7D32E8;
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+}
+
+.hd-ai-task-btn:hover {
+    background: #6328c0;
+    transform: translateX(4px);
+}
+
+/* Report Button and Table */
+.hd-ai-report-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 16px;
+    background: #7D32E8;
+    color: #ffffff;
+    border: none;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.hd-ai-report-btn:hover {
+    background: #6328c0;
+    box-shadow: 0 4px 10px rgba(125, 50, 232, 0.3);
+}
+
+.hd-ai-direct-download-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 16px;
+    background: #fff;
+    color: #7D32E8;
+    border: 1.5px solid #7D32E8;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-left: 8px;
+}
+
+.hd-ai-direct-download-btn:hover {
+    background: #fdfcff;
+    box-shadow: 0 4px 10px rgba(125, 50, 232, 0.15);
+}
+
+/* Expand Bot Bubble for Reports */
+.hd-ai-bot:has(.hd-ai-report-trigger),
+.hd-ai-bot:has(.hd-ai-report-container) {
+    max-width: 98% !important;
+    width: 98% !important;
+    padding: 10px !important;
+}
+
+.hd-ai-report-container {
+    width: 100% !important;
+    margin-top: 8px;
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 12px;
+    overflow: hidden;
+    animation: hd-fade-in 0.3s ease;
+}
+
+.hd-ai-report-table-wrapper {
+    overflow-x: auto;
+    max-height: 250px;
+}
+
+.hd-ai-report-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+
+.hd-ai-report-table th {
+    background: #f8f9fa;
+    color: #444;
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 2px solid #eee;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+}
+
+.hd-ai-report-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #f5f5f5;
+    color: #333;
+}
+
+.hd-ai-report-header {
+    background: #fdfcff;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hd-ai-report-title {
+    font-weight: 700;
+    font-size: 12px;
+    color: #7D32E8;
+}
+
+.hd-ai-download-link {
+    font-size: 11px;
+    color: #7D32E8;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.hd-ai-download-link:hover {
+    text-decoration: underline;
+}
+
+@keyframes hd-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Maximized State */
+#hd-ai-chatbot.maximized {
+    width: 96% !important;
+    height: 94% !important;
+    bottom: 0 !important;
+    right: 2% !important;
+    border-radius: 12px 12px 0 0;
+}
+
+#hd-ai-chatbot.maximized #hd-ai-messages {
+    max-height: none;
+}

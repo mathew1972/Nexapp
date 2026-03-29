@@ -1,0 +1,83 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-03-21 17:07:02.187621",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "payment_entry_id",
+  "posting_date",
+  "company",
+  "column_break_comt",
+  "party",
+  "payment_type",
+  "unallocated_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "payment_entry_id",
+   "fieldtype": "Link",
+   "label": "Payment Entry ID",
+   "options": "Payment Entry"
+  },
+  {
+   "fetch_from": "payment_entry_id.party_type",
+   "fieldname": "payment_type",
+   "fieldtype": "Data",
+   "label": "Payment Type"
+  },
+  {
+   "fetch_from": "payment_entry_id.posting_date",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fetch_from": "payment_entry_id.company",
+   "fieldname": "company",
+   "fieldtype": "Data",
+   "label": "Company"
+  },
+  {
+   "fetch_from": "payment_entry_id.party",
+   "fieldname": "party",
+   "fieldtype": "Data",
+   "label": "Party"
+  },
+  {
+   "fetch_from": "payment_entry_id.unallocated_amount",
+   "fieldname": "unallocated_amount",
+   "fieldtype": "Currency",
+   "label": "Unallocated Amount"
+  },
+  {
+   "fieldname": "column_break_comt",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-03-21 17:15:47.932780",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Unallocated Reconciliation",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

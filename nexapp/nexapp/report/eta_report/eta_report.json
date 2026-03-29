@@ -1,0 +1,111 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2026-03-09 14:29:42.358350",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2026-03-09 15:15:11.693870",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "ETA Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\n    name AS \"Ticket No:Link/HD Ticket:120\",\n    custom_circuit_id AS \"Circuit ID:Data:120\",\n    customer AS \"Customer:Link/Customer:200\",\n    status AS \"Status:Data:100\",\n\n    CONCAT(\n        SUBSTRING_INDEX(\n            SUBSTRING_INDEX(custom_eta_history,'<br>',2),\n            '<br>',-1\n        ),\n        ' (',\n        TRIM(\n            SUBSTRING_INDEX(\n                SUBSTRING_INDEX(\n                    SUBSTRING_INDEX(custom_eta_history,'eta-meta',2),\n                    '>',-1\n                ),\n                ' \u2022',1\n            )\n        ),\n        ')'\n    ) AS \"Latest ETA:Data:220\",\n\n    CONCAT(\n        SUBSTRING_INDEX(\n            SUBSTRING_INDEX(custom_eta_history,'<br>',5),\n            '<br>',-1\n        ),\n        ' (',\n        TRIM(\n            SUBSTRING_INDEX(\n                SUBSTRING_INDEX(\n                    SUBSTRING_INDEX(custom_eta_history,'eta-meta',3),\n                    '>',-1\n                ),\n                ' \u2022',1\n            )\n        ),\n        ')'\n    ) AS \"Old ETA:Data:220\",\n\n    (\n        LENGTH(custom_eta_history)\n        - LENGTH(REPLACE(custom_eta_history,'eta-entry',''))\n    ) / LENGTH('eta-entry') AS \"Total Count:Int:80\"\n\nFROM `tabHD Ticket`\n\nWHERE custom_eta_history LIKE '%%eta-entry%%'\n\nORDER BY modified DESC",
+ "ref_doctype": "HD Ticket",
+ "report_name": "ETA Report",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Nexapp Sales Manager"
+  },
+  {
+   "role": "Desk User"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Maintenance User"
+  },
+  {
+   "role": "Maintenance Manager"
+  },
+  {
+   "role": "Administrator"
+  },
+  {
+   "role": "Sales Manager"
+  },
+  {
+   "role": "Support Manager"
+  },
+  {
+   "role": "L2 Support"
+  },
+  {
+   "role": "L1 Support"
+  },
+  {
+   "role": "Projects Manager"
+  },
+  {
+   "role": "Data Analyst"
+  },
+  {
+   "role": "CRM User"
+  },
+  {
+   "role": "CRM-Sales Manager Standard"
+  },
+  {
+   "role": "accounts receivable"
+  },
+  {
+   "role": "CRM MIS"
+  },
+  {
+   "role": "Accounts  & Finance Manager"
+  },
+  {
+   "role": "Account Receivable User"
+  },
+  {
+   "role": "LMS Manager"
+  },
+  {
+   "role": "CRM-Inside Sales"
+  },
+  {
+   "role": "Stock Manager"
+  },
+  {
+   "role": "Projects User"
+  },
+  {
+   "role": "Project Co-Ordinator"
+  },
+  {
+   "role": "LMS User"
+  },
+  {
+   "role": "LMS User-1"
+  },
+  {
+   "role": "Account Payable"
+  },
+  {
+   "role": "Guest"
+  }
+ ],
+ "timeout": 0
+}

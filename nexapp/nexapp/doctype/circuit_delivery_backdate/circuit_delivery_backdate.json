@@ -1,0 +1,166 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "BD.-.#####",
+ "creation": "2026-03-10 13:28:22.626101",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "circuit_id",
+  "customer",
+  "site_name",
+  "site_status",
+  "column_break_iwbu",
+  "billing_status",
+  "circuit_delivery_date",
+  "circuit_delivery_delay_reason"
+ ],
+ "fields": [
+  {
+   "fieldname": "circuit_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Circuit ID",
+   "options": "Site"
+  },
+  {
+   "fieldname": "column_break_iwbu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "circuit_id.date",
+   "fieldname": "circuit_delivery_date",
+   "fieldtype": "Date",
+   "label": "Circuit Delivery Date"
+  },
+  {
+   "fetch_from": "circuit_id.customer",
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer"
+  },
+  {
+   "default": "Billing Pending",
+   "fieldname": "billing_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Billing Status",
+   "options": "Billing Pending\nBilled\nCanceled"
+  },
+  {
+   "fetch_from": "circuit_id.site_name",
+   "fieldname": "site_name",
+   "fieldtype": "Data",
+   "label": "Site Name"
+  },
+  {
+   "fetch_from": "circuit_id.site_status",
+   "fieldname": "site_status",
+   "fieldtype": "Data",
+   "label": " Site Status "
+  },
+  {
+   "fetch_from": "circuit_id.circuit_delivery_delay_reason",
+   "fieldname": "circuit_delivery_delay_reason",
+   "fieldtype": "Small Text",
+   "label": "Circuit Delivery Delay Reason"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-03-10 16:10:41.129038",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Circuit Delivery Backdate",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts  & Finance Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "accounts receivable",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Project Co-Ordinator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Projects Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Projects User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_views": 1
+}

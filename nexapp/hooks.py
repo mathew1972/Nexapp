@@ -297,7 +297,9 @@ scheduler_events = {
 
 app_include_css = [
     "/assets/nexapp/css/custom.css",
-    "/assets/nexapp/css/Number_card.css"    
+    "/assets/nexapp/css/Number_card.css",
+    "/assets/nexapp/css/hd_ticket_ai_chatbot.css",
+    "/assets/nexapp/css/ai_command_center.css"     
 ]
 
 app_include_js = [
@@ -307,7 +309,13 @@ app_include_js = [
     "public/js/crm_extensions.js",
     "/assets/nexapp/js/deal_list_custom.js",
     "/assets/nexapp/js/crm_extensions.js",
-    "/assets/nexapp/js/helpdesk/ticket_view.js"
+    "/assets/nexapp/js/helpdesk/ticket_view.js",
+    "/assets/nexapp/js/hd_ticket_ai_chatbot.js",
+
+    "/assets/nexapp/js/ai/utils/intent.js",
+    "/assets/nexapp/js/ai/utils/api.js",
+    "/assets/nexapp/js/ai/components/header.js",
+    "/assets/nexapp/js/ai/features/feasibility.js"
 ]
 
 
@@ -324,7 +332,8 @@ doc_events = {
     },
     "Communication": {
         "after_insert": "nexapp.api.create_hd_ticket_from_communication",
-        "before_insert": "nexapp.api.block_techsupport_bounce_emails"        
+        "before_insert": "nexapp.api.block_techsupport_bounce_emails",
+        "before_insert": "nexapp.email_override.set_hd_ticket_sender"       
     },
     "Customer": {
         "after_insert": "nexapp.api.customer_created"
@@ -338,10 +347,15 @@ doc_events = {
     "LMS Payment Request": {
         "on_submit": "nexapp.api.update_lms_on_payment_submit"
     },
+      "Solution Change": {
+        "on_update": "nexapp.api.solution_change_update"
+    },
     "Lastmile Services Master": {
         "validate": "nexapp.api.update_site_child_table",
-        "on_update": "nexapp.api.sync_lms_review_to_site"
-        
+        "on_update": "nexapp.api.sync_lms_review_to_site"        
+    },
+    "HD Ticket": {
+        "after_insert": "nexapp.api.create_lms_ticket"
     },
     "Change Management Request": {
         "on_update": "nexapp.api.on_update"
@@ -364,11 +378,14 @@ doc_events = {
     },      
     "Sales Order": {
         "after_save": "nexapp.api.update_task_circuit_sales_order",
-        #"before_submit": "nexapp.api.sales_order_to_site"
-    }#,
-    #"Site": {
-     #   "on_update": "nexapp.api.update_invoice_and_lms"
-    #}   
+        "on_submit": "nexapp.api.update_feasibility_and_site_on_so_save"
+    },
+    "Sales Invoice": {
+        "on_submit": "nexapp.api.update_billing_status_from_invoice"
+    },
+    "Task": {
+        "on_update": "nexapp.api.update_hd_ticket_from_task"
+    }
 }
 
 fixtures = [      
@@ -436,8 +453,8 @@ doctype_js = {
     "Quality Inspection": "public/js/Stock_custom_ui.js",
     "Feasibility": [
         "doctype/feasibility/feasibility.js",
-        "public/js/feasibility_pincode.js",
-        "public/js/feasibility_contact.js"
+        "public/js/feasibility_pincode.js"
+        #"public/js/feasibility_contact.js"
     ],
     "Site": [
         "doctype/site/site.js",
@@ -468,7 +485,10 @@ doctype_js = {
     "Supplier": "public/js/supplier_custom.js",
     "Disconnection Request": "public/js/disconnection_request.js",
     "PO Management": "public/js/po_management.js",
-    "Purchase Order": "public/js/purchase_order_custom.js"
+    "Purchase Order": "public/js/purchase_order_custom.js",
+    "Purchase Invoice": "public/js/purchase_invoice_custom.js",
+    "Provisioning": "public/js/provisioning_custom.js",
+    "Employee Survey": "public/js/employee_survey.js"
 }
 
 override_whitelisted_methods = {

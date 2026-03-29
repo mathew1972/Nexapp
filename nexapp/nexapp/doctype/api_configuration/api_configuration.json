@@ -1,0 +1,115 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-02-26 17:18:01.814940",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "api_configuration_section",
+  "ai_provider",
+  "api_key",
+  "model_name",
+  "api_base_url",
+  "request_settings_section",
+  "temperature",
+  "max_tokens",
+  "feature_controls_section",
+  "enable_ai_extraction",
+  "debug_mode",
+  "memory_limit"
+ ],
+ "fields": [
+  {
+   "fieldname": "api_configuration_section",
+   "fieldtype": "Section Break",
+   "label": "API Configuration"
+  },
+  {
+   "fieldname": "ai_provider",
+   "fieldtype": "Select",
+   "label": "AI Provider",
+   "options": "\nOllama (Local)\nOpenRouter\nGemini\nOpenAI"
+  },
+  {
+   "fieldname": "api_key",
+   "fieldtype": "Password",
+   "label": "API Key",
+   "read_only": 1
+  },
+  {
+   "fieldname": "model_name",
+   "fieldtype": "Link",
+   "label": "Model Name",
+   "options": "AI Models"
+  },
+  {
+   "fieldname": "api_base_url",
+   "fieldtype": "Data",
+   "label": "API Base URL",
+   "read_only": 1
+  },
+  {
+   "fieldname": "request_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Request Settings"
+  },
+  {
+   "fieldname": "temperature",
+   "fieldtype": "Float",
+   "label": "Temperature"
+  },
+  {
+   "fieldname": "feature_controls_section",
+   "fieldtype": "Section Break",
+   "label": "Feature Controls"
+  },
+  {
+   "default": "1",
+   "fieldname": "enable_ai_extraction",
+   "fieldtype": "Check",
+   "label": "Enable AI Extraction"
+  },
+  {
+   "default": "0",
+   "fieldname": "debug_mode",
+   "fieldtype": "Check",
+   "label": "Debug Mode"
+  },
+  {
+   "fieldname": "max_tokens",
+   "fieldtype": "Int",
+   "label": "Max Output Tokens"
+  },
+  {
+   "default": "10",
+   "description": "Number of previous chat messages to remember",
+   "fieldname": "memory_limit",
+   "fieldtype": "Int",
+   "label": "Memory Limit"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-03-23 11:17:52.339759",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "API Configuration",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

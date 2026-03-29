@@ -141,6 +141,7 @@
   "column_break_hclh",
   "provisioning_partially_completed_date",
   "provisioning_date",
+  "branch_router_ip",
   "tab_3_tab",
   "project_team_information_section",
   "project_manager_2",
@@ -176,6 +177,7 @@
   "installation_note",
   "column_break_mmql",
   "date",
+  "circuit_delivery_delay_reason",
   "installation_document_status",
   "customer_rating_section",
   "service_rating",
@@ -226,6 +228,7 @@
    "in_standard_filter": 1,
    "label": "Customer Type  ",
    "options": "\nPaid Customer\nPOC Customer",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -241,6 +244,7 @@
    "fieldtype": "Data",
    "in_standard_filter": 1,
    "label": "Site Name  ",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -303,8 +307,7 @@
   {
    "fieldname": "site_id__legal_code",
    "fieldtype": "Data",
-   "label": "Site ID / Legal Code",
-   "read_only": 1
+   "label": "Site ID / Legal Code"
   },
   {
    "fieldname": "customer_po_date",
@@ -508,7 +511,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "description": "This date will consider for Invoice start Date",
+   "description": "This date is considered the Invoice Start Date.",
    "fieldname": "date",
    "fieldtype": "Date",
    "label": "Circuit Delivery Date",
@@ -886,7 +889,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "provisioning_id.provisioning_date",
    "fieldname": "provisioning_date",
    "fieldtype": "Date",
    "label": "Provisioning Completed Date",
@@ -930,7 +932,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Billing Status",
-   "options": "Pending\nPartially Completed\nCompleted\nBilling completed"
+   "options": "Pending\nBilled"
   },
   {
    "fieldname": "column_break_dfec",
@@ -1342,7 +1344,6 @@
    "read_only": 1
   },
   {
-   "fetch_from": "provisioning_id.status",
    "fieldname": "provisioning_status",
    "fieldtype": "Data",
    "label": "Provisioning Status"
@@ -1371,6 +1372,7 @@
   {
    "fieldname": "site_lms_feasibility",
    "fieldtype": "Table",
+   "label": "LMS  Feasibility",
    "options": "Site LMS  Feasibility"
   },
   {
@@ -1390,13 +1392,26 @@
    "fieldname": "project_manager",
    "fieldtype": "Data",
    "label": "Project Manager"
+  },
+  {
+   "fieldname": "branch_router_ip",
+   "fieldtype": "Data",
+   "label": "Branch Router IP"
+  },
+  {
+   "depends_on": "eval:doc.date < frappe.datetime.add_days(frappe.datetime.get_today(), -7)",
+   "fieldname": "circuit_delivery_delay_reason",
+   "fieldtype": "Small Text",
+   "label": "Circuit Delivery Delay Reason",
+   "mandatory_depends_on": "eval:doc.date < frappe.datetime.add_days(frappe.datetime.get_today(), -7)",
+   "placeholder": "If the back date is more than 7 days, you must provide a valid reason for the delay."
   }
  ],
  "index_web_pages_for_search": 1,
  "is_calendar_and_gantt": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2026-02-06 10:51:43.661383",
+ "modified": "2026-03-26 19:39:08.463947",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",

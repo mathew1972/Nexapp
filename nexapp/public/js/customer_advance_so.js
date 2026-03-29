@@ -63,7 +63,7 @@ console.log("✅ customer_advance_po.js loaded");
         $items.empty();
 
         frappe.call({
-            method: 'nexapp.api.get_submitted_sales_orders_by_customer',
+            method: 'nexapp.api.get_sales_orders_by_customer',
             args: { customer: customer },
             callback: function (r) {
 
