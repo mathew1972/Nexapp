@@ -13,7 +13,7 @@
  "is_hidden": 0,
  "label": "Tech Support",
  "links": [],
- "modified": "2025-03-12 17:31:29.165267",
+ "modified": "2026-04-29 16:40:19.047520",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Tech Support",
@@ -39,8 +39,12 @@
  "parent_page": "",
  "public": 1,
  "quick_lists": [],
- "roles": [],
- "sequence_id": 34.0,
+ "roles": [
+  {
+   "role": "Helpdesk Contact"
+  }
+ ],
+ "sequence_id": 41.0,
  "shortcuts": [
   {
    "color": "Grey",

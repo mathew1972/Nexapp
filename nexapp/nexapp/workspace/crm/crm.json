@@ -95,7 +95,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-03-28 11:07:41.774962",
+ "modified": "2026-04-29 16:40:16.640410",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "CRM",
@@ -138,7 +138,7 @@
    "role": "CRM-Sales Manager Standard"
   }
  ],
- "sequence_id": 16.0,
+ "sequence_id": 18.0,
  "shortcuts": [
   {
    "color": "Blue",

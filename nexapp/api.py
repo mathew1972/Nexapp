@@ -143,6 +143,7 @@ def sales_order_to_site(sales_order):
         site_doc.circuit_id = site_data["circuit_id"]
         site_doc.site_name = site_data["site_name"]
         site_doc.order_type = so_doc.order_type
+        
 
         # From Feasibility
         site_doc.primary_contact = feasibility_doc.primary_contact
@@ -456,12 +457,7 @@ def update_site_status_on_delivery_note_save(doc, method):
 ################################# HelpDesk ############################################import frappe
 import frappe
 import re
-from datetime import timedelta
 from email.utils import getaddresses
-
-
-REOPEN_WINDOW = timedelta(hours=4)
-
 
 def create_hd_ticket_from_communication(doc, method):
     try:
@@ -472,8 +468,20 @@ def create_hd_ticket_from_communication(doc, method):
         if doc.sent_or_received != "Received":
             return
 
+        # =========================================================
+        # 🟢 PREVENT REOPENING OF CLOSED/RESOLVED TICKETS
+        # =========================================================
+        if doc.reference_doctype == "HD Ticket" and doc.reference_name:
+            ticket_status = frappe.db.get_value("HD Ticket", doc.reference_name, "status")
+            if ticket_status in ["Closed", "Resolved"]:
+                # 🔥 UNLINK (this stops the reopen in helpdesk app)
+                doc.reference_doctype = None
+                doc.reference_name = None
+
         sender = (doc.sender or "").lower()
         recipients = doc.recipients or ""
+        subject = (doc.subject or "").lower()
+        content = (doc.content or "").lower()
 
         recipient_emails = [
             email.strip().lower()
@@ -490,23 +498,38 @@ def create_hd_ticket_from_communication(doc, method):
             return
 
         # =========================================================
-        # 2️⃣ SKIP AUTO / BOUNCE EMAILS
+        # 2️⃣ STRONG BOUNCE / UNDELIVERABLE BLOCK 🚫
         # =========================================================
-        auto_senders = ["mailer-daemon", "postmaster@", "no-reply", "mailer@"]
+        combined_text_check = f"{subject} {content}"
 
-        if any(x in sender for x in auto_senders):
-            return
-
-        combined_failure_check = f"{doc.subject or ''} {doc.content or ''}".lower()
-
-        failure_keywords = [
+        bounce_keywords = [
+            "undeliverable",
             "delivery failed",
-            "could not be delivered",
+            "delivery has failed",
             "mail delivery subsystem",
-            "permanent error",
+            "returned mail",
+            "delivery status notification",
+            "failure notice",
+            "mailbox full",
+            "recipient address rejected",
+            "message blocked",
+            "could not be delivered",
+            "550",
+            "5.1.1",
         ]
 
-        if any(keyword in combined_failure_check for keyword in failure_keywords):
+        if any(keyword in combined_text_check for keyword in bounce_keywords):
+            return  # 🔥 HARD STOP (no ticket, no reopen)
+
+        auto_senders = [
+            "mailer-daemon",
+            "postmaster",
+            "no-reply",
+            "mailer@",
+            "bounce",
+        ]
+
+        if any(x in sender for x in auto_senders):
             return
 
         # =========================================================
@@ -531,27 +554,24 @@ def create_hd_ticket_from_communication(doc, method):
         existing_ticket = frappe.db.get_value(
             "HD Ticket",
             {"custom_circuit_id": circuit_id},
-            ["name", "status", "custom_close_datetime", "resolution_date"],
+            ["name", "status"],
             as_dict=True,
             order_by="creation desc",
         )
 
         # =========================================================
-        # 🟢 CASE A — OPEN TICKET EXISTS
+        # 🟢 CASE A — EXISTING ACTIVE TICKET
         # =========================================================
         if existing_ticket and existing_ticket.status not in ["Closed", "Resolved"]:
 
-            frappe.db.set_value(
-                "Communication",
-                doc.name,
-                {
-                    "reference_doctype": "HD Ticket",
-                    "reference_name": existing_ticket.name,
-                    "status": "Linked",
-                },
-            )
+            doc.reference_doctype = "HD Ticket"
+            doc.reference_name = existing_ticket.name
+            doc.status = "Linked"
 
-            if sender != "nms@nexapp.co.in":
+            if not doc.name:
+                doc.set_new_name()
+
+            if "nms@nexapp.co.in" not in sender:
                 frappe.enqueue(
                     send_ticket_reply,
                     queue="short",
@@ -567,65 +587,15 @@ def create_hd_ticket_from_communication(doc, method):
             return
 
         # =========================================================
-        # 🟡 CASE B — CLOSED / RESOLVED
+        # 🔴 CASE B — CLOSED / RESOLVED → ALWAYS CREATE NEW
         # =========================================================
-        if existing_ticket and existing_ticket.status in ["Closed", "Resolved"]:
-
-            close_time = (
-                existing_ticket.custom_close_datetime
-                or existing_ticket.resolution_date
-            )
-
-            if close_time:
-
-                close_dt = frappe.utils.get_datetime(close_time)
-                now_dt = frappe.utils.now_datetime()
-
-                if now_dt - close_dt <= REOPEN_WINDOW:
-
-                    ticket_doc = frappe.get_doc("HD Ticket", existing_ticket.name)
-
-                    ticket_doc.status = "Open"
-                    ticket_doc.add_comment(
-                        "Info",
-                        "Ticket reopened automatically due to new email within allowed time.",
-                    )
-
-                    ticket_doc.save(ignore_permissions=True)
-
-                    frappe.db.set_value(
-                        "Communication",
-                        doc.name,
-                        {
-                            "reference_doctype": "HD Ticket",
-                            "reference_name": ticket_doc.name,
-                            "status": "Linked",
-                        },
-                    )
-
-                    if sender != "nms@nexapp.co.in":
-                        frappe.enqueue(
-                            send_ticket_reply,
-                            queue="short",
-                            enqueue_after_commit=True,
-                            communication_name=doc.name,
-                            sender=sender,
-                            ticket_name=ticket_doc.name,
-                            circuit_id=circuit_id,
-                            status="Reopened",
-                            template="reopened",
-                        )
-
-                    return
+        # ❌ REOPEN LOGIC COMPLETELY REMOVED (Unlinked above)
 
         # =========================================================
         # 🔴 CASE C — CREATE NEW TICKET
         # =========================================================
         if frappe.db.exists("Site", circuit_id):
 
-            # =====================================================
-            # 🆕 EXTRACT LMS ID FROM SUBJECT (IMPROVED)
-            # =====================================================
             custom_lms_id = ""
             subject_text = doc.subject or ""
 
@@ -641,9 +611,6 @@ def create_hd_ticket_from_communication(doc, method):
                     var = lms_match.group(1)
                     custom_lms_id = f"LMS- {var}"
 
-            # =====================================================
-            # CREATE TICKET
-            # =====================================================
             ticket = frappe.get_doc({
                 "doctype": "HD Ticket",
                 "subject": doc.subject,
@@ -659,17 +626,14 @@ def create_hd_ticket_from_communication(doc, method):
 
             ticket.insert(ignore_permissions=True)
 
-            frappe.db.set_value(
-                "Communication",
-                doc.name,
-                {
-                    "reference_doctype": "HD Ticket",
-                    "reference_name": ticket.name,
-                    "status": "Linked",
-                },
-            )
+            doc.reference_doctype = "HD Ticket"
+            doc.reference_name = ticket.name
+            doc.status = "Linked"
 
-            if sender != "nms@nexapp.co.in":
+            if not doc.name:
+                doc.set_new_name()
+
+            if "nms@nexapp.co.in" not in sender:
                 frappe.enqueue(
                     send_ticket_reply,
                     queue="short",
@@ -690,40 +654,23 @@ def create_hd_ticket_from_communication(doc, method):
             "HD Ticket Auto-Creation Error",
         )
 
-
 # =========================================================
-# 📧 EMAIL REPLY FUNCTION
+# EMAIL FUNCTION (UNCHANGED)
 # =========================================================
-
 def send_ticket_reply(communication_name, sender, ticket_name, circuit_id, status, template):
 
     subject = f"Re: Circuit {circuit_id} — Ticket {ticket_name}"
 
-    if template == "reopened":
+    if template == "new":
         body = f"""
-        Your previous ticket has been reopened.<br><br>
+        A new support ticket has been created.<br><br>
         <b>Ticket:</b> {ticket_name}<br>
         <b>Circuit:</b> {circuit_id}<br><br>
-        Our team will continue working on this issue.
-        """
-
-    elif template == "new":
-        body = f"""
-        Your previous ticket could not be reopened because the 4-hour reopening window had already expired.
-        As a result, a new support ticket has been created to address your request.<br><br>
-
-        <b>New Ticket Number:</b> {ticket_name}<br>
-        <b>Circuit ID:</b> {circuit_id}<br><br>
-
-        Our support team will continue working on this issue under the new ticket.
-        All further updates will be shared through this ticket.<br><br>
-
-        Thank you for your cooperation.
         """
 
     else:
         body = f"""
-        Your email has been linked to the existing ticket.<br><br>
+        This ticket is already open, so your email has been linked.<br><br>
         <b>Ticket:</b> {ticket_name}<br>
         <b>Circuit:</b> {circuit_id}<br>
         <b>Status:</b> {status}
@@ -736,7 +683,6 @@ def send_ticket_reply(communication_name, sender, ticket_name, circuit_id, statu
     Thanks & Regards,<br>
     Nexapp Technologies Private Limited<br>
     Support Team
-    Phone: 02067629999
     """
 
     reply = frappe.get_doc({
@@ -762,7 +708,10 @@ def send_ticket_reply(communication_name, sender, ticket_name, circuit_id, statu
         reference_doctype="HD Ticket",
         reference_name=ticket_name,
         communication=reply.name,
+        now=True,
+        sender="techsupport@nexapp.co.in"
     )
+
 ################################# End of HelpDesk Code################################
 import frappe
 from frappe.utils import get_url
@@ -2361,40 +2310,83 @@ def get_customer_outstanding_invoices(customer=None, company=None):
 # ------------------------------------------------------------
 
 @frappe.whitelist()
-def get_outstanding_expense_claims(employee=None, company=None):
+def get_unpaid_expense_claims(employee=None, company=None):
+    # Extract employee ID if it comes in the format "Name (ID)"
+    if employee and "(" in employee and ")" in employee:
+        employee = employee.split("(")[-1].split(")")[0]
+
     if not company:
-        company = frappe.defaults.get_default("company")
+        company = frappe.defaults.get_user_default("company") or frappe.defaults.get_default("company")
 
     filters = {
         "employee": employee,
         "docstatus": 1,
-        "status": "Unpaid"
+        "status": ["!=", "Paid"]
     }
+    if company:
+        filters["company"] = company
 
-    expense_claims = frappe.get_all(
+    expense_claims_list = frappe.get_all(
         "Expense Claim",
         filters=filters,
-        fields=[
-            "name",
-            "employee",
-            "employee_name",
-            "posting_date",
-            "description",
-            "total_sanctioned_amount",
-            "total_amount_reimbursed",
-            "grand_total",
-            "outstanding_amount"
-        ],
-        order_by="posting_date asc",
+        fields=["name"],
+        order_by="posting_date desc",
         limit_page_length=0
     )
+    
+    # Fallback: if no claims found with company filter, try without it
+    if not expense_claims_list and company:
+        if "company" in filters:
+            del filters["company"]
+            expense_claims_list = frappe.get_all(
+                "Expense Claim",
+                filters=filters,
+                fields=["name"],
+                order_by="posting_date desc",
+                limit_page_length=0
+            )
 
-    # Calculate outstanding amount if not available
-    for claim in expense_claims:
-        if not claim.get("outstanding_amount"):
-            total_sanctioned = claim.get("total_sanctioned_amount") or claim.get("grand_total") or 0
-            total_reimbursed = claim.get("total_amount_reimbursed") or 0
-            claim["outstanding_amount"] = total_sanctioned - total_reimbursed
+    expense_claims = []
+    # Fetch full documents to ensure all custom and virtual fields are available
+    for c in expense_claims_list:
+        try:
+            doc = frappe.get_doc("Expense Claim", c.name)
+            
+            # Fetch all components for calculation
+            sanctioned = frappe.utils.flt(doc.total_sanctioned_amount, 2)
+            taxes = frappe.utils.flt(doc.total_taxes_and_charges, 2)
+            reimbursed = frappe.utils.flt(doc.total_amount_reimbursed, 2)
+            grand = frappe.utils.flt(doc.grand_total, 2)
+            
+            # Advances to be deducted - check both child table and parent field
+            adv_from_child = sum(frappe.utils.flt(adv.allocated_amount, 2) for adv in doc.get("advances") or [])
+            adv_paid_from_child = sum(frappe.utils.flt(adv.advance_paid, 2) for adv in doc.get("advances") or [])
+            total_advance = frappe.utils.flt(max(adv_from_child, adv_paid_from_child, frappe.utils.flt(doc.total_advance_amount, 2)), 2)
+            
+            # Use Gross Amount (Sanctioned + Taxes) as the base
+            base_total = frappe.utils.flt(sanctioned + taxes, 2)
+            
+            # Fallback if sanctioned amount is not populated correctly
+            if not base_total or base_total < total_advance:
+                base_total = frappe.utils.flt(grand + total_advance, 2)
+            
+            outstanding = frappe.utils.flt(base_total - total_advance - reimbursed, 2)
+            
+            expense_claims.append({
+                "name": doc.name,
+                "employee": doc.employee,
+                "employee_name": doc.employee_name,
+                "posting_date": doc.posting_date,
+                "description": doc.get("description") or doc.get("remarks") or "",
+                "total_sanctioned_amount": base_total,
+                "total_amount_reimbursed": reimbursed,
+                "total_advance_amount": total_advance,
+                "grand_total": grand,
+                "outstanding_amount": outstanding
+            })
+        except Exception as e:
+            frappe.log_error(f"Error processing {c.name}: {str(e)}", "Bank Recon API Error")
+            continue
 
     return expense_claims
 
@@ -2759,17 +2751,18 @@ def categorize_manually(
     invoices,
     category=None,
     employee=None,
-    expense_account=None,
+    customer=None,
     supplier=None,
+    expense_account=None,
     company=None,
     tax_adjustments=None,
-    customer=None,
     from_account=None,
     to_account=None,
     transfer_description=None,
     allow_overpayment=False,
     purchase_order=None,
-    sales_order=None
+    sales_order=None,
+    custom_send_email=0
 ):
     try:
         if not isinstance(invoices, list):
@@ -2804,9 +2797,9 @@ def categorize_manually(
             paid_from = (from_account or bank_account_gl or get_default_bank_account(company, payment_type))
             paid_to = to_account
 
-        statement_amount = abs(float(stmt.deposit or stmt.withdrawal) or 0.0)
+        statement_amount = frappe.utils.flt(abs(float(stmt.deposit or stmt.withdrawal) or 0.0), 2)
 
-        total_allocated = sum(float(inv.get("amount") or 0) for inv in invoices)
+        total_allocated = frappe.utils.flt(sum(frappe.utils.flt(inv.get("amount") or 0, 2) for inv in invoices), 2)
 
         tax_adjustments_list = []
         if tax_adjustments:
@@ -2853,8 +2846,8 @@ def categorize_manually(
                 emp_payable = frappe.db.get_value("Company", company, "default_payable_account")
 
             # For Employee Expense Claim, use allocated amount NOT statement amount
-            paid_amount = total_allocated
-            received_amount = total_allocated
+            paid_amount = frappe.utils.flt(total_allocated, 2)
+            received_amount = frappe.utils.flt(total_allocated, 2)
 
             payment_entry = frappe.get_doc(
                 {
@@ -2876,16 +2869,22 @@ def categorize_manually(
 
             references = []
             for inv in invoices:
-                # For Expense Claim, reference doctype should be "Expense Claim"
+                amt = frappe.utils.flt(inv.get("amount") or 0, 2)
+                if inv.get("invoice"):
+                    actual_out = get_actual_outstanding("Expense Claim", inv.get("invoice"))
+                    if amt > actual_out and abs(amt - actual_out) < 0.05:
+                        amt = actual_out
+                
                 references.append(
                     {
                         "reference_doctype": "Expense Claim",
                         "reference_name": inv.get("invoice"),
-                        "allocated_amount": float(inv.get("amount") or 0),
+                        "allocated_amount": amt,
                     }
                 )
 
             payment_entry.set("references", references)
+            total_allocated = frappe.utils.flt(sum(frappe.utils.flt(ref.get("allocated_amount") or 0) for ref in references), 2)
 
         # -----------------------------------------------------------
         # SUPPLIER PAYMENT
@@ -2905,8 +2904,11 @@ def categorize_manually(
                 supplier_payable = frappe.db.get_value("Company", company, "default_payable_account")
 
             # For Supplier Payment, use allocated amount NOT statement amount
-            paid_amount = total_allocated
-            received_amount = total_allocated
+            paid_amount = frappe.utils.flt(total_allocated, 2)
+            received_amount = frappe.utils.flt(total_allocated, 2)
+
+            # Fetch supplier email for notification
+            supplier_email = frappe.db.get_value("Supplier", supplier, "email_id") or ""
 
             payment_entry = frappe.get_doc(
                 {
@@ -2923,21 +2925,30 @@ def categorize_manually(
                     "posting_date": stmt.transaction_date,
                     "paid_from": (bank_account_gl or get_default_bank_account(company, "Pay")),  # Bank GL account
                     "paid_to": supplier_payable,  # Supplier's Creditors account
-                    "bank_account": (from_account_orig or to_account_orig or stmt.bank_account)
+                    "bank_account": (from_account_orig or to_account_orig or stmt.bank_account),
+                    "custom_send_email": custom_send_email,
+                    "contact_email": supplier_email
                 }
             )
 
             references = []
             for inv in invoices:
+                amt = frappe.utils.flt(inv.get("amount") or 0, 2)
+                if inv.get("invoice"):
+                    actual_out = get_actual_outstanding(inv.get("doctype") or "Purchase Invoice", inv.get("invoice"))
+                    if amt > actual_out and abs(amt - actual_out) < 0.05:
+                        amt = actual_out
+                        
                 references.append(
                     {
                         "reference_doctype": inv.get("doctype"),
                         "reference_name": inv.get("invoice"),
-                        "allocated_amount": float(inv.get("amount") or 0),
+                        "allocated_amount": amt,
                     }
                 )
 
             payment_entry.set("references", references)
+            total_allocated = frappe.utils.flt(sum(frappe.utils.flt(ref.get("allocated_amount") or 0) for ref in references), 2)
 
         # -----------------------------------------------------------
         # EXPENSE CATEGORY
@@ -2982,7 +2993,8 @@ def categorize_manually(
                 amount=statement_amount,
                 statement_entry=statement_name,
                 purchase_order=purchase_order,
-                bank_account=from_account # ⭐ Pass from UI
+                bank_account=from_account, # ⭐ Pass from UI
+                custom_send_email=custom_send_email
             )
 
         # -----------------------------------------------------------
@@ -3000,13 +3012,42 @@ def categorize_manually(
                 bank_account=to_account # ⭐ Pass from UI
             )
 
+        # -----------------------------------------------------------
+        # RETURN PAYMENT (SUPPLIER)
+        # -----------------------------------------------------------
+        elif category == "Return Payment (Supplier)":
+            if not supplier:
+                return {"status": "fail", "error": "Supplier is required for Return Payment (Supplier)"}
+            
+            return create_supplier_return_payment(
+                supplier=supplier,
+                amount=statement_amount,
+                statement_entry=statement_name,
+                bank_account=to_account, # ⭐ Pass from UI
+                custom_send_email=custom_send_email
+            )
+
+        # -----------------------------------------------------------
+        # RETURN PAYMENT (CUSTOMER)
+        # -----------------------------------------------------------
+        elif category == "Return Payment (Customer)":
+            if not customer:
+                return {"status": "fail", "error": "Customer is required for Return Payment (Customer)"}
+            
+            return create_customer_return_payment(
+                customer=customer,
+                amount=statement_amount,
+                statement_entry=statement_name,
+                bank_account=to_account # ⭐ Pass from UI
+            )
+
         else:
             return {"status": "fail", "error": f"Unknown category: {category}"}
 
         # Validate total allocated matches statement amount
         # SKIP for Customer Payment (allow excess)
-        if category != "Customer Payment":
-            if not frappe.utils.flt(total_allocated, 2) == frappe.utils.flt(statement_amount, 2):
+        if category != "Customer Payment" and category not in ["Expense", "Transfer To Another Account"]:
+            if abs(frappe.utils.flt(total_allocated, 2) - frappe.utils.flt(statement_amount, 2)) > 0.05:
                 return {
                     "status": "fail",
                     "error": f"Total allocated amount {total_allocated} doesn't match statement amount {statement_amount}"
@@ -3015,8 +3056,13 @@ def categorize_manually(
         if tax_adjustments_list:
             _add_tax_rows_to_payment(payment_entry, tax_adjustments_list)
 
+        payment_entry.custom_send_email = custom_send_email
         payment_entry.insert()
         payment_entry.submit()
+
+        # Send email directly if custom_send_email is set
+        if int(custom_send_email) == 1 and payment_entry.party_type == "Supplier":
+            send_supplier_payment_email(payment_entry)
 
         # Update Bank Statement Entry
         frappe.db.set_value("Bank Statement Entry", statement_name, {
@@ -3381,6 +3427,29 @@ def reconcile_transaction(invoice, amount, statement_name, allocated_amount=0, t
 # UTILITIES
 # ------------------------------------------------------------
 
+def get_actual_outstanding(doctype, docname):
+    if not doctype or not docname:
+        return 0
+        
+    if doctype == "Expense Claim":
+        doc = frappe.get_doc("Expense Claim", docname)
+        sanctioned = frappe.utils.flt(doc.total_sanctioned_amount)
+        taxes = frappe.utils.flt(doc.total_taxes_and_charges)
+        reimbursed = frappe.utils.flt(doc.total_amount_reimbursed)
+        grand = frappe.utils.flt(doc.grand_total)
+        
+        adv_from_child = sum(frappe.utils.flt(adv.allocated_amount) for adv in doc.get("advances") or [])
+        adv_paid_from_child = sum(frappe.utils.flt(adv.advance_paid) for adv in doc.get("advances") or [])
+        total_advance = max(adv_from_child, adv_paid_from_child, frappe.utils.flt(doc.total_advance_amount))
+        
+        base_total = sanctioned + taxes
+        if not base_total or base_total < total_advance:
+            base_total = grand + total_advance
+            
+        return base_total - total_advance - reimbursed
+    else:
+        return frappe.utils.flt(frappe.db.get_value(doctype, docname, "outstanding_amount") or 0)
+
 def get_default_bank_account(company, payment_type):
     account_type = "Bank"
     if payment_type == "Pay":
@@ -3455,8 +3524,8 @@ def process_customer_payment(stmt, invoices, company, customer, tax_adjustments_
     # -------------------------------
     # 1. Calculate amounts
     # -------------------------------
-    statement_amount = abs(float(stmt.deposit or 0))
-    total_allocated = sum(float(inv.get("amount") or 0) for inv in invoices)
+    statement_amount = frappe.utils.flt(abs(float(stmt.deposit or 0)), 2)
+    total_allocated = frappe.utils.flt(sum(frappe.utils.flt(inv.get("amount") or 0, 2) for inv in invoices), 2)
 
     # ⭐ FIX — USE STATEMENT AMOUNT
     paid_amount = statement_amount
@@ -3504,13 +3573,21 @@ def process_customer_payment(stmt, invoices, company, customer, tax_adjustments_
     # -------------------------------
     reference_rows = []
     for inv in invoices:
+        amt = frappe.utils.flt(inv.get("amount") or 0, 2)
+        if inv.get("invoice") and inv.get("doctype"):
+            actual_out = get_actual_outstanding(inv.get("doctype"), inv.get("invoice"))
+            if amt > actual_out and abs(amt - actual_out) < 0.05:
+                amt = actual_out
+                
         reference_rows.append(
             {
                 "reference_doctype": inv.get("doctype"),
                 "reference_name": inv.get("invoice"),
-                "allocated_amount": float(inv.get("amount") or 0),
+                "allocated_amount": amt,
             }
         )
+    
+    total_allocated = frappe.utils.flt(sum(frappe.utils.flt(r.get("allocated_amount") or 0) for r in reference_rows), 2)
 
     payment_entry.set("references", reference_rows)
 
@@ -3559,9 +3636,8 @@ def process_customer_payment(stmt, invoices, company, customer, tax_adjustments_
         "statement_amount": statement_amount,
         "paid_amount": paid_amount,
         "allow_overpayment": allow_overpayment,
-        "excess_amount": paid_amount - total_allocated
+        "excess_amount": frappe.utils.flt(paid_amount - total_allocated, 2)
     }
-
 ####################################### End of Bank Recon #################################################
 # Notification
 def notify_assignment(doc, method):
@@ -3740,6 +3816,72 @@ def create_contact_and_add_escalation(
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), 'create_contact_and_add_escalation')
         return {'success': False, 'error': str(e)}
+
+#######################################################################################
+## Auto-populate contact_email on Payment Entry for Supplier notifications
+
+def set_supplier_email_on_payment_entry(doc, method):
+    """
+    On validate, if party_type is Supplier and contact_email is empty,
+    fetch the supplier's email_id and set it as contact_email.
+    This ensures the Notification recipient resolves correctly.
+    """
+    if doc.party_type == "Supplier" and doc.party and not doc.contact_email:
+        supplier_email = frappe.db.get_value("Supplier", doc.party, "email_id")
+        if supplier_email:
+            doc.contact_email = supplier_email
+
+def send_supplier_payment_email(doc):
+    """
+    Send payment confirmation email to supplier directly via frappe.sendmail.
+    Called after Payment Entry submit when custom_send_email == 1.
+    """
+    try:
+        if not doc.contact_email:
+            return
+
+        # Simplified message to avoid Zoho "Unusual activity" filter
+        # Removing complex tables and special symbols like ₹ for testing
+        invoice_list = ""
+        for ref in doc.get("references", []):
+            invoice_list += f"- {ref.reference_name}: {frappe.utils.fmt_money(ref.allocated_amount, currency='INR')}\n"
+
+        message = f"""
+        Dear {doc.party_name or doc.party},
+
+        This is a payment confirmation for your services.
+
+        Payment Reference: {doc.name}
+        Payment Date: {frappe.utils.formatdate(doc.posting_date)}
+        Amount: INR {frappe.utils.fmt_money(doc.paid_amount, currency='INR')}
+        Reference / UTR: {doc.reference_no or '-'}
+
+        Invoice Details:
+        {invoice_list}
+
+        Best Regards,
+        Accounts Team
+        {doc.company}
+        """
+
+        # Using a very simple subject
+        subject = f"Payment Confirmation: {doc.name}"
+
+
+        frappe.sendmail(
+            recipients=[doc.contact_email],
+            subject=subject,
+            message=message,
+            reference_doctype="Payment Entry",
+            reference_name=doc.name
+        )
+        frappe.logger().info(f"Supplier payment email sent to {doc.contact_email} for {doc.name}")
+
+    except Exception as e:
+        frappe.log_error(
+            title=f"Payment Email Failed: {doc.name}",
+            message=f"Recipient: {doc.contact_email}\nError: {str(e)}"
+        )
 
 #######################################################################################
 ## Payment Entry update to Expense Claim     
@@ -6250,9 +6392,9 @@ def get_unpaid_employee_advances(employee):
 
     # Calculate pending amount manually
     for adv in advances:
-        paid = adv.get("paid_amount") or 0
-        total = adv.get("advance_amount") or 0
-        adv["pending_amount"] = total - paid
+        paid = frappe.utils.flt(adv.get("paid_amount") or 0, 2)
+        total = frappe.utils.flt(adv.get("advance_amount") or 0, 2)
+        adv["pending_amount"] = frappe.utils.flt(total - paid, 2)
 
     return advances
 ###############################################################################
@@ -6336,10 +6478,10 @@ def create_payment_entry_for_employee_advance(statement_name, employee, advance_
     pe = frappe.new_doc("Payment Entry")
     pe.payment_type = "Pay"            # Company paying employee
     pe.company = company
-    pe.bank_account = bank_account_name # ⭐ Added
+    pe.bank_account = bank_account  # ⭐ Added
     pe.posting_date = posting_date
     pe.mode_of_payment = "Wire Transfer"
-    pe.reference_no = statement.name
+    pe.reference_no = statement.description or statement.name
     pe.reference_date = posting_date
 
     pe.party_type = "Employee"
@@ -6923,6 +7065,7 @@ def create_supplier_advance_payment(
     statement_entry=None,
     purchase_order=None,
     bank_account=None, # ⭐ Added
+    custom_send_email=0
 ):
 
     if not supplier:
@@ -6953,6 +7096,9 @@ def create_supplier_advance_payment(
     if not paid_from or not paid_to:
         frappe.throw("Bank or Payable account missing")
 
+    # Fetch supplier email for notification
+    supplier_email = frappe.db.get_value("Supplier", supplier, "email_id") or ""
+
     payment_entry = frappe.get_doc({
         "doctype": "Payment Entry",
         "payment_type": "Pay",
@@ -6967,7 +7113,9 @@ def create_supplier_advance_payment(
         "reference_date": posting_date,
         "paid_from": paid_from,   # GL account
         "paid_to": paid_to,       # Payable account
-        "bank_account": final_bank_account # ⭐ Set the Bank Account doc name
+        "bank_account": final_bank_account, # ⭐ Set the Bank Account doc name
+        "custom_send_email": custom_send_email,
+        "contact_email": supplier_email
     })
 
     if purchase_order:
@@ -6977,8 +7125,13 @@ def create_supplier_advance_payment(
             "allocated_amount": amount
         })
 
+    payment_entry.custom_send_email = custom_send_email
     payment_entry.insert(ignore_permissions=True)
     payment_entry.submit()
+
+    # Send email directly if custom_send_email is set
+    if int(custom_send_email) == 1:
+        send_supplier_payment_email(payment_entry)
 
     frappe.db.set_value("Bank Statement Entry", stmt.name, {
         "reference_no": payment_entry.name,
@@ -7052,6 +7205,136 @@ def create_customer_advance_payment(
         "status": "ok",
         "payment_entry": pe.name
     }
+
+@frappe.whitelist()
+def create_supplier_return_payment(
+    supplier=None,
+    amount=None,
+    statement_entry=None,
+    bank_account=None,
+    custom_send_email=0
+):
+    if not supplier:
+        frappe.throw("Supplier is required")
+    if not amount:
+        frappe.throw("Amount is required")
+    if not statement_entry:
+        frappe.throw("Bank Statement Entry missing")
+
+    stmt = frappe.get_doc("Bank Statement Entry", statement_entry)
+    company = frappe.db.get_value("Bank Account", stmt.bank_account, "company")
+
+    # Prioritize passed bank_account, then stmt.bank_account
+    final_bank_account = bank_account or stmt.bank_account
+    paid_to = get_bank_gl_account(final_bank_account)
+
+    supplier_payable = frappe.db.get_value("Company", company, "default_payable_account")
+    supp_account = frappe.db.get_value("Party Account", {"parent": supplier, "company": company}, "account")
+    if supp_account:
+        supplier_payable = supp_account
+
+    # Fetch supplier email for notification
+    supplier_email = frappe.db.get_value("Supplier", supplier, "email_id") or ""
+
+    pe = frappe.get_doc({
+        "doctype": "Payment Entry",
+        "payment_type": "Receive",
+        "mode_of_payment": "Wire Transfer",
+        "company": company,
+        "party_type": "Supplier",
+        "party": supplier,
+        "paid_from": supplier_payable,
+        "paid_to": paid_to,
+        "paid_amount": float(amount),
+        "received_amount": float(amount),
+        "posting_date": stmt.transaction_date,
+        "reference_no": stmt.description,
+        "reference_date": stmt.transaction_date,
+        "bank_account": final_bank_account,
+        "custom_send_email": custom_send_email,
+        "contact_email": supplier_email
+    })
+
+    _set_gst_fields(pe, supplier, "Supplier", company)
+
+    pe.custom_send_email = custom_send_email
+    pe.insert(ignore_permissions=True)
+    pe.submit()
+
+    # Send email directly if custom_send_email is set
+    if int(custom_send_email) == 1:
+        send_supplier_payment_email(pe)
+
+    # Update Bank Statement Entry
+    frappe.db.set_value("Bank Statement Entry", statement_entry, {
+        "reference_no": pe.name,
+        "reconciled": 1,
+        "match_type": "Auto"
+    })
+
+    return {
+        "status": "ok",
+        "payment_entry": pe.name
+    }
+
+@frappe.whitelist()
+def create_customer_return_payment(
+    customer=None,
+    amount=None,
+    statement_entry=None,
+    bank_account=None
+):
+    if not customer:
+        frappe.throw("Customer is required")
+    if not amount:
+        frappe.throw("Amount is required")
+    if not statement_entry:
+        frappe.throw("Bank Statement Entry missing")
+
+    stmt = frappe.get_doc("Bank Statement Entry", statement_entry)
+    company = frappe.db.get_value("Bank Account", stmt.bank_account, "company")
+
+    # Prioritize passed bank_account, then stmt.bank_account
+    final_bank_account = bank_account or stmt.bank_account
+    paid_from = get_bank_gl_account(final_bank_account)
+
+    paid_to = frappe.db.get_value("Company", company, "default_receivable_account")
+    
+    pe = frappe.get_doc({
+        "doctype": "Payment Entry",
+        "payment_type": "Pay",
+        "mode_of_payment": "Wire Transfer",
+        "company": company,
+        "party_type": "Customer",
+        "party": customer,
+        "paid_from": paid_from,
+        "paid_to": paid_to,
+        "paid_amount": float(amount),
+        "received_amount": float(amount),
+        "posting_date": stmt.transaction_date,
+        "reference_no": stmt.description,
+        "reference_date": stmt.transaction_date,
+        "bank_account": final_bank_account
+    })
+
+    _set_gst_fields(pe, customer, "Customer", company)
+
+    pe.insert(ignore_permissions=True)
+    pe.submit()
+
+    # Update Bank Statement Entry
+    frappe.db.set_value("Bank Statement Entry", statement_entry, {
+        "reference_no": pe.name,
+        "reconciled": 1,
+        "match_type": "Auto"
+    })
+
+    return {
+        "status": "ok",
+        "payment_entry": pe.name
+    }
+
+
 
 ##############################################################################
 #Customer Advance - Sales Order Fetch
@@ -7500,23 +7783,128 @@ def get_filter_options(filter_type):
     
     return options.get(filter_type, [])
 ###################################################################################
-# Cloud 2.0 ↔ ERPNext HD Ticket Integration
-
 import frappe
+
 
 @frappe.whitelist(allow_guest=True)
 def create_hd_ticket(subject, message, circuit_id):
-    ticket = frappe.get_doc({
-        "doctype": "HD Ticket",
-        "subject": subject,
-        "description": message,
-        "custom_circuit_id": circuit_id,
-        "custom_channel": "NMS-API"
-    }).insert(ignore_permissions=True)
 
-    frappe.db.commit()
+    subject_upper = subject.upper()
 
-    return {"status": "success", "ticket_number": ticket.name}
+    node_type = ""
+    impact = ""
+    node_status = ""
+
+    # --------------------------------------------
+    # Detect Node Status
+    # --------------------------------------------
+    if "UNAVAILABLE" in subject_upper:
+        node_status = "UNAVAILABLE"
+    elif "AVAILABLE" in subject_upper:
+        node_status = "AVAILABLE"
+
+    # --------------------------------------------
+    # Detect Node Type and Impact
+    # --------------------------------------------
+    if "PRI" in subject_upper:
+        node_type = "Primary Node"
+        impact = "ILL Down"
+
+    elif "SEC" in subject_upper:
+        node_type = "Secondary Node"
+        impact = "4G/MBB Backup Down"
+
+    elif "BR" in subject_upper:
+        node_type = "VPN Node"
+        impact = "Site Isolated"
+
+    # --------------------------------------------
+    # If Node is UNAVAILABLE → Create Ticket
+    # --------------------------------------------
+    if node_status == "UNAVAILABLE":
+
+        existing_ticket = frappe.db.get_value(
+            "HD Ticket",
+            {
+                "custom_circuit_id": circuit_id,
+                "custom_node_type": node_type
+            },
+            ["name", "status"],
+            as_dict=True
+        )
+
+        # Do not create if ticket already open
+        if existing_ticket and existing_ticket.status not in ["Resolved", "Closed"]:
+            return {
+                "status": "skipped",
+                "message": "Ticket already exists and is still open"
+            }
+
+        ticket = frappe.get_doc({
+            "doctype": "HD Ticket",
+            "subject": subject,
+            "description": message,
+            "custom_circuit_id": circuit_id,
+            "custom_channel": "NMS-API",
+            "custom_node_type": node_type,
+            "custom_impact": impact,
+            "status": "Open"
+        }).insert(ignore_permissions=True)
+
+        frappe.db.commit()
+
+        return {
+            "status": "created",
+            "ticket_number": ticket.name
+        }
+
+    # --------------------------------------------
+    # If Node is AVAILABLE → Resolve Tickets
+    # --------------------------------------------
+    if node_status == "AVAILABLE":
+
+        # Resolve node ticket
+        node_tickets = frappe.get_all(
+            "HD Ticket",
+            filters={
+                "custom_circuit_id": circuit_id,
+                "custom_node_type": node_type,
+                "status": ["not in", ["Resolved", "Closed"]]
+            },
+            fields=["name"]
+        )
+
+        for t in node_tickets:
+            doc = frappe.get_doc("HD Ticket", t.name)
+            doc.status = "Resolved"
+            doc.custom_rca = "Auto Close"
+            doc.save(ignore_permissions=True)
+
+        # Resolve VPN ticket simultaneously
+        vpn_tickets = frappe.get_all(
+            "HD Ticket",
+            filters={
+                "custom_circuit_id": circuit_id,
+                "custom_node_type": "VPN Node",
+                "status": ["not in", ["Resolved", "Closed"]]
+            },
+            fields=["name"]
+        )
+
+        for v in vpn_tickets:
+            doc = frappe.get_doc("HD Ticket", v.name)
+            doc.status = "Resolved"
+            doc.custom_rca = "Auto Close"
+            doc.save(ignore_permissions=True)
+
+        frappe.db.commit()
+
+        return {
+            "status": "resolved",
+            "message": "Node and VPN tickets auto closed"
+        }
+
+    return {"status": "ignored"}
 
 ###############################################################################
 @frappe.whitelist()
@@ -7798,7 +8186,7 @@ def get_ai_prompt(prompt_code):
 # =================================================
 # 🚀 UNIVERSAL AI CALLER — NO HARDCODE
 # =================================================
-def call_ai_model(prompt_text):
+def call_ai_model_old_8189(prompt_text):
 
     # -------------------------------------------------
     # 🔎 Get active configuration from UI
@@ -8400,6 +8788,22 @@ def normalize_word(word):
     return replacements.get(word, word)
 
 def format_value(value):
+    if not value:
+        return ""
+        
+    # Attempt to parse date strings (e.g. 2024-03-20) if they are strings
+    if isinstance(value, str) and len(value) >= 10:
+        import re
+        if re.match(r"^\d{4}-\d{2}-\d{2}", value):
+            try:
+                # If it has time, handle accordingly
+                if " " in value:
+                    value = dt.datetime.strptime(value[:19], "%Y-%m-%d %H:%M:%S")
+                else:
+                    value = dt.datetime.strptime(value[:10], "%Y-%m-%d").date()
+            except Exception:
+                pass
+
     if isinstance(value, dt.datetime):
         return value.strftime("%d-%m-%Y %H:%M")
     if isinstance(value, dt.date):
@@ -8599,16 +9003,26 @@ Login Email: <b>{user_doc.name}</b>
 """
 
 def create_finance_issue_task(ticket):
+    ticket_doc = frappe.get_doc("HD Ticket", ticket)
+    if not ticket_doc.get("custom_lms_id"):
+        return {"task": None, "message": "No LMS Found for this Ticket"}
     task = frappe.new_doc("Task")
     task.type = "Finance Issue"
     task.subject = "Finance Issue Task"
+    task.custom_customer = ticket_doc.get("customer")
+    task.custom_lms_id = ticket_doc.get("custom_lms_id")
     task.insert(ignore_permissions=True)
     return {"task": task.name, "message": f"Task {task.name} created (Finance Issue)"}
 
 def create_hardware_dispatch_task(ticket):
+    ticket_doc = frappe.get_doc("HD Ticket", ticket)
+    if not ticket_doc.get("custom_lms_id"):
+        return {"task": None, "message": "No LMS Found for this Ticket"}
     task = frappe.new_doc("Task")
     task.type = "Hardware Dispatch"
     task.subject = "Hardware Dispatch Task"
+    task.custom_customer = ticket_doc.get("customer")
+    task.custom_lms_id = ticket_doc.get("custom_lms_id")
     task.insert(ignore_permissions=True)
     return {"task": task.name, "message": f"Task {task.name} created (Hardware Dispatch)"}
 
@@ -8685,28 +9099,54 @@ def get_filtered_closed_tickets(filters=None, current_ticket=None):
              query_filters["custom_close_datetime"] = [">=", start_date]
 
     fields = [
-        "name", "customer", 
+        "name", "customer", "creation",
         "custom_agent", "custom_channel", "custom_close_datetime", "agreement_status", "custom_rca"
     ]
     
     tickets = frappe.get_all("HD Ticket", filters=query_filters, fields=fields, order_by="custom_close_datetime desc", limit=limit)
     
-    # Format date fields
+    # Capture customer name for heading (from first ticket)
+    customer_name = tickets[0].get("customer", "") if tickets else ""
+
+    # Format date fields, compute resolution time, and resolve agent names
     for t in tickets:
+        # Compute resolution time before formatting dates
+        resolution = ""
+        if t.get("creation") and t.get("custom_close_datetime"):
+            try:
+                diff = t["custom_close_datetime"] - t["creation"]
+                total_minutes = int(diff.total_seconds() // 60)
+                hours = total_minutes // 60
+                mins = total_minutes % 60
+                resolution = f"{hours:02d}:{mins:02d}"
+            except:
+                resolution = ""
+        t["resolution_time"] = resolution
+
+        if t.get("creation"):
+            t["creation"] = t["creation"].strftime("%d-%m-%Y %H:%M") if hasattr(t["creation"], "strftime") else str(t["creation"])
         if t.get("custom_close_datetime"):
             t["custom_close_datetime"] = format_value(t["custom_close_datetime"])
+        # Resolve agent email → agent name
+        if t.get("custom_agent"):
+            agent_name = frappe.db.get_value("HD Agent", {"user": t["custom_agent"]}, "agent_name")
+            if agent_name:
+                t["custom_agent"] = agent_name
+        # Remove customer from row data (shown in heading instead)
+        t.pop("customer", None)
 
     labels = {
         "name": "Ticket No",
-        "customer": "Customer",
+        "creation": "Created Datetime",
         "custom_agent": "Agent",
         "custom_channel": "Channel",
         "custom_close_datetime": "Closed Datetime",
+        "resolution_time": "Resolution Time",
         "agreement_status": "SLA Status",
         "custom_rca": "RCA"
     }
     
-    return {"tickets": tickets, "labels": labels}
+    return {"tickets": tickets, "labels": labels, "customer_name": customer_name}
 
 @frappe.whitelist()
 def download_closed_tickets_csv(filters=None, current_ticket=None):
@@ -8740,7 +9180,7 @@ def download_closed_tickets_csv(filters=None, current_ticket=None):
 # ---------------------------------------------------------
 # AI MODEL CALL USING API CONFIGURATION DOCTYPE
 # ---------------------------------------------------------
-def call_ai_model(prompt):
+def call_ai_model_old_9183(prompt):
     try:
         config_name = frappe.db.get_value("API Configuration", None, "name")
         if not config_name:
@@ -8791,6 +9231,276 @@ def call_ai_model(prompt):
 # ---------------------------------------------------------
 # MAIN CHAT ENDPOINT
 # ---------------------------------------------------------
+def build_lms_info_html(lms_doc):
+    """
+    Constructs a modern, compact HTML card for LMS information.
+    Includes sections for Info, Provisioning, Portal, and Escalation Matrix table.
+    """
+    if not lms_doc:
+        return "LMS information not found."
+
+    sections_config = [
+        {
+            "title": f"📡 LMS INFORMATION ({lms_doc.name})",
+            "fields": [
+                ("name", "Supplier Name"),  # Use name as a proxy for the unique ID
+                ("supplier", "Supplier Name"),
+                ("lms_delivery_date", "LMS Delivery Date"),
+                ("lms_brandwith_name", "LMS Brandwith"),
+                ("media", "Media")
+            ]
+        },
+        {
+            "title": "⚙️ LMS PROVISIONING",
+            "fields": [
+                ("mode1", "Model"),
+                ("account_no_dsl_no_service_id", "Account No/ DSL No/ Service ID"),
+                ("static_ip_1", "Static IP"),
+                ("static_ip", "Static IP Details"),
+                ("user_id", "User ID"),
+                ("password", "Password")
+            ]
+        },
+        {
+            "title": "💳 LMS PMT PORTAL",
+            "fields": [
+                ("payment_mode_1", "LMS Payment Mode"),
+                ("bank", "Bank"),
+                ("url", "Url"),
+                ("portal_login_id", "Portal Login ID"),
+                ("portal_login_password", "Portal Login Password")
+            ]
+        }
+    ]
+
+    html = '<div class="hd-ai-site-info-card hd-ai-lms-card">'
+    for section in sections_config:
+        valid_fields = []
+        for fieldname, label in section["fields"]:
+            val = lms_doc.get(fieldname)
+            if val and str(val).strip() and str(val).strip().upper() != "N/A":
+                valid_fields.append((label, format_value(val)))
+
+        if not valid_fields:
+            continue
+
+        html += f'<div class="hd-ai-site-section">'
+        html += f'<div class="hd-ai-site-section-title">{section["title"]}</div>'
+        html += '<div class="hd-ai-site-grid">'
+        for label, val in valid_fields:
+            html += f'''
+                <div class="hd-ai-site-field">
+                    <div class="hd-ai-site-label">{label}</div>
+                    <div class="hd-ai-site-value">{val}</div>
+                </div>'''
+        html += '</div></div>'
+
+    # Level (Doctype: LMS Contact Escalation (table_oeiw) Child table of Lastmile Services Master)
+    if lms_doc.get("table_oeiw"):
+        html += '<div class="hd-ai-site-section">'
+        html += '<div class="hd-ai-site-section-title">🪜 ESCALATION MATRIX</div>'
+        html += '<div class="hd-ai-lms-table-wrapper">'
+        html += '<table class="hd-ai-lms-table">'
+        html += '<thead><tr><th>Level</th><th>Name</th><th>Phone</th><th>Email</th><th>Designation</th><th>Department</th></tr></thead>'
+        html += '<tbody>'
+        for row in lms_doc.table_oeiw:
+            html += f'''
+                <tr>
+                    <td>{row.level or ""}</td>
+                    <td>{row.link_zitr or ""}</td>
+                    <td>{row.contact_phone or ""}</td>
+                    <td>{row.link_syot or ""}</td>
+                    <td>{row.designation or ""}</td>
+                    <td>{row.department or ""}</td>
+                </tr>'''
+        html += '</tbody></table>'
+        html += '</div></div>'
+
+    html += '</div>'
+    return html
+
+def build_provisioning_info_html(prov_doc):
+    """
+    Constructs a modern, compact HTML card for Provisioning information.
+    Compacted: skips empty fields and empty sections.
+    """
+    if not prov_doc:
+        return ""
+
+    # Define sections and fields
+    sections_config = [
+        {
+            "title": f"⚙️ PROVISIONING INFORMATION ({prov_doc.name})",
+            "fields": [
+                ("circuit_id", "Circuit ID"),
+                ("site_name", "Site Name"),
+                ("solution_name", "Solution Name"),
+                ("status", "Provisioning Status"),
+                ("provisioning_date", "Completed Date"),
+                ("provisioning_partially_completed_date", "Partially Completed Date")
+            ]
+        },
+        {
+            "title": "🔌 BRANCH IP INFORMATION",
+            "fields": [
+                ("atm_ip", "ATM IP"),
+                ("branch_natted_ip", "Branch Natted IP"),
+                ("branch_router_ip", "Branch Router IP"),
+                ("branch_lan_series", "Branch Lan Series")
+            ]
+        },
+        {
+            "title": "🏢 DC IP INFORMATION",
+            "fields": [
+                ("dc_static_ip", "DC Static IP"),
+                ("dc_router_ip", "DC Router IP"),
+                ("dc_secondary_static_ip", "DC Secondary Static IP"),
+                ("dc_server_gateway_ip", "DC Server Gateway IP"),
+                ("dc_server_ip", "DC Server IP"),
+                ("dc_server_ip_2", "DC Server IP 2")
+            ]
+        },
+        {
+            "title": "☁️ DR IP INFORMATION",
+            "fields": [
+                ("dr_static_ip", "DR Static IP"),
+                ("dr_router_ip", "DR Router IP"),
+                ("dr_secondary_static_ip", "DR Secondary Static IP"),
+                ("dr_server_gateway_ip", "DR Server Gateway IP"),
+                ("dr_server_ip", "DR Server IP"),
+                ("dr_server_ip_2", "DR Server IP 2")
+            ]
+        },
+        {
+            "title": "🌐 WAN IP INFO PRIMARY",
+            "fields": [
+                ("lms_id_1", "LMS ID 1"),
+                ("wan_static_ip_1", "WAN Static IP 1"),
+                ("wan_gateway_ip_1", "WAN Gateway IP 1"),
+                ("wan_user_name_1", "WAN User Name 1"),
+                ("wan_password_1", "WAN Password 1"),
+                ("lms_1_delivery_date", "LMS 1 Delivery Date"),
+                ("subnet_mask_1", "Subnet Mask 1"),
+                ("wan_1_dns", "WAN 1 DNS"),
+                ("wan_2_dns", "WAN 2 DNS")
+            ]
+        },
+        {
+            "title": "🌐 WAN IP INFO SECONDARY",
+            "fields": [
+                ("lms_id_2", "LMS ID 2"),
+                ("wan_static_ip_2", "WAN Static IP 2"),
+                ("wan_gateway_ip_2", "WAN Gateway IP 2"),
+                ("wan_user_name_2", "WAN User Name 2"),
+                ("wan_password_2", "WAN Password 2"),
+                ("lms_delivery_date", "LMS Delivery Date"),
+                ("subnet_mask_2", "Subnet Mask 2"),
+                ("wan_dns_1", "WAN DNS 1"),
+                ("wan_dns_2", "WAN DNS 2")
+            ]
+        }
+    ]
+
+    html = '<div class="hd-ai-site-info-card hd-ai-lms-card">'
+    for section in sections_config:
+        # Filter fields that have values
+        valid_fields = []
+        for fieldname, label in section["fields"]:
+            val = prov_doc.get(fieldname)
+            if val and str(val).strip() and str(val).strip().upper() != "N/A":
+                formatted_val = format_value(val)
+                valid_fields.append((label, formatted_val))
+
+        if not valid_fields:
+            continue
+
+        html += f'<div class="hd-ai-site-section">'
+        html += f'<div class="hd-ai-site-section-title">{section["title"]}</div>'
+        html += '<div class="hd-ai-site-grid">'
+        for label, val in valid_fields:
+            html += f'''
+                <div class="hd-ai-site-field">
+                    <div class="hd-ai-site-label">{label}</div>
+                    <div class="hd-ai-site-value">{val}</div>
+                </div>'''
+        html += '</div></div>'
+    
+    html += '</div>'
+    return html
+
+def build_site_info_html(site_doc):
+    """
+    Constructs a modern, non-table HTML card for Site information.
+    Compacted: skips empty fields, no "N/A".
+    """
+    if not site_doc:
+        return "Site information not found."
+
+    # Define sections and fields
+    sections_config = [
+        {
+            "title": "📋 SITE INFORMATION",
+            "fields": [
+                ("site_name", "Site Name"),
+                ("name", "Circuit No"),
+                ("order_type", "Order Type"),
+                ("site_type", "Site Type"),
+                ("customer", "Customer"),
+                ("site_id__legal_code", "Site ID / Legal Code"),
+                ("site_status", "Site Status"),
+                ("territory", "Territory"),
+                ("customer_type", "Customer Type"),
+                ("date", "Circuit Delivery Date"),
+                ("address_street", "Address/ Street"),
+                ("city", "City"),
+                ("pincode", "Pincode")
+            ]
+        },
+        {
+            "title": "🛠️ SOLUTION INFORMATION",
+            "fields": [
+                ("solution_name", "Solution Name"),
+                ("managed_services", "Managed Services"),
+                ("config_type", "Config Type")
+            ]
+        },
+        {
+            "title": "📞 BRANCH CONTACT INFORMATION",
+            "fields": [
+                ("contact_person", "Contact Person"),
+                ("primary_contact_mobile", "Contact Mobile"),
+                ("email", "Email")
+            ]
+        }
+    ]
+
+    html = '<div class="hd-ai-site-info-card">'
+    for section in sections_config:
+        # Filter fields that have values
+        valid_fields = []
+        for fieldname, label in section["fields"]:
+            val = site_doc.get(fieldname)
+            if val and str(val).strip() and str(val).strip().upper() != "N/A":
+                # Ensure value is formatted correctly (e.g. DD-MM-YYYY for dates)
+                formatted_val = format_value(val)
+                valid_fields.append((label, formatted_val))
+
+        if not valid_fields:
+            continue
+
+        html += f'<div class="hd-ai-site-section">'
+        html += f'<div class="hd-ai-site-section-title">{section["title"]}</div>'
+        html += '<div class="hd-ai-site-grid">'
+        for label, val in valid_fields:
+            html += f'''
+                <div class="hd-ai-site-field">
+                    <div class="hd-ai-site-label">{label}</div>
+                    <div class="hd-ai-site-value">{val}</div>
+                </div>'''
+        html += '</div></div>'
+    html += '</div>'
+    return html
+
 @frappe.whitelist()
 def hd_ticket_ai_chat(ticket, question):
     frappe.flags.mute_messages = True
@@ -8806,6 +9516,96 @@ def hd_ticket_ai_chat(ticket, question):
         clear_user_memory(user, ticket)
         return "✅ Memory cleared. Starting fresh."
 
+    # SITE INFO ENHANCEMENT (Flexible Intent detection)
+    site_info_keywords = [
+        "site info", "site information", "information about site", 
+        "information of site", "details of site", "site details",
+        "tell me about site", "show site info", "show me site info",
+        "summarize", "summarize this ticket"
+    ]
+    
+    if any(k in q_lower for k in site_info_keywords):
+        ticket_doc = frappe.get_doc("HD Ticket", ticket)
+        circuit_id = ticket_doc.custom_circuit_id
+        if circuit_id:
+            site_name = frappe.db.get_value("Site", {"name": circuit_id}, "name")
+            if site_name:
+                site_doc = frappe.get_doc("Site", site_name)
+                return build_site_info_html(site_doc)
+        return "No Site found for this ticket."
+
+    # LMS INFO ENHANCEMENT
+    lms_info_keywords = [
+        "lms info", "lms information", "information about lms", 
+        "details of lms", "lms details", "lastmile info", "last mile info"
+    ]
+    if any(k in q_lower for k in lms_info_keywords):
+        ticket_doc = frappe.get_doc("HD Ticket", ticket)
+        lms_ids = []
+        
+        # 1. NEW: Prioritize direct custom_lms_id if present
+        direct_lms = ticket_doc.get("custom_lms_id")
+        
+        if direct_lms:
+            lms_ids = [direct_lms]
+        else:
+            # 2. Try to find linked LMS tickets (HD LMS Ticket)
+            linked = frappe.db.get_all("HD LMS Ticket", 
+                filters={"customer_ticket_id": ticket}, 
+                pluck="lms_id")
+            if linked:
+                lms_ids.extend([l for l in linked if l])
+            
+            # 3. Supplement with all delivered links for this circuit if still empty?
+            # User says: IF blank THEN show ALL. 
+            # I'll check if either is missing to ensure we have a fallback.
+            if not lms_ids and ticket_doc.get("custom_circuit_id"):
+                circuit_lms = frappe.db.get_all("Lastmile Services Master", 
+                    filters={"circuit_id": ticket_doc.custom_circuit_id, "lms_stage": "Delivered"}, 
+                    pluck="name")
+                for lid in circuit_lms:
+                    if lid not in lms_ids:
+                        lms_ids.append(lid)
+        
+        if lms_ids:
+            # Generate HTML for each LMS record
+            html_cards = []
+            for lid in lms_ids:
+                lms_doc = frappe.get_doc("Lastmile Services Master", lid)
+                html_cards.append(build_lms_info_html(lms_doc))
+            
+            # Wrap in a container with spacing
+            return f'<div style="display:flex;flex-direction:column;gap:16px;">{"".join(html_cards)}</div>'
+            
+        return "No active (Delivered) LMS information found for this ticket/circuit."
+
+    # --------------------------------------------------
+    # 🧠 PROVISIONING INFO INTENT
+    # --------------------------------------------------
+    provisioning_keywords = [
+        "provisioning info", "provisioning information", "config info", 
+        "ip info", "ip details", "wan info", "wan details", "lan info",
+        "provisioning", "show me provisioning", "i want provisioning"
+    ]
+    if any(k in q_lower for k in provisioning_keywords):
+        ticket_doc = frappe.get_doc("HD Ticket", ticket)
+        circuit_id = ticket_doc.get("custom_circuit_id")
+        
+        if circuit_id:
+            prov_records = frappe.db.get_all("Provisioning", 
+                filters={"circuit_id": circuit_id}, 
+                pluck="name")
+            
+            if prov_records:
+                html_cards = []
+                for p_name in prov_records:
+                    p_doc = frappe.get_doc("Provisioning", p_name)
+                    html_cards.append(build_provisioning_info_html(p_doc))
+                
+                return f'<div style="display:flex;flex-direction:column;gap:16px;">{"".join(html_cards)}</div>'
+
+        return "No provisioning / IP information found for this circuit."
+
     # Task creation flow (unchanged)
     task_state_key = f"hd_ai_task_state_{user}_{ticket}"
     waiting = frappe.cache().get_value(task_state_key)
@@ -8813,11 +9613,15 @@ def hd_ticket_ai_chat(ticket, question):
     if waiting and (q_lower == "1" or "finance" in q_lower):
         frappe.cache().delete_value(task_state_key)
         result = create_finance_issue_task(ticket)
+        if not result.get("task"):
+            return f"⚠️ {result['message']}"
         return f"✅ {result['message']}<br>Task ID: <b>{result['task']}</b>"
 
     if waiting and (q_lower == "2" or "hardware" in q_lower):
         frappe.cache().delete_value(task_state_key)
         result = create_hardware_dispatch_task(ticket)
+        if not result.get("task"):
+            return f"⚠️ {result['message']}"
         return f"✅ {result['message']}<br>Task ID: <b>{result['task']}</b>"
 
     if "create task" in q_lower:
@@ -8914,43 +9718,61 @@ Do not return any other text, just the ACTION:REPORT line.
         if best_match_answer:
             return best_match_answer
 
+        # ALWAYS Include a baseline of critical site info if it exists
+        # We use the key 'Site' to match the AI Prompt's ENTITY RULE
+        site_name = frappe.db.get_value("Site", {"circuit_id": circuit_id}, "name")
+        if site_name:
+            site_doc = frappe.get_doc("Site", site_name)
+            context_data["Site"] = {
+                "Site Name": site_doc.site_name,
+                "Site Status": site_doc.site_status,
+                "Region": site_doc.region,
+                "Territory": site_doc.territory,
+                "Address Street": site_doc.address_street,
+                "City": site_doc.city,
+                "Customer": site_doc.customer
+            }
+
         # If no direct match found, build context for AI for those found entities
         for doctype, doc in related_docs.items():
-            context_data[doctype] = get_clean_doc_data(doc)
+            clean_data = get_clean_doc_data(doc)
+            if doctype == "Site":
+                context_data.setdefault("Site", {}).update(clean_data)
+            else:
+                context_data[doctype] = clean_data
             entities_found.append(doctype)
     elif circuit_id and is_report_query:
         # Build minimal context for report if needed, but the report logic handles it
         pass
 
     # Priority 2: FAISS (if no target identified or as fallback)
-    if not entities_found and is_faiss_enabled() and not is_report_query:
+    if is_faiss_enabled() and not is_report_query:
         try:
             from nexapp.ai.faiss_engine import faiss_search, fetch_data_by_circuit
-            items = faiss_search(question, top_k=3) 
+            items = faiss_search(question, top_k=8) 
             
             # Fetch data and ensure it's labeled
             faiss_data = fetch_data_by_circuit(circuit_id, items)
             
-            # Convert raw fieldnames to labels in FAISS data
+            # Convert raw fieldnames to labels and MERGE into primary entities
             for dtype, ddata in faiss_data.items():
-                if dtype in entities_found: continue
                 label_map = get_doc_label_map(dtype)
                 labeled_ddata = {}
                 for f, v in ddata.items():
                     label = label_map.get(f, f.replace('_', ' ').title())
                     labeled_ddata[label] = v
-                context_data[dtype] = labeled_ddata
-                entities_found.append(dtype)
+                
+                if labeled_ddata:
+                    # Merge into the existing section (Site, Provisioning, etc.)
+                    # This ensures the AI Prompt's ENTITY RULE is respected
+                    if dtype not in context_data:
+                        context_data[dtype] = {}
+                    context_data[dtype].update(labeled_ddata)
+                    if dtype not in entities_found:
+                        entities_found.append(dtype)
                 
         except Exception as e:
             frappe.log_error(f"FAISS Context Error: {str(e)}", "AI Chat")
-
-        # Fallback: Minimum context if nothing found (Site is often needed)
-        if not entities_found:
-             docname = frappe.db.get_value("Site", {"circuit_id": circuit_id}, "name")
-             if docname:
-                 doc = frappe.get_doc("Site", docname)
-                 context_data["Site"] = get_clean_doc_data(doc)
 
     # Prompt template
     prompt_text = frappe.db.get_value(
@@ -9264,9 +10086,15 @@ from frappe.utils import now_datetime
 def get_survey_details(survey):
 
     doc = frappe.get_doc("Employee Survey", survey)
+    if not doc.is_active:
+        return None
+
     user = frappe.session.user
     employee = frappe.db.get_value("Employee", {"user_id": user}, "name")
 
+    submission_date = None
+    user_fullname = frappe.db.get_value("User", user, "full_name")
+    
     existing_answers = {}
     if employee:
         response = frappe.db.get_value("Survey Response", {
@@ -9276,8 +10104,8 @@ def get_survey_details(survey):
 
         if response:
             res_doc = frappe.get_doc("Survey Response", response)
+            submission_date = res_doc.creation
             for ans in res_doc.answers:
-                # Store answer by question text to match frontend data-question attribute
                 existing_answers[ans.question] = ans.answer
 
     return {
@@ -9286,10 +10114,15 @@ def get_survey_details(survey):
         "start_date": doc.start_date,
         "end_date": doc.end_date,
         "is_active": doc.is_active,
+        "survey_type": doc.survey_type,
         "existing_answers": existing_answers,
+        "submission_date": submission_date,
+        "user_fullname": user_fullname,
         "questions": [{
             "question": q.question,
             "type": q.question_type,
+            "description": q.get("description"),
+            "image": q.get("image"),
             "options": q.options,
             "mandatory": q.is_mandatory
         } for q in doc.questions]
@@ -9410,7 +10243,7 @@ def process_survey_emails(survey, send_to=None, department=None, employees=None)
     try:
         survey_doc = frappe.get_doc("Employee Survey", survey)
 
-        survey_url = f"https://erp.nexapp.co.in/app/employee-survey-page?survey={survey}"
+        survey_url = survey_doc.url or f"https://erp.nexapp.co.in/app/employee-survey-page?survey={survey}"
         description = survey_doc.description or ""
         end_date = formatdate(survey_doc.end_date) if survey_doc.end_date else "N/A"
 
@@ -9472,7 +10305,7 @@ def process_survey_emails(survey, send_to=None, department=None, employees=None)
                 frappe.sendmail(
                     recipients=[emp.user_id],
                     sender="notification@nexapp.co.in",
-                    subject=f"Employee Survey: {survey_doc.title}",
+                    subject=f"Employee Survey: {survey_doc.name}",
                     message=f"""
                         Dear {emp.employee_name or "Employee"},<br><br>
                         {description}<br><br>
@@ -9493,7 +10326,8 @@ def process_survey_emails(survey, send_to=None, department=None, employees=None)
                         "employee_name": emp.employee_name,
                         "email": emp.user_id,
                         "status": "Sent",
-                        "sent_on": now()
+                        "sent_on": now(),
+                        "is_reminder": 0
                     }).insert(ignore_permissions=True)
 
             except Exception as e:
@@ -9504,6 +10338,97 @@ def process_survey_emails(survey, send_to=None, department=None, employees=None)
 
     except Exception as e:
         frappe.log_error(f"Survey email background job failed: {str(e)}", "Survey Email Error")
+
+
+@frappe.whitelist()
+def send_survey_reminders():
+    """
+    Scheduled task to send reminders for surveys ending today. 
+    Runs daily via hourly scheduler (filtered by hour).
+    """
+    from frappe.utils import now_datetime, getdate, formatdate
+    
+    now_dt = now_datetime()
+    today = getdate(now_dt)
+    
+    # Logic: If deadline is end of today (23:59), reminder goes out at ~12:00 PM (12 hrs before)
+    if now_dt.hour != 12:
+        return
+
+    active_surveys = frappe.get_all(
+        "Employee Survey",
+        filters={
+            "is_active": 1,
+            "end_date": today
+        },
+        fields=["name", "description", "url", "end_date"]
+    )
+    
+    for survey in active_surveys:
+        # Get all employees who were originally invited
+        invited_employees = frappe.get_all(
+            "Survey Log",
+            filters={
+                "survey": survey.name,
+                "is_reminder": 0
+            },
+            fields=["employee", "employee_name", "email"]
+        )
+        
+        # Get employees who have already responded
+        responded_employees = frappe.get_all(
+            "Survey Response",
+            filters={"survey": survey.name},
+            pluck="employee"
+        )
+        
+        for emp in invited_employees:
+            # Skip if already responded
+            if emp.employee in responded_employees:
+                continue
+                
+            # Skip if reminder already sent for this survey/employee
+            if frappe.db.exists("Survey Log", {
+                "survey": survey.name,
+                "employee": emp.employee,
+                "is_reminder": 1
+            }):
+                continue
+                
+            try:
+                survey_url = survey.url or f"https://erp.nexapp.co.in/app/employee-survey-page?survey={survey.name}"
+                end_date_str = formatdate(survey.end_date)
+                
+                frappe.sendmail(
+                    recipients=[emp.email],
+                    sender="notification@nexapp.co.in",
+                    subject=f"REMINDER: Please complete the survey: {survey.name}",
+                    message=f"""
+                        Dear {emp.employee_name or "Employee"},<br><br>
+                        This is a friendly reminder to complete the survey: <b>{survey.name}</b>.<br><br>
+                        {survey.description or ""}<br><br>
+                        <b>📅 The deadline is today:</b> {end_date_str}<br><br>
+                        👉 <a href="{survey_url}">Click here to fill the survey</a><br><br>
+                        Thank you for your feedback!<br><br>
+                        Regards,<br>
+                        HR Team
+                    """
+                )
+                
+                # Log the reminder
+                frappe.get_doc({
+                    "doctype": "Survey Log",
+                    "survey": survey.name,
+                    "employee": emp.employee,
+                    "employee_name": emp.employee_name,
+                    "email": emp.email,
+                    "status": "Sent",
+                    "sent_on": now(),
+                    "is_reminder": 1
+                }).insert(ignore_permissions=True)
+                
+            except Exception as e:
+                frappe.log_error(f"Failed to send survey reminder to {emp.employee}: {str(e)}", "Survey Reminder Error")
 
 ##########################################################################
 # AI Customer Potal
@@ -9533,20 +10458,38 @@ def call_ai_model(prompt):
             "Content-Type": "application/json"
         }
 
+        temperature = config.get("temperature")
+        if temperature is None: temperature = 0.2
+        
+        max_tokens = config.get("max_output_tokens") or config.get("max_tokens")
+        if not max_tokens or int(max_tokens) == 0: max_tokens = 1000
+
         payload = {
             "model": model_name,
             "messages": [{"role": "user", "content": prompt}],
-            "temperature": 0.2,
-            "max_tokens": 100
+            "temperature": float(temperature),
+            "max_tokens": int(max_tokens)
         }
 
         response = requests.post(api_base_url, headers=headers, json=payload, timeout=10)
+        
+        if response.status_code != 200:
+            error_details = response.text[:500]
+            frappe.log_error(title="AI Provider HTTP Error", message=f"Status {response.status_code}: {error_details}")
+            return f"The AI provider returned an error (Status {response.status_code}). This usually means the Model Name or API Key in your Configuration is incorrect."
+
         result = response.json()
 
-        return result.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
+        res_content = result.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
+        if not res_content:
+            error_msg = str(result)
+            frappe.log_error(title="AI Assistant empty result", message=error_msg)
+            return "I apologize, but I received an empty response from the AI. Please check your API Configuration (Model Name/URL)."
+        return res_content
 
-    except Exception:
-        return ""
+    except Exception as e:
+        frappe.log_error(title="AI Assistant Model Call Error", message=str(e))
+        return "I apologize, but I'm having trouble connecting to the AI service. Please check your API configuration."
 
 
 # =========================================================
@@ -9768,3 +10711,1749 @@ def download_multi_images(files):
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "MULTI DOWNLOAD ERROR")
         return {"status": "error", "message": f"Server Error: {str(e)}"}
+
+#########################################################################
+# Maintenance Visit from HD Ticket
+#########################################################################
+
+@frappe.whitelist()
+def create_maintenance_visit_from_ticket(ticket):
+    """
+    Create a Maintenance Visit from an HD Ticket and update the ticket.
+    """
+    if not ticket:
+        frappe.throw("Ticket name is required")
+
+    # Check if a Maintenance Visit already exists for this ticket
+    existing = frappe.db.get_value(
+        "Maintenance Visit",
+        {"custom_ticket_no": ticket},
+        ["name", "creation"],
+        as_dict=True
+    )
+    if existing:
+        created_on = frappe.utils.format_datetime(existing.creation)
+        return (
+            f"⚠️ Maintenance Visit <b>{existing.name}</b> already exists "
+            f"for this ticket.<br>Created on: <b>{created_on}</b>"
+        )
+
+    # Get HD Ticket details
+    hd_ticket = frappe.get_doc("HD Ticket", ticket)
+    circuit_id = hd_ticket.get("custom_circuit_id") or ""
+
+    # Create Maintenance Visit
+    mv = frappe.new_doc("Maintenance Visit")
+    mv.custom_ticket_no = ticket
+    mv.custom_circuit_id = circuit_id
+
+    # Add purpose row with item_code
+    mv.append("purposes", {
+        "item_code": "STO-ITEM-2025-05011"
+    })
+
+    mv.insert(ignore_permissions=True)
+
+    # Update HD Ticket
+    frappe.db.set_value("HD Ticket", ticket, {
+        "custom_maintenance_visit_id": mv.name,
+        "custom_completion_status": "In-Progress",
+        "custom_maintenance_created_date": frappe.utils.now_datetime()
+    })
+
+    frappe.db.commit()
+
+    return f"✅ Maintenance Visit <b>{mv.name}</b> created successfully."
+
+
+###############################################################################
+# TICKET INSIGHT — Full lifecycle analysis for the AI chatbot
+###############################################################################
+
+@frappe.whitelist()
+def get_ticket_insight(ticket):
+    """Return a comprehensive JSON analysis of an HD Ticket's lifecycle."""
+    import json as _json
+    from datetime import datetime, timedelta
+
+    if not ticket or not frappe.db.exists("HD Ticket", ticket):
+        return {"error": "Ticket not found."}
+
+    doc = frappe.get_doc("HD Ticket", ticket)
+    now = frappe.utils.now_datetime()
+
+    # ------------------------------------------------------------------
+    # 1. BASIC DATES
+    # ------------------------------------------------------------------
+    creation_dt = frappe.utils.get_datetime(doc.creation) if doc.creation else None
+    close_dt = (
+        frappe.utils.get_datetime(doc.custom_close_datetime)
+        if doc.get("custom_close_datetime")
+        else None
+    )
+    resolution_dt = (
+        frappe.utils.get_datetime(doc.resolution_date)
+        if doc.resolution_date
+        else None
+    )
+    first_responded_dt = (
+        frappe.utils.get_datetime(doc.first_responded_on)
+        if doc.first_responded_on
+        else None
+    )
+
+    end_dt = close_dt or resolution_dt or now
+
+    # ------------------------------------------------------------------
+    # 2. TOTAL DURATION helper
+    # ------------------------------------------------------------------
+    def fmt_delta(td):
+        if not td:
+            return "—"
+        total_sec = int(td.total_seconds())
+        if total_sec < 0:
+            return "—"
+        days = total_sec // 86400
+        hours = (total_sec % 86400) // 3600
+        mins = (total_sec % 3600) // 60
+        parts = []
+        if days:
+            parts.append(f"{days}d")
+        if hours:
+            parts.append(f"{hours}h")
+        parts.append(f"{mins}m")
+        return " ".join(parts)
+
+    total_duration = end_dt - creation_dt if creation_dt else None
+    first_response_time = (
+        first_responded_dt - creation_dt
+        if first_responded_dt and creation_dt
+        else None
+    )
+
+    # ------------------------------------------------------------------
+    # 3. COMMUNICATIONS
+    # ------------------------------------------------------------------
+    comms = frappe.get_all(
+        "Communication",
+        filters={
+            "reference_doctype": "HD Ticket",
+            "reference_name": ticket,
+            "communication_type": "Communication",
+        },
+        fields=["name", "creation", "sent_or_received", "sender"],
+        order_by="creation asc",
+    )
+
+    total_interactions = len(comms)
+    sent_count = sum(1 for c in comms if c.sent_or_received == "Sent")
+    received_count = sum(1 for c in comms if c.sent_or_received == "Received")
+
+    # Response gaps (time between consecutive communications)
+    response_gaps = []
+    for i in range(1, len(comms)):
+        prev = frappe.utils.get_datetime(comms[i - 1].creation)
+        curr = frappe.utils.get_datetime(comms[i].creation)
+        response_gaps.append((curr - prev).total_seconds())
+
+    avg_response_gap = (
+        timedelta(seconds=sum(response_gaps) / len(response_gaps))
+        if response_gaps
+        else None
+    )
+    max_response_gap = (
+        timedelta(seconds=max(response_gaps)) if response_gaps else None
+    )
+    min_response_gap = (
+        timedelta(seconds=min(response_gaps)) if response_gaps else None
+    )
+
+    # Consistency check
+    if response_gaps and len(response_gaps) > 1:
+        import statistics
+        stddev = statistics.stdev(response_gaps)
+        mean_gap = statistics.mean(response_gaps)
+        cv = stddev / mean_gap if mean_gap else 0
+        response_consistency = "Consistent" if cv < 0.8 else "Irregular"
+    else:
+        response_consistency = "N/A"
+
+    # ------------------------------------------------------------------
+    # 4. VERSION LOGS → Status changes + time-per-status
+    # ------------------------------------------------------------------
+    versions = frappe.get_all(
+        "Version",
+        filters={"ref_doctype": "HD Ticket", "docname": ticket},
+        fields=["creation", "data"],
+        order_by="creation asc",
+    )
+
+    status_changes = []
+    for v in versions:
+        try:
+            vdata = _json.loads(v.data) if isinstance(v.data, str) else v.data
+            for ch in vdata.get("changed", []):
+                if ch[0] == "status":
+                    status_changes.append(
+                        {
+                            "time": frappe.utils.get_datetime(v.creation),
+                            "from": ch[1],
+                            "to": ch[2],
+                        }
+                    )
+        except Exception:
+            pass
+
+    num_status_changes = len(status_changes)
+
+    # Reopened count (status changed TO "Open" from "Closed" or "Resolved")
+    reopen_count = sum(
+        1
+        for sc in status_changes
+        if sc["to"] == "Open" and sc["from"] in ("Closed", "Resolved")
+    )
+
+    # Escalation — check for priority changes
+    escalated = False
+    for v in versions:
+        try:
+            vdata = _json.loads(v.data) if isinstance(v.data, str) else v.data
+            for ch in vdata.get("changed", []):
+                if ch[0] == "priority":
+                    escalated = True
+                    break
+        except Exception:
+            pass
+        if escalated:
+            break
+
+    # Time per status
+    status_timeline = []
+    current_status = "Open"
+    current_start = creation_dt
+
+    for sc in status_changes:
+        if current_start and sc["time"]:
+            duration = (sc["time"] - current_start).total_seconds()
+            status_timeline.append(
+                {"status": current_status, "seconds": max(duration, 0)}
+            )
+        current_status = sc["to"]
+        current_start = sc["time"]
+
+    # Add final/current status
+    if current_start:
+        final_end = end_dt or now
+        duration = (final_end - current_start).total_seconds()
+        status_timeline.append(
+            {"status": current_status, "seconds": max(duration, 0)}
+        )
+
+    # Aggregate by status
+    status_time_map = {}
+    for entry in status_timeline:
+        s = entry["status"]
+        status_time_map[s] = status_time_map.get(s, 0) + entry["seconds"]
+
+    total_status_seconds = sum(status_time_map.values()) or 1
+
+    # Find bottleneck
+    bottleneck_status = (
+        max(status_time_map, key=status_time_map.get) if status_time_map else "—"
+    )
+
+    # Build lifecycle narrative
+    lifecycle_steps = []
+    if creation_dt:
+        lifecycle_steps.append(
+            f"Created on {creation_dt.strftime('%d %b %Y, %H:%M')}"
+        )
+    for sc in status_changes:
+        lifecycle_steps.append(
+            f"{sc['from']} → {sc['to']} at {sc['time'].strftime('%d %b, %H:%M')}"
+        )
+    if close_dt:
+        lifecycle_steps.append(
+            f"Closed on {close_dt.strftime('%d %b %Y, %H:%M')}"
+        )
+    elif resolution_dt:
+        lifecycle_steps.append(
+            f"Resolved on {resolution_dt.strftime('%d %b %Y, %H:%M')}"
+        )
+    else:
+        lifecycle_steps.append(f"Currently in <b>{doc.status}</b> status")
+
+    # ------------------------------------------------------------------
+    # 5. SLA STATUS
+    # ------------------------------------------------------------------
+    sla_status = doc.agreement_status or "—"
+
+    # ------------------------------------------------------------------
+    # 6. BEHAVIORAL INSIGHTS + ROOT CAUSE
+    # ------------------------------------------------------------------
+    behavioral = []
+    root_causes = []
+
+    pending_seconds = status_time_map.get("Pending", 0)
+    open_seconds = status_time_map.get("Open", 0)
+
+    if pending_seconds > total_status_seconds * 0.4:
+        behavioral.append("Significant time spent in Pending — likely waiting for external input.")
+        root_causes.append("Dependency on customer / vendor response.")
+    if open_seconds > total_status_seconds * 0.4:
+        behavioral.append("Ticket remained Open for long — possible delayed assignment.")
+        root_causes.append("Delayed agent pickup or workload issues.")
+    if reopen_count > 0:
+        behavioral.append(f"Ticket was reopened {reopen_count} time(s) — possible incomplete resolution.")
+        root_causes.append("Initial fix did not fully resolve the issue.")
+    if total_interactions == 0:
+        behavioral.append("No communications found — ticket may have been handled offline.")
+    elif received_count > sent_count * 2:
+        behavioral.append("Customer sent significantly more messages than agent — possible unresponsiveness.")
+        root_causes.append("Response delays from the support side.")
+    if escalated:
+        behavioral.append("Priority was escalated during the lifecycle.")
+    if not behavioral:
+        behavioral.append("Ticket was handled efficiently with no notable delays.")
+
+    if not root_causes:
+        root_causes.append("No significant delays or issues detected.")
+
+    # ------------------------------------------------------------------
+    # 7. AI INSIGHT CONCLUSION
+    # ------------------------------------------------------------------
+    conclusion_parts = []
+    if pending_seconds > total_status_seconds * 0.3:
+        conclusion_parts.append(
+            "experienced delays mainly during the Pending stage, indicating dependency on external input"
+        )
+    if bottleneck_status and bottleneck_status not in ("—", "Open") and bottleneck_status != "Pending":
+        conclusion_parts.append(
+            f"spent the most time in {bottleneck_status}"
+        )
+    if reopen_count > 0:
+        conclusion_parts.append(
+            f"was reopened {reopen_count} time(s), suggesting the initial resolution was incomplete"
+        )
+    if sla_status == "Failed":
+        conclusion_parts.append("breached its SLA target")
+    elif sla_status == "Fulfilled":
+        conclusion_parts.append("met all SLA commitments")
+
+    if conclusion_parts:
+        ai_conclusion = f"This ticket {', '.join(conclusion_parts)}."
+    else:
+        ai_conclusion = (
+            "This ticket was handled within normal parameters with no significant anomalies detected."
+        )
+
+    # Add duration context
+    if total_duration:
+        ai_conclusion += f" Total lifecycle: {fmt_delta(total_duration)}."
+
+    # ------------------------------------------------------------------
+    # 8. STATUS COLORS for charts
+    # ------------------------------------------------------------------
+    status_colors = {
+        "Open": "#3b82f6",
+        "Replied": "#8b5cf6",
+        "Resolved": "#10b981",
+        "Closed": "#6b7280",
+        "Pending": "#f59e0b",
+        "In Progress": "#6366f1",
+        "On Hold": "#ef4444",
+    }
+
+    # Build chart data
+    status_chart = []
+    for s, sec in sorted(status_time_map.items(), key=lambda x: -x[1]):
+        pct = round((sec / total_status_seconds) * 100, 1)
+        status_chart.append(
+            {
+                "status": s,
+                "seconds": round(sec),
+                "percent": pct,
+                "label": fmt_delta(timedelta(seconds=sec)),
+                "color": status_colors.get(s, "#94a3b8"),
+            }
+        )
+
+    # ------------------------------------------------------------------
+    # 9. DISTRIBUTION ANALYSIS — last 10 tickets for same circuit
+    # ------------------------------------------------------------------
+    impact_chart = []
+    channel_chart = []
+    priority_chart = []
+    rca_chart = []
+    sla_chart = []
+    circuit_id = doc.get("custom_circuit_id")
+    dist_total = 0
+
+    if circuit_id:
+        dist_tickets = frappe.get_all(
+            "HD Ticket",
+            filters={"custom_circuit_id": circuit_id},
+            fields=["custom_impact", "custom_channel", "priority", "custom_rca", "agreement_status"],
+            order_by="creation desc",
+            limit=10,
+        )
+        dist_total = len(dist_tickets)
+
+        palette = [
+            "#7D32E8", "#3b82f6", "#ef4444", "#f59e0b", "#10b981",
+            "#ec4899", "#6366f1", "#14b8a6", "#f97316", "#8b5cf6",
+        ]
+
+        def build_chart(items, field):
+            counts = {}
+            for it in items:
+                val = it.get(field) or "Unknown"
+                counts[val] = counts.get(val, 0) + 1
+            total = sum(counts.values()) or 1
+            chart = []
+            for idx, (lbl, cnt) in enumerate(sorted(counts.items(), key=lambda x: -x[1])):
+                chart.append({
+                    "label": lbl,
+                    "count": cnt,
+                    "percent": round((cnt / total) * 100, 1),
+                    "color": palette[idx % len(palette)],
+                })
+            return chart
+
+        impact_chart = build_chart(dist_tickets, "custom_impact")
+        channel_chart = build_chart(dist_tickets, "custom_channel")
+        priority_chart = build_chart(dist_tickets, "priority")
+        rca_chart = build_chart(dist_tickets, "custom_rca")
+        sla_chart = build_chart(dist_tickets, "agreement_status")
+
+    # ------------------------------------------------------------------
+    # 10. ASSEMBLE RESPONSE
+    # ------------------------------------------------------------------
+    agent_name = ""
+    if doc.get("custom_agent"):
+        agent_name = frappe.db.get_value(
+            "HD Agent", {"user": doc.custom_agent}, "agent_name"
+        ) or doc.custom_agent
+
+    return {
+        "summary": {
+            "ticket": ticket,
+            "subject": doc.subject or "",
+            "status": doc.status,
+            "priority": doc.priority or "—",
+            "agent": agent_name or "Unassigned",
+            "channel": doc.get("custom_channel") or "—",
+            "total_duration": fmt_delta(total_duration),
+            "first_response_time": fmt_delta(first_response_time),
+            "total_interactions": total_interactions,
+            "status_changes": num_status_changes,
+            "reopen_count": reopen_count,
+            "escalated": "Yes" if escalated else "No",
+            "sla_status": sla_status,
+        },
+        "time_analysis": {
+            "status_chart": status_chart,
+            "bottleneck": bottleneck_status,
+        },
+        "response_analysis": {
+            "avg_response_time": fmt_delta(avg_response_gap),
+            "longest_delay": fmt_delta(max_response_gap),
+            "shortest_response": fmt_delta(min_response_gap),
+            "consistency": response_consistency,
+        },
+        "impact": {
+            "total_tickets": dist_total,
+            "chart": impact_chart,
+        },
+        "channel": {
+            "total_tickets": dist_total,
+            "chart": channel_chart,
+        },
+        "priority_dist": {
+            "total_tickets": dist_total,
+            "chart": priority_chart,
+        },
+        "rca": {
+            "total_tickets": dist_total,
+            "chart": rca_chart,
+        },
+        "sla_dist": {
+            "total_tickets": dist_total,
+            "chart": sla_chart,
+        },
+        "ai_conclusion": ai_conclusion,
+    }
+
+
+@frappe.whitelist()
+def create_survey_from_template(template_name, survey_name, start_date=None, end_date=None):
+    template = frappe.get_doc("Survey Template", template_name)
+
+    survey = frappe.get_doc({
+        "doctype": "Employee Survey",
+        "survey_name": survey_name,
+        "survey_type": template.survey_type,
+        "description": template.description,
+        "start_date": start_date or frappe.utils.today(),
+        "end_date": end_date,
+        "is_active": 1,
+        "questions": []
+    })
+
+    for q in template.questions:
+        survey.append("questions", {
+            "question": q.question,
+            "question_type": q.question_type,
+            "description": q.description,
+            "options": q.options,
+            "is_mandatory": q.is_mandatory
+        })
+
+    survey.insert()
+    return survey.name
+#############################################################################
+# Payment Entry Update Email id
+
+import frappe
+
+def set_contact_email_from_supplier(doc, method=None):
+
+    if doc.party_type == "Supplier" and doc.party:
+        supplier_email = frappe.db.get_value(
+            "Supplier",
+            doc.party,
+            "email_id"
+        )
+
+        if supplier_email and not doc.contact_email:
+            doc.contact_email = supplier_email
+###################################################################################
+# =================================================
+# 🤖 AI ASSISTANT — CORE ENGINE
+# =================================================
+
+@frappe.whitelist()
+def get_user_context():
+    """Fetches comprehensive User, Role, Department, Company, and Employee context."""
+    user = frappe.session.user
+    user_doc = frappe.get_doc("User", user)
+    
+    context = {
+        "user_id": user,
+        "full_name": user_doc.full_name,
+        "roles": frappe.get_roles(user),
+        "role_profile": user_doc.role_profile_name,
+        "user_image": user_doc.user_image,
+        "company": frappe.db.get_default("company"),
+        "department": None,
+        "designation": None,
+        "branch": None
+    }
+
+    # Fetch Employee details if exists
+    employee = frappe.db.get_value("Employee", {"user_id": user}, 
+        ["name", "department", "designation", "branch", "reports_to", "company"], as_dict=1)
+    
+    if employee:
+        context.update({
+            "employee_id": employee.name,
+            "department": employee.department,
+            "designation": employee.designation,
+            "branch": employee.branch,
+            "reports_to": employee.reports_to,
+            "company": employee.company or context["company"]
+        })
+
+    return context
+
+@frappe.whitelist()
+def get_ai_assistant_response(question, history_id=None, department=None):
+    """Main entry point for AI Assistant with context and permissions."""
+    user_context = get_user_context()
+    if department:
+        user_context["active_department"] = department
+    else:
+        user_context["active_department"] = user_context.get("department")
+
+    # 1. Manage History
+    if not history_id:
+        existing_history = frappe.get_all("AI Assistant History", 
+            filters={"user": frappe.session.user}, 
+            fields=["name", "pinned"],
+            order_by="last_interaction asc")
+        
+        # Limit: 5 unpinned history items
+        unpinned = [h for h in existing_history if not h.pinned]
+        if len(unpinned) >= 5:
+            history_to_delete = unpinned[0].name
+            # Delete messages first to avoid link error
+            frappe.db.delete("AI Assistant Message", {"history": history_to_delete})
+            frappe.delete_doc("AI Assistant History", history_to_delete, ignore_permissions=True)
+            
+        can_save = True
+        # Total limit 15 (10 pinned + 5 unpinned)
+        if len(existing_history) >= 15 and all(h.pinned for h in existing_history):
+            can_save = False
+
+        if can_save:
+            history_doc = frappe.get_doc({
+                "doctype": "AI Assistant History",
+                "user": frappe.session.user,
+                "company": user_context["company"],
+                "department": user_context["active_department"],
+                "title": (question[:50] + '...') if len(question) > 50 else question,
+                "last_interaction": dt.datetime.now()
+            })
+            history_doc.insert(ignore_permissions=True)
+            history_id = history_doc.name
+            frappe.db.commit() # Ensure history is saved immediately
+    else:
+        frappe.db.set_value("AI Assistant History", history_id, "last_interaction", dt.datetime.now())
+        frappe.db.commit()
+
+    # Save User message if history_id exists
+    if history_id:
+        save_message(history_id, "User", question)
+        frappe.db.commit() # Save user message before calling AI
+
+    # --- SPECIAL WORKFLOW: Sales Order Lookup by Circuit ID ---
+    import re
+    is_circuit_prompt = "Sales Order Lookup by Circuit ID" in question or "Sales Order Number against the Circuit ID" in question
+    is_only_ids = re.match(r'^[\d,\s]+$', question.strip())
+    
+    if is_circuit_prompt or is_only_ids:
+        # Check if we are in the middle of a lookup or just started
+        ids = re.findall(r'\d+', question)
+        if not ids:
+            if is_circuit_prompt:
+                assistant_answer = "Please enter the Circuit ID(s) to get the Sales Order Number."
+                save_message(history_id, "Assistant", assistant_answer)
+                frappe.db.commit()
+                return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+        else:
+            # We have IDs, perform the lookup
+            assistant_answer = lookup_sales_order_by_circuit_ids(question)
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "LIST", "topic": "Sales Order"}}
+
+    # --- SPECIAL WORKFLOW: Circuit ID Lookup by Task ID ---
+    is_task_prompt = "Circuit ID Lookup by Task ID" in question or "Please enter the Task ID to get the Circuit ID" in question
+    is_task_id = re.match(r'^[\s,]*TASK-?[\d-]+([\s,]+TASK-?[\d-]+)*[\s,]*$', question.strip().upper())
+    
+    if is_task_prompt or is_task_id:
+        task_ids = re.findall(r'TASK-?[\d-]+', question.upper())
+        if not task_ids:
+            if is_task_prompt:
+                assistant_answer = "Please enter the Task ID to get the Circuit ID details."
+                save_message(history_id, "Assistant", assistant_answer)
+                frappe.db.commit()
+                return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+        else:
+            # We have Task IDs, perform the lookup for all found IDs
+            results = []
+            # Remove duplicates while preserving order
+            unique_task_ids = []
+            for tid in task_ids:
+                if tid not in unique_task_ids:
+                    unique_task_ids.append(tid)
+            
+            for tid in unique_task_ids:
+                results.append(lookup_circuit_details_by_task_id(tid))
+            
+            assistant_answer = "<br><hr style='border-top: 1px solid #eee; margin: 15px 0;'><br>".join(results)
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "LIST", "topic": "Task"}}
+    # ----------------------------------------------------------
+    # ----------------------------------------------------------
+
+    # 2. Extract Intent (NLP -> Structured)
+    intent = extract_intent(question, user_context)
+    
+    # 3. Fetch Data based on Intent
+    result_data = fetch_erp_data(intent, user_context)
+
+    # 4. Format Response (Data -> Natural Language)
+    assistant_answer = format_ai_response(question, result_data, user_context, intent)
+
+    # Save Assistant message
+    save_message(history_id, "Assistant", assistant_answer)
+    frappe.db.commit() # Save final response
+
+    return {
+        "answer": assistant_answer,
+        "history_id": history_id,
+        "intent": intent
+    }
+
+def save_message(history_id, role, content):
+    msg = frappe.get_doc({
+        "doctype": "AI Assistant Message",
+        "history": history_id,
+        "role": role,
+        "content": content
+    })
+    msg.insert(ignore_permissions=True)
+
+def extract_intent(question, context):
+    """Uses LLM to convert question into a structured intent JSON."""
+    prompt = f"""
+    You are an ERP Intent Extractor. Convert the User's question into a structured JSON.
+    Context: {json.dumps(context)}
+
+    Rules:
+    - Topic: Doctype name (normalized, e.g., bill -> Sales Invoice, client -> Customer)
+    - Action: LIST, COUNT, SINGLE, or GREETING
+    - Filters: Standard Frappe filters (dictionary)
+    - Fields: List of fields to fetch
+
+    User: "{question}"
+    Output valid JSON only.
+    """
+    
+    try:
+        response = call_ai_model(prompt)
+        if not response:
+            return {"error": "AI returned empty response"}
+            
+        # DeepSeek/LLMs might return markdown, clean it
+        clean_json = response.replace("```json", "").replace("```", "").strip()
+        if not clean_json:
+             return {"error": "Empty structured response"}
+             
+        return json.loads(clean_json)
+    except Exception as e:
+        frappe.log_error(title="AI Assistant Intent Error", message=str(e))
+        return {"error": "Failed to understand intent"}
+
+def fetch_erp_data(intent, context):
+    """Safe data fetching using frappe.get_list/get_all with user context."""
+    if "error" in intent:
+        return None
+
+    doctype = intent.get("topic")
+    if not doctype or doctype in ["DocType", "User", "Role", "Module Def", "File", "Error Log"]:
+        return None
+    filters = intent.get("filters", {})
+    action = intent.get("action", "LIST")
+    fields = intent.get("fields", ["name"])
+
+    # Enforce Company security
+    if context.get("company"):
+        if frappe.get_meta(doctype).has_field("company"):
+            filters["company"] = context["company"]
+
+    try:
+        if action == "COUNT":
+            return frappe.db.count(doctype, filters)
+        
+        # Respect role permissions
+        return frappe.get_list(doctype, filters=filters, fields=fields, limit=20)
+    except Exception as e:
+        frappe.log_error(f"AI Data Fetch Error: {str(e)}", "AI Assistant")
+        return None
+
+def format_ai_response(question, data, context, intent=None):
+    """Uses LLM to convert raw data into a professional business answer."""
+    prompt = f"""
+    You are a Business Assistant for Nexapp. 
+    Context: {json.dumps(context)}
+    Intent: {json.dumps(intent)}
+    Raw Data: {json.dumps(data)}
+    Question: "{question}"
+
+    Rules:
+    - If it's a greeting (Hi, Hello), respond warmly and ask how you can help with Nexapp ERP.
+    - If data is provided, convert it into a helpful, conversational answer.
+    - If no data, explain politely.
+    - Respect the user's department focus ({context.get('active_department')}).
+    - Use HTML <b> and <br> for formatting.
+    """
+    
+    return call_ai_model(prompt)
+
+def lookup_sales_order_by_circuit_ids(ids_text):
+    """Specialized lookup for Sales Order via Sales Order Item child table."""
+    import re
+    ids = re.findall(r'\d+', ids_text)
+    if not ids:
+        return "I couldn't find any valid Circuit IDs in your message. Please provide numeric IDs."
+    
+    results = []
+    for circuit_id in ids:
+        # Search in Sales Order Item child table field custom_feasibility
+        so_name = frappe.db.get_value("Sales Order Item", {"custom_feasibility": circuit_id}, "parent")
+        if so_name:
+            results.append(f"<b>{circuit_id}</b> – {so_name}")
+        else:
+            results.append(f"<b>{circuit_id}</b> – No Sales Order Found")
+    
+    response = "Following are the Sales Order against the Circuit ID:<br><br>"
+    response += "<br>".join(results)
+    return response
+
+def lookup_circuit_details_by_task_id(task_id):
+    """Specialized lookup for Task details and associated Circuit IDs using silent fetching."""
+    try:
+        # Fetch Task details silently
+        tasks = frappe.get_all("Task", 
+            filters={"name": task_id}, 
+            fields=["custom_sales_order_no", "custom_customer", "custom_purchase_order_no", "custom_po_amount", "creation", "completed_on"]
+        )
+        
+        if not tasks:
+            return f"Task <b>{task_id}</b> not found."
+            
+        task = tasks[0]
+        
+        # Fields from Task
+        so_no = task.get("custom_sales_order_no") or "Sales order not found"
+        customer = task.get("custom_customer") or "N/A"
+        po_no = task.get("custom_purchase_order_no") or "N/A"
+        po_amount = task.get("custom_po_amount") or 0
+        
+        # Date formatting
+        from frappe.utils import formatdate
+        req_on = formatdate(task.creation, "dd-mm-yyyy")
+        comp_on = formatdate(task.completed_on, "dd-mm-yyyy") if task.completed_on else None
+        
+        # Fetch Child Table data silently
+        child_records = frappe.get_all("Task Circuit ID",
+            filters={"parent": task_id, "parenttype": "Task"},
+            fields=["circuit_id"]
+        )
+        
+        circuit_ids = [r.circuit_id for r in child_records if r.circuit_id]
+        
+        # Format response
+        res = f"<h3>Task: {task_id}</h3>"
+        res += f"<b>Sales Order No:</b> {so_no}<br>"
+        res += f"<b>Customer:</b> {customer}<br>"
+        res += f"<b>Purchase Order No:</b> {po_no}<br>"
+        res += f"<b>Customer PO Amount:</b> {frappe.format_value(po_amount, {'fieldtype': 'Currency'})}<br>"
+        res += f"<b>Task Requested on:</b> {req_on}<br>"
+        if comp_on:
+            res += f"<b>Completed on:</b> {comp_on}<br>"
+        
+        if circuit_ids:
+            res += "<br><b>Circuit IDs:</b><br>"
+            res += "<br>".join(circuit_ids)
+        else:
+            res += "<br><i>No Circuit IDs linked to this task.</i>"
+            
+        return res
+    except Exception as e:
+        frappe.log_error(f"Task Lookup Error: {str(e)}", "AI Assistant")
+        return f"Error retrieving details for Task {task_id}."
+
+@frappe.whitelist()
+def get_chat_history():
+    """Returns chat histories for current user."""
+    return frappe.get_all(
+        "AI Assistant History",
+        filters={"user": frappe.session.user},
+        fields=["name", "title", "department", "last_interaction", "pinned"],
+        order_by="last_interaction desc",
+        limit=20
+    )
+
+@frappe.whitelist()
+def delete_chat_history(history_id):
+	"""Delete chat history and all associated messages."""
+	if not history_id:
+		return
+	
+	# Delete all messages linked to this history session
+	frappe.db.delete("AI Assistant Message", {"history": history_id})
+	
+	# Delete the history record itself
+	frappe.delete_doc("AI Assistant History", history_id, ignore_permissions=True)
+	return True
+
+@frappe.whitelist()
+def get_chat_messages(history_id):
+    """Returns all messages for a specific chat session."""
+    return frappe.get_all(
+        "AI Assistant Message",
+        filters={"history": history_id},
+        fields=["role", "content", "creation"],
+        order_by="creation asc"
+    )
+
+@frappe.whitelist()
+def update_profile_image(image_url):
+    """Updates the image field of the Employee record linked to current user."""
+    employee_id = frappe.db.get_value("Employee", {"user_id": frappe.session.user}, "name")
+    if not employee_id:
+        # Fallback to updating User only if no Employee record
+        frappe.db.set_value("User", frappe.session.user, "user_image", image_url)
+        return True
+    
+    frappe.db.set_value("Employee", employee_id, "image", image_url)
+    # Sync with User doc
+    frappe.db.set_value("User", frappe.session.user, "user_image", image_url)
+    return True
+
+
+@frappe.whitelist()
+def get_employee_profile():
+    """Fetch editable employee profile fields for the current user."""
+    employee = frappe.db.get_value(
+        "Employee",
+        {"user_id": frappe.session.user},
+        ["name", "marital_status", "cell_number", "personal_email", "current_address"],
+        as_dict=True
+    )
+    return employee or {}
+
+
+@frappe.whitelist()
+def update_employee_profile(marital_status=None, cell_number=None, personal_email=None, current_address=None, image_url=None):
+    """Updates editable fields of the Employee record linked to the current user."""
+    employee_id = frappe.db.get_value("Employee", {"user_id": frappe.session.user}, "name")
+    if not employee_id:
+        frappe.throw("No Employee record linked to your account.")
+
+    update_fields = {}
+    if marital_status is not None:
+        update_fields["marital_status"] = marital_status
+    if cell_number is not None:
+        update_fields["cell_number"] = cell_number
+    if personal_email is not None:
+        update_fields["personal_email"] = personal_email
+    if current_address is not None:
+        update_fields["current_address"] = current_address
+    if image_url:
+        update_fields["image"] = image_url
+        frappe.db.set_value("User", frappe.session.user, "user_image", image_url)
+
+    if update_fields:
+        frappe.db.set_value("Employee", employee_id, update_fields)
+
+    return True
+
+
+@frappe.whitelist()
+def get_holidays():
+    """Fetches holidays for the current year, excluding weekends."""
+    from frappe.utils import getdate, nowdate
+    import datetime
+
+    # 1. Find user's holiday list
+    employee = frappe.db.get_value("Employee", {"user_id": frappe.session.user}, ["name", "holiday_list"], as_dict=True)
+    holiday_list_name = None
+    
+    if employee and employee.holiday_list:
+        holiday_list_name = employee.holiday_list
+    else:
+        # Fallback to Company default or Global default
+        company = frappe.get_cached_value("User", frappe.session.user, "user_id") # actually session user
+        # Just find any active for now or the first one if not set
+        holiday_list_name = frappe.db.get_value("Holiday List", {"from_date": (">=", f"{datetime.date.today().year}-01-01")}, "name")
+
+    if not holiday_list_name:
+        return {"error": "No Holiday List found for the current year."}
+
+    # 2. Fetch Holiday List details
+    holiday_list = frappe.get_doc("Holiday List", holiday_list_name)
+    holidays = []
+    current_year = datetime.date.today().year
+    today = getdate(nowdate())
+
+    for h in holiday_list.holidays:
+        h_date = getdate(h.holiday_date)
+        if h_date.year != current_year:
+            continue
+            
+        # Skip Saturday (5) and Sunday (6)
+        if h_date.weekday() in [5, 6]:
+            continue
+            
+        holidays.append({
+            "date": h.holiday_date,
+            "description": h.description,
+            "is_upcoming": h_date > today,
+            "day": h_date.strftime("%A")
+        })
+
+    return {
+        "holiday_list_name": holiday_list_name,
+        "from_date": holiday_list.from_date,
+        "to_date": holiday_list.to_date,
+        "holidays": holidays
+    }
+
+
+@frappe.whitelist()
+def get_dynamic_prompts():
+    """Fetches prompts based on the current user's Role Profile."""
+    role_profile = frappe.db.get_value("User", frappe.session.user, "role_profile_name")
+    
+    if not role_profile:
+        return []
+
+    prompts = frappe.get_list(
+        "AI Assistant Prompt",
+        filters={"role_profile": role_profile},
+        fields=["short_prompt", "full_prompt"],
+        order_by="idx asc"
+    )
+    
+    return prompts
+
+
+@frappe.whitelist()
+def get_user_creation_data():
+    """Returns data needed for the 'Create ERP User' workflow."""
+    companies = frappe.get_all("Company", fields=["name"])
+    
+    # Fetch all active employees without limit, respecting permissions as requested
+    all_employees = frappe.get_all(
+        "Employee", 
+        fields=["name", "employee_name", "company_email", "personal_email", "company", "user_id"],
+        filters={"status": "Active"},
+        limit_page_length=0,
+        ignore_permissions=False
+    )
+    
+    # Fetch existing user emails to exclude them
+    existing_users = {u.email for u in frappe.get_all("User", fields=["email"])}
+    
+    # Process and filter employees to ensure they have a valid company_email and aren't already users
+    employees = []
+    for e in all_employees:
+        email = e.company_email # Match specifically on company_email as requested
+        if email and email not in existing_users:
+            employees.append({
+                "name": e.name,
+                "employee_name": e.employee_name,
+                "company_email": email,
+                "company": e.company
+            })
+    
+    if not employees:
+        frappe.log_error("No employees with emails found for AI Assistant User Creation workflow", "get_user_creation_data")
+    
+    # Safely fetch role profiles with custom_module_profile
+    role_profiles = frappe.db.get_list("Role Profile", fields=["name", "custom_module_profile"])
+    
+    return {
+        "companies": [c.name for c in companies],
+        "employees": employees,
+        "role_profiles": role_profiles
+    }
+
+
+@frappe.whitelist()
+def create_erp_user_from_employee(email, role_profile):
+    """Creates a User record using data from the linked Employee."""
+    if frappe.db.exists("User", email):
+        # Even if user exists, ensure employee is linked
+        employee_name = frappe.db.get_value("Employee", {"company_email": email}, "name")
+        if employee_name:
+            frappe.db.set_value("Employee", employee_name, "user_id", email)
+            frappe.db.commit()
+        return {"status": "success", "message": "User already exists, employee linked"}
+        
+    employee = frappe.get_value(
+        "Employee", 
+        {"company_email": email}, 
+        ["name", "first_name", "middle_name", "last_name"], 
+        as_dict=True
+    )
+    
+    if not employee:
+        frappe.throw(f"No Employee record found with company email: {email}")
+        
+    # Fetch Module Profile from Role Profile if available
+    module_profile = frappe.db.get_value("Role Profile", role_profile, "custom_module_profile")
+    
+    user = frappe.get_doc({
+        "doctype": "User",
+        "email": email,
+        "first_name": employee.first_name,
+        "middle_name": employee.middle_name,
+        "last_name": employee.last_name,
+        "role_profile_name": role_profile,
+        "module_profile": module_profile,
+        "send_welcome_email": 1,
+        "enabled": 1,
+        "search_bar": 0
+    })
+    
+    try:
+        user.insert(ignore_permissions=True)
+        # Link employee with user
+        frappe.db.set_value("Employee", employee.name, "user_id", email)
+        frappe.db.commit()
+    except Exception as e:
+        # If user already exists or other email-related error, still try to proceed if record exists
+        if frappe.db.exists("User", email):
+            frappe.db.set_value("Employee", employee.name, "user_id", email)
+            frappe.db.commit()
+            return {"status": "success", "message": "User handled"}
+        
+        # Log other serious errors
+        frappe.log_error(frappe.get_traceback(), "ERP User Creation Error")
+        return {"status": "error", "message": str(e)}
+
+    return {"status": "success"}
+    
+@frappe.whitelist()
+def get_employee_name_by_email(email):
+    """Returns the employee name for a given email by matching specifically with company_email, respecting permissions."""
+    if not email:
+        return None
+        
+    email = email.strip()
+    
+    # Use frappe.get_list to strictly respect all permission rules (Row Level Security, etc.)
+    # Match specifically in company_email field as requested
+    emps = frappe.get_list("Employee", 
+        filters={"company_email": email, "status": "Active"}, 
+        fields=["employee_name"],
+        limit=1
+    )
+    
+    if emps:
+        return emps[0].employee_name
+    
+    # Second pass: Check personal_email just in case user selected it
+    emps = frappe.get_list("Employee", 
+        filters={"personal_email": email, "status": "Active"}, 
+        fields=["employee_name"],
+        limit=1
+    )
+    
+    return emps[0].employee_name if emps else None
+
+@frappe.whitelist()
+def download_feasibility_template():
+    """Generates and returns the Excel template for Feasibility bulk upload."""
+    user_doc = frappe.get_doc("User", frappe.session.user)
+    roles = frappe.get_roles()
+    
+    is_authorized = (
+        user_doc.role_profile_name == "CRM Manager" or 
+        "System Manager" in roles
+    )
+    
+    if not is_authorized:
+        frappe.throw("Access Denied: Only CRM Manager can download the template.")
+
+    columns = [
+        "Feasibility From", "Customer Name*", "Customer Type*", "Site Name*", "Customer Request*", 
+        "Sales Person*", "Order Type*", "Site Type*", "Site ID / Legal Code", "Territory*", 
+        "Solution Code*", "Static IP*", "Nos of Static IP Required", "Config Type*", 
+        "Managed Services*", "Primary Data Plan Code", "Secondary Data Plan Code", 
+        "Central Spoke", "Mobile", "Central Email", "Primary Contact Person*", 
+        "Primary Contact Mobile", "Email", "Alternate Contact Person", 
+        "Alternate Contact Mobile", "Secondary Email", "Address/ Street*", 
+        "Pincode*"
+    ]
+    
+    # Sample row data
+    data = [
+        columns,
+        [
+            "Customer", "Sample Customer", "Paid Customer", "Sample Site", "10-05-2024",
+            frappe.session.user, "Service", "Standard", "SITE-001", "All Territories",
+            "SOL-001", "No", "", "Remote Config", "Proactive", "PLAN-001", "",
+            "", "", "", "John Doe", "9876543210", "john@example.com", "", "", "",
+            "123 Main St", "400001"
+        ]
+    ]
+    
+    from frappe.utils.xlsxutils import make_xlsx
+    xlsx_file = make_xlsx(data, "Feasibility Template")
+    
+    frappe.response['filename'] = 'Feasibility_Template.xlsx'
+    frappe.response['filecontent'] = xlsx_file.getvalue()
+    frappe.response['type'] = 'binary'
+
+@frappe.whitelist()
+def download_feasibility_template_as_base64():
+    """Generates and returns the Excel template as a Base64 string."""
+    user_doc = frappe.get_doc("User", frappe.session.user)
+    roles = frappe.get_roles()
+    
+    is_authorized = (
+        user_doc.role_profile_name == "CRM Manager" or 
+        "System Manager" in roles
+    )
+    
+    if not is_authorized:
+        frappe.throw("Access Denied.")
+
+    import openpyxl
+    from openpyxl.styles import Font
+    from io import BytesIO
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Feasibility Template"
+
+    columns = [
+        "Feasibility From", "Customer Name", "Customer Type", "Site Name", "Customer Request", 
+        "Sales Person", "Order Type", "Site Type", "Site ID / Legal Code", "Territory", 
+        "Solution Code", "Static IP", "Nos of Static IP Required", "Config Type", 
+        "Managed Services", "Primary Data Plan Code", "Secondary Data Plan Code", 
+        "Central Spoke", "Mobile", "Central Email", "Primary Contact Person", 
+        "Primary Contact Mobile", "Email", "Alternate Contact Person", 
+        "Alternate Contact Mobile", "Secondary Email", "Address/ Street", 
+        "Pincode"
+    ]
+
+    mandatory_labels = [
+        "Customer Name", "Customer Type", "Site Name", "Customer Request", "Sales Person",
+        "Order Type", "Site Type", "Territory", "Solution Code", "Static IP",
+        "Config Type", "Managed Services", "Primary Contact Person", "Address/ Street", "Pincode"
+    ]
+
+    red_font = Font(color="FF0000", bold=True)
+    standard_font = Font(bold=True)
+
+    for col_num, column_title in enumerate(columns, 1):
+        cell = ws.cell(row=1, column=col_num)
+        cell.value = column_title
+        if column_title in mandatory_labels:
+            cell.font = red_font
+        else:
+            cell.font = standard_font
+
+    # Sample row
+    sample_data = [
+        "Customer", "Sample Customer", "Paid Customer", "Sample Site", "10-05-2024",
+        frappe.session.user, "Service", "Standard", "SITE-001", "All Territories",
+        "SOL-001", "No", "", "Remote Config", "Proactive", "PLAN-001", "",
+        "", "", "", "John Doe", "9876543210", "john@example.com", "", "", "",
+        "123 Main St", "400001"
+    ]
+    for col_num, val in enumerate(sample_data, 1):
+        ws.cell(row=2, column=col_num).value = val
+
+    xlsx_file = BytesIO()
+    wb.save(xlsx_file)
+    
+    import base64
+    return base64.b64encode(xlsx_file.getvalue()).decode('utf-8')
+
+def get_pincode_details(pincode):
+    """Fetches City, District, State, and Country from the Postal Pincode API."""
+    import requests
+    if not pincode: return {}
+    
+    # Remove non-digits
+    import re
+    pincode = re.sub(r'\D', '', str(pincode))
+    if len(pincode) != 6: return {}
+    
+    try:
+        url = f"https://api.postalpincode.in/pincode/{pincode}"
+        # Spoof a real browser to avoid being blocked
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        response = requests.get(url, headers=headers, timeout=10)
+        data = response.json()
+        if data and data[0].get("Status") == "Success" and data[0].get("PostOffice"):
+            po = data[0]["PostOffice"][0]
+            return {
+                "city": po.get("Block", ""),
+                "district": po.get("District", ""),
+                "state": po.get("State", ""),
+                "country": po.get("Country", "India")
+            }
+    except Exception:
+        pass
+    return {}
+
+def try_parse_date(date_str):
+    """Attempts to parse a date string from various formats into YYYY-MM-DD."""
+    if not date_str: return None
+    
+    import datetime as dt
+    if isinstance(date_str, (dt.date, dt.datetime)):
+        return date_str.strftime('%Y-%m-%d')
+    
+    import dateutil.parser
+    try:
+        # Common Indian formats like DD-MM-YYYY
+        d = dateutil.parser.parse(str(date_str), dayfirst=True)
+        return d.strftime('%Y-%m-%d')
+    except:
+        return str(date_str)
+
+@frappe.whitelist()
+def identify_file_job(file_url):
+    """Analyzes the file headers to identify what type of data it contains."""
+    if not file_url: return None
+    
+    from frappe.utils.file_manager import get_file_path
+    file_path = get_file_path(file_url.split('/')[-1])
+    if not file_path: return None
+    
+    headers = []
+    try:
+        if file_path.endswith('.csv'):
+            import csv
+            with open(file_path, 'r', encoding='utf-8-sig') as f:
+                reader = csv.reader(f)
+                headers = next(reader, [])
+        elif file_path.endswith('.xlsx'):
+            from frappe.utils.xlsxutils import read_xlsx_file_from_attached_file
+            data = read_xlsx_file_from_attached_file(filepath=file_path)
+            if data: headers = data[0]
+    except:
+        return None
+
+    # Normalize headers for matching
+    import re
+    norm_headers = [re.sub(r'[^a-z0-9]', '', str(h).lower()) for h in headers if h]
+    
+    # Identify Feasibility (match at least 3 key headers)
+    feasibility_markers = ["feasibilityfrom", "customername", "sitename", "customerrequest", "salesperson", "ordertype", "sitetype"]
+    matches = [m for m in feasibility_markers if m in norm_headers]
+    
+    if len(matches) >= 3:
+        return "Feasibility"
+        
+    return None
+
+@frappe.whitelist()
+def upload_feasibility_bulk(file_url, ignore_duplicates=False, confirmed=False, enriched_data=None):
+    """Processes the uploaded CSV/Excel file and creates Feasibility records."""
+    if isinstance(ignore_duplicates, str):
+        ignore_duplicates = ignore_duplicates.lower() == 'true'
+    
+    if isinstance(confirmed, str):
+        confirmed = confirmed.lower() == 'true'
+
+    user_doc = frappe.get_doc("User", frappe.session.user)
+    roles = frappe.get_roles()
+    
+    is_authorized = (
+        user_doc.role_profile_name == "CRM Manager" or 
+        "System Manager" in roles
+    )
+    
+    if not is_authorized:
+        frappe.throw("Access Denied: Only CRM Manager can upload feasibility records.")
+
+    if not file_url:
+        frappe.throw("Please attach a file first.")
+
+    from frappe.utils.file_manager import get_file_path
+    file_path = get_file_path(file_url.split('/')[-1])
+    
+    if not file_path:
+        frappe.throw("File not found.")
+
+    is_xlsx = file_path.endswith('.xlsx')
+    is_csv = file_path.endswith('.csv')
+
+    if not (is_xlsx or is_csv):
+        frappe.throw("Please upload a valid CSV or Excel (.xlsx) file.")
+
+    rows = []
+    if enriched_data:
+        # Use data provided by frontend (enriched with pincode details)
+        import json
+        if isinstance(enriched_data, str):
+            rows = json.loads(enriched_data)
+        else:
+            rows = enriched_data
+    elif is_csv:
+        import csv
+        try:
+            with open(file_path, 'r', encoding='utf-8-sig') as f:
+                reader = csv.DictReader(f)
+                rows = []
+                for r in reader:
+                    rows.append({str(k).strip().lower(): v for k, v in r.items() if k})
+        except Exception as e:
+            frappe.throw(f"Error reading CSV: {str(e)}")
+    else:
+        from frappe.utils.xlsxutils import read_xlsx_file_from_attached_file
+        try:
+            data = read_xlsx_file_from_attached_file(filepath=file_path)
+            if data:
+                headers = [str(h).strip().lower() for h in data[0] if h]
+                for row_data in data[1:]:
+                    row_dict = {}
+                    for i, header in enumerate(headers):
+                        if i < len(row_data):
+                            row_dict[header] = row_data[i]
+                    rows.append(row_dict)
+        except Exception as e:
+            frappe.throw(f"Error reading Excel: {str(e)}")
+
+    if not rows:
+        frappe.throw("The file is empty or could not be read.")
+
+    # Duplicate check before processing
+    if not ignore_duplicates:
+        import re
+        def normalize(s):
+            if not s: return ""
+            return re.sub(r'\s+', ' ', str(s).strip().lower())
+
+        # Find the correct keys in the row dict by normalized matching
+        sample_row = rows[0]
+        name_key = None
+        id_key = None
+        
+        for k in sample_row.keys():
+            nk = normalize(k)
+            if nk == "site name": name_key = k
+            if nk == "site id / legal code" or nk == "site id/legal code" or nk == "site id": id_key = k
+        
+        duplicates = []
+        for i, row in enumerate(rows):
+            s_name = normalize(row.get(name_key)) if name_key else ""
+            s_id = normalize(row.get(id_key)) if id_key else ""
+            
+            if not s_name and not s_id:
+                continue
+
+            found = False
+            if s_name:
+                # Check Feasibility
+                if frappe.db.sql("select name from `tabFeasibility` where trim(lower(site_name)) = %s", (s_name,)):
+                    found = True
+                # Check Site
+                if not found and frappe.db.sql("select name from `tabSite` where trim(lower(site_name)) = %s", (s_name,)):
+                    found = True
+            
+            if not found and s_id:
+                # Check Feasibility
+                if frappe.db.sql("select name from `tabFeasibility` where trim(lower(site_id__legal_code)) = %s", (s_id,)):
+                    found = True
+                # Check Site
+                if not found and frappe.db.sql("select name from `tabSite` where trim(lower(site_id__legal_code)) = %s", (s_id,)):
+                    found = True
+            
+            if found:
+                duplicates.append(f"Row {i+2}: '{s_name or s_id}' already exists in the system.")
+        
+        if duplicates:
+            return {
+                "status": "warning",
+                "duplicates": duplicates,
+                "message": "Potential duplicates found in existing records."
+            }
+
+    # Always ask for confirmation before actual creation if not already confirmed
+    if not confirmed:
+        return {
+            "status": "confirmation_required",
+            "total_records": len(rows),
+            "rows": rows,
+            "message": f"Found {len(rows)} records in your file. Ready to proceed?"
+        }
+
+    mapping = {
+        "Feasibility From": "feaseibility_from",
+        "Customer Name": "customer",
+        "Customer Type": "customer_type",
+        "Site Name": "site_name",
+        "Customer Request": "customer_request",
+        "Sales Person": "sales_person",
+        "Order Type": "order_type",
+        "Site Type": "site_type",
+        "Site ID / Legal Code": "site_id__legal_code",
+        "Territory": "territory",
+        "Solution Code": "solution_code",
+        "Static IP": "static_ip",
+        "Nos of Static IP Required": "no_of_static_ip_required",
+        "Config Type": "config_type",
+        "Managed Services": "managed_services",
+        "Primary Data Plan Code": "primary_data_plan",
+        "Secondary Data Plan Code": "secondary_data_plan",
+        "Central Spoke": "central_spoke",
+        "Mobile": "mobile",
+        "Central Email": "central_email",
+        "Primary Contact Person": "contact_person",
+        "Primary Contact Mobile": "primary_contact_mobile",
+        "Email": "email",
+        "Alternate Contact Person": "alternate_contact_person",
+        "Alternate Contact Mobile": "alternate_contact_mobile",
+        "Secondary Email": "secondary_email",
+        "Address/ Street": "address_street",
+        "City": "city",
+        "Pincode": "pincode",
+        "District": "district",
+        "State": "state",
+        "Country": "country"
+    }
+
+    mandatory_fields = [
+        "customer", "customer_type", "site_name", "customer_request", "sales_person",
+        "order_type", "site_type", "territory", "solution_code", "static_ip",
+        "config_type", "managed_services", "contact_person", "address_street", "pincode"
+    ]
+
+    success_count = 0
+    errors = []
+    
+    for i, row in enumerate(rows):
+        # Skip completely empty rows (ghost rows)
+        if not any(str(v).strip() for v in row.values() if v is not None):
+            continue
+            
+        try:
+            doc_data = {"doctype": "Feasibility"}
+            for file_col, fieldname in mapping.items():
+                val = row.get(file_col.lower())
+                
+                if val is not None:
+                    # Convert everything to string to prevent 'int' has no attribute 'strip'
+                    val = str(val).strip()
+                    
+                    # Smart Date Conversion for Date Fields
+                    if fieldname in ["customer_request"]:
+                        from frappe.utils import getdate
+                        try:
+                            val = try_parse_date(val)
+                        except:
+                            pass
+                            
+                doc_data[fieldname] = val
+
+            # Auto-fetch address details if pincode is present but other fields are missing or placeholders
+            if doc_data.get("pincode"):
+                # If fields are missing OR contain placeholder text like "District update automatically"
+                def is_empty_or_placeholder(v):
+                    if not v: return True
+                    v_low = str(v).lower()
+                    return "automatically" in v_low or "update" in v_low
+
+                needs_update = any(is_empty_or_placeholder(doc_data.get(f)) for f in ["city", "district", "state", "country"])
+                
+                if needs_update:
+                    pincode_data = get_pincode_details(doc_data.get("pincode"))
+                    if pincode_data:
+                        for field in ["city", "district", "state", "country"]:
+                            if is_empty_or_placeholder(doc_data.get(field)):
+                                doc_data[field] = pincode_data.get(field)
+            
+            # Append location details to address_street for a complete address string
+            address_parts = [doc_data.get("address_street")]
+            for field in ["city", "district", "pincode", "state", "country"]:
+                val = doc_data.get(field)
+                if val and str(val).strip() and str(val).strip() not in str(address_parts[0]):
+                    address_parts.append(str(val).strip())
+            
+            doc_data["address_street"] = ", ".join([p for p in address_parts if p])
+
+            missing = [f for f in mandatory_fields if not doc_data.get(f)]
+            if missing:
+                labels = [file_col for file_col, fieldname in mapping.items() if fieldname in missing]
+                errors.append(f"Row {i+2}: Missing data in mandatory fields: {', '.join(labels)}")
+                continue
+
+            new_doc = frappe.get_doc(doc_data)
+            new_doc.insert(ignore_permissions=True)
+            success_count += 1
+            frappe.clear_messages()
+        except Exception as e:
+            errors.append(f"Row {i+2}: {str(e)}")
+            frappe.clear_messages()
+    
+    frappe.db.commit()
+    frappe.clear_messages()
+    
+    return {
+        "status": "success" if not errors else "partial",
+        "success_count": success_count,
+        "errors": errors
+    }
+
+
+#####################################################################
+## User will update for the Restricted Supplier
+
+import frappe
+
+def create_user_permission(doc, method):
+    if not doc.enabled:
+        return
+
+    old_doc = doc.get_doc_before_save()
+
+    if method == "after_insert" or (old_doc and not old_doc.enabled):
+        exists = frappe.db.exists("User Permission", {
+            "user": doc.name,
+            "allow": "Restricted",
+            "for_value": "Open Supplier"
+        })
+
+        if not exists:
+            frappe.get_doc({
+                "doctype": "User Permission",
+                "user": doc.name,
+                "allow": "Restricted",
+                "for_value": "Open Supplier",
+                "apply_to_all_doctypes": 1
+            }).insert(ignore_permissions=True)
+############################################
+@frappe.whitelist()
+def download_custom_sales_report_xlsx(doctype, fields, filters):
+    import datetime
+    if isinstance(fields, str):
+        fields = frappe.parse_json(fields)
+    if isinstance(filters, str):
+        filters = frappe.parse_json(filters)
+
+    # 1. Build Filters
+    query_filters = {}
+    
+    # Handle Date Range
+    date_field = "creation"
+    if doctype == "Quotation": date_field = "transaction_date"
+    elif doctype == "Sales Order": date_field = "transaction_date"
+
+    if filters.get("date_range") == "Current Month":
+        query_filters[date_field] = ["between", [frappe.utils.month_start(), frappe.utils.month_end()]]
+    elif filters.get("date_range") == "Last 3 Months":
+        three_months_ago = frappe.utils.add_months(frappe.utils.nowdate(), -3)
+        query_filters[date_field] = [">=", three_months_ago]
+    elif filters.get("date_range") == "Custom" and filters.get("from_date") and filters.get("to_date"):
+        query_filters[date_field] = ["between", [filters.get("from_date"), filters.get("to_date")]]
+
+    # 2. Fetch Data
+    # Meta to get labels
+    meta = frappe.get_meta(doctype)
+    labels = {f.fieldname: f.label for f in meta.fields}
+    labels["name"] = "ID"
+
+    data = frappe.get_list(doctype, 
+        filters=query_filters, 
+        fields=fields, 
+        order_by="creation desc",
+        limit=5000
+    )
+
+    if not data:
+        rows = [["No data found for the selected criteria"]]
+    else:
+        # 3. Format XLSX
+        # Header row using labels
+        header = [labels.get(f, f.replace("_", " ").title()) for f in fields]
+        rows = [header]
+        
+        for d in data:
+            row = []
+            for f in fields:
+                val = d.get(f)
+                # Format dates for Excel
+                if isinstance(val, (datetime.datetime, datetime.date)):
+                    val = frappe.utils.getdate(val)
+                row.append(val)
+            rows.append(row)
+
+    from frappe.utils.xlsxutils import make_xlsx
+    xlsx_file = make_xlsx(rows, f"Custom {doctype} Report")
+    
+    frappe.response['filename'] = f"Custom_{doctype.replace(' ', '_')}_Report.xlsx"
+    frappe.response['filecontent'] = xlsx_file.getvalue()
+    frappe.response['type'] = "binary"
+
+@frappe.whitelist()
+def download_combined_sales_report_xlsx(fields, filters):
+    import json
+    if isinstance(fields, str):
+        fields = json.loads(fields)
+    if isinstance(filters, str):
+        filters = json.loads(filters)
+
+    # 1. Build Query
+    select_clause = []
+    joins = []
+    
+    # Map for aliases and joins
+    dt_map = {
+        "CRM Deal": {"alias": "deal", "table": "tabCRM Deal"},
+        "Quotation": {"alias": "q", "table": "tabQuotation", "join": "LEFT JOIN `tabQuotation` q ON q.custom_deal = deal.name"},
+        "Sales Order": {"alias": "so", "table": "tabSales Order", "join": "LEFT JOIN `tabSales Order` so ON so.custom_crm_deal = deal.name"},
+        "Task": {"alias": "t", "table": "tabTask", "join": "LEFT JOIN `tabTask` t ON t.custom_deal = deal.name"},
+        "Feasibility": {"alias": "f", "table": "tabFeasibility", "join": "LEFT JOIN `tabFeasibility` f ON f.custom_deal = deal.name"},
+        "Site": {"alias": "s", "table": "tabSite", "join": "LEFT JOIN `tabSite` s ON s.sales_order = so.name"}
+    }
+
+    # Handle dependencies (Site needs Sales Order)
+    if "Site" in fields and "Sales Order" not in fields:
+        # We need to add Sales Order to joins even if no fields are selected from it
+        if dt_map["Sales Order"]["join"] not in joins:
+            joins.append(dt_map["Sales Order"]["join"])
+
+    columns = []
+    for dt, dt_fields in fields.items():
+        if dt not in dt_map: continue
+        alias = dt_map[dt]["alias"]
+        
+        # Add join if not CRM Deal
+        if dt != "CRM Deal":
+            if dt_map[dt]["join"] not in joins:
+                joins.append(dt_map[dt]["join"])
+        
+        # Meta for labels
+        meta = frappe.get_meta(dt)
+        labels = {f.fieldname: f.label for f in meta.fields}
+        labels["name"] = "ID"
+
+        for f in dt_fields:
+            # Use backticks for aliases with spaces
+            col_alias = f"{dt}_{f}".replace(" ", "_")
+            select_clause.append(f"{alias}.{f} as `{col_alias}`")
+            columns.append(f"{dt} - {labels.get(f, f)}")
+
+    # Conditions
+    where = []
+    if filters.get("date_range") == "Current Month":
+        where.append("MONTH(deal.creation) = MONTH(NOW()) AND YEAR(deal.creation) = YEAR(NOW())")
+    elif filters.get("date_range") == "Last 3 Months":
+        where.append("deal.creation >= DATE_SUB(NOW(), INTERVAL 3 MONTH)")
+    elif filters.get("date_range") == "Custom" and filters.get("from_date") and filters.get("to_date"):
+        where.append(f"deal.creation BETWEEN '{filters.get('from_date')}' AND '{filters.get('to_date')}'")
+
+    where_str = "WHERE " + " AND ".join(where) if where else ""
+    
+    query = f"""
+        SELECT {", ".join(select_clause)}
+        FROM `tabCRM Deal` deal
+        {" ".join(joins)}
+        {where_str}
+        ORDER BY deal.creation DESC
+        LIMIT 5000
+    """
+
+    try:
+        data = frappe.db.sql(query, as_dict=True)
+    except Exception as e:
+        # Fallback if join fields are wrong (silent fail for now, but logged)
+        frappe.log_error(f"Combined Report SQL Error: {str(e)}")
+        # Try simple version without complex joins if it fails
+        data = []
+
+    # 3. Format XLSX
+    rows = [columns]
+    for d in data:
+        row = []
+        for dt, dt_fields in fields.items():
+            for f in dt_fields:
+                col_alias = f"{dt}_{f}".replace(" ", "_")
+                val = d.get(col_alias)
+                # Format dates
+                if isinstance(val, (datetime.datetime, datetime.date)):
+                    val = frappe.utils.getdate(val)
+                row.append(val)
+        rows.append(row)
+
+    from frappe.utils.xlsxutils import make_xlsx
+    xlsx_file = make_xlsx(rows, "Combined Sales Report")
+    
+    frappe.response['filename'] = "Combined_Sales_Report.xlsx"
+    frappe.response['filecontent'] = xlsx_file.getvalue()
+    frappe.response['type'] = "binary"

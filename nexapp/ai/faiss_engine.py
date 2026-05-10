@@ -23,6 +23,7 @@ TARGET_DOCTYPES = list(CIRCUIT_FIELD_MAP.keys())
 # ---------------------------------------------------------
 # BUILD INDEX
 # ---------------------------------------------------------
+@frappe.whitelist()
 def build_faiss_index():
 
     if not os.path.exists(BASE_PATH):
@@ -40,7 +41,19 @@ def build_faiss_index():
             if not field.label:
                 continue
 
-            text = f"{doctype} {field.label}"
+            # Expanded keywords for normal fields
+            keywords = []
+            lower_label = field.label.lower()
+            if "contact" in lower_label or "person" in lower_label: keywords.extend(["who", "name", "person", "call", "phone"])
+            if "mobile" in lower_label or "phone" in lower_label: keywords.extend(["call", "number", "telephone"])
+            if "address" in lower_label or "street" in lower_label or "city" in lower_label: keywords.extend(["where", "location", "place", "map", "pincode"])
+            if "status" in lower_label: keywords.extend(["state", "how", "condition", "working", "health"])
+            if "bandwidth" in lower_label or "speed" in lower_label: keywords.extend(["internet", "link", "fast", "slow", "connection"])
+            if "provider" in lower_label or "lms" in lower_label or "supplier" in lower_label: keywords.extend(["isp", "vendor", "partner", "billing"])
+
+            # Weighting: Repeat doctype and label to make them stronger
+            text = f"{doctype} {field.label} {doctype} {field.label} {' '.join(keywords)} data info"
+            
             texts.append(text)
             metadata.append({
                 "doctype": doctype,
@@ -53,7 +66,7 @@ def build_faiss_index():
                 child_meta = frappe.get_meta(field.options)
 
                 # Improved keywords for child tables
-                texts.append(f"{doctype} {field.label} list row data table information")
+                texts.append(f"{doctype} {field.label} {field.label} list row data table information data detail")
                 metadata.append({
                     "doctype": doctype,
                     "field": field.fieldname,
@@ -65,12 +78,17 @@ def build_faiss_index():
                     if not child_field.label or child_field.fieldtype in ["Section Break", "Column Break", "Tab Break"]:
                         continue
 
+                    # Synonym mapping for child fields
+                    ckeywords = []
+                    clower = child_field.label.lower()
+                    if "contact" in clower or "person" in clower: ckeywords.extend(["who", "name", "call", "phone", "person"])
+                    if "mobile" in clower or "number" in clower: ckeywords.extend(["phone", "call", "telephone"])
+                    if "matrix" in clower or "level" in clower or "escalation" in clower: ckeywords.extend(["support", "hierarchy", "manager", "boss", "whom", "priority"])
+                    if "media" in clower or "link" in clower: ckeywords.extend(["internet", "fiber", "rf", "connection"])
+                    if "bandwidth" in clower: ckeywords.extend(["speed", "link", "fast"])
+
                     # Weight key fields higher by repeating them or adding synonyms
-                    text = f"{doctype} {field.label} {child_field.label} details info"
-                    if "contact" in child_field.label.lower() or "mobile" in child_field.label.lower():
-                        text += " phone number call person"
-                    if "matrix" in child_field.label.lower() or "level" in child_field.label.lower():
-                        text += " escalation hierarchy support"
+                    text = f"{doctype} {field.label} {child_field.label} {child_field.label} {' '.join(ckeywords)} details info data"
                     
                     texts.append(text)
                     metadata.append({
@@ -95,7 +113,7 @@ def build_faiss_index():
 # ---------------------------------------------------------
 # SEARCH
 # ---------------------------------------------------------
-def faiss_search(query, top_k=5):
+def faiss_search(query, top_k=10):
 
     with open(VEC_FILE, "rb") as f:
         vectorizer = pickle.load(f)

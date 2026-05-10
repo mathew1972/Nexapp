@@ -1374,6 +1374,16 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
                         <input type="hidden" id="supplier" value="">
                     </div>
 
+                    <div class="recon-form-group" id="notification-group" style="display: none;">
+                        <label for="send-notification">Send payment notification to supplier? <span style="color: red;">*</span></label>
+                        <select id="send-notification" class="recon-form-control">
+                            <option value="">Select Option</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                        <div id="supplier-email-status" style="margin-top: 5px; font-size: 12px;"></div>
+                    </div>
+
                     <div class="recon-form-group" id="expense-account-group" style="display: none;">
                         <label for="expense">Expense Account</label>
                         <div class="custom-dropdown">
@@ -2335,13 +2345,62 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
             $category.append('<option value="Expense">Expense</option>');
             $category.append('<option value="Transfer To Another Account">Transfer To Another Account</option>');
             $category.append('<option value="Itemized Journal Entry">Itemized Journal Entry');
+            $category.append('<option value="Return Payment (Customer)">Return Payment (Customer)</option>');
         } else if (isDeposit) {
             $category.append('<option value="Customer Payment">Customer Payment</option>');
             $category.append('<option value="Transfer To Another Account">Transfer To Another Account</option>');
             $category.append('<option value="Itemized Journal Entry">Itemized Journal Entry');
             $category.append('<option value="Customer Advance">Customer Advance</option>');
+            $category.append('<option value="Return Payment (Supplier)">Return Payment (Supplier)</option>');
         }
     }
+
+    // Send notification dropdown validation
+    $('#send-notification').on('change', function () {
+        const val = $(this).val();
+        const supplier = $('#supplier').val();
+        $('#supplier-email-status').html('');
+
+        if (val === 'Yes') {
+            if (!supplier) {
+                frappe.msgprint({
+                    title: __('Supplier Not Selected'),
+                    indicator: 'orange',
+                    message: __('Please select a Supplier first before choosing to send notification.')
+                });
+                $(this).val('');
+                return;
+            }
+
+            // Check if supplier has email
+            frappe.call({
+                method: 'frappe.client.get_value',
+                args: {
+                    doctype: 'Supplier',
+                    filters: { name: supplier },
+                    fieldname: 'email_id'
+                },
+                async: false,
+                callback: (r) => {
+                    if (r.message && r.message.email_id) {
+                        $('#supplier-email-status').html(
+                            '<span style="color: green;">✔ Email: ' + r.message.email_id + '</span>'
+                        );
+                    } else {
+                        frappe.msgprint({
+                            title: __('No Email Found'),
+                            indicator: 'red',
+                            message: __('The selected Supplier does not have an Email ID. Please update the Supplier record first or select "No".')
+                        });
+                        $('#send-notification').val('');
+                        $('#supplier-email-status').html(
+                            '<span style="color: red;">✘ Supplier has no Email ID</span>'
+                        );
+                    }
+                }
+            });
+        }
+    });
 
     // Category change
     $('#category').change(function () {
@@ -2361,6 +2420,7 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
         $('#payment-amount-display-section').hide();
         $('#match-now-section').hide();
         $('#employee-advance-list').hide();
+        $('#notification-group').hide();
 
         // ================= SUPPLIER ADVANCE (WITHDRAWAL ONLY) =================
         if (category === 'Supplier Advance' && isWithdrawal) {
@@ -2383,6 +2443,8 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
             if (typeof load_suppliers === 'function') {
                 load_suppliers();
             }
+
+            $('#notification-group').show();
 
             return;
         }
@@ -2409,6 +2471,54 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
             return;
         }
 
+        // ================= RETURN PAYMENT (SUPPLIER) =================
+        if (category === 'Return Payment (Supplier)' && isDeposit) {
+            // Show Supplier
+            $('#supplier-group').show();
+
+            // Show amount & match
+            $('#payment-amount-display-section').show();
+            $('#match-now-section').show();
+
+            // Set amount = Deposit Amount
+            if (typeof statementAmount !== 'undefined') {
+                $('#manual-amount').val(parseFloat(statementAmount || 0).toFixed(2));
+                $('#payment-amount-display').text(parseFloat(statementAmount || 0).toFixed(2));
+            }
+
+            // Load suppliers
+            if (typeof load_suppliers === 'function') {
+                load_suppliers();
+            }
+
+            $('#notification-group').show();
+
+            return;
+        }
+
+        // ================= RETURN PAYMENT (CUSTOMER) =================
+        if (category === 'Return Payment (Customer)' && isWithdrawal) {
+            // Show Customer
+            $('#customer-group').show();
+
+            // Show amount & match
+            $('#payment-amount-display-section').show();
+            $('#match-now-section').show();
+
+            // Set amount = Deposit Amount
+            if (typeof statementAmount !== 'undefined') {
+                $('#manual-amount').val(parseFloat(statementAmount || 0).toFixed(2));
+                $('#payment-amount-display').text(parseFloat(statementAmount || 0).toFixed(2));
+            }
+
+            // Load customers
+            if (typeof load_customers === 'function') {
+                load_customers();
+            }
+
+            return;
+        }
+
         // Reset dropdowns
         $('#employee-toggle').text('Select Employee');
         $('#employee').val('');
@@ -2416,6 +2526,7 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
         $('#customer').val('');
         $('#supplier-toggle').text('Select Supplier');
         $('#supplier').val('');
+        $('#send-notification').val('');
         $('#expense-toggle').text('Select Expense Account');
         $('#expense').val('');
         $('#to-account-toggle').text('Select To Account');
@@ -2469,6 +2580,11 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
             $('#payment-amount-display-section').show();
             $('#match-now-section').show();
             isSupplierPayment = true;
+
+            // Show notification group for Withdrawal + Supplier Payment
+            if (isWithdrawal) {
+                $('#notification-group').show();
+            }
         } else if (category === 'Expense') {
             $('#expense-account-group').show();
             $('#match-now-section').show();
@@ -2610,7 +2726,7 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
     $(document).on('click', '#match-now-btn', function () {
         const category = $('#category').val();
 
-        if (category === 'Supplier Advance' || category === 'Customer Advance') {
+        if (category === 'Supplier Advance' || category === 'Customer Advance' || category === 'Return Payment (Supplier)' || category === 'Return Payment (Customer)') {
             handleAdvanceMatchNow();
         }
         else if (category === 'Expense' || category === 'Transfer To Another Account') {
@@ -2627,7 +2743,7 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
         }
     });
 
-    // Handle Supplier/Customer Advance Match Now
+    // Handle Supplier/Customer Advance / Return Payment Match Now
     function handleAdvanceMatchNow() {
         const category = $('#category').val();
         const supplier = $('#supplier').val();
@@ -2635,11 +2751,11 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
         const po = $('#purchase-order').val();
         const so = $('#sales-order-new').val();
 
-        if (category === 'Supplier Advance' && !supplier) {
+        if ((category === 'Supplier Advance' || category === 'Return Payment (Supplier)') && !supplier) {
             frappe.msgprint('Please select a Supplier');
             return;
         }
-        if (category === 'Customer Advance' && !customer) {
+        if ((category === 'Customer Advance' || category === 'Return Payment (Customer)') && !customer) {
             frappe.msgprint('Please select a Customer');
             return;
         }
@@ -2648,12 +2764,21 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
             frappe.msgprint("No bank statement selected.");
             return;
         }
+        if ($("#notification-group").is(":visible") && !$("#send-notification").val()) {
+            frappe.msgprint("Please select whether to send payment notification to supplier");
+            return;
+        }
 
         const amountText = $('#manual-amount').val().replace(/[₹,]/g, '').trim();
         const amount = parseFloat(amountText) || 0;
 
-        let partyName = (category === 'Supplier Advance') ? supplier : customer;
-        let refDoc = (category === 'Supplier Advance') ? (po ? `<br><strong>PO:</strong> ${po}` : '') : (so ? `<br><strong>SO:</strong> ${so}` : '');
+        let partyName = (category === 'Supplier Advance' || category === 'Return Payment (Supplier)') ? supplier : customer;
+        let refDoc = (category === 'Supplier Advance') ? (po ? `<br><strong>PO:</strong> ${po}` : '') : (category === 'Customer Advance' ? (so ? `<br><strong>SO:</strong> ${so}` : '') : '');
+
+        if (category === 'Return Payment (Customer)') {
+            partyName = customer;
+            refDoc = '';
+        }
 
         frappe.confirm(
             `Create ${category}?<br><br>
@@ -2672,13 +2797,17 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
                         sales_order: so,
                         from_account: $('#from-account').val(),
                         to_account: $('#to-account').val(), // ⭐ Pass selected bank for both
-                        company: frappe.defaults.get_default('company')
+                        company: frappe.defaults.get_default('company'),
+                        custom_send_email: ($('#send-notification').val() === 'Yes') ? 1 : 0
                     },
                     callback: function (r) {
                         if (r.message && r.message.status === 'ok') {
                             frappe.msgprint(`${category} Created successfully`);
                             load_bank_statement_entries();
                             load_cards_data();
+                            $('#send-notification').val('');
+                            $('#supplier-email-status').html('');
+                            $('#notification-group').hide();
                             toggleRightPanel(false);
                         } else {
                             frappe.msgprint("Error: " + (r.message ? r.message.error : "Unknown error"));
@@ -2718,7 +2847,7 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
         const bankAmountText = $('#manual-amount').val().replace(/[₹,]/g, '').trim();
         const bankAmount = parseFloat(bankAmountText) || 0;
 
-        if (enteredAmount > bankAmount) {
+        if (Math.round(enteredAmount * 100) > Math.round(bankAmount * 100)) {
             frappe.msgprint(`Payment amount (₹ ${enteredAmount.toFixed(2)}) cannot exceed bank transaction amount (₹ ${bankAmount.toFixed(2)})`);
             return;
         }
@@ -2755,15 +2884,12 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
                         bank_account: bankAccount
                     },
                     callback: function (r) {
-                        if (r.message.status === 'success') {
+                        if (r.message && r.message.status === 'ok') {
                             frappe.msgprint({
                                 title: __('Success'),
                                 indicator: 'green',
                                 message: __('Payment Entry Created: ' + r.message.payment_entry)
                             });
-
-                            // Also reconcile the bank statement entry
-                            reconcileBankStatementAfterPayment(r.message.payment_entry);
 
                             load_bank_statement_entries();
                             load_cards_data();
@@ -2772,7 +2898,7 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
                             frappe.msgprint({
                                 title: __('Error'),
                                 indicator: 'red',
-                                message: __('Error: ' + r.message.error)
+                                message: __('Error: ' + (r.message ? r.message.error : 'Unknown error'))
                             });
                         }
                     }
@@ -2968,6 +3094,16 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
                 return;
             }
 
+            if ($('#notification-group').is(':visible') && !$('#send-notification').val()) {
+                frappe.msgprint('Please select whether to send payment notification to supplier');
+                return;
+            }
+
+            if ($('#notification-group').is(':visible') && !$('#send-notification').val()) {
+                frappe.msgprint('Please select whether to send payment notification to supplier');
+                return;
+            }
+
             if (
                 (category === 'Employee Expense Claim' ||
                     category === 'Customer Payment' ||
@@ -3138,7 +3274,8 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
                             transfer_description: transferDescription,
                             company: frappe.defaults.get_default('company'),
                             tax_adjustments: JSON.stringify(taxAdjustments),
-                            allow_overpayment: allowOverpayment
+                            allow_overpayment: allowOverpayment,
+                            custom_send_email: ($('#send-notification').val() === 'Yes') ? 1 : 0
                         },
                         callback: function (r) {
                             if (r.message.status === 'ok') {
@@ -3178,6 +3315,9 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
                                 $('#customer-payment-table-section').hide();
                                 $('#payment-amount-display-section').hide();
                                 $('#match-now-section').hide();
+                                $('#send-notification').val('');
+                                $('#supplier-email-status').html('');
+                                $('#notification-group').hide();
                                 toggleRightPanel(false);
                             } else {
                                 frappe.msgprint({
@@ -3236,9 +3376,9 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
             totalPaymentAmount = bankAmount;
         }
 
-        if (totalPaymentAmount > bankAmount) {
+        if (Math.round(totalPaymentAmount * 100) > Math.round(bankAmount * 100)) {
             frappe.msgprint(
-                'Total payment amount cannot exceed bank transaction amount'
+                'Total payment amount (₹ ' + totalPaymentAmount.toFixed(2) + ') cannot exceed bank transaction amount (₹ ' + bankAmount.toFixed(2) + ')'
             );
             return;
         }
@@ -3319,7 +3459,7 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
     // Load outstanding expense claims for employee
     function load_outstanding_expense_claims(employee) {
         frappe.call({
-            method: 'nexapp.api.get_outstanding_expense_claims',
+            method: 'nexapp.api.get_unpaid_expense_claims',
             args: {
                 employee: employee,
                 company: frappe.defaults.get_default("company")
@@ -3341,16 +3481,15 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
                         '<div>' +
                         '<strong>Expense Claim:</strong> ' + claim.name + '<br>' +
                         '<strong>Claim Date:</strong> ' + frappe.datetime.str_to_user(claim.posting_date) + '<br>' +
-                        '<strong>Description:</strong> ' + (claim.description || 'No description') +
                         '</div>' +
                         '<div style="text-align: right;">' +
-                        '<strong>Due:</strong> ₹ ' + format_currency(claim.total_sanctioned_amount || claim.outstanding_amount) +
+                        '<strong>Due:</strong> ₹ ' + format_currency(claim.outstanding_amount) +
                         '</div>' +
                         '</div>' +
                         '<div class="payment-input-container">' +
                         '<input type="number" class="payment-amount-input" ' +
                         'data-invoice="' + claim.name + '" ' +
-                        'data-max="' + (claim.total_sanctioned_amount || claim.outstanding_amount) + '" ' +
+                        'data-max="' + claim.outstanding_amount + '" ' +
                         'placeholder="Enter payment amount" ' +
                         'step="0.01" />' +
                         '</div>' +
@@ -3516,12 +3655,12 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
 
         $('.payment-amount-input').each(function () {
             const payment = parseFloat($(this).val()) || 0;
-            const maxAmount = parseFloat($(this).data('max'));
+            const maxAmount = parseFloat($(this).data('max')) || 0;
 
-            if (payment > maxAmount) {
+            if (Math.round(payment * 100) > Math.round(maxAmount * 100)) {
                 frappe.msgprint({
                     title: "Warning",
-                    message: `Payment amount (₹ ${payment}) exceeds invoice outstanding amount (₹ ${maxAmount}).`,
+                    message: `Payment amount (₹ ${payment.toFixed(2)}) exceeds invoice outstanding amount (₹ ${maxAmount.toFixed(2)}).`,
                     indicator: "orange"
                 });
             }
@@ -3529,10 +3668,10 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
             totalAllocated += payment;
         });
 
-        if (totalAllocated > bankAmount) {
+        if (Math.round(totalAllocated * 100) > Math.round(bankAmount * 100)) {
             frappe.msgprint({
                 title: "Warning",
-                message: `Total allocated amount (₹ ${totalAllocated}) exceeds bank transaction amount (₹ ${bankAmount}). Excess will be treated as overpayment.`,
+                message: `Total allocated amount (₹ ${totalAllocated.toFixed(2)}) exceeds bank transaction amount (₹ ${bankAmount.toFixed(2)}). Excess will be treated as overpayment.`,
                 indicator: "orange"
             });
         }
@@ -3550,11 +3689,11 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
 
         $('.payment-amount-input').each(function () {
             const payment = parseFloat($(this).val()) || 0;
-            const maxAmount = parseFloat($(this).data('max'));
+            const maxAmount = parseFloat($(this).data('max')) || 0;
 
-            if (payment > maxAmount) {
-                frappe.msgprint('Payment amount cannot exceed expense claim outstanding amount (₹ ' + maxAmount + ')');
-                $(this).val(maxAmount);
+            if (Math.round(payment * 100) > Math.round(maxAmount * 100)) {
+                frappe.msgprint('Payment amount cannot exceed expense claim outstanding amount (₹ ' + maxAmount.toFixed(2) + ')');
+                $(this).val(maxAmount.toFixed(2));
                 totalPayment += maxAmount;
             } else {
                 totalPayment += payment;
@@ -3563,8 +3702,8 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
 
         $('#payment-amount-display').text(totalPayment.toFixed(2));
 
-        if (totalPayment > bankAmount) {
-            frappe.msgprint('Total payment amount (₹ ' + totalPayment + ') cannot exceed bank transaction amount (₹ ' + bankAmount + ')');
+        if (Math.round(totalPayment * 100) > Math.round(bankAmount * 100)) {
+            frappe.msgprint('Total payment amount (₹ ' + totalPayment.toFixed(2) + ') cannot exceed bank transaction amount (₹ ' + bankAmount.toFixed(2) + ')');
         }
     }
 
@@ -3584,8 +3723,8 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
         update_total_payment();
 
         const bankAmount = parseFloat($('#manual-amount').val().replace(/₹\s?/, '') || 0);
-        if (totalAllocated > bankAmount) {
-            frappe.msgprint({ title: 'Warning', message: 'Total allocated amount (₹ ' + totalAllocated + ') exceeds bank transaction amount (₹ ' + bankAmount + ')', indicator: 'orange' });
+        if (Math.round(totalAllocated * 100) > Math.round(bankAmount * 100)) {
+            frappe.msgprint({ title: 'Warning', message: 'Total allocated amount (₹ ' + totalAllocated.toFixed(2) + ') exceeds bank transaction amount (₹ ' + bankAmount.toFixed(2) + ')', indicator: 'orange' });
         }
     }
 
@@ -3612,11 +3751,11 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
 
         $('.payment-amount-input').each(function () {
             const payment = parseFloat($(this).val()) || 0;
-            const maxAmount = parseFloat($(this).data('max'));
+            const maxAmount = parseFloat($(this).data('max')) || 0;
 
-            if (payment > maxAmount) {
-                frappe.msgprint('Payment amount cannot exceed invoice outstanding amount (₹ ' + maxAmount + ')');
-                $(this).val(maxAmount);
+            if (Math.round(payment * 100) > Math.round(maxAmount * 100)) {
+                frappe.msgprint('Payment amount cannot exceed invoice outstanding amount (₹ ' + maxAmount.toFixed(2) + ')');
+                $(this).val(maxAmount.toFixed(2));
                 totalPayment += maxAmount;
             } else {
                 totalPayment += payment;
@@ -3625,8 +3764,8 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
 
         $('#payment-amount-display').text(totalPayment.toFixed(2));
 
-        if (totalPayment > bankAmount) {
-            frappe.msgprint('Total payment amount (₹ ' + totalPayment + ') cannot exceed bank transaction amount (₹ ' + bankAmount + ')');
+        if (Math.round(totalPayment * 100) > Math.round(bankAmount * 100)) {
+            frappe.msgprint('Total payment amount (₹ ' + totalPayment.toFixed(2) + ') cannot exceed bank transaction amount (₹ ' + bankAmount.toFixed(2) + ')');
         }
     }
 

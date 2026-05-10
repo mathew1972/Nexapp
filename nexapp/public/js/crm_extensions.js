@@ -42,4 +42,3 @@ function handleCCRAction({ doc, call, createToast }) {
     dialog.show();
 }
 
-

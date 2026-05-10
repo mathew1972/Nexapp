@@ -6,3 +6,17 @@ tags
 node_modules
 __pycache__
 nexapp/public/dist/
+*.log
+*.gz
+*.tar
+*.sqlite3
+*.bak
+*.tmp
+*.pid
+.env
+.vscode/
+.idea/
+coverage/
+dist/
+build/
+*.coverage

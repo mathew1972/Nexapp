@@ -1,346 +1,318 @@
-frappe.pages['employee-survey-page'].on_page_load = function (wrapper) {
+// ===========================================
+// ORIGINAL CLEAN DESIGN - STABLE
+// ===========================================
 
-    let page = frappe.ui.make_app_page({
-        parent: wrapper,
-        title: __(''),
-        single_column: true
-    });
+const init_survey_page = function (wrapper) {
+    const $wrapper = $(wrapper);
+    let surveyData = null;
+    let surveyName = frappe.utils.get_url_arg("survey");
 
-    let survey = frappe.utils.get_url_arg("survey");
+    const initialLayout = `
+        <div id="survey-page-root">
+            <div class="sticky-progress-container"><div class="sticky-progress-bar" id="page-progress-bar"></div></div>
+            <div class="survey-container">
+                <div id="submission-status-banner"></div>
+                <div id="survey-skeleton">
+                    <div class="survey-header" style="height: 250px;"><div class="skeleton-shimmer" style="height: 40px; width: 60%; border-radius: 8px;"></div></div>
+                    <div class="survey-card" style="height: 150px;"></div>
+                </div>
+                <div id="survey-main-content" style="display: none;">
+                    <div class="survey-header">
+                        <div class="survey-type-badge" id="survey-type-display" style="display: none;"></div>
+                        <div class="survey-title" id="survey-title-display"></div>
+                        <div class="survey-desc" id="survey-desc-display"></div>
+                        <div class="timeline-wrapper">
+                            <span class="timeline-label">TIMELINE:</span>
+                            <span id="survey-start-display"></span>
+                            <div class="timeline-bar"><div class="timeline-progress" id="survey-timeline-progress"></div></div>
+                            <span id="survey-end-display"></span>
+                        </div>
+                    </div>
+                    <div id="survey-questions-container"></div>
+                    <div class="submit-container">
+                        <button class="btn btn-survey btn-save-survey" id="btn-manual-save">Save Progress</button>
+                        <button class="btn btn-survey btn-primary-survey" id="btn-manual-submit">Submit Survey</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="confetti-wrapper" class="confetti-container"></div>
+    `;
 
-    if (!survey) {
-        frappe.msgprint("❌ Survey not found");
+    let main = $wrapper.find(".layout-main-section");
+    if (!main.length) main = $wrapper.find(".page-body");
+    if (!main.length) main = $wrapper;
+    main.html(initialLayout);
+
+    if (!surveyName) {
+        renderError(main, "Survey record not found");
         return;
     }
 
-    // =========================
-    // LOAD SURVEY DATA
-    // =========================
     frappe.call({
         method: "nexapp.api.get_survey_details",
-        args: { survey: survey },
+        args: { survey: surveyName },
         callback: function (r) {
-
             if (!r.message) {
-                renderError(wrapper, "Survey record not found.");
+                renderError(main, "Survey missing or inactive");
                 return;
             }
+            surveyData = r.message;
+            $wrapper.find("#survey-skeleton").fadeOut(200, function () {
+                renderUI(surveyData);
+                $wrapper.find("#survey-main-content").fadeIn(400);
+            });
+        }
+    });
 
-            let data = r.message;
-            let existingAnswers = data.existing_answers || {};
-            let isReadOnly = Object.keys(existingAnswers).length > 0;
-            let today = frappe.datetime.get_today();
-            let isRestricted = false;
-            let restrictionMsg = "";
+    function renderUI(data) {
+        let existing = data.existing_answers || {};
+        let isReadOnly = Object.keys(existing).length > 0;
 
-            if (!data.is_active) {
-                isRestricted = true;
-                restrictionMsg = "The survey is currently inactive.";
-            } else if (!isReadOnly && today < data.start_date) {
-                isRestricted = true;
-                restrictionMsg = `The survey has not started yet. It will be available from <b>${frappe.datetime.str_to_user(data.start_date)}</b>.`;
-            } else if (!isReadOnly && today > data.end_date) {
-                isRestricted = true;
-                restrictionMsg = `The survey has expired. It was available until <b>${frappe.datetime.str_to_user(data.end_date)}</b>.`;
-            }
+        if (data.survey_type) {
+            $wrapper.find("#survey-type-display").text(data.survey_type).show();
+        }
+        $wrapper.find("#survey-title-display").text(data.title);
+        $wrapper.find("#survey-desc-display").html(data.description || "");
+        $wrapper.find("#survey-start-display").text(frappe.datetime.str_to_user(data.start_date));
+        $wrapper.find("#survey-end-display").text(frappe.datetime.str_to_user(data.end_date));
 
-            let html = `
-            <style>
-                /* PREMIUM BACKGROUND - MATCHING DESIGN */
-                body {
-                    background-color: #f0f4f8 !important;
-                    background-image: 
-                        linear-gradient(120deg, rgba(235, 248, 255, 0.8) 0%, rgba(255, 255, 255, 0.5) 100%),
-                        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%233498db' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") !important;
-                    background-attachment: fixed !important;
-                }
+        let today = frappe.datetime.get_today();
+        let total = frappe.datetime.get_diff(data.end_date, data.start_date) || 1;
+        let elapsed = frappe.datetime.get_diff(today, data.start_date);
+        let pct = Math.min(100, Math.max(0, (elapsed / total) * 100));
+        $wrapper.find("#survey-timeline-progress").css("width", pct + "%");
 
-                /* Remove extra space at the top */
-                .layout-main-section-wrapper {
-                    padding-top: 0 !important;
-                    margin-top: -20px !important;
-                }
-                
-                .page-body {
-                    padding-top: 0 !important;
-                }
-                
-                .frappe-control {
-                    margin-top: 0 !important;
-                }
+        let html = "";
+        data.questions.forEach((q, i) => {
+            html += renderQuestion(q, i, existing, isReadOnly);
+        });
+        $wrapper.find("#survey-questions-container").html(html);
 
-                .survey-container { 
-                    max-width: 850px; 
-                    margin: 0 auto; 
-                    padding: 0 20px;
-                }
+        if (isReadOnly) {
+            $wrapper.find(".submit-container").hide();
+            $wrapper.find(".survey-card").addClass("read-only");
 
-                /* GLASSMORPHISM HEADER */
-                .survey-header {
-                    background: rgba(255, 255, 255, 0.88);
-                    backdrop-filter: blur(12px);
-                    border: 1px solid rgba(255, 255, 255, 0.6);
-                    border-radius: 18px;
-                    padding: 35px;
-                    margin-bottom: 35px;
-                    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
-                }
-
-                .survey-title { font-size: 28px; font-weight: 700; color: #1a202c; margin-bottom: 12px; }
-                .survey-desc { font-size: 15px; color: #4a5568; line-height: 1.6; margin-bottom: 25px; }
-
-                /* TIMELINE DESIGN */
-                .timeline-wrapper {
-                    display: flex;
-                    align-items: center;
-                    background: rgba(241, 245, 249, 0.8);
-                    padding: 14px 22px;
-                    border-radius: 12px;
-                    font-size: 14px;
-                    color: #64748b;
-                    gap: 15px;
-                }
-                .timeline-label { font-weight: 600; color: #334155; }
-                .timeline-bar { height: 5px; flex-grow: 1; background: #cbd5e1; border-radius: 3px; position: relative; }
-                .timeline-progress { height: 100%; background: #3498db; border-radius: 3px; width: 0%; transition: width 0.6s ease-out; }
-
-                /* GLASSMORPHISM CARDS */
-                .survey-card { 
-                    background: rgba(255, 255, 255, 0.75);
-                    backdrop-filter: blur(10px);
-                    border: 1px solid rgba(255, 255, 255, 0.5);
-                    border-radius: 16px; 
-                    padding: 28px; 
-                    margin-bottom: 24px; 
-                    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-                    transition: all 0.25s ease;
-                }
-                ${isReadOnly ? '' : '.survey-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); }'}
-
-                .question-label { font-size: 17px; font-weight: 600; margin-bottom: 18px; display: block; color: #1e293b; }
-                .required-dot { color: #e53e3e; margin-left: 4px; }
-
-                /* RATING BUTTONS IMPROVED */
-                .rating-buttons { display: flex; gap: 12px; margin-top: 5px; }
-                .rating-btn { 
-                    width: 52px; height: 52px; border-radius: 14px; 
-                    border: 1px solid #e2e8f0; background: #fff; 
-                    cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                    font-weight: 600; font-size: 18px; color: #4a5568;
-                }
-                .rating-btn.active { background: #3182ce; color: #fff; border-color: #3182ce; transform: scale(1.08); box-shadow: 0 6px 15px rgba(49, 130, 206, 0.3); }
-                .rating-btn:hover:not(.active):not(:disabled) { background: #ebf8ff; border-color: #3182ce; color: #3182ce; }
-                .rating-btn:disabled { cursor: default; }
-
-                .restriction-card, .submitted-notice {
-                    text-align: center; padding: 40px 30px; border-radius: 16px; margin-bottom: 30px;
-                }
-                .restriction-card { background: #fff5f5; border: 1px solid #feb2b2; color: #c53030; }
-                .submitted-notice { background: #f0fff4; border: 1px solid #9ae6b4; color: #276749; }
-
-                .submit-container { text-align: center; margin-top: 40px; padding-bottom: 60px; }
-                .success-msg { text-align: center; padding: 70px 40px; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); border-radius: 24px; box-shadow: 0 15px 40px rgba(0,0,0,0.08); }
-                
-                .form-control:disabled { background: #f8fafc; border-color: #e2e8f0; color: #475569; }
-                .form-control { border-radius: 10px; border: 1px solid #e2e8f0; padding: 14px; transition: all 0.2s; }
-                .form-control:focus:not(:disabled) { border-color: #3182ce; box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.12); }
-            </style>
-
-            <div class="survey-container">
-                <div class="survey-header">
-                    <div class="survey-title">${data.title}</div>
-                    <div class="survey-desc">${data.description || "Thank you for participating in this survey."}</div>
-                    
-                    <div class="timeline-wrapper">
-                        <span class="timeline-label">TIMELINE:</span>
-                        <span>${frappe.datetime.str_to_user(data.start_date)}</span>
-                        <div class="timeline-bar">
-                            <div class="timeline-progress" id="survey-timeline-progress"></div>
-                        </div>
-                        <span>${frappe.datetime.str_to_user(data.end_date)}</span>
+            if (data.submission_date) {
+                let parts = data.submission_date.split(" ");
+                let formatted_date = frappe.datetime.str_to_user(parts[0]);
+                let time = parts[1].substring(0, 5);
+                $wrapper.find("#submission-status-banner").html(`
+                    <div class="submission-banner">
+                        <i class="fa fa-check-circle"></i>
+                        <span>You submitted this survey as <strong>${data.user_fullname}</strong> 
+                        on <strong>${formatted_date}</strong> at <strong>${time}</strong>.</span>
                     </div>
-                </div>`;
-
-            if (isReadOnly) {
-                html += `
-                <div class="submitted-notice">
-                    <div style="font-size: 28px; margin-bottom: 10px;">✅</div>
-                    <h4 style="margin: 0;">Submission Recorded</h4>
-                    <p style="margin-top: 8px; font-size: 15px;">You have already submitted this survey. Below is a read-only view of your responses.</p>
-                </div>`;
+                `).fadeIn();
             }
+        } else {
+            loadDrafts();
+            bindEvents();
+            updateScrollProgress();
+        }
+    }
 
-            if (isRestricted) {
-                html += `
-                <div class="restriction-card">
-                    <div style="font-size: 40px; margin-bottom: 15px;">⚠️</div>
-                    <h3>Survey Access Restricted</h3>
-                    <p>${restrictionMsg}</p>
-                    <br>
-                    <button class="btn btn-default" onclick="location.href='/app'">Go Back</button>
-                </div>`;
-            } else if (!data.questions || data.questions.length === 0) {
-                html += `<div class="survey-card"><p>No questions found for this survey.</p></div>`;
+    function renderQuestion(q, i, existing, isReadOnly) {
+        let qtype = (q.type || "").toLowerCase();
+        let mandatory = q.mandatory ? 1 : 0;
+        let val = existing[q.question] || "";
+
+        let html = `<div class="survey-card" data-idx="${i}" data-mandatory="${mandatory}">`;
+        if (q.image) html += `<img src="${q.image}" class="question-image">`;
+        html += `<label class="question-label">${q.question}${q.mandatory && !isReadOnly ? '<span class="required-dot">*</span>' : ''}</label>`;
+        if (q.description) html += `<div class="question-desc">${q.description}</div>`;
+
+        if (qtype.includes("text") || qtype.includes("data") || qtype.includes("paragraph")) {
+            if (qtype.includes("paragraph")) {
+                html += `<textarea id="q_${i}" data-q="${q.question}" class="form-control s-in" rows="4" ${isReadOnly ? 'disabled' : ''}>${val}</textarea>`;
             } else {
+                html += `<input type="text" id="q_${i}" data-q="${q.question}" class="form-control s-in" value="${val}" ${isReadOnly ? 'disabled' : ''}/>`;
+            }
+        } else if (qtype.includes("slider")) {
+            let currentVal = val || 50;
+            html += `<div class="slider-wrapper">
+                        <input type="range" id="q_${i}" data-q="${q.question}" class="survey-slider s-in" min="0" max="100" value="${currentVal}" ${isReadOnly ? 'disabled' : ''}>
+                        <div class="slider-value-display">${currentVal}%</div>
+                     </div>`;
+        } else if (qtype.includes("rating") || qtype.includes("emoji")) {
+            const emojiMap = { 1: "😢", 2: "😐", 3: "🙂", 4: "😊", 5: "😍" };
+            html += `<div class="rating-buttons emoji-grid" id="btn_grp_${i}">`;
+            for (let s = 1; s <= 5; s++) {
+                let active = (String(s) === String(val)) ? "active" : "";
+                html += `
+                    <button class="emoji-btn s-btn ${active}" data-val="${s}" data-idx="${i}">
+                        <span class="emoji-icon">${emojiMap[s]}</span>
+                        <span class="emoji-label">${s}</span>
+                    </button>`;
+            }
+            html += `</div>`;
+            html += `<input type="hidden" id="q_${i}" data-q="${q.question}" value="${val}"/>`;
+        } else if (qtype.includes("mcq") || q.options) {
+            html += `<div class="rating-buttons" id="btn_grp_${i}">`;
+            let opts = q.options.includes(",") ? q.options.split(",") : q.options.split("\n");
+            opts.forEach(opt => {
+                let o = String(opt).trim();
+                if (o) {
+                    let active = (o === String(val)) ? "active" : "";
+                    html += `<button class="rating-btn s-btn ${active}" data-val="${o}" data-idx="${i}">${o}</button>`;
+                }
+            });
+            html += `</div>`;
+            html += `<input type="hidden" id="q_${i}" data-q="${q.question}" value="${val}"/>`;
+        }
 
-                data.questions.forEach((q, i) => {
-                    let qtype = (q.type || "").toLowerCase();
-                    let is_mandatory = q.mandatory ? 1 : 0;
-                    let existingVal = existingAnswers[q.question] || "";
+        html += `<div class="error-text" style="display:none;">⚠️ This field is mandatory</div>`;
+        html += `</div>`;
+        return html;
+    }
 
-                    html += `<div class="survey-card" data-idx="${i}" data-mandatory="${is_mandatory}">`;
-                    html += `<label class="question-label">${q.question}${q.mandatory && !isReadOnly ? '<span class="required-dot">*</span>' : ''}</label>`;
+    function bindEvents() {
+        $wrapper.find(".s-btn").on("click", function () {
+            let i = $(this).attr("data-idx");
+            let v = $(this).attr("data-val");
+            $(this).siblings().removeClass("active");
+            $(this).addClass("active");
+            $wrapper.find(`#q_${i}`).val(v).trigger("change");
+        });
 
-                    if (qtype.includes("text") || qtype.includes("data")) {
-                        html += `<input type="text" data-question="${q.question}" id="q_${i}" class="form-control" 
-                            value="${existingVal}" ${isReadOnly ? 'disabled' : ''} placeholder="Type your answer..."/>`;
-                    }
-                    else if (qtype.includes("paragraph") || qtype.includes("small text")) {
-                        html += `<textarea data-question="${q.question}" id="q_${i}" class="form-control" rows="4" 
-                            ${isReadOnly ? 'disabled' : ''} placeholder="Type your response here...">${existingVal}</textarea>`;
-                    }
-                    else if (qtype.includes("mcq") || q.options) {
-                        html += `<select data-question="${q.question}" id="q_${i}" class="form-control" ${isReadOnly ? 'disabled' : ''}>`;
-                        html += `<option value="">Choose an option</option>`;
-                        if (q.options) {
-                            let opts = q.options.includes(",") ? q.options.split(",") : q.options.split("\n");
-                            opts.forEach(opt => {
-                                let val = opt.trim();
-                                if (val) {
-                                    let selected = (val === existingVal) ? "selected" : "";
-                                    html += `<option value="${val}" ${selected}>${val}</option>`;
-                                }
-                            });
-                        }
-                        html += `</select>`;
-                    }
-                    else if (qtype.includes("rating")) {
-                        html += `<div class="rating-buttons" id="rate_container_${i}">`;
-                        for (let star = 1; star <= 5; star++) {
-                            let activeCls = (parseInt(existingVal) === star) ? "active" : "";
-                            html += `<button class="rating-btn ${activeCls}" ${isReadOnly ? 'disabled' : ''} 
-                                onclick="setRating(${i}, ${star}, this)">${star}</button>`;
-                        }
-                        html += `</div>`;
-                        html += `<input type="hidden" data-question="${q.question}" id="q_${i}" value="${existingVal}"/>`;
-                    }
-                    else {
-                        html += `<input type="text" data-question="${q.question}" id="q_${i}" class="form-control" 
-                            value="${existingVal}" ${isReadOnly ? 'disabled' : ''}/>`;
-                    }
+        $wrapper.find(".s-in, input[type='hidden']").on("input change", function () {
+            if ($(this).hasClass("survey-slider")) {
+                let v = $(this).val();
+                $(this).closest(".slider-wrapper").find(".slider-value-display").text(v + "%");
+                updateSliderTrack($(this));
+            }
+            updateScrollProgress();
+            saveDrafts();
+            $(this).closest(".survey-card").find(".error-text").hide();
+        });
 
-                    html += `</div>`;
-                });
+        $wrapper.find("#btn-manual-save").on("click", () => {
+            saveDrafts();
+            frappe.show_alert({ message: "Progress saved!", indicator: "green" });
+        });
 
-                if (!isReadOnly) {
-                    html += `
-                        <div class="submit-container">
-                            <button class="btn btn-primary btn-lg" style="padding: 14px 50px; font-weight: 600; border-radius: 12px; font-size: 18px;" 
-                                onclick="submitSurvey()" id="btn-submit">
-                                Submit Survey
-                            </button>
+        $wrapper.find("#btn-manual-submit").on("click", submitSurveyResponse);
+
+        // Init sliders
+        $wrapper.find(".survey-slider").each(function () {
+            updateSliderTrack($(this));
+        });
+    }
+
+    function updateSliderTrack($slider) {
+        let v = $slider.val();
+        let r = Math.floor(255 * (1 - v / 100));
+        let g = Math.floor(200 * (v / 100));
+        let color = `rgb(${r}, ${g}, 0)`;
+        $slider.css("background", `linear-gradient(90deg, ${color} ${v}%, #e2e8f0 ${v}%)`);
+    }
+
+    function updateScrollProgress() {
+        let mandatory = $wrapper.find(".survey-card[data-mandatory='1']");
+        let filled = 0;
+        mandatory.each(function () {
+            let i = $(this).attr("data-idx");
+            if ($wrapper.find(`#q_${i}`).val()) filled++;
+        });
+        let pct = mandatory.length > 0 ? (filled / mandatory.length) * 100 : 0;
+        $wrapper.find("#page-progress-bar").css("width", pct + "%");
+    }
+
+    function saveDrafts() {
+        let d = {};
+        $wrapper.find(".survey-card[data-idx]").each(function () {
+            let i = $(this).attr("data-idx");
+            d[i] = $wrapper.find(`#q_${i}`).val();
+        });
+        localStorage.setItem("survey_draft_" + surveyName, JSON.stringify(d));
+    }
+
+    function loadDrafts() {
+        let d = localStorage.getItem("survey_draft_" + surveyName);
+        if (d) {
+            d = JSON.parse(d);
+            Object.keys(d).forEach(i => {
+                let v = d[i];
+                if (v) {
+                    $wrapper.find(`#q_${i}`).val(v);
+                    $wrapper.find(`#btn_grp_${i} .s-btn`).each(function () {
+                        if (String($(this).attr("data-val")) === String(v)) $(this).addClass("active");
+                    });
+                }
+            });
+        }
+    }
+
+    function submitSurveyResponse() {
+        let ans = [];
+        let valid = true;
+        let first = null;
+
+        $wrapper.find(".survey-card[data-idx]").each(function () {
+            let i = $(this).attr("data-idx");
+            let v = $wrapper.find(`#q_${i}`).val();
+            let q = $wrapper.find(`#q_${i}`).attr("data-q");
+            let m = $(this).attr("data-mandatory") === "1";
+
+            if (m && (!v || !v.trim())) {
+                valid = false;
+                $(this).find(".error-text").fadeIn();
+                if (!first) first = this;
+            }
+            ans.push({ question: q, answer: v });
+        });
+
+        if (!valid) {
+            if (first) $('html, body').animate({ scrollTop: $(first).offset().top - 100 }, 600);
+            return;
+        }
+
+        frappe.call({
+            method: "nexapp.api.save_survey_response",
+            args: { survey: surveyName, answers: ans },
+            freeze: true,
+            callback: function (r) {
+                if (r.message && r.message.status === "success") {
+                    localStorage.removeItem("survey_draft_" + surveyName);
+
+                    // Clear and Show Success
+                    const successHtml = `
+                        <div class="survey-card success-card" style="text-align: center; padding: 80px 40px; margin-top: 40px;">
+                            <div style="font-size: 80px; margin-bottom: 20px;">🎉</div>
+                            <h2 style="font-weight: 800; font-size: 32px;">Submission Successful!</h2>
+                            <p style="font-size: 18px; color: #4a5568; margin-bottom: 30px;">Thank you for taking the time to provide your feedback.</p>
+                            <button class="btn btn-primary btn-lg" onclick="location.reload()" style="padding: 12px 60px; border-radius: 12px; font-weight: 700;">Done</button>
                         </div>`;
+
+                    $wrapper.find(".survey-container").html(successHtml);
+                    $wrapper.find("#page-progress-bar").css("width", "100%").css("background", "#48bb78");
+                    triggerConfetti();
                 }
             }
-
-            html += `</div>`;
-
-            $(wrapper).find(".layout-main-section").html(html);
-
-            // Update Timeline Progress bar
-            setTimeout(() => {
-                let total = frappe.datetime.get_diff(data.end_date, data.start_date) || 1;
-                let elapsed = frappe.datetime.get_diff(today, data.start_date);
-                let pct = Math.min(100, Math.max(0, (elapsed / total) * 100));
-                $("#survey-timeline-progress").css("width", pct + "%");
-            }, 300);
-        }
-    });
-
-    // Rating Helper
-    window.setRating = function (idx, val, btn) {
-        $(`#q_${idx}`).val(val);
-        $(`#rate_container_${idx} .rating-btn`).removeClass('active');
-        $(btn).addClass('active');
-    };
-};
-
-function renderError(wrapper, msg) {
-    $(wrapper).find(".layout-main-section").html(`<div class="container" style="padding: 50px; text-align: center;"><h3>❌ ${msg}</h3></div>`);
-}
-
-// =========================
-// SUBMIT FUNCTION
-// =========================
-window.submitSurvey = function () {
-    let survey = frappe.utils.get_url_arg("survey");
-    if (!survey) return;
-
-    let answers = [];
-    let isValid = true;
-    let missingQuestions = [];
-
-    $(".survey-card").css("border-color", "rgba(255, 255, 255, 0.5)");
-
-    document.querySelectorAll(".survey-card[data-idx]").forEach(card => {
-        let i = card.getAttribute("data-idx");
-        let is_mandatory = parseInt(card.getAttribute("data-mandatory"));
-        let input = document.getElementById(`q_${i}`);
-
-        if (!input) return;
-
-        let val = input.value.trim();
-        let questionText = input.getAttribute("data-question");
-
-        if (is_mandatory && !val) {
-            isValid = false;
-            $(card).css("border-color", "#e53e3e");
-            missingQuestions.push(questionText);
-        }
-
-        answers.push({
-            question: questionText,
-            answer: val
         });
-    });
-
-    if (!isValid) {
-        frappe.msgprint({
-            title: __('Validation Error'),
-            indicator: 'red',
-            message: __('Please answer all mandatory questions:<br><br><ul><li>' + missingQuestions.join('</li><li>') + '</li></ul>')
-        });
-        return;
     }
 
-    if (answers.length === 0) {
-        frappe.msgprint("❌ No questions found to submit");
-        return;
+    function renderError(target, msg) {
+        target.html(`<div class="container" style="padding: 50px; text-align: center;"><h3>❌ ${msg}</h3></div>`);
     }
 
-    frappe.call({
-        method: "nexapp.api.save_survey_response",
-        args: { survey: survey, answers: answers },
-        freeze: true,
-        freeze_message: "Submitting...",
-        callback: function (r) {
-            if (r.message && r.message.status === "success") {
-                let successHtml = `
-                    <div class="success-msg">
-                        <div style="font-size: 70px; margin-bottom: 25px;">🎉</div>
-                        <h1 style="color: #1a202c; font-weight: 800; font-size: 32px; letter-spacing: -0.5px;">Submission Received!</h1>
-                        <p style="font-size: 18px; color: #4a5568; margin-top: 15px;">Thank you for your valuable feedback. Your response has been recorded.</p>
-                        <br><br>
-                        <button class="btn btn-default btn-lg" onclick="location.reload()" style="padding: 12px 40px; border-radius: 12px;">Close Survey</button>
-                    </div>`;
-                $(".survey-container").html(successHtml);
-            } else {
-                frappe.msgprint("❌ Error: " + (r.message?.message || "Internal Server Error"));
-            }
-        },
-        error: function (err) {
-            frappe.msgprint("❌ Submission Failed (Server Error)");
+    function triggerConfetti() {
+        const container = $("#confetti-wrapper");
+        const colors = ['#f2d74e', '#95c3de', '#ff9a91', '#85cc7a', '#7878d1'];
+        for (let i = 0; i < 50; i++) {
+            let confetti = $('<div class="confetti"></div>');
+            confetti.css({
+                'left': Math.random() * 100 + '%',
+                'background-color': colors[Math.floor(Math.random() * colors.length)],
+                'animation-delay': Math.random() * 2 + 's',
+                'width': (Math.random() * 10 + 6) + 'px',
+                'height': (Math.random() * 10 + 6) + 'px'
+            });
+            container.append(confetti);
         }
-    });
+    }
 };
-/////////////////////////////////////////////////////////////////////////////////
+
+// DUAL HOOK REGISTRATION
+frappe.pages['employee-survey-page'].on_page_load = function (wrapper) { init_survey_page(wrapper); };
+frappe.pages['employee_survey_page'].on_page_load = function (wrapper) { init_survey_page(wrapper); };

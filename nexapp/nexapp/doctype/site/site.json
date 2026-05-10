@@ -31,6 +31,8 @@
   "stage",
   "lms_stage",
   "site_type",
+  "service_type",
+  "project_manager",
   "review_section",
   "project_review",
   "column_break_sphp",
@@ -144,14 +146,11 @@
   "branch_router_ip",
   "tab_3_tab",
   "project_team_information_section",
-  "project_manager_2",
-  "project_manager_email",
   "sales_person",
   "assigned_owner",
   "column_break_vnda",
   "site_created_date",
   "total_days",
-  "project_manager",
   "project_section",
   "column_break_frik",
   "project_name",
@@ -1119,13 +1118,6 @@
    "placeholder": "Use only one email ID"
   },
   {
-   "bold": 1,
-   "fetch_from": "project_manager.full_name",
-   "fieldname": "project_manager_2",
-   "fieldtype": "Data",
-   "label": "Project Manager"
-  },
-  {
    "fieldname": "column_break_vnda",
    "fieldtype": "Column Break"
   },
@@ -1137,12 +1129,10 @@
    "read_only": 1
   },
   {
-   "fetch_from": "project_manager.email",
    "fieldname": "assigned_owner",
    "fieldtype": "Data",
    "hidden": 1,
    "label": "Assigned Owner",
-   "options": "Email",
    "read_only": 1
   },
   {
@@ -1277,7 +1267,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "customer.account_manager",
    "fieldname": "sales_person",
    "fieldtype": "Data",
    "label": "Sales Person"
@@ -1354,12 +1343,6 @@
    "label": "site_stage_progress"
   },
   {
-   "fetch_from": "project_manager_2.company_email",
-   "fieldname": "project_manager_email",
-   "fieldtype": "Data",
-   "label": "Project Manager Email"
-  },
-  {
    "fieldname": "lms_feasibility_tab",
    "fieldtype": "Tab Break",
    "label": "LMS Feasibility"
@@ -1389,11 +1372,6 @@
    "options": "Customer Type"
   },
   {
-   "fieldname": "project_manager",
-   "fieldtype": "Data",
-   "label": "Project Manager"
-  },
-  {
    "fieldname": "branch_router_ip",
    "fieldtype": "Data",
    "label": "Branch Router IP"
@@ -1405,13 +1383,24 @@
    "label": "Circuit Delivery Delay Reason",
    "mandatory_depends_on": "eval:doc.date < frappe.datetime.add_days(frappe.datetime.get_today(), -7)",
    "placeholder": "If the back date is more than 7 days, you must provide a valid reason for the delay."
+  },
+  {
+   "fetch_from": "sales_order.custom_service_type",
+   "fieldname": "service_type",
+   "fieldtype": "Data",
+   "label": "Service Type"
+  },
+  {
+   "fieldname": "project_manager",
+   "fieldtype": "Data",
+   "label": "Project Manager"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_calendar_and_gantt": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2026-03-26 19:39:08.463947",
+ "modified": "2026-05-04 23:10:12.294125",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",
@@ -1440,7 +1429,6 @@
   },
   {
    "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
@@ -1495,7 +1483,6 @@
   },
   {
    "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
@@ -1517,7 +1504,6 @@
   },
   {
    "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
@@ -1539,7 +1525,6 @@
   },
   {
    "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
@@ -1559,6 +1544,15 @@
    "role": "All",
    "share": 1,
    "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts  & Finance Manager",
+   "share": 1
   }
  ],
  "sort_field": "modified",

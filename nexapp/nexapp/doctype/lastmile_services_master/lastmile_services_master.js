@@ -580,3 +580,112 @@ async function add_lms_buttons(frm) {
     }, __('LMS Management Group'));
 
 } // END add_lms_buttons()
+
+///////////////////////////////////////////////////////////////////////////////////
+frappe.ui.form.on('Lastmile Services Master', {
+
+    onload: function (frm) {
+        lock_lms_date_field(frm);
+        handle_billing_field(frm);
+    },
+
+    refresh: function (frm) {
+        lock_lms_date_field(frm);
+        handle_billing_field(frm);
+    },
+
+    lms_delivery_date: function (frm) {
+
+        if (!frm.doc.lms_delivery_date) return;
+
+        // Administrator bypass
+        if (frappe.session.user === "Administrator") {
+            frm.set_df_property('billing_start_date', 'reqd', 1);
+            lock_lms_date_field(frm);
+            return;
+        }
+
+        // Ignore back-date rule for POC Customer
+        if (frm.doc.customer_type === "POC Customer") {
+            frm.set_df_property('billing_start_date', 'reqd', 1);
+            lock_lms_date_field(frm);
+            return;
+        }
+
+        let today = frappe.datetime.get_today();
+        let allowed_back_date = frappe.datetime.add_days(today, -7);
+
+        // Back date validation (7 days only)
+        if (frm.doc.lms_delivery_date < allowed_back_date) {
+
+            frappe.msgprint({
+                title: __('Invalid Date'),
+                message: __(
+                    'Back date is allowed only for the last 7 days.<br>' +
+                    'Allowed range: <b>{0}</b> to <b>{1}</b>.',
+                    [allowed_back_date, today]
+                ),
+                indicator: 'red'
+            });
+
+            frm.set_value('lms_delivery_date', null);
+            return;
+        }
+
+        // Make billing_start_date mandatory
+        frm.set_df_property('billing_start_date', 'reqd', 1);
+
+        lock_lms_date_field(frm);
+    },
+
+
+
+    billing_start_date: function (frm) {
+
+        if (!frm.doc.billing_start_date) return;
+
+        // Administrator can edit anytime
+        if (frappe.session.user === "Administrator") return;
+
+        // Allow update once, then freeze
+        frm.set_df_property('billing_start_date', 'read_only', 1);
+
+    }
+
+});
+
+
+function lock_lms_date_field(frm) {
+
+    // Skip new document
+    if (frm.is_new()) return;
+
+    // Administrator always editable
+    if (frappe.session.user === "Administrator") {
+        frm.set_df_property('lms_delivery_date', 'read_only', 0);
+        return;
+    }
+
+    // Lock after save
+    if (frm.doc.lms_delivery_date) {
+        frm.set_df_property('lms_delivery_date', 'read_only', 1);
+    }
+}
+
+
+
+function handle_billing_field(frm) {
+
+    if (!frm.doc.billing_start_date) {
+
+        frm.set_df_property('billing_start_date', 'read_only', 0);
+
+    } else {
+
+        if (frappe.session.user !== "Administrator") {
+            frm.set_df_property('billing_start_date', 'read_only', 1);
+        }
+
+    }
+
+}

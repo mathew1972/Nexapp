@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"1nr6UkvDiL\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h5\\\"><b>PORTAL</b></span>\",\"col\":12}},{\"id\":\"1hyi8SysUY\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"CRM Portal Page\",\"col\":3}},{\"id\":\"ktENiGaqXQ\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"VgeWLYOuAS\",\"type\":\"paragraph\",\"data\":{\"text\":\"<b>SHORTCUTS</b>\",\"col\":12}},{\"id\":\"A66FpG-K3T\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Leads\",\"col\":3}},{\"id\":\"n9b6N5ebOj\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Deals\",\"col\":3}},{\"id\":\"sGHTXrludH\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Organizations\",\"col\":3}},{\"id\":\"uXZNCdqxy0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Contacts\",\"col\":3}},{\"id\":\"v1kkMwlntf\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"SLA\",\"col\":3}},{\"id\":\"WRzt4SMh_b\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Assignment Rule\",\"col\":3}},{\"id\":\"TZ7cULX3Tk\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"zpySv0nGVQ\",\"type\":\"paragraph\",\"data\":{\"text\":\"<b>META</b>\",\"col\":12}},{\"id\":\"fa-uKzobpp\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Lead Statuses\",\"col\":3}},{\"id\":\"hxoZghUHP2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Deal Statuses\",\"col\":3}},{\"id\":\"HbgghUpc8N\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Lead Sources\",\"col\":3}},{\"id\":\"8cPs7Fohb4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Industries\",\"col\":3}},{\"id\":\"arT4xZ9HWR\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Territories\",\"col\":3}},{\"id\":\"ApHOcISpiJ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Communication Statuses\",\"col\":3}}]",
+ "content": "[{\"id\":\"1nr6UkvDiL\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h5\\\"><b>PORTAL</b></span>\",\"col\":12}},{\"id\":\"1hyi8SysUY\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"CRM Portal Page\",\"col\":3}},{\"id\":\"Ul0CQCM6eo\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Nexapp AI Assistant\",\"col\":3}},{\"id\":\"ktENiGaqXQ\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"VgeWLYOuAS\",\"type\":\"paragraph\",\"data\":{\"text\":\"<b>SHORTCUTS</b>\",\"col\":12}},{\"id\":\"A66FpG-K3T\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Leads\",\"col\":3}},{\"id\":\"n9b6N5ebOj\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Deals\",\"col\":3}},{\"id\":\"9rRxerT_TC\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Quotation\",\"col\":3}},{\"id\":\"sGHTXrludH\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Organizations\",\"col\":3}},{\"id\":\"uXZNCdqxy0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Contacts\",\"col\":3}},{\"id\":\"v1kkMwlntf\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"SLA\",\"col\":3}},{\"id\":\"WRzt4SMh_b\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Assignment Rule\",\"col\":3}},{\"id\":\"TZ7cULX3Tk\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"92RLsh-ARB\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer\",\"col\":3}},{\"id\":\"rxxs-eah1_\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Analytics\",\"col\":3}},{\"id\":\"9yjT5gd4SQ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Feasibility\",\"col\":3}},{\"id\":\"b8E-Os-eGW\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Task\",\"col\":3}},{\"id\":\"VldPHoSsoE\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Site\",\"col\":3}},{\"id\":\"1K8ko7X7jP\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Data Import\",\"col\":3}},{\"id\":\"Y2fgXVo0Q1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Disconnection Request\",\"col\":3}},{\"id\":\"a5KZWXqzzM\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Expense Claim\",\"col\":3}},{\"id\":\"QfLOWqECyJ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Employee Advance\",\"col\":3}},{\"id\":\"1ALztUI6u3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Blanket Order\",\"col\":3}},{\"id\":\"1q4sMnWLu6\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Nexapp Support AI\",\"col\":3}},{\"id\":\"xHpx8goyO6\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Installation Note\",\"col\":3}},{\"id\":\"KPUIL7sKrI\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"yUCcOCjTJR\",\"type\":\"header\",\"data\":{\"text\":\"Report<span class=\\\"h4\\\"><b></b></span>\",\"col\":12}},{\"id\":\"Y8GliwVhYJ\",\"type\":\"card\",\"data\":{\"card_name\":\"Report\",\"col\":4}}]",
  "creation": "2023-11-27 13:55:17.090361",
  "custom_blocks": [],
  "docstatus": 0,
@@ -12,8 +12,59 @@
  "indicator_color": "",
  "is_hidden": 0,
  "label": "Frappe CRM",
- "links": [],
- "modified": "2025-11-11 18:38:52.948269",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Report",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Disconnection",
+   "link_count": 0,
+   "link_to": "Disconnection Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Sales Order Lookup by Circuit ID",
+   "link_count": 0,
+   "link_to": "Sales Order Lookup by Circuit ID",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Task Update",
+   "link_count": 0,
+   "link_to": "Task Update",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Task",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Task Lookup by Circuit ID/Purchase Order",
+   "link_count": 0,
+   "link_to": "Task Lookup by Circuit ID",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-05-06 23:22:53.802187",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Frappe CRM",
@@ -22,14 +73,76 @@
  "parent_page": "",
  "public": 1,
  "quick_lists": [],
- "roles": [],
- "sequence_id": 1.0,
+ "roles": [
+  {
+   "role": "Sales Manager"
+  },
+  {
+   "role": "Sales User"
+  }
+ ],
+ "sequence_id": 4.0,
  "shortcuts": [
   {
    "color": "Grey",
    "doc_view": "List",
-   "label": "Communication Statuses",
-   "link_to": "CRM Communication Status",
+   "label": "Quotation",
+   "link_to": "Quotation",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Site",
+   "link_to": "Site",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Disconnection Request",
+   "link_to": "Disconnection Request",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Installation Note",
+   "link_to": "Installation Note",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Nexapp AI Assistant",
+   "type": "URL",
+   "url": "https://erp.nexapp.co.in/app/ai-assistant"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Customer",
+   "link_to": "Customer",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Data Import",
+   "link_to": "Data Import",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Expense Claim",
+   "link_to": "Expense Claim",
    "stats_filter": "[]",
    "type": "DocType"
   },
@@ -44,9 +157,40 @@
   {
    "color": "Grey",
    "doc_view": "List",
+   "label": "Sales Analytics",
+   "link_to": "Sales Analytics",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Employee Advance",
+   "link_to": "Employee Advance",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
    "label": "CRM Portal Page",
    "type": "URL",
    "url": "/crm"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Feasibility",
+   "link_to": "Feasibility",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Blanket Order",
+   "link_to": "Blanket Order",
+   "stats_filter": "[]",
+   "type": "DocType"
   },
   {
    "color": "Grey",
@@ -59,18 +203,17 @@
   {
    "color": "Grey",
    "doc_view": "List",
-   "label": "Lead Statuses",
-   "link_to": "CRM Lead Status",
+   "label": "Task",
+   "link_to": "Task",
    "stats_filter": "[]",
    "type": "DocType"
   },
   {
    "color": "Grey",
-   "doc_view": "Tree",
-   "label": "Territories",
-   "link_to": "CRM Territory",
-   "stats_filter": "[]",
-   "type": "DocType"
+   "doc_view": "List",
+   "label": "Nexapp Support AI",
+   "type": "URL",
+   "url": "https://erp.nexapp.co.in/customer-ai-support"
   },
   {
    "color": "Grey",
@@ -91,22 +234,6 @@
   {
    "color": "Grey",
    "doc_view": "List",
-   "label": "Deal Statuses",
-   "link_to": "CRM Deal Status",
-   "stats_filter": "[]",
-   "type": "DocType"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "List",
-   "label": "Lead Sources",
-   "link_to": "CRM Lead Source",
-   "stats_filter": "[]",
-   "type": "DocType"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "List",
    "label": "Organizations",
    "link_to": "CRM Organization",
    "stats_filter": "[]",
@@ -118,20 +245,6 @@
    "label": "Contacts",
    "link_to": "Contact",
    "stats_filter": "[]",
-   "type": "DocType"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "List",
-   "label": "Industries",
-   "link_to": "CRM Industry",
-   "stats_filter": "[]",
-   "type": "DocType"
-  },
-  {
-   "doc_view": "List",
-   "label": "test",
-   "link_to": "test",
    "type": "DocType"
   }
  ],

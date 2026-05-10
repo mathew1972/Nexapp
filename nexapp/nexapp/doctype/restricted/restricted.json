@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:restricted",
  "creation": "2025-05-06 15:51:15.281315",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -11,18 +12,19 @@
   {
    "default": "Open",
    "fieldname": "restricted",
-   "fieldtype": "Select",
+   "fieldtype": "Data",
    "label": "Restricted",
-   "options": "Open\nRestricted"
+   "unique": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-17 13:30:09.570531",
+ "modified": "2026-04-28 18:07:54.729722",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Restricted",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -38,7 +40,6 @@
    "write": 1
   }
  ],
- "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

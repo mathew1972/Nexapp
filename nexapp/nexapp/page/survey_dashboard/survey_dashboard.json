@@ -1,0 +1,22 @@
+{
+ "content": null,
+ "creation": "2026-04-07 22:34:14.915797",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2026-04-07 23:09:54.401214",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "survey-dashboard",
+ "owner": "Administrator",
+ "page_name": "survey-dashboard",
+ "roles": [
+  {
+   "role": "HR Manager"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0
+}

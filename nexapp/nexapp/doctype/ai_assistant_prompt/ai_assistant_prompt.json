@@ -1,0 +1,61 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-04-27 10:42:00.338035",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "short_prompt",
+  "role_profile",
+  "full_prompt"
+ ],
+ "fields": [
+  {
+   "fieldname": "short_prompt",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Short Prompt",
+   "reqd": 1
+  },
+  {
+   "fieldname": "role_profile",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Role Profile",
+   "options": "Role Profile",
+   "reqd": 1
+  },
+  {
+   "fieldname": "full_prompt",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Full Prompt",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-04-27 13:35:32.805841",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "AI Assistant Prompt",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

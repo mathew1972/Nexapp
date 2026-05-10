@@ -67,6 +67,8 @@
   "subnet_mask_2",
   "wan_dns_1",
   "wan_dns_2",
+  "section_break_tubx",
+  "provisioning_attachment",
   "description_information_section",
   "description",
   "lms_information_tab",
@@ -451,12 +453,22 @@
    "fieldname": "lms_type",
    "fieldtype": "Data",
    "label": "LMS Type"
+  },
+  {
+   "fieldname": "section_break_tubx",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "provisioning_attachment",
+   "fieldtype": "Table",
+   "label": "Provisioning Attachment",
+   "options": "Provisioning Attachment"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-02-24 15:37:13.438329",
+ "modified": "2026-04-04 10:24:08.292151",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Provisioning",

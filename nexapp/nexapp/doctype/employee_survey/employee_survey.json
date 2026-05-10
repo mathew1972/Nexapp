@@ -12,9 +12,11 @@
   "description",
   "section_break_vhvr",
   "start_date",
+  "survey_type",
   "is_active",
   "column_break_sqts",
   "end_date",
+  "url",
   "anonymous",
   "section_break_dvqa",
   "questions"
@@ -26,26 +28,30 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Survey Name",
+   "reqd": 1,
    "unique": 1
   },
   {
    "fieldname": "description",
    "fieldtype": "Small Text",
-   "label": "Description"
+   "label": "Description",
+   "reqd": 1
   },
   {
    "fieldname": "start_date",
    "fieldtype": "Date",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Start Date"
+   "label": "Start Date",
+   "reqd": 1
   },
   {
    "fieldname": "end_date",
    "fieldtype": "Date",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "End Date"
+   "label": "End Date",
+   "reqd": 1
   },
   {
    "default": "0",
@@ -85,12 +91,24 @@
   {
    "fieldname": "section_break_qzem",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "url",
+   "fieldtype": "Data",
+   "label": "URL"
+  },
+  {
+   "fieldname": "survey_type",
+   "fieldtype": "Link",
+   "label": "Survey Type",
+   "options": "Survey Type",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-03-27 14:43:26.048228",
+ "modified": "2026-04-06 22:05:42.893253",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Employee Survey",

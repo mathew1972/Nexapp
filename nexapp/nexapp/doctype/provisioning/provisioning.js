@@ -167,3 +167,111 @@ function render_lms_table(frm) {
         }
     });
 }
+
+////////////////////////////////////////////////////////////////////////////
+frappe.ui.form.on('Provisioning', {
+
+    setup: function(frm) {
+        // Store original IP
+        frm._original_branch_router_ip = frm.doc.branch_router_ip || "";
+    },
+
+    onload: function(frm) {
+
+        // Reason field default readonly
+        frm.set_df_property(
+            'custom_reason_for_branch_router_ip_change',
+            'read_only',
+            1
+        );
+
+        frm.set_df_property(
+            'custom_reason_for_branch_router_ip_change',
+            'reqd',
+            0
+        );
+    },
+
+    refresh: function(frm) {
+
+        // Reset original value
+        if (!frm.is_new()) {
+            frm._original_branch_router_ip = frm.doc.branch_router_ip || "";
+        }
+
+        // Keep reason field readonly
+        frm.set_df_property(
+            'custom_reason_for_branch_router_ip_change',
+            'read_only',
+            1
+        );
+
+        frm.set_df_property(
+            'custom_reason_for_branch_router_ip_change',
+            'reqd',
+            0
+        );
+    },
+
+    branch_router_ip: function(frm) {
+
+        let old_ip = frm._original_branch_router_ip || "";
+        let new_ip = frm.doc.branch_router_ip || "";
+
+        if (old_ip && new_ip !== old_ip) {
+
+            // Enable reason field
+            frm.set_df_property(
+                'custom_reason_for_branch_router_ip_change',
+                'read_only',
+                0
+            );
+
+            // Make mandatory
+            frm.set_df_property(
+                'custom_reason_for_branch_router_ip_change',
+                'reqd',
+                1
+            );
+
+        } else {
+
+            frm.set_df_property(
+                'custom_reason_for_branch_router_ip_change',
+                'read_only',
+                1
+            );
+
+            frm.set_df_property(
+                'custom_reason_for_branch_router_ip_change',
+                'reqd',
+                0
+            );
+        }
+    },
+
+    after_save: function(frm) {
+
+        // Update Site Doctype after saving Provisioning
+        if (frm.doc.site && frm.doc.branch_router_ip) {
+
+            frappe.call({
+                method: "frappe.client.set_value",
+                args: {
+                    doctype: "Site",
+                    name: frm.doc.site,
+                    fieldname: {
+                        branch_router_ip: frm.doc.branch_router_ip
+                    }
+                },
+                callback: function(r) {
+                    if (!r.exc) {
+                        console.log("Site branch_router_ip updated");
+                    }
+                }
+            });
+
+        }
+    }
+
+});

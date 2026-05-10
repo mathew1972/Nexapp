@@ -743,28 +743,36 @@ frappe.ui.form.on('Site', {
 });
 
 ///////////////////////////////////////////////////////////////////////
+// assignment
 frappe.ui.form.on('Site', {
-    after_save(frm) {
-        // Watch for changes in assignments
-        frm.get_docinfo().assignments.forEach(assign => {
-            if (!frm.doc.project_manager) {
-                // Set the first assigned user as project_manager
-                frm.set_value('project_manager', assign.owner);
-            }
-        });
+    refresh: function (frm) {
+        check_assignment_and_update_manager(frm);
     },
-
-    // Optional: also update when the form is loaded
-    onload_post_render(frm) {
-        if (!frm.doc.project_manager && frm.get_docinfo) {
-            const assignments = frm.get_docinfo().assignments;
-            if (assignments && assignments.length > 0) {
-                frm.set_value('project_manager', assignments[0].owner);
-            }
-        }
+    after_save: function (frm) {
+        check_assignment_and_update_manager(frm);
     }
 });
-///////////////////////////////////////////////////////
+
+function check_assignment_and_update_manager(frm) {
+    const docinfo = frm.get_docinfo();
+    if (docinfo && docinfo.assignments && docinfo.assignments.length > 0) {
+        // Requirement: project_manager should be updated if it is currently blank
+        if (!frm.doc.project_manager) {
+            const assigned_email = docinfo.assignments[0].owner;
+            // Fetch the full name of the user
+            frappe.db.get_value('User', assigned_email, 'full_name', (r) => {
+                if (r && r.full_name) {
+                    frm.set_value('project_manager', r.full_name);
+                } else {
+                    // Fallback to email if name not found
+                    frm.set_value('project_manager', assigned_email);
+                }
+            });
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
 
 frappe.ui.form.on('Site', {
     refresh(frm) {
@@ -906,24 +914,21 @@ function show_feasibility_info_dialog() {
     dialog.show();
 }
 //////////////////////////////////////////////////////////////////////
+
 frappe.listview_settings['Site'] = {
     onload(listview) {
 
-        // SAME hook that works for HD Ticket
-        listview.page.wrapper.on(
-            'show.bs.dropdown',
-            '.actions-btn-group',
-            function () {
+        listview.page.wrapper.on('click', '.actions-btn-group', function () {
 
-                const $dropdown = $(this).find('.dropdown-menu');
-                if (!$dropdown.length) return;
+            setTimeout(() => {
+                $('.actions-btn-group .dropdown-menu a').each(function () {
+                    let label = $(this).text().trim().toLowerCase();
 
-                // 🔥 Remove Export (correct node)
-                $dropdown
-                    .find('span.menu-item-label[data-label="Export"]')
-                    .closest('li')
-                    .remove();
-            }
-        );
+                    if (label.includes('export')) {
+                        $(this).remove();
+                    }
+                });
+            }, 100);
+        });
     }
 };

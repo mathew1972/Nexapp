@@ -1,3 +1,47 @@
-<div class="layout-main-section">
-    <!-- Survey content will be injected here by JS -->
+<div id="survey-page-root">
+    <!-- STICKY PROGRESS -->
+    <div class="sticky-progress-container">
+        <div class="sticky-progress-bar" id="page-progress-bar"></div>
+    </div>
+
+    <div class="survey-container">
+        <!-- LOADING SKELETON (Visible by default) -->
+        <div id="survey-skeleton">
+            <div class="survey-header">
+                <div class="skeleton-shimmer skeleton-title"></div>
+                <div class="skeleton-shimmer" style="height: 16px; width: 90%; margin-bottom: 10px;"></div>
+                <div class="skeleton-shimmer" style="height: 16px; width: 40%;"></div>
+            </div>
+            {% for i in range(3) %}
+            <div class="skeleton-card">
+                <div class="skeleton-shimmer skeleton-title"></div>
+                <div class="skeleton-shimmer skeleton-input"></div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- ACTUAL CONTENT (Hidden by default) -->
+        <div id="survey-main-content" style="display: none;">
+            <div class="survey-header">
+                <div class="survey-title" id="survey-title-display"></div>
+                <div class="survey-desc" id="survey-desc-display"></div>
+
+                <div class="timeline-wrapper">
+                    <span class="timeline-label">TIMELINE:</span>
+                    <span id="survey-start-display"></span>
+                    <div class="timeline-bar">
+                        <div class="timeline-progress" id="survey-timeline-progress"></div>
+                    </div>
+                    <span id="survey-end-display"></span>
+                </div>
+            </div>
+
+            <div id="survey-messages"></div>
+            <div id="survey-questions-container"></div>
+            <div id="survey-footer"></div>
+        </div>
+    </div>
 </div>
+
+<!-- CONFETTI CANVAS -->
+<div id="confetti-wrapper" class="confetti-container"></div>

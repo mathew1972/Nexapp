@@ -1,26 +1,26 @@
 frappe.ui.form.on('Customer', {
-    refresh: function(frm) {
+    refresh: function (frm) {
         const fields = [
-            'basic_info', 'naming_series', 'salutation', 'customer_name', 
-            'customer_type', 'customer_group', 'territory', 'gender', 
-            'lead_name', 'opportunity_name', 'prospect_name', 'account_manager', 
-            'image', 'defaults_tab', 'default_currency', 'default_bank_account', 
-            'default_price_list', 'is_internal_customer', 'represents_company', 
-            'companies', 'more_info', 'market_segment', 'industry', 
-            'customer_pos_id', 'website', 'language', 'customer_details', 
-            'address_contacts', 'address_html', 'contact_html', 
-            'primary_address_and_contact_detail', 'customer_primary_address', 
-            'primary_address', 'customer_primary_contact', 'mobile_no', 
-            'email_id', 'tax_tab', 'tax_id', 'column_break_21', 
-            'tax_category', 'tax_withholding_category', 'gstin', 'pan', 
-            'gst_category', 'payment_terms', 'credit_limits', 
-            'default_receivable_accounts', 'accounts', 'loyalty_program', 
-            'loyalty_program_tier', 'sales_team', 'default_sales_partner', 
-            'default_commission_rate', 'settings_tab', 'so_required', 
+            'basic_info', 'naming_series', 'salutation', 'customer_name',
+            'customer_type', 'customer_group', 'territory', 'gender',
+            'lead_name', 'opportunity_name', 'prospect_name', 'account_manager',
+            'image', 'defaults_tab', 'default_currency', 'default_bank_account',
+            'default_price_list', 'is_internal_customer', 'represents_company',
+            'companies', 'more_info', 'market_segment', 'industry',
+            'customer_pos_id', 'website', 'language', 'customer_details',
+            'address_contacts', 'address_html', 'contact_html',
+            'primary_address_and_contact_detail', 'customer_primary_address',
+            'primary_address', 'customer_primary_contact', 'mobile_no',
+            'email_id', 'tax_tab', 'tax_id', 'column_break_21',
+            'tax_category', 'tax_withholding_category', 'gstin', 'pan',
+            'gst_category', 'payment_terms', 'credit_limits',
+            'default_receivable_accounts', 'accounts', 'loyalty_program',
+            'loyalty_program_tier', 'sales_team', 'default_sales_partner',
+            'default_commission_rate', 'settings_tab', 'so_required',
             'dn_required', 'is_frozen', 'disabled', 'portal_users'
         ];
 
-        fields.forEach(function(field) {
+        fields.forEach(function (field) {
             if (frm.fields_dict[field]) {
                 const fieldElement = $(frm.fields_dict[field].wrapper).find('input, textarea, select');
 
@@ -45,7 +45,7 @@ frappe.ui.form.on('Customer', {
                     });
                 }
 
-                fieldElement.on('focus', function() {
+                fieldElement.on('focus', function () {
                     if (frm.fields_dict[field].df.reqd) {
                         $(this).css({
                             'border': '1px solid #80bdff',
@@ -62,7 +62,7 @@ frappe.ui.form.on('Customer', {
                     }
                 });
 
-                fieldElement.on('blur', function() {
+                fieldElement.on('blur', function () {
                     if (frm.fields_dict[field].df.reqd) {
                         $(this).css({
                             'border': '1px solid #ccc',
@@ -110,7 +110,7 @@ frappe.ui.form.on('Customer', {
         document.head.appendChild(styleSheet);
 
         // Set query for opportunity_owner to dynamically load user list
-        frm.set_query('opportunity_owner', function() {
+        frm.set_query('opportunity_owner', function () {
             return {
                 query: 'frappe.core.doctype.user.user.user_query',
                 filters: { 'enabled': 1 }
@@ -161,6 +161,16 @@ frappe.ui.form.on('Customer', {
 
         frm.trigger('load_outstanding_invoices');
         frm.trigger('load_customer_unallocated_amount');
+
+        if (frappe.user_roles.includes("Sales User")) {
+            if (frm.dashboard.stats_area) {
+                frm.dashboard.stats_area.hide();
+            }
+            if (frm.dashboard.links_area) {
+                frm.dashboard.links_area.hide();
+            }
+            frm.dashboard.clear_indicators();
+        }
     },
 
     custom_create_unallocated_payment_entry(frm) {

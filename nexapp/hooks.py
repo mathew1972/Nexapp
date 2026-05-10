@@ -130,9 +130,9 @@ app_license = "mit"
 # ---------------
 # Override standard doctype classes
 
-# override_doctype_class = {
-# 	"ToDo": "custom_app.overrides.CustomToDo"
-# }
+override_doctype_class = {
+	"HD Ticket": "nexapp.overrides.NexappHDTicket"
+}
 
 # Document Events
 # ---------------
@@ -199,6 +199,9 @@ scheduler_events = {
     # DAILY LMS AGEING UPDATE
     "daily": [
         "nexapp.api.recalculate_all_lms_ageing"
+    ],
+    "hourly": [
+        "nexapp.api.send_survey_reminders"
     ]
 }
 
@@ -298,7 +301,7 @@ scheduler_events = {
 app_include_css = [
     "/assets/nexapp/css/custom.css",
     "/assets/nexapp/css/Number_card.css",
-    "/assets/nexapp/css/hd_ticket_ai_chatbot.css",
+    "/assets/nexapp/css/hd_ticket_ai_chatbot_v17.css",
     "/assets/nexapp/css/ai_command_center.css"     
 ]
 
@@ -310,7 +313,7 @@ app_include_js = [
     "/assets/nexapp/js/deal_list_custom.js",
     "/assets/nexapp/js/crm_extensions.js",
     "/assets/nexapp/js/helpdesk/ticket_view.js",
-    "/assets/nexapp/js/hd_ticket_ai_chatbot.js",
+    "/assets/nexapp/js/hd_ticket_ai_chatbot_v17.js",
 
     "/assets/nexapp/js/ai/utils/intent.js",
     "/assets/nexapp/js/ai/utils/api.js",
@@ -319,11 +322,9 @@ app_include_js = [
 ]
 
 
-doctype_list_js = {
-    "Site": "public/js/Site_list.js",
+doctype_list_js = {    
     "CRM Deal": "public/js/crm_deal_list.js"    
 }
-
 
 doc_events = {
     "Delivery Note": {
@@ -331,9 +332,11 @@ doc_events = {
         "before_save": "nexapp.api.validate_delivery_note"
     },
     "Communication": {
-        "after_insert": "nexapp.api.create_hd_ticket_from_communication",
-        "before_insert": "nexapp.api.block_techsupport_bounce_emails",
-        "before_insert": "nexapp.email_override.set_hd_ticket_sender"       
+        "before_insert": [
+            "nexapp.api.block_techsupport_bounce_emails",
+            "nexapp.email_override.set_hd_ticket_sender",
+            "nexapp.api.create_hd_ticket_from_communication"
+        ]
     },
     "Customer": {
         "after_insert": "nexapp.api.customer_created"
@@ -385,7 +388,11 @@ doc_events = {
     },
     "Task": {
         "on_update": "nexapp.api.update_hd_ticket_from_task"
-    }
+    },
+    "User": {
+        "after_insert": "nexapp.api.create_user_permission",
+        "on_update": "nexapp.api.create_user_permission"
+    }      
 }
 
 fixtures = [      

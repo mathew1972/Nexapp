@@ -141,7 +141,8 @@
    "fieldname": "lms_id",
    "fieldtype": "Link",
    "label": "LMS ID",
-   "options": "Lastmile Services Master"
+   "options": "Lastmile Services Master",
+   "reqd": 1
   },
   {
    "fetch_from": "lms_id.po_number",
@@ -346,7 +347,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-02-07 10:32:40.509617",
+ "modified": "2026-04-02 17:02:37.637381",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Change Management Request",
