@@ -426,34 +426,72 @@ def fetch_provisioning_items(custom_circuit_id):
 import frappe
 
 def update_site_status_on_delivery_note_save(doc, method):
-    """Update the site_status of Site Doctype based on Delivery Note Items,
-    except for certain custom_change_management types or return Delivery Notes."""
+    """
+    Update Site status and delivery_note_id from Delivery Note,
+    except for excluded change management types, return Delivery Notes,
+    Delivered and Live sites, Cancelled sites,
+    or sites already having delivery_note_id.
+    """
 
-    # Skip updating if custom_change_management is one of the excluded types
-    excluded_types = ["Project Change Management", "Support Change Management", "Others"]
+    # Skip updating for excluded change management types
+    excluded_types = [
+        "Project Change Management",
+        "Support Change Management",
+        "Others"
+    ]
+
     if doc.get("custom_change_management") in excluded_types:
-        return  # Do not update site_status
+        return
 
-    # Skip updating if this Delivery Note is a return
+    # Skip return Delivery Notes
     if doc.get("is_return") == 1:
-        return  # Do not update site_status
+        return
 
     for item in doc.items:
-        # Check if custom_circuit_id exists for the item
-        if item.custom_circuit_id:
-            # Search for the Site doctype with matching circuit_id
-            site = frappe.db.get_value("Site", {"circuit_id": item.custom_circuit_id}, "name")
-            
-            if site:
-                # Get the Site document
-                site_doc = frappe.get_doc("Site", site)
-                
-                # Update the site_status field
-                site_doc.site_status = "In-process"
-                
-                # Save the updated Site document
-                site_doc.save(ignore_permissions=True)
 
+        # Continue only if circuit ID exists
+        if not item.custom_circuit_id:
+            continue
+
+        # Find matching Site
+        site = frappe.db.get_value(
+            "Site",
+            {"circuit_id": item.custom_circuit_id},
+            "name"
+        )
+
+        # If Site not found, skip
+        if not site:
+            continue
+
+        # Get Site document
+        site_doc = frappe.get_doc("Site", site)
+
+        # ---------------------------------------------------
+        # DO NOT UPDATE IF:
+        # 1. site_status = Delivered and Live
+        # 2. site_status = Cancelled
+        # 3. delivery_note_id already exists
+        # ---------------------------------------------------
+
+        if (
+            site_doc.site_status == "Delivered and Live"
+            or site_doc.site_status == "Cancelled"
+            or site_doc.delivery_note_id
+        ):
+            continue
+
+        # ---------------------------------------------------
+        # UPDATE SITE
+        # ---------------------------------------------------
+
+        site_doc.site_status = "In-process"
+
+        # Update delivery_note_id with Delivery Note name
+        site_doc.delivery_note_id = doc.name
+
+        # Save Site
+        site_doc.save(ignore_permissions=True)
 ################################# HelpDesk ############################################import frappe
 import frappe
 import re

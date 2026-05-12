@@ -403,8 +403,6 @@ fixtures = [
     {"dt": "Client Script"},
     {"dt": "Restricted"},
     {"dt": "AI Assistant Prompt"},
-    {"dt": "AI Assistant Prompt"},
-    {"dt": "Item"},
     {"dt": "Product Bundle"},
     {"dt": "Survey Type"},
     {"dt": "Task Type"},

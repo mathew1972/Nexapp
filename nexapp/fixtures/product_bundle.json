@@ -2531,19 +2531,9 @@
     "qty": 1.0,
     "rate": 0.0,
     "uom": "Nos"
-   },
-   {
-    "description": "8DBI Antenna",
-    "item_code": "STO-ITEM-2025-00073",
-    "parent": "STO-ITEM-2025-00147",
-    "parentfield": "items",
-    "parenttype": "Product Bundle",
-    "qty": 1.0,
-    "rate": 0.0,
-    "uom": "Nos"
    }
   ],
-  "modified": "2026-04-24 10:28:02.519263",
+  "modified": "2026-05-12 17:14:35.246265",
   "name": "STO-ITEM-2025-00147",
   "new_item_code": "STO-ITEM-2025-00147"
  },
@@ -2639,7 +2629,7 @@
     "uom": "Nos"
    }
   ],
-  "modified": "2026-05-11 10:30:12.117525",
+  "modified": "2026-05-12 17:14:21.698150",
   "name": "STO-ITEM-2025-00100",
   "new_item_code": "STO-ITEM-2025-00100"
  }
