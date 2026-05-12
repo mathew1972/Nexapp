@@ -398,8 +398,20 @@ doc_events = {
 fixtures = [      
     {"dt": "DocType", "filters": [["module", "=", "Nexapp"], ["custom", "=", 1]]},  # Fix: Only custom doctypes
     {"dt": "Custom Field", "filters": [["module", "=", "Nexapp"]]},
-    {"dt": "Property Setter", "filters": [["module", "=", "Nexapp"]]},    
-    {"dt": "Email Domain"}               
+    {"dt": "Property Setter"},    
+    {"dt": "Email Domain"},
+    {"dt": "Client Script"},
+    {"dt": "Restricted"},
+    {"dt": "AI Assistant Prompt"},
+    {"dt": "AI Assistant Prompt"},
+    {"dt": "Item"},
+    {"dt": "Product Bundle"},
+    {"dt": "Survey Type"},
+    {"dt": "Task Type"},
+    {"dt": "Expense Claim Status"},
+    {"dt": "OTC Details"},
+    {"dt": "CRM Lost Reason"}
+    
 ]
 
 doctype_list_js = {
@@ -495,7 +507,8 @@ doctype_js = {
     "Purchase Order": "public/js/purchase_order_custom.js",
     "Purchase Invoice": "public/js/purchase_invoice_custom.js",
     "Provisioning": "public/js/provisioning_custom.js",
-    "Employee Survey": "public/js/employee_survey.js"
+    "Employee Survey": "public/js/employee_survey.js",
+    "Change Management": "doctype/change_management/change_management.js"
 }
 
 override_whitelisted_methods = {

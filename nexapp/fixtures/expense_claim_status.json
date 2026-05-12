@@ -1,0 +1,44 @@
+[
+ {
+  "approval_status": "Cancelled",
+  "docstatus": 0,
+  "doctype": "Expense Claim Status",
+  "modified": "2025-08-29 17:09:19.012449",
+  "name": "Cancelled"
+ },
+ {
+  "approval_status": "Rejected",
+  "docstatus": 0,
+  "doctype": "Expense Claim Status",
+  "modified": "2025-08-29 16:40:31.434114",
+  "name": "Rejected"
+ },
+ {
+  "approval_status": "Approved",
+  "docstatus": 0,
+  "doctype": "Expense Claim Status",
+  "modified": "2025-08-29 16:40:22.331807",
+  "name": "Approved"
+ },
+ {
+  "approval_status": "Approved By Manager",
+  "docstatus": 0,
+  "doctype": "Expense Claim Status",
+  "modified": "2025-08-29 16:40:10.472876",
+  "name": "Approved By Manager"
+ },
+ {
+  "approval_status": "Submitted for Approval",
+  "docstatus": 0,
+  "doctype": "Expense Claim Status",
+  "modified": "2025-08-29 16:40:00.945946",
+  "name": "Submitted for Approval"
+ },
+ {
+  "approval_status": "Draft",
+  "docstatus": 0,
+  "doctype": "Expense Claim Status",
+  "modified": "2025-08-29 16:39:49.194754",
+  "name": "Draft"
+ }
+]

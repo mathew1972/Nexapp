@@ -6,23 +6,31 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "circuit_id",
-  "column_break_rgex",
   "change_request_type",
-  "isp_change_reason",
+  "column_break_hvxe",
+  "approval_status",
+  "section_break_lysx",
+  "circuit_id",
+  "column_break_ulkh",
   "stage",
+  "section_break_rvde",
+  "customer",
+  "site_type",
+  "site_address",
+  "column_break_aqez",
+  "site_status",
+  "solution",
+  "primary_plan",
+  "secondary_plan",
+  "section_break_zbkd",
+  "isp_change_reason",
+  "section_break_hsqp",
+  "column_break_lyxs",
+  "column_break_rgex",
   "completed_datetime",
   "hold_reason",
   "hold_datetime",
   "disconnected_date",
-  "section_break_awjs",
-  "customer",
-  "site_address",
-  "solution",
-  "column_break_pdsx",
-  "site_type",
-  "primary_plan",
-  "secondary_plan",
   "isp_change_tab",
   "isp_change_section",
   "lms_id",
@@ -64,10 +72,6 @@
    "in_standard_filter": 1,
    "label": "Circuit ID",
    "options": "Site"
-  },
-  {
-   "fieldname": "column_break_pdsx",
-   "fieldtype": "Column Break"
   },
   {
    "fetch_from": "circuit_id.customer",
@@ -119,7 +123,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Change Request Type",
-   "options": "\nISP Change\nDevice Change\nSIM Change\nHardware Change"
+   "options": "\nISP Change\nDevice Change\nSIM Change\nHardware Change\nDisconnection To Delivery And Live\nCancelled To Delivery And Live"
   },
   {
    "fieldname": "isp_change_section",
@@ -165,10 +169,6 @@
    "fieldname": "purchase_order_date",
    "fieldtype": "Datetime",
    "label": "Purchase Order Date"
-  },
-  {
-   "fieldname": "section_break_awjs",
-   "fieldtype": "Section Break"
   },
   {
    "depends_on": "eval:doc.change_request_type==\"ISP Change\" ",
@@ -337,17 +337,62 @@
    "read_only": 1
   },
   {
+   "fieldname": "column_break_hvxe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_lysx",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_rvde",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_aqez",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_hsqp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_lyxs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_ulkh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_zbkd",
+   "fieldtype": "Section Break"
+  },
+  {
    "depends_on": "eval:doc.change_request_type==\"ISP Change\"",
    "fieldname": "isp_change_reason",
    "fieldtype": "Small Text",
-   "label": "ISP Change Reason",
+   "label": "Reason",
    "mandatory_depends_on": "eval:doc.change_request_type==\"ISP Change\""
+  },
+  {
+   "default": "Draft",
+   "fieldname": "approval_status",
+   "fieldtype": "Select",
+   "label": "Approval Status",
+   "options": "Draft\nApproved\nRejected\nApproved By Manager\nSubmitted for Approval"
+  },
+  {
+   "fetch_from": "circuit_id.site_status",
+   "fieldname": "site_status",
+   "fieldtype": "Data",
+   "label": "Site Status"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-02 17:02:37.637381",
+ "modified": "2026-05-11 23:54:55.704618",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Change Management Request",

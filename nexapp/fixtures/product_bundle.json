@@ -1,0 +1,2646 @@
+[
+ {
+  "custom_solution": null,
+  "description": "Dual MBB+MBB",
+  "disabled": 1,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "<div class=\"ql-editor read-mode\"><p>2Mbps MBB</p></div>",
+    "item_code": "STO-ITEM-2025-00027",
+    "parent": "STO-ITEM-2025-00038",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "<div class=\"ql-editor read-mode\"><p>2Mbps MBB</p></div>",
+    "item_code": "STO-ITEM-2025-00027",
+    "parent": "STO-ITEM-2025-00038",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-00038",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-15 11:32:09.010393",
+  "name": "STO-ITEM-2025-00038",
+  "new_item_code": "STO-ITEM-2025-00038"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR11004GSW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR11004GD with 1 Year Warranty",
+    "item_code": "STO-ITEM-2025-00018",
+    "parent": "STO-ITEM-2025-00102",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-00102",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-05-30 18:21:39.736657",
+  "name": "STO-ITEM-2025-00102",
+  "new_item_code": "STO-ITEM-2025-00102"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR11004GSW-IOT-V3",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR11004GSW",
+    "item_code": "STO-ITEM-2025-05016",
+    "parent": "STO-ITEM-2025-00103",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-00103",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "8DBI Antenna",
+    "item_code": "STO-ITEM-2025-00073",
+    "parent": "STO-ITEM-2025-00103",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-11-14 12:11:57.012016",
+  "name": "STO-ITEM-2025-00103",
+  "new_item_code": "STO-ITEM-2025-00103"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR11004GS",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "<div><p>Instaroute-IR11004GS-APTS-V1</p></div>",
+    "item_code": "STO-ITEM-2025-05014",
+    "parent": "STO-ITEM-2025-00104",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-05-30 18:22:59.623152",
+  "name": "STO-ITEM-2025-00104",
+  "new_item_code": "STO-ITEM-2025-00104"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR11004GD",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR11004GDW",
+    "item_code": "STO-ITEM-2025-00019",
+    "parent": "STO-ITEM-2025-00105",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-05-30 18:20:54.929818",
+  "name": "STO-ITEM-2025-00105",
+  "new_item_code": "STO-ITEM-2025-00105"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-00118",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:15:56.574810",
+  "name": "STO-ITEM-2025-00118",
+  "new_item_code": "STO-ITEM-2025-00118"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-00121",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:17:29.652870",
+  "name": "STO-ITEM-2025-00121",
+  "new_item_code": "STO-ITEM-2025-00121"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100GU",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00074",
+    "parent": "STO-ITEM-2025-00123",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:18:05.565700",
+  "name": "STO-ITEM-2025-00123",
+  "new_item_code": "STO-ITEM-2025-00123"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100GU",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00074",
+    "parent": "STO-ITEM-2025-00124",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:18:18.987882",
+  "name": "STO-ITEM-2025-00124",
+  "new_item_code": "STO-ITEM-2025-00124"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-00126",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-00126",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-00126",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:19:03.220023",
+  "name": "STO-ITEM-2025-00126",
+  "new_item_code": "STO-ITEM-2025-00126"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute -IR-4100",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR3100",
+    "item_code": "STO-ITEM-2025-00181",
+    "parent": "STO-ITEM-2025-00133",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:27:22.109410",
+  "name": "STO-ITEM-2025-00133",
+  "new_item_code": "STO-ITEM-2025-00133"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute -IR-4100",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR3100",
+    "item_code": "STO-ITEM-2025-00181",
+    "parent": "STO-ITEM-2025-00134",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:26:53.372181",
+  "name": "STO-ITEM-2025-00134",
+  "new_item_code": "STO-ITEM-2025-00134"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute -IR4100",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR3100",
+    "item_code": "STO-ITEM-2025-00181",
+    "parent": "STO-ITEM-2025-00136",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:27:59.027463",
+  "name": "STO-ITEM-2025-00136",
+  "new_item_code": "STO-ITEM-2025-00136"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR3100",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR3100",
+    "item_code": "STO-ITEM-2025-00180",
+    "parent": "STO-ITEM-2025-00137",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-06-04 18:04:11.061914",
+  "name": "STO-ITEM-2025-00137",
+  "new_item_code": "STO-ITEM-2025-00137"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR3100",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR3100",
+    "item_code": "STO-ITEM-2025-00180",
+    "parent": "STO-ITEM-2025-00138",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "<div><p>Installation &amp; Commissioning charges </p></div>",
+    "item_code": "STO-ITEM-2025-00088",
+    "parent": "STO-ITEM-2025-00138",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "NOC Support_Per Location ",
+    "item_code": "STO-ITEM-2025-00096",
+    "parent": "STO-ITEM-2025-00138",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Cloud 2.0_Per Node_Dashboard_Alert_Reporting ",
+    "item_code": "STO-ITEM-2025-00097",
+    "parent": "STO-ITEM-2025-00138",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-15 10:24:52.258363",
+  "name": "STO-ITEM-2025-00138",
+  "new_item_code": "STO-ITEM-2025-00138"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR3100",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR3100",
+    "item_code": "STO-ITEM-2025-00180",
+    "parent": "STO-ITEM-2025-00139",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:28:14.012251",
+  "name": "STO-ITEM-2025-00139",
+  "new_item_code": "STO-ITEM-2025-00139"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR3100",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR3100",
+    "item_code": "STO-ITEM-2025-00180",
+    "parent": "STO-ITEM-2025-00140",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:28:28.224692",
+  "name": "STO-ITEM-2025-00140",
+  "new_item_code": "STO-ITEM-2025-00140"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR3100",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR3100",
+    "item_code": "STO-ITEM-2025-00180",
+    "parent": "STO-ITEM-2025-00141",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:27:07.459860",
+  "name": "STO-ITEM-2025-00141",
+  "new_item_code": "STO-ITEM-2025-00141"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR3100",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR3100",
+    "item_code": "STO-ITEM-2025-00180",
+    "parent": "STO-ITEM-2025-00142",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:25:24.502859",
+  "name": "STO-ITEM-2025-00142",
+  "new_item_code": "STO-ITEM-2025-00142"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100GU",
+    "item_code": "STO-ITEM-2025-00074",
+    "parent": "STO-ITEM-2025-00152",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-06-13 11:45:30.263045",
+  "name": "STO-ITEM-2025-00152",
+  "new_item_code": "STO-ITEM-2025-00152"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100GU",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00074",
+    "parent": "STO-ITEM-2025-00153",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:32:11.362179",
+  "name": "STO-ITEM-2025-00153",
+  "new_item_code": "STO-ITEM-2025-00153"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100GU",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00074",
+    "parent": "STO-ITEM-2025-00154",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:32:22.600562",
+  "name": "STO-ITEM-2025-00154",
+  "new_item_code": "STO-ITEM-2025-00154"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100GU",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00074",
+    "parent": "STO-ITEM-2025-00156",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:26:23.322813",
+  "name": "STO-ITEM-2025-00156",
+  "new_item_code": "STO-ITEM-2025-00156"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-00157",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:33:10.538151",
+  "name": "STO-ITEM-2025-00157",
+  "new_item_code": "STO-ITEM-2025-00157"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100GU",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00074",
+    "parent": "STO-ITEM-2025-00159",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:33:36.212124",
+  "name": "STO-ITEM-2025-00159",
+  "new_item_code": "STO-ITEM-2025-00159"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100GU",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100GU",
+    "item_code": "STO-ITEM-2025-00074",
+    "parent": "STO-ITEM-2025-00160",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-05-16 07:40:59.489413",
+  "name": "STO-ITEM-2025-00160",
+  "new_item_code": "STO-ITEM-2025-00160"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR3100",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR3100",
+    "item_code": "STO-ITEM-2025-00180",
+    "parent": "STO-ITEM-2025-00161",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:34:26.037477",
+  "name": "STO-ITEM-2025-00161",
+  "new_item_code": "STO-ITEM-2025-00161"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR11004GD",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "<div><p>2SIM Slot Standard 4G LTE Cat4 | Wi-Fi 2.4GHz </p><p>FE 1 x WAN (10/100Mbps), 14x LAN (10/100Mbps)</p></div>",
+    "item_code": "STO-ITEM-2025-00018",
+    "parent": "STO-ITEM-2025-00164",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:10:40.883099",
+  "name": "STO-ITEM-2025-00164",
+  "new_item_code": "STO-ITEM-2025-00164"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR11004GD",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "<div><p>2SIM Slot Standard 4G LTE Cat4 | Wi-Fi 2.4GHz </p><p>FE 1 x WAN (10/100Mbps), 14x LAN (10/100Mbps)</p></div>",
+    "item_code": "STO-ITEM-2025-00018",
+    "parent": "STO-ITEM-2025-00165",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:09:58.805602",
+  "name": "STO-ITEM-2025-00165",
+  "new_item_code": "STO-ITEM-2025-00165"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR11004GS",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "<div><p>2SIM Slot Standard 4G LTE Cat4 | Wi-Fi 2.4GHz </p><p>FE 1 x WAN (10/100Mbps), 14x LAN (10/100Mbps)</p></div>",
+    "item_code": "STO-ITEM-2025-00018",
+    "parent": "STO-ITEM-2025-00166",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:09:35.771344",
+  "name": "STO-ITEM-2025-00166",
+  "new_item_code": "STO-ITEM-2025-00166"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-00167",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:09:17.595761",
+  "name": "STO-ITEM-2025-00167",
+  "new_item_code": "STO-ITEM-2025-00167"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-00168",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:08:49.715548",
+  "name": "STO-ITEM-2025-00168",
+  "new_item_code": "STO-ITEM-2025-00168"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR11004GS",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "4G LTE Cat4 | Wi-Fi: 802.11b/g/n, 2.4GHz, 150Mbps | Ethernet Ports: 1 x WAN (10/100Mbps), 1 x LAN (10/100Mbps) | SIM Slot: 1 x Drawer Type SIM Card Slot | Antenna: 2 x SMA / RP-SMA (50 ohm) | Security: Firewall, QoS, VPN, WPA2-PSK, WPA2, WPA-Enterprise | Power Input: 12V DC | Auto Recovery: Hardware Watchdog | Dimensions: 100mm x 63mm x 31mm | Certifications: FCC, CE, RoHS, MTCTE | Applications: Industrial IoT, Smart Cities, Retail, Enterprise Connectivity.",
+    "item_code": "STO-ITEM-2025-00015",
+    "parent": "STO-ITEM-2025-00169",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:09:02.536161",
+  "name": "STO-ITEM-2025-00169",
+  "new_item_code": "STO-ITEM-2025-00169"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR11004GD",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "<div><p>2SIM Slot Standard 4G LTE Cat4 | Wi-Fi 2.4GHz </p><p>FE 1 x WAN (10/100Mbps), 14x LAN (10/100Mbps)</p></div>",
+    "item_code": "STO-ITEM-2025-00018",
+    "parent": "STO-ITEM-2025-00170",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:08:39.616562",
+  "name": "STO-ITEM-2025-00170",
+  "new_item_code": "STO-ITEM-2025-00170"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR11004GS",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "4G LTE Cat4 | Wi-Fi: 802.11b/g/n, 2.4GHz, 150Mbps | Ethernet Ports: 1 x WAN (10/100Mbps), 1 x LAN (10/100Mbps) | SIM Slot: 1 x Drawer Type SIM Card Slot | Antenna: 2 x SMA / RP-SMA (50 ohm) | Security: Firewall, QoS, VPN, WPA2-PSK, WPA2, WPA-Enterprise | Power Input: 12V DC | Auto Recovery: Hardware Watchdog | Dimensions: 100mm x 63mm x 31mm | Certifications: FCC, CE, RoHS, MTCTE | Applications: Industrial IoT, Smart Cities, Retail, Enterprise Connectivity.",
+    "item_code": "STO-ITEM-2025-00015",
+    "parent": "STO-ITEM-2025-00171",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:08:29.073548",
+  "name": "STO-ITEM-2025-00171",
+  "new_item_code": "STO-ITEM-2025-00171"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR11004GD",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "<div><p>2SIM Slot Standard 4G LTE Cat4 | Wi-Fi 2.4GHz </p><p>FE 1 x WAN (10/100Mbps), 14x LAN (10/100Mbps)</p></div>",
+    "item_code": "STO-ITEM-2025-00018",
+    "parent": "STO-ITEM-2025-00172",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:08:16.728548",
+  "name": "STO-ITEM-2025-00172",
+  "new_item_code": "STO-ITEM-2025-00172"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR11004GD with 1 Year",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "<div><p>2SIM Slot Standard 4G LTE Cat4 | Wi-Fi 2.4GHz </p><p>FE 1 x WAN (10/100Mbps), 14x LAN (10/100Mbps)</p></div>",
+    "item_code": "STO-ITEM-2025-00018",
+    "parent": "STO-ITEM-2025-00187",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:05:21.496291",
+  "name": "STO-ITEM-2025-00187",
+  "new_item_code": "STO-ITEM-2025-00187"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100GU",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100GU",
+    "item_code": "STO-ITEM-2025-00074",
+    "parent": "STO-ITEM-2025-04968",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-05-15 12:17:11.508977",
+  "name": "STO-ITEM-2025-04968",
+  "new_item_code": "STO-ITEM-2025-04968"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-00185",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:05:47.581644",
+  "name": "STO-ITEM-2025-00185",
+  "new_item_code": "STO-ITEM-2025-00185"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-04964",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:04:42.399143",
+  "name": "STO-ITEM-2025-04964",
+  "new_item_code": "STO-ITEM-2025-04964"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-00188",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:05:11.958584",
+  "name": "STO-ITEM-2025-00188",
+  "new_item_code": "STO-ITEM-2025-00188"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-05007",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00075",
+    "parent": "STO-ITEM-2025-05007",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-23 12:55:03.460790",
+  "name": "STO-ITEM-2025-05007",
+  "new_item_code": "STO-ITEM-2025-05007"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-05009",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00075",
+    "parent": "STO-ITEM-2025-05009",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00075",
+    "parent": "STO-ITEM-2025-05009",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00075",
+    "parent": "STO-ITEM-2025-05009",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-23 12:57:53.744830",
+  "name": "STO-ITEM-2025-05009",
+  "new_item_code": "STO-ITEM-2025-05009"
+ },
+ {
+  "custom_solution": null,
+  "description": null,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-05010",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00075",
+    "parent": "STO-ITEM-2025-05010",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00075",
+    "parent": "STO-ITEM-2025-05010",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00075",
+    "parent": "STO-ITEM-2025-05010",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00075",
+    "parent": "STO-ITEM-2025-05010",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-23 12:59:03.383520",
+  "name": "STO-ITEM-2025-05010",
+  "new_item_code": "STO-ITEM-2025-05010"
+ },
+ {
+  "custom_solution": null,
+  "description": null,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Installation &amp; Commissioning charges",
+    "item_code": "STO-ITEM-2025-00088",
+    "parent": "STO-ITEM-2025-05018",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "NOC Support_Per Location",
+    "item_code": "STO-ITEM-2025-00096",
+    "parent": "STO-ITEM-2025-05018",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Cloud 2.0_Per Node_Dashboard_Alert_Reporting",
+    "item_code": "STO-ITEM-2025-00097",
+    "parent": "STO-ITEM-2025-05018",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-28 16:17:21.498102",
+  "name": "STO-ITEM-2025-05018",
+  "new_item_code": "STO-ITEM-2025-05018"
+ },
+ {
+  "custom_solution": "STO-ITEM-2025-00100",
+  "description": null,
+  "disabled": 1,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-05062",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "8DBI Antenna",
+    "item_code": "STO-ITEM-2025-00073",
+    "parent": "STO-ITEM-2025-05062",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-05062",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Instaroute-IR11004GD with 1 Year Warranty",
+    "item_code": "STO-ITEM-2025-00018",
+    "parent": "STO-ITEM-2025-05062",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-08-25 16:13:34.104023",
+  "name": "STO-ITEM-2025-05062",
+  "new_item_code": "STO-ITEM-2025-05062"
+ },
+ {
+  "custom_solution": "STO-ITEM-2025-05064",
+  "description": "IR11004GSW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR11004GSW",
+    "item_code": "STO-ITEM-2025-00018",
+    "parent": "STO-ITEM-2025-05064",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-05064",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-05064",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "8DBI Antenna",
+    "item_code": "STO-ITEM-2025-00073",
+    "parent": "STO-ITEM-2025-05064",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-05-19 13:06:41.962768",
+  "name": "STO-ITEM-2025-05064",
+  "new_item_code": "STO-ITEM-2025-05064"
+ },
+ {
+  "custom_solution": "STO-ITEM-2025-05098",
+  "description": "IR11004GSW-IOT",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR11004GSW",
+    "item_code": "STO-ITEM-2025-05016",
+    "parent": "STO-ITEM-2025-05098",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-07-09 16:45:58.401352",
+  "name": "STO-ITEM-2025-05098",
+  "new_item_code": "STO-ITEM-2025-05098"
+ },
+ {
+  "custom_solution": "STO-ITEM-2025-05100",
+  "description": "Instaroute- IR1100GU",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100GU",
+    "item_code": "STO-ITEM-2025-00074",
+    "parent": "STO-ITEM-2025-05100",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-07-30 14:49:02.484597",
+  "name": "STO-ITEM-2025-05100",
+  "new_item_code": "STO-ITEM-2025-05100"
+ },
+ {
+  "custom_solution": "STO-ITEM-2025-05026",
+  "description": null,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR11004GD with 1 Year Warranty",
+    "item_code": "STO-ITEM-2025-00018",
+    "parent": "STO-ITEM-2025-05026",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-07-31 18:44:42.511312",
+  "name": "STO-ITEM-2025-05026",
+  "new_item_code": "STO-ITEM-2025-05026"
+ },
+ {
+  "custom_solution": "STO-ITEM-2025-05102",
+  "description": "IRx100-5G",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "IRx100-5G",
+    "item_code": "STO-ITEM-2026-00007",
+    "parent": "STO-ITEM-2025-05102",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-08-05 10:10:14.374874",
+  "name": "STO-ITEM-2025-05102",
+  "new_item_code": "STO-ITEM-2025-05102"
+ },
+ {
+  "custom_solution": "STO-ITEM-2025-05200",
+  "description": "IR-7100",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR7100",
+    "item_code": "STO-ITEM-2025-04971",
+    "parent": "STO-ITEM-2025-05200",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-09-16 10:48:15.836075",
+  "name": "STO-ITEM-2025-05200",
+  "new_item_code": "STO-ITEM-2025-05200"
+ },
+ {
+  "custom_solution": "STO-ITEM-2025-05203",
+  "description": null,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1104W",
+    "item_code": "STO-ITEM-2025-00075",
+    "parent": "STO-ITEM-2025-05203",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-09-16 17:34:35.564394",
+  "name": "STO-ITEM-2025-05203",
+  "new_item_code": "STO-ITEM-2025-05203"
+ },
+ {
+  "custom_solution": "STO-ITEM-2025-05235",
+  "description": "Instaroute-IR11004GSW-IOT-V3",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR11004GSW",
+    "item_code": "STO-ITEM-2025-05016",
+    "parent": "STO-ITEM-2025-05235",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-05235",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-05235",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "8DBI Antenna",
+    "item_code": "STO-ITEM-2025-00073",
+    "parent": "STO-ITEM-2025-05235",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-11-14 11:54:30.343094",
+  "name": "STO-ITEM-2025-05235",
+  "new_item_code": "STO-ITEM-2025-05235"
+ },
+ {
+  "custom_solution": "STO-ITEM-2025-05238",
+  "description": null,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "IRx100-5G",
+    "item_code": "STO-ITEM-2026-00007",
+    "parent": "STO-ITEM-2025-05238",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-05238",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-05238",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "8DBI Antenna",
+    "item_code": "STO-ITEM-2025-00073",
+    "parent": "STO-ITEM-2025-05238",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-11-28 10:45:46.109790",
+  "name": "STO-ITEM-2025-05238",
+  "new_item_code": "STO-ITEM-2025-05238"
+ },
+ {
+  "custom_solution": "STO-ITEM-2025-05252",
+  "description": null,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR11004GD with 1 Year Warranty",
+    "item_code": "STO-ITEM-2025-00018",
+    "parent": "STO-ITEM-2025-05252",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-05252",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-11-29 15:53:22.074957",
+  "name": "STO-ITEM-2025-05252",
+  "new_item_code": "STO-ITEM-2025-05252"
+ },
+ {
+  "custom_solution": "STO-ITEM-2026-00002",
+  "description": "IR2100",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR2100",
+    "item_code": "STO-ITEM-2025-00064",
+    "parent": "STO-ITEM-2026-00002",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2026-01-22 11:19:16.813195",
+  "name": "STO-ITEM-2026-00002",
+  "new_item_code": "STO-ITEM-2026-00002"
+ },
+ {
+  "custom_solution": "STO-ITEM-2026-00026",
+  "description": "IR4100",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR4100",
+    "item_code": "STO-ITEM-2025-00181",
+    "parent": "STO-ITEM-2026-00026",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2026-03-26 17:20:42.746942",
+  "name": "STO-ITEM-2026-00026",
+  "new_item_code": "STO-ITEM-2026-00026"
+ },
+ {
+  "custom_solution": "STO-ITEM-2026-00037",
+  "description": null,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "<div><p>Instaroute-IR11004GSW- 5PORT - One LTE</p></div>",
+    "item_code": "STO-ITEM-2025-05185",
+    "parent": "STO-ITEM-2026-00037",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2026-03-28 16:04:53.217024",
+  "name": "STO-ITEM-2026-00037",
+  "new_item_code": "STO-ITEM-2026-00037"
+ },
+ {
+  "custom_solution": "STO-ITEM-2025-05233",
+  "description": null,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR3100",
+    "item_code": "STO-ITEM-2025-00180",
+    "parent": "STO-ITEM-2025-05233",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2026-04-06 10:01:29.389122",
+  "name": "STO-ITEM-2025-05233",
+  "new_item_code": "STO-ITEM-2025-05233"
+ },
+ {
+  "custom_solution": "STO-ITEM-2026-00041",
+  "description": null,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "IRx100-5G",
+    "item_code": "STO-ITEM-2026-00007",
+    "parent": "STO-ITEM-2026-00041",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2026-00041",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2026-00041",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2026-04-16 17:53:27.034143",
+  "name": "STO-ITEM-2026-00041",
+  "new_item_code": "STO-ITEM-2026-00041"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-00125",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-00125",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:18:41.348628",
+  "name": "STO-ITEM-2025-00125",
+  "new_item_code": "STO-ITEM-2025-00125"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-00122",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-11-19 10:39:42.436322",
+  "name": "STO-ITEM-2025-00122",
+  "new_item_code": "STO-ITEM-2025-00122"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR3100",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR3100",
+    "item_code": "STO-ITEM-2025-00180",
+    "parent": "STO-ITEM-2025-00127",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:19:16.704522",
+  "name": "STO-ITEM-2025-00127",
+  "new_item_code": "STO-ITEM-2025-00127"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR4100",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR4100",
+    "item_code": "STO-ITEM-2025-00181",
+    "parent": "STO-ITEM-2025-00128",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-05-03 15:06:31.816437",
+  "name": "STO-ITEM-2025-00128",
+  "new_item_code": "STO-ITEM-2025-00128"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR11004GD",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "<div><p>2SIM Slot Standard 4G LTE Cat4 | Wi-Fi 2.4GHz </p><p>FE 1 x WAN (10/100Mbps), 14x LAN (10/100Mbps)</p></div>",
+    "item_code": "STO-ITEM-2025-00018",
+    "parent": "STO-ITEM-2025-00162",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:11:15.808517",
+  "name": "STO-ITEM-2025-00162",
+  "new_item_code": "STO-ITEM-2025-00162"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100GU",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00074",
+    "parent": "STO-ITEM-2025-00120",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:17:02.848243",
+  "name": "STO-ITEM-2025-00120",
+  "new_item_code": "STO-ITEM-2025-00120"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100GU",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00074",
+    "parent": "STO-ITEM-2025-00155",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:32:36.678314",
+  "name": "STO-ITEM-2025-00155",
+  "new_item_code": "STO-ITEM-2025-00155"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100GU",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "<div class=\"ql-editor read-mode\"><p>Instaroute-IR1100GU</p></div>",
+    "item_code": "STO-ITEM-2025-00074",
+    "parent": "STO-ITEM-2025-04969",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-10-29 12:21:15.945907",
+  "name": "STO-ITEM-2025-04969",
+  "new_item_code": "STO-ITEM-2025-04969"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR11004GD",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "<div><p>2SIM Slot Standard 4G LTE Cat4 | Wi-Fi 2.4GHz </p><p>FE 1 x WAN (10/100Mbps), 14x LAN (10/100Mbps)</p></div>",
+    "item_code": "STO-ITEM-2025-00018",
+    "parent": "STO-ITEM-2025-00150",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-00150",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "8DBI Antenna",
+    "item_code": "STO-ITEM-2025-00073",
+    "parent": "STO-ITEM-2025-00150",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-10-03 16:33:54.637103",
+  "name": "STO-ITEM-2025-00150",
+  "new_item_code": "STO-ITEM-2025-00150"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-00158",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:33:23.494509",
+  "name": "STO-ITEM-2025-00158",
+  "new_item_code": "STO-ITEM-2025-00158"
+ },
+ {
+  "custom_solution": null,
+  "description": "IR11004GSW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "4G LTE Cat4 | Wi-Fi: 802.11b/g/n, 2.4GHz, 150Mbps | Ethernet Ports: 1 x WAN (10/100Mbps), 1 x LAN (10/100Mbps) | SIM Slot: 1 x Drawer Type SIM Card Slot | Antenna: 2 x SMA / RP-SMA (50 ohm) | Security: Firewall, QoS, VPN, WPA2-PSK, WPA2, WPA-Enterprise | Power Input: 12V DC | Auto Recovery: Hardware Watchdog | Dimensions: 100mm x 63mm x 31mm | Certifications: FCC, CE, RoHS, MTCTE | Applications: Industrial IoT, Smart Cities, Retail, Enterprise Connectivity.",
+    "item_code": "STO-ITEM-2025-00018",
+    "parent": "STO-ITEM-2025-00098",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-00098",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-00098",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "8DBI Antenna",
+    "item_code": "STO-ITEM-2025-00073",
+    "parent": "STO-ITEM-2025-00098",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-10-18 10:41:03.940206",
+  "name": "STO-ITEM-2025-00098",
+  "new_item_code": "STO-ITEM-2025-00098"
+ },
+ {
+  "custom_solution": "STO-ITEM-2026-00001",
+  "description": "IR11004GSW- 5PORT",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "<div><p>Instaroute-IR11004GSW- 5PORT - One LTE</p></div>",
+    "item_code": "STO-ITEM-2025-05185",
+    "parent": "STO-ITEM-2026-00001",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2026-00001",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "8DBI Antenna",
+    "item_code": "STO-ITEM-2025-00073",
+    "parent": "STO-ITEM-2026-00001",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2026-01-05 11:43:15.459161",
+  "name": "STO-ITEM-2026-00001",
+  "new_item_code": "STO-ITEM-2026-00001"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-00119",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:16:18.890821",
+  "name": "STO-ITEM-2025-00119",
+  "new_item_code": "STO-ITEM-2025-00119"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100GU",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "<div class=\"ql-editor read-mode\"><p>Instaroute-IR1100GU</p><p><br></p></div>",
+    "item_code": "STO-ITEM-2025-00074",
+    "parent": "STO-ITEM-2025-04966",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:03:17.447385",
+  "name": "STO-ITEM-2025-04966",
+  "new_item_code": "STO-ITEM-2025-04966"
+ },
+ {
+  "custom_solution": null,
+  "description": "NexEdge-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-00184",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:06:06.702697",
+  "name": "STO-ITEM-2025-00184",
+  "new_item_code": "STO-ITEM-2025-00184"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-00163",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:10:59.942184",
+  "name": "STO-ITEM-2025-00163",
+  "new_item_code": "STO-ITEM-2025-00163"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-05008",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "<div class=\"ql-editor read-mode\"><p>Instaroute-IR1104W</p></div>",
+    "item_code": "STO-ITEM-2025-00075",
+    "parent": "STO-ITEM-2025-05008",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "<div class=\"ql-editor read-mode\"><p>Instaroute-IR1104W</p></div>",
+    "item_code": "STO-ITEM-2025-00075",
+    "parent": "STO-ITEM-2025-05008",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2026-04-24 10:07:47.996145",
+  "name": "STO-ITEM-2025-05008",
+  "new_item_code": "STO-ITEM-2025-05008"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR11004GS with 1 year Warranty",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "4G LTE Cat4 | Wi-Fi: 802.11b/g/n, 2.4GHz, 150Mbps | Ethernet Ports: 1 x WAN (10/100Mbps), 1 x LAN (10/100Mbps) | SIM Slot: 1 x Drawer Type SIM Card Slot | Antenna: 2 x SMA / RP-SMA (50 ohm) | Security: Firewall, QoS, VPN, WPA2-PSK, WPA2, WPA-Enterprise | Power Input: 12V DC | Auto Recovery: Hardware Watchdog | Dimensions: 100mm x 63mm x 31mm | Certifications: FCC, CE, RoHS, MTCTE | Applications: Industrial IoT, Smart Cities, Retail, Enterprise Connectivity.",
+    "item_code": "STO-ITEM-2025-00015",
+    "parent": "STO-ITEM-2025-00106",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "8DBI Antenna",
+    "item_code": "STO-ITEM-2025-00073",
+    "parent": "STO-ITEM-2025-00106",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2026-02-10 11:38:16.938971",
+  "name": "STO-ITEM-2025-00106",
+  "new_item_code": "STO-ITEM-2025-00106"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100GU",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "<div class=\"ql-editor read-mode\"><p>Instaroute-IR1100GU</p></div>",
+    "item_code": "STO-ITEM-2025-00074",
+    "parent": "STO-ITEM-2025-00186",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:05:37.337336",
+  "name": "STO-ITEM-2025-00186",
+  "new_item_code": "STO-ITEM-2025-00186"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR11004GD",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "<div><p>2SIM Slot Standard 4G LTE Cat4 | Wi-Fi 2.4GHz </p><p>FE 1 x WAN (10/100Mbps), 14x LAN (10/100Mbps)</p></div>",
+    "item_code": "STO-ITEM-2025-00018",
+    "parent": "STO-ITEM-2025-00149",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-00149",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "8DBI Antenna",
+    "item_code": "STO-ITEM-2025-00073",
+    "parent": "STO-ITEM-2025-00149",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-10-09 17:28:44.173193",
+  "name": "STO-ITEM-2025-00149",
+  "new_item_code": "STO-ITEM-2025-00149"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR11004GS with 1 year Warranty",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "4G LTE Cat4 | Wi-Fi: 802.11b/g/n, 2.4GHz, 150Mbps | Ethernet Ports: 1 x WAN (10/100Mbps), 1 x LAN (10/100Mbps) | SIM Slot: 1 x Drawer Type SIM Card Slot | Antenna: 2 x SMA / RP-SMA (50 ohm) | Security: Firewall, QoS, VPN, WPA2-PSK, WPA2, WPA-Enterprise | Power Input: 12V DC | Auto Recovery: Hardware Watchdog | Dimensions: 100mm x 63mm x 31mm | Certifications: FCC, CE, RoHS, MTCTE | Applications: Industrial IoT, Smart Cities, Retail, Enterprise Connectivity.",
+    "item_code": "STO-ITEM-2025-00015",
+    "parent": "STO-ITEM-2025-00148",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-00148",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "8DBI Antenna",
+    "item_code": "STO-ITEM-2025-00073",
+    "parent": "STO-ITEM-2025-00148",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2026-03-25 10:49:45.074764",
+  "name": "STO-ITEM-2025-00148",
+  "new_item_code": "STO-ITEM-2025-00148"
+ },
+ {
+  "custom_solution": null,
+  "description": null,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR11004GD with 1 Year Warranty",
+    "item_code": "STO-ITEM-2025-00018",
+    "parent": "STO-ITEM-2025-05053",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-05-08 19:07:34.186254",
+  "name": "STO-ITEM-2025-05053",
+  "new_item_code": "STO-ITEM-2025-05053"
+ },
+ {
+  "custom_solution": "STO-ITEM-2025-00099",
+  "description": "IR11004GDW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "4G LTE Cat4 | Wi-Fi: 802.11b/g/n, 2.4GHz, 150Mbps | Ethernet Ports: 1 x WAN (10/100Mbps), 1 x LAN (10/100Mbps) | SIM Slot: 1 x Drawer Type SIM Card Slot | Antenna: 2 x SMA / RP-SMA (50 ohm) | Security: Firewall, QoS, VPN, WPA2-PSK, WPA2, WPA-Enterprise | Power Input: 12V DC | Auto Recovery: Hardware Watchdog | Dimensions: 100mm x 63mm x 31mm | Certifications: FCC, CE, RoHS, MTCTE | Applications: Industrial IoT, Smart Cities, Retail, Enterprise Connectivity.",
+    "item_code": "STO-ITEM-2025-00019",
+    "parent": "STO-ITEM-2025-00099",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-00099",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-00099",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "8DBI Antenna",
+    "item_code": "STO-ITEM-2025-00073",
+    "parent": "STO-ITEM-2025-00099",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2026-01-06 16:17:23.065625",
+  "name": "STO-ITEM-2025-00099",
+  "new_item_code": "STO-ITEM-2025-00099"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR11004GS with 1 year Warranty",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "4G LTE Cat4 | Wi-Fi: 802.11b/g/n, 2.4GHz, 150Mbps | Ethernet Ports: 1 x WAN (10/100Mbps), 1 x LAN (10/100Mbps) | SIM Slot: 1 x Drawer Type SIM Card Slot | Antenna: 2 x SMA / RP-SMA (50 ohm) | Security: Firewall, QoS, VPN, WPA2-PSK, WPA2, WPA-Enterprise | Power Input: 12V DC | Auto Recovery: Hardware Watchdog | Dimensions: 100mm x 63mm x 31mm | Certifications: FCC, CE, RoHS, MTCTE | Applications: Industrial IoT, Smart Cities, Retail, Enterprise Connectivity.",
+    "item_code": "STO-ITEM-2025-00015",
+    "parent": "STO-ITEM-2025-00101",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-00101",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "8DBI Antenna",
+    "item_code": "STO-ITEM-2025-00073",
+    "parent": "STO-ITEM-2025-00101",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2026-05-08 16:21:06.220613",
+  "name": "STO-ITEM-2025-00101",
+  "new_item_code": "STO-ITEM-2025-00101"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-00189",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:04:57.145718",
+  "name": "STO-ITEM-2025-00189",
+  "new_item_code": "STO-ITEM-2025-00189"
+ },
+ {
+  "custom_solution": "STO-ITEM-2025-05027",
+  "description": "UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-05027",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-09-11 10:39:19.198664",
+  "name": "STO-ITEM-2025-05027",
+  "new_item_code": "STO-ITEM-2025-05027"
+ },
+ {
+  "custom_solution": "STO-ITEM-2025-05193",
+  "description": "IR11004GD",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR11004GD with 1 Year Warranty",
+    "item_code": "STO-ITEM-2025-00018",
+    "parent": "STO-ITEM-2025-05193",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-05193",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-05193",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-09-04 10:40:51.461703",
+  "name": "STO-ITEM-2025-05193",
+  "new_item_code": "STO-ITEM-2025-05193"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR11004GS",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "4G LTE Cat4 | Wi-Fi: 802.11b/g/n, 2.4GHz, 150Mbps | Ethernet Ports: 1 x WAN (10/100Mbps), 1 x LAN (10/100Mbps) | SIM Slot: 1 x Drawer Type SIM Card Slot | Antenna: 2 x SMA / RP-SMA (50 ohm) | Security: Firewall, QoS, VPN, WPA2-PSK, WPA2, WPA-Enterprise | Power Input: 12V DC | Auto Recovery: Hardware Watchdog | Dimensions: 100mm x 63mm x 31mm | Certifications: FCC, CE, RoHS, MTCTE | Applications: Industrial IoT, Smart Cities, Retail, Enterprise Connectivity.",
+    "item_code": "STO-ITEM-2025-00015",
+    "parent": "STO-ITEM-2025-00147",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-00147",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "8DBI Antenna",
+    "item_code": "STO-ITEM-2025-00073",
+    "parent": "STO-ITEM-2025-00147",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2026-04-24 10:28:02.519263",
+  "name": "STO-ITEM-2025-00147",
+  "new_item_code": "STO-ITEM-2025-00147"
+ },
+ {
+  "custom_solution": null,
+  "description": "Instaroute-IR1100UW",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR1100UW",
+    "item_code": "STO-ITEM-2025-00029",
+    "parent": "STO-ITEM-2025-00151",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-04-18 11:31:45.391875",
+  "name": "STO-ITEM-2025-00151",
+  "new_item_code": "STO-ITEM-2025-00151"
+ },
+ {
+  "custom_solution": "STO-ITEM-2025-05087",
+  "description": "Instaroute-IR11004GD",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "Instaroute-IR11004GD with 1 Year Warranty",
+    "item_code": "STO-ITEM-2025-00018",
+    "parent": "STO-ITEM-2025-05087",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2025-06-26 13:37:17.330438",
+  "name": "STO-ITEM-2025-05087",
+  "new_item_code": "STO-ITEM-2025-05087"
+ },
+ {
+  "custom_solution": "STO-ITEM-2025-00100",
+  "description": "IR11004GD",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Product Bundle",
+  "items": [
+   {
+    "description": "<div><p>2SIM Slot Standard 4G LTE Cat4 | Wi-Fi 2.4GHz </p><p>FE 1 x WAN (10/100Mbps), 14x LAN (10/100Mbps)</p></div>",
+    "item_code": "STO-ITEM-2025-00018",
+    "parent": "STO-ITEM-2025-00100",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-00100",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "Simcard",
+    "item_code": "STO-ITEM-2025-00179",
+    "parent": "STO-ITEM-2025-00100",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   },
+   {
+    "description": "8DBI Antenna",
+    "item_code": "STO-ITEM-2025-00073",
+    "parent": "STO-ITEM-2025-00100",
+    "parentfield": "items",
+    "parenttype": "Product Bundle",
+    "qty": 1.0,
+    "rate": 0.0,
+    "uom": "Nos"
+   }
+  ],
+  "modified": "2026-05-11 10:30:12.117525",
+  "name": "STO-ITEM-2025-00100",
+  "new_item_code": "STO-ITEM-2025-00100"
+ }
+]

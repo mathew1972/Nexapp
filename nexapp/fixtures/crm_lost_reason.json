@@ -1,0 +1,74 @@
+[
+ {
+  "description": "The prospect found the pricing to be too high or not competitive.",
+  "docstatus": 0,
+  "doctype": "CRM Lost Reason",
+  "lost_reason": "Pricing",
+  "modified": "2025-08-04 23:44:33.644112",
+  "name": "Pricing"
+ },
+ {
+  "description": "The prospect chose a competitor's product or service.",
+  "docstatus": 0,
+  "doctype": "CRM Lost Reason",
+  "lost_reason": "Competition",
+  "modified": "2025-08-04 23:44:33.647408",
+  "name": "Competition"
+ },
+ {
+  "description": "The prospect did not have the budget to proceed with the purchase.",
+  "docstatus": 0,
+  "doctype": "CRM Lost Reason",
+  "lost_reason": "Budget Constraints",
+  "modified": "2025-08-04 23:44:33.651252",
+  "name": "Budget Constraints"
+ },
+ {
+  "description": "The prospect felt that the product or service was missing key features they needed.",
+  "docstatus": 0,
+  "doctype": "CRM Lost Reason",
+  "lost_reason": "Missing Features",
+  "modified": "2025-08-04 23:44:33.654056",
+  "name": "Missing Features"
+ },
+ {
+  "description": "The sales process took too long, leading to loss of interest.",
+  "docstatus": 0,
+  "doctype": "CRM Lost Reason",
+  "lost_reason": "Long Sales Cycle",
+  "modified": "2025-08-04 23:44:33.656691",
+  "name": "Long Sales Cycle"
+ },
+ {
+  "description": "The prospect was not the decision-maker and could not proceed.",
+  "docstatus": 0,
+  "doctype": "CRM Lost Reason",
+  "lost_reason": "No Decision-Maker",
+  "modified": "2025-08-04 23:44:33.659267",
+  "name": "No Decision-Maker"
+ },
+ {
+  "description": "The prospect did not respond to follow-ups.",
+  "docstatus": 0,
+  "doctype": "CRM Lost Reason",
+  "lost_reason": "Unresponsive Prospect",
+  "modified": "2025-08-04 23:44:33.661868",
+  "name": "Unresponsive Prospect"
+ },
+ {
+  "description": "The prospect was not a good fit for the product or service.",
+  "docstatus": 0,
+  "doctype": "CRM Lost Reason",
+  "lost_reason": "Poor Fit",
+  "modified": "2025-08-04 23:44:33.664586",
+  "name": "Poor Fit"
+ },
+ {
+  "description": "",
+  "docstatus": 0,
+  "doctype": "CRM Lost Reason",
+  "lost_reason": "Other",
+  "modified": "2025-08-04 23:44:33.667232",
+  "name": "Other"
+ }
+]
