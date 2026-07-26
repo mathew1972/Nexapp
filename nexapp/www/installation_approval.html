@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Installation Approval | Nexapp Technologies</title>
+    <!-- Open Graph for rich link previews in WhatsApp/Telegram/Slack -->
+    <meta property="og:title" content="Installation Approval | Nexapp Technologies">
+    <meta property="og:description" content="Please review your installation details and complete the approval process.">
+    <meta property="og:image" content="http://erp.nexapp.co.in/files/Nexapp-Splash%20Image%20Grey.png">
+    <meta property="og:image:width" content="600">
+    <meta property="og:image:height" content="600">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Installation Approval | Nexapp Technologies">
+    <meta name="twitter:description" content="Please review your installation details and complete the approval process.">
+    <meta name="twitter:image" content="http://erp.nexapp.co.in/files/Nexapp-Splash%20Image%20Grey.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: #f1f5f9; min-height: 100vh; color: #1e293b; }
+
+        /* Splash Screen */
+        .splash {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #0f172a; z-index: 10000;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        .splash.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+        .splash img { width: 15%; min-width: 100px; animation: splashPulse 1.5s ease-in-out infinite; }
+        .splash .splash-bar { width: 120px; height: 3px; background: #1e293b; border-radius: 3px; margin-top: 24px; overflow: hidden; }
+        .splash .splash-bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #3b82f6, #06b6d4); border-radius: 3px; animation: splashLoad 1.5s ease forwards; }
+        @keyframes splashPulse { 0%,100%{opacity:0.7} 50%{opacity:1} }
+        @keyframes splashLoad { to { width: 100%; } }
+
+        .page-wrap { padding: 16px; opacity: 0; transition: opacity 0.4s ease; }
+        .page-wrap.show { opacity: 1; }
+
+        .container { max-width: 480px; margin: 0 auto 140px; background: white; border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.08); overflow: hidden; }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+            color: white; padding: 28px 20px; text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .header::before { content: ''; position: absolute; top: -40px; right: -40px; width: 120px; height: 120px; background: rgba(59,130,246,0.1); border-radius: 50%; }
+        .header::after { content: ''; position: absolute; bottom: -30px; left: -20px; width: 80px; height: 80px; background: rgba(6,182,212,0.08); border-radius: 50%; }
+        .header img { height: 36px; margin-bottom: 14px; position: relative; z-index: 1; }
+        .header h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; position: relative; z-index: 1; }
+
+        .content { padding: 24px 20px; }
+
+        /* Info Cards */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+        .info-card { background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 12px; padding: 14px; border: 1px solid #e2e8f0; }
+        .info-card.full { grid-column: 1 / -1; }
+        .info-card label { font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.8px; display: block; margin-bottom: 4px; }
+        .info-card .value { font-size: 14px; font-weight: 600; color: #0f172a; word-break: break-word; }
+
+        /* Gallery */
+        .gallery-title { font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 24px; }
+        .gallery-item { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 1; cursor: pointer; border: 2px solid #e2e8f0; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s; }
+        .gallery-item:active { transform: scale(0.96); border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+        .gallery-item .img-label { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.75)); color: white; font-size: 10px; font-weight: 600; padding: 18px 6px 6px; text-align: center; }
+
+        /* Fullscreen */
+        .fullscreen-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; }
+        .fullscreen-overlay.active { display: flex; }
+        .fullscreen-overlay img { max-width: 95vw; max-height: 80vh; object-fit: contain; border-radius: 4px; }
+        .fullscreen-overlay .fs-label { color: white; font-size: 14px; font-weight: 600; margin-top: 12px; text-align: center; }
+        .fullscreen-overlay .fs-close { position: absolute; top: 16px; right: 16px; width: 40px; height: 40px; background: rgba(255,255,255,0.15); border: none; border-radius: 50%; color: white; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .fullscreen-overlay .fs-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; background: rgba(255,255,255,0.15); border: none; border-radius: 50%; color: white; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .fs-prev { left: 10px; }
+        .fs-next { right: 10px; }
+
+        /* Footer Actions */
+        .footer-actions { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: calc(100% - 32px); max-width: 480px; background: white; padding: 16px 20px; border-top: 1px solid #e2e8f0; z-index: 100; box-shadow: 0 -4px 20px rgba(0,0,0,0.08); border-radius: 20px 20px 0 0; }
+        .footer-actions-inner { max-width: 480px; margin: 0 auto; }
+        .action-section { display: block; }
+        .btn { width: 100%; padding: 16px; font-size: 16px; font-weight: 700; border: none; border-radius: 14px; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn:active { transform: scale(0.97); }
+        .btn-approve { background: linear-gradient(135deg, #16a34a, #15803d); color: white; margin-bottom: 10px; box-shadow: 0 4px 14px rgba(22,163,74,0.3); }
+        .btn-approve:active { box-shadow: 0 2px 8px rgba(22,163,74,0.2); }
+        .btn-reject { background: white; color: #dc2626; border: 2px solid #fca5a5; }
+
+        /* Rating */
+        .rating-section { display: none; text-align: center; }
+        .rating-section.active { display: block; }
+        .rating-section p { font-size: 14px; font-weight: 600; color: #374151; margin-bottom: 12px; }
+        .stars { display: inline-flex; flex-direction: row-reverse; gap: 4px; margin-bottom: 16px; }
+        .stars input { display: none; }
+        .stars label { font-size: 38px; color: #d1d5db; cursor: pointer; transition: color 0.15s; user-select: none; }
+        .stars input:checked ~ label { color: #f59e0b; }
+        .stars label:hover, .stars label:hover ~ label { color: #f59e0b; }
+
+        /* Rejection */
+        .rejection-section { display: none; }
+        .rejection-section.active { display: block; }
+        .rejection-section textarea { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #d1d5db; font-size: 14px; font-family: inherit; resize: vertical; min-height: 80px; margin-bottom: 12px; }
+        .rejection-section textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+        .btn-submit-reject { background: #dc2626; color: white; box-shadow: 0 4px 14px rgba(220,38,38,0.25); }
+
+        /* Result */
+        .result-message { display: none; text-align: center; padding: 40px 20px; }
+        .result-message.active { display: block; }
+        .result-icon { font-size: 56px; margin-bottom: 16px; }
+        .result-text { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+        .result-sub { font-size: 14px; color: #64748b; line-height: 1.5; }
+
+        /* Loading */
+        .loading { text-align: center; padding: 60px 20px; color: #64748b; font-size: 15px; }
+        .loading .spinner { width: 36px; height: 36px; border: 3px solid #e2e8f0; border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<!-- Splash Screen -->
+<div class="splash" id="splash">
+    <img src="/files/Nexapp-Splash Image Grey.png" alt="Nexapp">
+    <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+</div>
+
+<div class="page-wrap" id="page-wrap">
+<div class="container">
+    <div class="header">
+        <img src="/files/Nexapp-Logo_Registered-white-.png" alt="Nexapp Logo">
+        <h1>Installation Approval</h1>
+    </div>
+
+    <div class="content">
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            Loading installation details...
+        </div>
+
+        <div id="site-details" style="display:none;">
+            <div class="info-grid" id="info-grid"></div>
+            <div id="gallery-section"></div>
+        </div>
+
+        <div class="footer-actions" id="footer-actions" style="display:none;">
+            <div class="action-section" id="action-section">
+                <button class="btn btn-approve" onclick="showRating()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> 
+                    Approve Installation
+                </button>
+                <button class="btn btn-reject" onclick="showRejection()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> 
+                    Reject
+                </button>
+            </div>
+
+            <div id="shared-mobile-input" style="display:none; margin-bottom: 16px; text-align: left;">
+                <label for="approver-mobile" style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Mobile Number (Mandatory)</label>
+                <input type="tel" id="approver-mobile" placeholder="Enter your mobile number" style="width:100%; padding:12px; border-radius:12px; border:1px solid #d1d5db; font-size:15px; font-family:inherit; outline:none;" required>
+            </div>
+
+            <div class="rating-section" id="rating-section">
+                <p>How would you rate our service?</p>
+                <div class="stars">
+                    <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+                    <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+                    <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+                    <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+                    <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+                </div>
+                <button class="btn btn-approve" onclick="submitApprove()">Submit Approval</button>
+            </div>
+
+            <div class="rejection-section" id="rejection-section">
+                <textarea id="reject-reason" placeholder="Please describe the reason for rejection..."></textarea>
+                <button class="btn btn-submit-reject" onclick="submitReject()">Submit Rejection</button>
+            </div>
+        </div>
+
+        <div class="result-message" id="result-message">
+            <div class="result-icon" id="result-icon"></div>
+            <div class="result-text" id="result-text"></div>
+            <div class="result-sub" id="result-sub"></div>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Fullscreen Image Viewer -->
+<div class="fullscreen-overlay" id="fs-overlay">
+    <button class="fs-close" onclick="closeFullscreen()">✕</button>
+    <button class="fs-nav fs-prev" onclick="navImage(-1)">‹</button>
+    <img id="fs-img" src="" alt="">
+    <div class="fs-label" id="fs-label"></div>
+    <button class="fs-nav fs-next" onclick="navImage(1)">›</button>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    let allAttachments = [];
+    let currentImageIndex = 0;
+
+    // Splash screen - hide after 1.8s
+    setTimeout(function() {
+        document.getElementById('splash').classList.add('hide');
+        document.getElementById('page-wrap').classList.add('show');
+    }, 1800);
+
+    function getDeviceType() {
+        const ua = navigator.userAgent;
+        if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) return "Tablet";
+        if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) return "Mobile";
+        return "Desktop";
+    }
+
+    if (!token) {
+        document.getElementById('loading').innerHTML = '<div class="result-icon">🔗</div><div style="font-weight:600;">Invalid Link</div><div style="color:#94a3b8;margin-top:8px;">This approval link appears to be invalid.</div>';
+    } else {
+        fetch('/api/method/nexapp.approval_api.get_site_details?token=' + token)
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (!data.message) {
+                document.getElementById('loading').innerHTML = '<div class="result-icon">⏰</div><div style="font-weight:600;">Link Expired</div><div style="color:#94a3b8;margin-top:8px;">This approval link has expired.</div>';
+                return;
+            }
+            if (data.message.already_approved) {
+                document.getElementById('loading').style.display = 'none';
+                showResult('✅', 'Already Approved', 'This installation has already been approved. Thank you!', '#16a34a');
+                return;
+            }
+
+            var d = data.message;
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('site-details').style.display = 'block';
+            document.getElementById('footer-actions').style.display = 'block';
+
+            // Build info cards — skip blank values
+            var hasLegalCode = d.site_id && d.site_id !== 'N/A';
+            var circuitLabel = hasLegalCode ? 'CIRCUIT ID | LEGAL CODE' : 'CIRCUIT ID';
+            var circuitValue = hasLegalCode ? (d.circuit_id + ' | ' + d.site_id) : d.circuit_id;
+
+            var fields = [
+                {label: circuitLabel, value: circuitValue, full: hasLegalCode},
+                {label: 'Delivery Date', value: d.delivery_date ? formatDate(d.delivery_date) : ''},
+                {label: 'Customer', value: d.customer_name, full: true},
+                {label: 'Site Name', value: d.site_name, full: true},
+                {label: 'Address', value: d.address, full: true},
+                {label: 'Additional Information', value: d.additional_information, full: true, preLine: true}
+            ];
+
+            var grid = document.getElementById('info-grid');
+            fields.forEach(function(f) {
+                if (!f.value || f.value === 'N/A') return;
+                var card = document.createElement('div');
+                card.className = 'info-card' + (f.full ? ' full' : '');
+                var valHtml = f.preLine ? '<div class="value" style="white-space: pre-wrap;">' + f.value + '</div>' : '<div class="value">' + f.value + '</div>';
+                card.innerHTML = '<label>' + f.label + '</label>' + valHtml;
+                grid.appendChild(card);
+            });
+
+            // Build gallery — only if photos exist
+            allAttachments = d.attachments || [];
+            var gallerySection = document.getElementById('gallery-section');
+
+            if (allAttachments.length > 0) {
+                var html = '<div class="gallery-title"><span>📸</span> Installation Report Photos</div><div class="gallery-grid">';
+                allAttachments.forEach(function(att, idx) {
+                    html += '<div class="gallery-item" onclick="openFullscreen(' + idx + ')">';
+                    html += '<img src="' + att.url + '" alt="' + att.label + '" loading="lazy">';
+                    html += '<div class="img-label">' + att.label + '</div></div>';
+                });
+                html += '</div>';
+                gallerySection.innerHTML = html;
+            }
+            // If no photos, gallery-section stays empty (hidden)
+        })
+        .catch(function() {
+            document.getElementById('loading').innerHTML = '<div class="result-icon">⚠️</div><div style="font-weight:600;">Something went wrong</div><div style="color:#94a3b8;margin-top:8px;">Please try again later.</div>';
+        });
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return '';
+        var parts = dateStr.split('-');
+        if (parts.length === 3) return parts[2] + '-' + parts[1] + '-' + parts[0];
+        return dateStr;
+    }
+
+    function openFullscreen(index) {
+        currentImageIndex = index;
+        renderFullscreen();
+        document.getElementById('fs-overlay').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeFullscreen() {
+        document.getElementById('fs-overlay').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    function navImage(direction) {
+        currentImageIndex += direction;
+        if (currentImageIndex < 0) currentImageIndex = allAttachments.length - 1;
+        if (currentImageIndex >= allAttachments.length) currentImageIndex = 0;
+        renderFullscreen();
+    }
+    function renderFullscreen() {
+        var att = allAttachments[currentImageIndex];
+        document.getElementById('fs-img').src = att.url;
+        document.getElementById('fs-label').textContent = att.label + ' (' + (currentImageIndex + 1) + '/' + allAttachments.length + ')';
+    }
+
+    var touchStartX = 0;
+    document.getElementById('fs-overlay').addEventListener('touchstart', function(e) { touchStartX = e.changedTouches[0].screenX; });
+    document.getElementById('fs-overlay').addEventListener('touchend', function(e) {
+        var diff = e.changedTouches[0].screenX - touchStartX;
+        if (Math.abs(diff) > 50) navImage(diff < 0 ? 1 : -1);
+    });
+
+    function showRating() {
+        document.getElementById('action-section').style.display = 'none';
+        document.getElementById('shared-mobile-input').style.display = 'block';
+        document.getElementById('rating-section').classList.add('active');
+    }
+    function showRejection() {
+        document.getElementById('action-section').style.display = 'none';
+        document.getElementById('shared-mobile-input').style.display = 'block';
+        document.getElementById('rejection-section').classList.add('active');
+    }
+
+    function submitApprove() {
+        var rating = document.querySelector('input[name="rating"]:checked');
+        if (!rating) { alert('Please select a rating before submitting.'); return; }
+        var mobile = document.getElementById('approver-mobile').value.trim();
+        if (!mobile) { alert('Please enter your mobile number to confirm approval.'); return; }
+
+        var btn = event.target; btn.disabled = true; btn.textContent = 'Submitting...';
+        fetch('/api/method/nexapp.approval_api.approve_installation', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded', 'X-Frappe-CSRF-Token': 'None'},
+            body: 'token=' + token + '&channel=Portal&rating=' + rating.value + '&approver_mobile=' + encodeURIComponent(mobile) + '&device_type=' + getDeviceType()
+        })
+        .then(function(res) { return res.json(); })
+        .then(function() { showResult('✅', 'Installation Approved', 'Thank you for your approval! The installation has been marked as delivered and live.', '#16a34a'); })
+        .catch(function() { btn.disabled = false; btn.textContent = 'Submit Approval'; alert('Something went wrong. Please try again.'); });
+    }
+
+    function submitReject() {
+        var reason = document.getElementById('reject-reason').value.trim();
+        if (!reason) { alert('Please enter a reason for rejection.'); return; }
+        var mobile = document.getElementById('approver-mobile').value.trim();
+        if (!mobile) { alert('Please enter your mobile number to confirm rejection.'); return; }
+
+        var btn = event.target; btn.disabled = true; btn.textContent = 'Submitting...';
+        fetch('/api/method/nexapp.approval_api.reject_installation', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded', 'X-Frappe-CSRF-Token': 'None'},
+            body: 'token=' + token + '&channel=Portal&reason=' + encodeURIComponent(reason) + '&approver_mobile=' + encodeURIComponent(mobile) + '&device_type=' + getDeviceType()
+        })
+        .then(function(res) { return res.json(); })
+        .then(function() { showResult('❌', 'Installation Rejected', 'Your feedback has been recorded. Our team will contact you shortly.', '#dc2626'); })
+        .catch(function() { btn.disabled = false; btn.textContent = 'Submit Rejection'; alert('Something went wrong. Please try again.'); });
+    }
+
+    function showResult(icon, text, sub, color) {
+        document.getElementById('site-details').style.display = 'none';
+        document.getElementById('footer-actions').style.display = 'none';
+        document.querySelector('.container').style.paddingBottom = '0';
+        var rm = document.getElementById('result-message');
+        rm.classList.add('active');
+        document.getElementById('result-icon').textContent = icon;
+        document.getElementById('result-text').textContent = text;
+        document.getElementById('result-text').style.color = color;
+        document.getElementById('result-sub').textContent = sub;
+    }
+</script>
+</body>
+</html>

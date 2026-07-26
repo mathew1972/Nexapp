@@ -1,0 +1,26 @@
+{
+ "content": null,
+ "creation": "2026-07-15 22:11:04.359344",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2026-07-16 00:26:57.384530",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "helpdesk_dashboard",
+ "owner": "Administrator",
+ "page_name": "helpdesk_dashboard",
+ "roles": [
+  {
+   "role": "Administrator"
+  },
+  {
+   "role": "Support Manager"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Helpdesk Dashboard"
+}

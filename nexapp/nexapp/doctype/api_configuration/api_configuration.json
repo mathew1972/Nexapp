@@ -31,10 +31,10 @@
    "options": "\nOllama (Local)\nOpenRouter\nGemini\nOpenAI"
   },
   {
+   "depends_on": "eval:doc.ai_provider && doc.ai_provider !== 'Ollama (Local)'",
    "fieldname": "api_key",
    "fieldtype": "Password",
-   "label": "API Key",
-   "read_only": 1
+   "label": "API Key"
   },
   {
    "fieldname": "model_name",
@@ -92,7 +92,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2026-03-23 11:17:52.339759",
+ "modified": "2026-05-16 10:52:40.698971",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "API Configuration",

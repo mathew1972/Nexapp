@@ -4,22 +4,32 @@
  "creation": "2025-05-21 23:00:30.512670",
  "default_view": "List",
  "doctype": "DocType",
- "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "eixting_isp_change_supplier_details_section",
+  "lms_id",
+  "purchase_order_number",
+  "expected_date",
+  "column_break_tlzm",
+  "supplier",
+  "purchase_order_date",
+  "change_management_request_id",
+  "isp_change_reason_section",
+  "isp_change_issue",
   "lms_feasibility_section",
   "lms_supplier",
   "supplier_contact",
   "bandwith_type",
   "media",
   "support_mode",
+  "lms_request_id",
   "column_break_mibe",
   "lms_status",
   "email_id",
   "mobile",
   "static_ip",
   "bandwidth",
-  "lms_request_id",
+  "bandwidth_name",
   "lms_commercial_section",
   "billing_mode",
   "billing_terms",
@@ -78,11 +88,12 @@
    "fieldtype": "Column Break"
   },
   {
+   "default": "Pending",
    "fieldname": "lms_status",
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "LMS Feasibility Status",
-   "options": "\nFeasible\nHigh Commercials\nNot Feasible\nISP Changed"
+   "options": "\nFeasible\nHigh Commercials\nNot Feasible\nISP Changed\nPending"
   },
   {
    "fieldname": "email_id",
@@ -178,13 +189,75 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "LMS Request ID"
+  },
+  {
+   "fetch_from": "bandwidth.item_name",
+   "fieldname": "bandwidth_name",
+   "fieldtype": "Data",
+   "label": "Bandwidth Name"
+  },
+  {
+   "fieldname": "eixting_isp_change_supplier_details_section",
+   "fieldtype": "Section Break",
+   "label": "Eixting ISP Change Supplier Details"
+  },
+  {
+   "fieldname": "lms_id",
+   "fieldtype": "Data",
+   "label": "LMS ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "purchase_order_number",
+   "fieldtype": "Data",
+   "label": "Purchase Order Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "expected_date",
+   "fieldtype": "Date",
+   "label": "Expected ISP Change Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_tlzm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Eisting Supplier",
+   "read_only": 1
+  },
+  {
+   "fieldname": "purchase_order_date",
+   "fieldtype": "Date",
+   "label": "Purchase Order Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "change_management_request_id",
+   "fieldtype": "Data",
+   "label": "Change Management Request ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "isp_change_reason_section",
+   "fieldtype": "Section Break",
+   "label": "ISP Change Reason"
+  },
+  {
+   "fieldname": "isp_change_issue",
+   "fieldtype": "Text Editor",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-05-23 00:24:26.564984",
+ "modified": "2026-06-18 22:51:13.671531",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "ISP Change Feasibility",

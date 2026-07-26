@@ -1,4 +1,52 @@
 frappe.ui.form.on('LMS Feasibility Partner', {
+    pincode: function(frm) {
+        if (frm.doc.pincode && frm.doc.pincode.length === 6) {
+            frappe.show_alert({message: "Fetching location details...", indicator: "blue"});
+            frappe.call({
+                method: 'nexapp.api.get_pincode_details',
+                args: { pincode: frm.doc.pincode },
+                callback: function(r) {
+                    if (r.message) {
+                        const details = r.message;
+                        frm.set_value("city", details.city || "");
+                        frm.set_value("state", details.state || "");
+                        if (frm.fields_dict.district) frm.set_value("district", details.district || "");
+                        frappe.show_alert({message: "Location updated successfully!", indicator: "green"});
+                    } else {
+                        frappe.msgprint("Pincode not found or invalid.");
+                    }
+                },
+                error: function() {
+                    frappe.msgprint("Error fetching data from API.");
+                }
+            });
+        } else if (!frm.doc.pincode) {
+            frm.set_value("city", "");
+            frm.set_value("state", "");
+            if (frm.fields_dict.district) frm.set_value("district", "");
+        }
+    },
+    setup: function(frm) {
+        // Attach debounced real-time input handler for pincode like in Feasibility
+        if (frm.fields_dict.pincode && frm.fields_dict.pincode.wrapper) {
+            let timer;
+            $(frm.fields_dict.pincode.wrapper).off('input', 'input').on('input', 'input', function(e) {
+                let raw_val = e.target.value || "";
+                const pincode = raw_val.replace(/\D/g, ''); // Remove non-digit characters
+
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                    if (pincode.length === 6) {
+                        if (frm.doc.pincode !== pincode) {
+                            frm.set_value("pincode", pincode);
+                        }
+                    } else if (pincode.length === 0 && frm.doc.pincode !== "") {
+                        frm.set_value("pincode", "");
+                    }
+                }, 500);
+            });
+        }
+    },
     refresh: function(frm) {
         // Inject Font Awesome info icon into custom_info field
         frm.fields_dict.custom_info.$wrapper.html(`

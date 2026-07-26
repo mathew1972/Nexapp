@@ -1,0 +1,107 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2026-06-26 13:44:57.963841",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Nexapp",
+ "letterhead": null,
+ "modified": "2026-06-26 13:44:57.963841",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "PO vs SO Balance",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Task",
+ "report_name": "PO vs SO Balance",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "Projects User"
+  },
+  {
+   "role": "Employee Self Service"
+  },
+  {
+   "role": "Support Manager"
+  },
+  {
+   "role": "L2 Support"
+  },
+  {
+   "role": "LMS Manager"
+  },
+  {
+   "role": "Developer"
+  },
+  {
+   "role": "Stock Manager"
+  },
+  {
+   "role": "Asset Manager"
+  },
+  {
+   "role": "Projects Manager"
+  },
+  {
+   "role": "CRM-Sales Manager Standard"
+  },
+  {
+   "role": "accounts receivable"
+  },
+  {
+   "role": "Account Payable"
+  },
+  {
+   "role": "LMS User"
+  },
+  {
+   "role": "ISP Engineer"
+  },
+  {
+   "role": "Project Co-Ordinator"
+  },
+  {
+   "role": "LMS User-1"
+  },
+  {
+   "role": "Financial Report"
+  },
+  {
+   "role": "CRM-Inside Sales"
+  },
+  {
+   "role": "CRM MIS"
+  },
+  {
+   "role": "Product Engineer"
+  },
+  {
+   "role": "Service Delivery"
+  },
+  {
+   "role": "L1 Support"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Sales Manager"
+  },
+  {
+   "role": "HR Manager"
+  },
+  {
+   "role": "HR User"
+  },
+  {
+   "role": "Stock User"
+  }
+ ],
+ "timeout": 0
+}

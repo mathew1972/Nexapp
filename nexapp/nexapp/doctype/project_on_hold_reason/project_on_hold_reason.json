@@ -1,0 +1,45 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:on_hold_reason",
+ "creation": "2026-06-17 21:06:26.965244",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "on_hold_reason"
+ ],
+ "fields": [
+  {
+   "fieldname": "on_hold_reason",
+   "fieldtype": "Data",
+   "label": "On Hold Reason",
+   "unique": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-17 21:07:06.936413",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Project On Hold Reason",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

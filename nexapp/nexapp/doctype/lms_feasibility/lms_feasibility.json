@@ -5,14 +5,12 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "primary",
-  "column_break_uefh",
-  "feasibility_updated_date",
   "lms_feasibility_section",
   "lms_supplier",
   "bandwith_type",
   "media",
   "support_mode",
+  "primary",
   "column_break_mibe",
   "feasibility_type",
   "lms_status",
@@ -45,9 +43,13 @@
   "attach_icpc",
   "column_break_eugb",
   "quote_valid_until",
+  "feasibility_user_information_section",
+  "feasibility_user",
+  "lms_request_id",
+  "column_break_yigg",
+  "feasibility_updated_date",
   "section_break_soyc",
-  "description",
-  "lms_request_id"
+  "description"
  ],
  "fields": [
   {
@@ -210,7 +212,6 @@
   },
   {
    "default": "0",
-   "description": "While doing the Feasibility, please select the Primary Supplier who is most capable of performing this activity.",
    "fieldname": "primary",
    "fieldtype": "Check",
    "in_list_view": 1,
@@ -225,10 +226,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "column_break_uefh",
-   "fieldtype": "Column Break"
-  },
-  {
    "depends_on": "eval:doc.written_supplier_quote== 1",
    "fieldname": "attach_icpc",
    "fieldtype": "Attach",
@@ -239,6 +236,7 @@
    "collapsible": 1,
    "fieldname": "section_break_znkl",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Feasibility Check List"
   },
   {
@@ -278,9 +276,11 @@
   },
   {
    "allow_in_quick_entry": 1,
+   "depends_on": "eval:doc.otc != \"\"",
    "fieldname": "otc_details",
    "fieldtype": "Link",
    "label": "OTC Details",
+   "mandatory_depends_on": "eval:doc.otc != \"\"",
    "options": "OTC Details"
   },
   {
@@ -294,7 +294,8 @@
   {
    "fieldname": "lms_request_id",
    "fieldtype": "Data",
-   "label": "LMS Request ID"
+   "label": "LMS Request ID",
+   "read_only": 1
   },
   {
    "fieldname": "contact",
@@ -320,13 +321,27 @@
    "fieldtype": "Data",
    "label": "Bandwidth Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "feasibility_user_information_section",
+   "fieldtype": "Section Break",
+   "label": "Feasibility User Information"
+  },
+  {
+   "fieldname": "feasibility_user",
+   "fieldtype": "Data",
+   "label": "Feasibility User"
+  },
+  {
+   "fieldname": "column_break_yigg",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-08-22 11:44:52.016697",
+ "modified": "2026-06-10 00:11:08.748013",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "LMS Feasibility",

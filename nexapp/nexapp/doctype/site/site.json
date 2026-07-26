@@ -18,9 +18,7 @@
   "customer",
   "lms_type",
   "lms_type_auto_set",
-  "customer_type",
-  "site_id__legal_code",
-  "territory",
+  "service_type",
   "column_break_dlsw",
   "info2",
   "running_days",
@@ -28,17 +26,22 @@
   "shifted_circuit_id",
   "site_shifted_date",
   "cancel_reason",
+  "rejected_reason",
   "stage",
   "lms_stage",
   "site_type",
-  "service_type",
-  "project_manager",
+  "site_id__legal_code",
+  "customer_type",
+  "section_break_tocl",
+  "on_hold_reason",
+  "column_break_apch",
+  "on_hold_attachment",
   "review_section",
   "project_review",
+  "task_ownership",
   "column_break_sphp",
   "lms_review",
-  "column_break_qbrl",
-  "task_ownership",
+  "estimated_time_of_arrival",
   "solution_section",
   "solution_code",
   "managed_services",
@@ -51,17 +54,18 @@
   "column_break_cfba",
   "secondary_plan",
   "nos_of_static_ip_required",
-  "description_section",
-  "description",
   "comments_section",
   "comments",
   "customer_type_2",
+  "description_section",
+  "description",
+  "site_updated_later_section",
+  "reason_site_updated_later",
   "contact_address",
   "central_spoke_contact_information_section",
   "central_spoke",
   "column_break_cgmy",
   "mobile",
-  "column_break_azsf",
   "central_email",
   "site_contact_section",
   "contact_person",
@@ -87,6 +91,7 @@
   "section_break_lkzf",
   "address_street",
   "city",
+  "territory",
   "column_break_btqz",
   "pincode",
   "district",
@@ -99,59 +104,92 @@
   "services_tab",
   "stock_live_update_section",
   "site_item",
+  "installed_product_section",
+  "installed_product_html",
   "wireless_feasibility_section",
   "column_break_lcug",
   "wireless",
   "stock_requested_date",
   "section_break_fjgg",
   "delivery_note_id",
-  "delivery_requested_date",
   "column_break_tibh",
   "stock_management_id",
   "column_break_ewew",
   "im_id",
-  "activity_log_section",
-  "activity_html",
-  "section_break_lmgx",
-  "stock_activities",
   "lms_tab",
   "lms_section",
   "lms_vendor",
+  "lms_po_released_section",
+  "lms_po_issued_html",
   "lms_feasibility_tab",
+  "wireless_feasibility_sec_section",
+  "virtual_wireless_feasibility_html",
   "lms__feasibility_section",
-  "site_lms_feasibility",
+  "virtual_lms_feasibility_html",
+  "isp_change_feasibility_section",
+  "virtual_isp__change_feasibility_html",
   "tab_12_tab",
-  "delivery_challan_section",
-  "dc",
-  "column_break_lryq",
-  "dc_date",
-  "shipment_section",
-  "shipment_id",
-  "service_provider",
-  "carrier",
-  "carrier_service",
-  "column_break_oqdi",
-  "tracking_status",
-  "delivery_date",
-  "pickup_date",
-  "awb_number",
-  "shipment_information_section",
-  "shipment",
+  "shipment_details_section",
+  "virtual_shipment_html",
   "provisioning_tab",
   "provisioning_information_section",
+  "virtual_provisioning_html",
+  "provisioning_information_sec",
   "provisioning_id",
   "provisioning_status",
+  "branch_router_ip",
   "column_break_hclh",
   "provisioning_partially_completed_date",
   "provisioning_date",
-  "branch_router_ip",
+  "terminal_ip",
+  "installation_tab",
+  "installation_report_section",
+  "create_installation",
+  "installation_note",
+  "installation_document_status",
+  "column_break_mmql",
+  "date",
+  "lms_information",
+  "circuit_delivery_delay_reason",
+  "installation_attachment_section",
+  "virtual_installation_image_html",
+  "customer_approval_information_section",
+  "service_rating",
+  "section_break_uoxb",
+  "client_installation_approval_status",
+  "customer_ip_address",
+  "customer_email_id",
+  "reson_for_self_approval",
+  "customer_approved_attachment",
+  "column_break_jctd",
+  "client_installation_approval_date",
+  "approval_channel",
+  "customer_arrpoved_mobile_no",
+  "additional_information_for_customer",
+  "section_break_sjvn",
+  "web_form_link",
+  "section_break_jkbl",
+  "lms_billing",
+  "section_break_ggvj",
+  "installation_master_id",
   "tab_3_tab",
   "project_team_information_section",
   "sales_person",
   "assigned_owner",
   "column_break_vnda",
+  "project_manager",
+  "project_manager_email_id",
+  "tat_information_section",
   "site_created_date",
   "total_days",
+  "due_date",
+  "hold_days",
+  "site_tat",
+  "column_break_cdfc",
+  "site_completed_date",
+  "sla_status",
+  "tat_status",
+  "on_hold_since",
   "project_section",
   "column_break_frik",
   "project_name",
@@ -170,46 +208,7 @@
   "customer_po_no",
   "column_break_rckh",
   "customer_po_date",
-  "po_end_date",
-  "installation_tab",
-  "installation_report_section",
-  "create_installation",
-  "installation_note",
-  "column_break_mmql",
-  "date",
-  "circuit_delivery_delay_reason",
-  "installation_document_status",
-  "customer_rating_section",
-  "service_rating",
-  "section_break_uoxb",
-  "client_installation_approval_status",
-  "column_break_jctd",
-  "client_installation_approval_date",
-  "section_break_glra",
-  "customer_email_id",
-  "column_break_ibzk",
-  "customer_email_idii",
-  "column_break_hxnx",
-  "customer_email_id_3",
-  "installation_attachemnt_1_section",
-  "ir_report",
-  "column_break_ylmb",
-  "server_rack_photo",
-  "column_break_nhhc",
-  "router_photo",
-  "column_break_nkvh",
-  "customer_testing_photo",
-  "column_break_qahr",
-  "cable_labling_photo",
-  "column_break_vvlu",
-  "sp_device_photo",
-  "section_break_jkbl",
-  "lms_billing",
-  "section_break_ggvj",
-  "installation_master_id",
-  "subscription_tab",
-  "subscription_section",
-  "subscription"
+  "po_end_date"
  ],
  "fields": [
   {
@@ -219,7 +218,8 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Order Type",
-   "options": "\nService\nUpgrade\nDegrade\nShifting"
+   "options": "\nService\nUpgrade\nDegrade\nShifting",
+   "read_only": 1
   },
   {
    "default": "Paid Customer",
@@ -296,7 +296,8 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Site Status  ",
-   "options": "Pending\nIn-process\nInstallation Initiated\nOn Hold\nProvisioning\nPartially Provisioning Completed\nProvisioning Completed\nDelivered and Live\nAwaiting Customer Approval\nDisconnection In Process\nDisconnected\nCancelled\nSite Shifted to new location\nSite Upgraded to new Circuit\nSite degraded to new Circuit"
+   "options": "Pending\nIn-process\nInstallation Initiated\nOn Hold\nProvisioning\nPartially Provisioning Completed\nProvisioning Completed\nDelivered and Live\nAwaiting Customer Approval\nDisconnection In Process\nDisconnected\nCancelled\nSite Shifted to new location\nSite Upgraded to new Circuit\nSite degraded to new Circuit\nRejected",
+   "read_only": 1
   },
   {
    "fieldname": "site_item",
@@ -307,7 +308,8 @@
   {
    "fieldname": "site_id__legal_code",
    "fieldtype": "Data",
-   "label": "Site ID / Legal Code"
+   "label": "Site ID / Legal Code",
+   "read_only": 1
   },
   {
    "fieldname": "customer_po_date",
@@ -368,7 +370,6 @@
   {
    "fieldname": "lms_vendor",
    "fieldtype": "Table",
-   "label": "LMS Vendor",
    "options": "LMS Site"
   },
   {
@@ -407,18 +408,6 @@
    "label": "Shipment"
   },
   {
-   "fieldname": "delivery_challan_section",
-   "fieldtype": "Section Break",
-   "hidden": 1,
-   "label": "Delivery Challan Information"
-  },
-  {
-   "fieldname": "dc",
-   "fieldtype": "Link",
-   "label": "Delivery Note",
-   "options": "Delivery Note"
-  },
-  {
    "fieldname": "site_contact_section",
    "fieldtype": "Section Break",
    "label": "Branch Contact Information"
@@ -447,7 +436,8 @@
   {
    "fieldname": "lms_section",
    "fieldtype": "Section Break",
-   "label": "LMS Feasibility"
+   "hidden": 1,
+   "label": "Lastmile Services Master"
   },
   {
    "fieldname": "managed_services",
@@ -487,7 +477,6 @@
    "fieldtype": "Section Break"
   },
   {
-   "description": "\ud83d\udc46 Please click the link above, upload all the required documents, and submit the final Installation Note. Without submission, the document will remain invalid.",
    "fieldname": "installation_note",
    "fieldtype": "Link",
    "label": "Installation Note",
@@ -497,20 +486,11 @@
    "read_only": 1
   },
   {
-   "fieldname": "column_break_lryq",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fetch_from": "dc.posting_date",
-   "fieldname": "dc_date",
-   "fieldtype": "Date",
-   "label": "Delivery Note Date"
-  },
-  {
    "fieldname": "column_break_mmql",
    "fieldtype": "Column Break"
   },
   {
+   "bold": 1,
    "description": "This date is considered the Invoice Start Date.",
    "fieldname": "date",
    "fieldtype": "Date",
@@ -534,7 +514,8 @@
    "label": "Solution Code",
    "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"Solution\"]]",
    "options": "Item",
-   "read_only": 1
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fetch_from": "solution_code.item_name",
@@ -588,7 +569,6 @@
    "fieldtype": "Small Text",
    "in_standard_filter": 1,
    "label": "Address/ Street ",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -659,57 +639,8 @@
   {
    "fieldname": "wireless_feasibility_section",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Wireless Feasibility"
-  },
-  {
-   "depends_on": "eval:doc.customer_type ==\"Paid Customer\"",
-   "fieldname": "subscription_tab",
-   "fieldtype": "Tab Break",
-   "hidden": 1,
-   "label": "Subscription"
-  },
-  {
-   "fieldname": "subscription_section",
-   "fieldtype": "Section Break",
-   "hidden": 1,
-   "label": "Subscription"
-  },
-  {
-   "fieldname": "subscription",
-   "fieldtype": "Link",
-   "label": "subscription",
-   "options": "Subscription"
-  },
-  {
-   "fieldname": "shipment_section",
-   "fieldtype": "Section Break",
-   "label": "Shipment",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_oqdi",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "section_break_lmgx",
-   "fieldtype": "Section Break",
-   "hidden": 1
-  },
-  {
-   "fieldname": "activity_log_section",
-   "fieldtype": "Section Break",
-   "label": "Activity Log"
-  },
-  {
-   "fieldname": "activity_html",
-   "fieldtype": "HTML",
-   "label": "Activity HTML"
-  },
-  {
-   "fieldname": "stock_activities",
-   "fieldtype": "Table",
-   "label": "Activities",
-   "options": "Site Stock Activity"
   },
   {
    "depends_on": "eval:doc.order_type == \"Shifting\" || doc.order_type == \"Degrade\" || doc.order_type == \"Upgrade\"\n",
@@ -772,6 +703,7 @@
   {
    "fieldname": "shipment_state",
    "fieldtype": "Data",
+   "in_standard_filter": 1,
    "label": "State"
   },
   {
@@ -797,13 +729,7 @@
   },
   {
    "fieldname": "section_break_fjgg",
-   "fieldtype": "Section Break",
-   "read_only": 1
-  },
-  {
-   "fieldname": "delivery_requested_date",
-   "fieldtype": "Date",
-   "label": "Delivery Requested Date"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "column_break_tibh",
@@ -815,37 +741,6 @@
    "label": "Stock Management ID"
   },
   {
-   "fetch_from": "shipment.pickup_date",
-   "fieldname": "pickup_date",
-   "fieldtype": "Date",
-   "label": "Pickup Date"
-  },
-  {
-   "fetch_from": "shipment.service_provider",
-   "fieldname": "service_provider",
-   "fieldtype": "Data",
-   "label": "Service Provider"
-  },
-  {
-   "fetch_from": "shipment.awb_number",
-   "fieldname": "awb_number",
-   "fieldtype": "Data",
-   "label": "AWB Number"
-  },
-  {
-   "fetch_from": "shipment.tracking_status",
-   "fieldname": "tracking_status",
-   "fieldtype": "Select",
-   "label": "Tracking Status",
-   "options": "\nIn Progress\nDelivered\nReturned\nLost"
-  },
-  {
-   "fetch_from": "shipment_id.custom_delivery_date",
-   "fieldname": "delivery_date",
-   "fieldtype": "Date",
-   "label": "Shipment Delivery Date"
-  },
-  {
    "fieldname": "im_id",
    "fieldtype": "Data",
    "label": "IM ID"
@@ -853,24 +748,6 @@
   {
    "fieldname": "column_break_ewew",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "shipment_id",
-   "fieldtype": "Link",
-   "label": "Shipment ID",
-   "link_filters": "[[\"Shipment\",\"delivery_customer\",\"=\",\"eval:doc.customer\"],[\"Shipment\",\"custom_circuit_id\",\"=\",\"eval:doc.circuit_id\"]]",
-   "options": "Shipment",
-   "read_only": 1
-  },
-  {
-   "fieldname": "carrier",
-   "fieldtype": "Data",
-   "label": "Carrier"
-  },
-  {
-   "fieldname": "carrier_service",
-   "fieldtype": "Data",
-   "label": "Carrier Service "
   },
   {
    "fieldname": "provisioning_tab",
@@ -903,6 +780,7 @@
    "collapsible": 1,
    "fieldname": "section_break_jkbl",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Billing"
   },
   {
@@ -912,11 +790,12 @@
    "options": "LMS Billing"
   },
   {
-   "default": "No LMS",
+   "fetch_from": "solution_code.custom_lms_type",
    "fieldname": "lms_type",
    "fieldtype": "Select",
    "label": "LMS Type",
-   "options": "No LMS\nSingle\nDual"
+   "options": "\nNo LMS\nSingle\nDual",
+   "read_only": 1
   },
   {
    "collapsible": 1,
@@ -943,64 +822,8 @@
    "fieldtype": "Data",
    "label": "Customer Email ID",
    "options": "Email",
-   "placeholder": "Use only one email ID"
-  },
-  {
-   "collapsible": 1,
-   "fieldname": "installation_attachemnt_1_section",
-   "fieldtype": "Section Break",
-   "hidden": 1,
-   "label": "Installation Attachemnt"
-  },
-  {
-   "fieldname": "ir_report",
-   "fieldtype": "Attach",
-   "label": "IR Report"
-  },
-  {
-   "fieldname": "column_break_ylmb",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "server_rack_photo",
-   "fieldtype": "Attach",
-   "label": "Server Rack Photo"
-  },
-  {
-   "fieldname": "column_break_nhhc",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "router_photo",
-   "fieldtype": "Attach",
-   "label": "Router Photo"
-  },
-  {
-   "fieldname": "column_break_nkvh",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "customer_testing_photo",
-   "fieldtype": "Attach",
-   "label": "Testing Photo"
-  },
-  {
-   "fieldname": "column_break_qahr",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "cable_labling_photo",
-   "fieldtype": "Attach",
-   "label": "Cable Labling Photo"
-  },
-  {
-   "fieldname": "column_break_vvlu",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "sp_device_photo",
-   "fieldtype": "Attach",
-   "label": "SP Device Photo"
+   "placeholder": "Use only one email ID",
+   "read_only": 1
   },
   {
    "depends_on": "eval: doc.billing_status == \"Partially Completed\"",
@@ -1036,7 +859,6 @@
   {
    "allow_in_quick_entry": 1,
    "bold": 1,
-   "description": "This LMS Review will also automatically update from the Lastmile Services Master.",
    "fieldname": "lms_review",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -1046,6 +868,7 @@
   },
   {
    "bold": 1,
+   "description": "This LMS Review will also automatically update from the Lastmile Services Master.",
    "fieldname": "review_section",
    "fieldtype": "Section Break",
    "hide_border": 1,
@@ -1053,10 +876,6 @@
   },
   {
    "fieldname": "column_break_sphp",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_qbrl",
    "fieldtype": "Column Break"
   },
   {
@@ -1078,8 +897,7 @@
    "fieldname": "installation_document_status",
    "fieldtype": "Select",
    "label": "Installation Document Status",
-   "options": "\nDraft\nCancelled\nSubmitted",
-   "read_only": 1
+   "options": "\nDraft\nCancelled\nSubmitted"
   },
   {
    "depends_on": "eval: doc.lms_stage != \"No LMS\"",
@@ -1090,33 +908,6 @@
   {
    "fieldname": "column_break_cfba",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "customer_email_idii",
-   "fieldtype": "Data",
-   "label": "Customer Email ID",
-   "options": "Email",
-   "placeholder": "Use only one email ID"
-  },
-  {
-   "fieldname": "section_break_glra",
-   "fieldtype": "Section Break",
-   "label": "Automated Installation Report via Email"
-  },
-  {
-   "fieldname": "column_break_ibzk",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_hxnx",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "customer_email_id_3",
-   "fieldtype": "Data",
-   "label": "Customer Email ID",
-   "options": "Email",
-   "placeholder": "Use only one email ID"
   },
   {
    "fieldname": "column_break_vnda",
@@ -1170,11 +961,11 @@
    "fieldtype": "Section Break"
   },
   {
-   "default": "Awaiting Customer Approval",
    "fieldname": "client_installation_approval_status",
    "fieldtype": "Select",
-   "label": "Client Installation Approval Status",
-   "options": "Awaiting Customer Approval\nAccepted\nNo"
+   "label": "Customer Installation Approval Status",
+   "options": "\nAwaiting Customer Approval\nAccepted\nNo\nApproved\nRejected",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_jctd",
@@ -1183,7 +974,8 @@
   {
    "fieldname": "client_installation_approval_date",
    "fieldtype": "Datetime",
-   "label": "Client Installation Approval Date"
+   "label": "Customer Installation Approval Date",
+   "read_only": 1
   },
   {
    "fieldname": "central_spoke_contact_information_section",
@@ -1200,7 +992,7 @@
    "fetch_from": "central_spoke.mobile_no",
    "fieldname": "mobile",
    "fieldtype": "Data",
-   "label": "Mobile"
+   "label": "Central Mobile"
   },
   {
    "fieldname": "column_break_cgmy",
@@ -1215,25 +1007,13 @@
   {
    "fieldname": "provisioning_information_section",
    "fieldtype": "Section Break",
-   "label": "Provisioning Information",
-   "read_only": 1
+   "label": "Provisioning Information"
   },
   {
    "fieldname": "project_team_information_section",
    "fieldtype": "Section Break",
    "label": "Project Team Information",
    "read_only": 1
-  },
-  {
-   "fieldname": "shipment_information_section",
-   "fieldtype": "Section Break",
-   "label": "Shipment Information"
-  },
-  {
-   "fieldname": "shipment",
-   "fieldtype": "Table",
-   "label": "Shipment",
-   "options": "Site Shipment"
   },
   {
    "fieldname": "section_break_hanh",
@@ -1262,10 +1042,6 @@
    "fieldname": "different_shipment_address",
    "fieldtype": "Check",
    "label": "Diferent Shipment Address"
-  },
-  {
-   "fieldname": "column_break_azsf",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "sales_person",
@@ -1297,14 +1073,10 @@
    "read_only": 1
   },
   {
-   "fieldname": "customer_rating_section",
-   "fieldtype": "Section Break",
-   "label": "Customer Rating"
-  },
-  {
    "fieldname": "service_rating",
    "fieldtype": "Rating",
-   "label": "Service Rating"
+   "label": "Service Rating",
+   "read_only": 1
   },
   {
    "fieldname": "info2",
@@ -1354,12 +1126,6 @@
    "label": "LMS  Feasibility"
   },
   {
-   "fieldname": "site_lms_feasibility",
-   "fieldtype": "Table",
-   "label": "LMS  Feasibility",
-   "options": "Site LMS  Feasibility"
-  },
-  {
    "fetch_from": "sales_order.custom_po_end_date",
    "fetch_if_empty": 1,
    "fieldname": "po_end_date",
@@ -1369,6 +1135,7 @@
   {
    "fieldname": "customer_type_2",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "HD Customer Type",
    "options": "Customer Type"
   },
@@ -1378,11 +1145,11 @@
    "label": "Branch Router IP"
   },
   {
-   "depends_on": "eval:doc.date < frappe.datetime.add_days(frappe.datetime.get_today(), -7)",
+   "depends_on": "eval:doc.date <= frappe.datetime.add_days(frappe.datetime.get_today(), -7)",
    "fieldname": "circuit_delivery_delay_reason",
    "fieldtype": "Small Text",
+   "hidden": 1,
    "label": "Circuit Delivery Delay Reason",
-   "mandatory_depends_on": "eval:doc.date < frappe.datetime.add_days(frappe.datetime.get_today(), -7)",
    "placeholder": "If the back date is more than 7 days, you must provide a valid reason for the delay."
   },
   {
@@ -1400,28 +1167,259 @@
    "fieldname": "delivery_note_id",
    "fieldtype": "Data",
    "label": "Delivery Note ID"
+  },
+  {
+   "fetch_from": "provisioning_id.terminal_ip",
+   "fieldname": "terminal_ip",
+   "fieldtype": "Data",
+   "label": "Terminal IP"
+  },
+  {
+   "fieldname": "approval_channel",
+   "fieldtype": "Select",
+   "label": "Approval Channel",
+   "options": "\nEmail\nPortal\nNexapp Self",
+   "read_only": 1
+  },
+  {
+   "fieldname": "customer_ip_address",
+   "fieldtype": "Data",
+   "label": "Customer IP Address",
+   "read_only": 1
+  },
+  {
+   "fieldname": "web_form_link",
+   "fieldtype": "Data",
+   "label": "Approval Link"
+  },
+  {
+   "fieldname": "shipment_details_section",
+   "fieldtype": "Section Break",
+   "label": "Shipment Details"
+  },
+  {
+   "fieldname": "virtual_shipment_html",
+   "fieldtype": "HTML",
+   "label": "Shipment Details"
+  },
+  {
+   "fieldname": "virtual_lms_feasibility_html",
+   "fieldtype": "HTML",
+   "label": "LMS Feasibility"
+  },
+  {
+   "fieldname": "virtual_provisioning_html",
+   "fieldtype": "HTML",
+   "label": "Provisioning"
+  },
+  {
+   "fieldname": "provisioning_information_sec",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "installation_attachment_section",
+   "fieldtype": "Section Break",
+   "label": "Installation Attachment"
+  },
+  {
+   "fieldname": "virtual_installation_image_html",
+   "fieldtype": "HTML",
+   "label": "Installation Attachment"
+  },
+  {
+   "depends_on": "eval:doc.site_status==\"On Hold\"",
+   "fieldname": "on_hold_reason",
+   "fieldtype": "Link",
+   "label": "On Hold Reason",
+   "mandatory_depends_on": "eval:doc.site_status==\"On Hold\"",
+   "options": "Project On Hold Reason",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hold_days",
+   "fieldtype": "Int",
+   "label": "Hold Days"
+  },
+  {
+   "fieldname": "project_manager_email_id",
+   "fieldtype": "Small Text",
+   "label": "Project Manager Email ID"
+  },
+  {
+   "fieldname": "site_completed_date",
+   "fieldtype": "Datetime",
+   "label": "Site Completed Datetime"
+  },
+  {
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "label": "Due Date"
+  },
+  {
+   "fieldname": "site_tat",
+   "fieldtype": "Float",
+   "label": "Site TAT"
+  },
+  {
+   "fieldname": "sla_status",
+   "fieldtype": "Select",
+   "label": "SLA Status",
+   "options": "\nWithin TAT\nOverdue\nPaused\nCompleted\nNear Due"
+  },
+  {
+   "fieldname": "tat_status",
+   "fieldtype": "Select",
+   "label": "TAT Status",
+   "options": "\nResolution Due\nFailed\nFulfilled\nPaused"
+  },
+  {
+   "fieldname": "isp_change_feasibility_section",
+   "fieldtype": "Section Break",
+   "label": "ISP Change Feasibility"
+  },
+  {
+   "fieldname": "virtual_isp__change_feasibility_html",
+   "fieldtype": "HTML",
+   "label": "ISP Change Feasibility"
+  },
+  {
+   "fieldname": "estimated_time_of_arrival",
+   "fieldtype": "Date",
+   "label": "Estimated Time of Arrival (ETA)"
+  },
+  {
+   "fieldname": "virtual_wireless_feasibility_html",
+   "fieldtype": "HTML",
+   "label": "Wireless Feasibility HTML"
+  },
+  {
+   "fieldname": "wireless_feasibility_sec_section",
+   "fieldtype": "Section Break",
+   "label": "Wireless Feasibility"
+  },
+  {
+   "fieldname": "tat_information_section",
+   "fieldtype": "Section Break",
+   "label": "TAT Information"
+  },
+  {
+   "fieldname": "column_break_cdfc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.site_status==\"On Hold\"",
+   "fieldname": "on_hold_attachment",
+   "fieldtype": "Attach",
+   "label": "On Hold Attachment",
+   "mandatory_depends_on": "eval:doc.site_status==\"On Hold\"",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_tocl",
+   "fieldtype": "Section Break",
+   "label": "On Hold Reason"
+  },
+  {
+   "fieldname": "column_break_apch",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "on_hold_since",
+   "fieldtype": "Datetime",
+   "label": "On Hold Since"
+  },
+  {
+   "fieldname": "customer_arrpoved_mobile_no",
+   "fieldtype": "Data",
+   "label": "Customer Appoved Mobile No",
+   "read_only": 1
+  },
+  {
+   "fieldname": "additional_information_for_customer",
+   "fieldtype": "Small Text",
+   "label": "Additional Information For Customer",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval: doc.client_installation_approval_status == \"Awaiting Customer Approval\"",
+   "description": "This Approval Link can be forwarded via WhatsApp, and the customer can conveniently review and approve it directly from their mobile device.\n",
+   "fieldname": "section_break_sjvn",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "customer_approval_information_section",
+   "fieldtype": "Section Break",
+   "label": "Customer Approval Information"
+  },
+  {
+   "depends_on": "eval:doc.site_status==\"Rejected\"",
+   "fieldname": "rejected_reason",
+   "fieldtype": "Small Text",
+   "label": "Rejected Reason"
+  },
+  {
+   "depends_on": "eval: doc.lms_type != \"No LMS\"",
+   "fieldname": "lms_information",
+   "fieldtype": "Button",
+   "label": "LMS Information"
+  },
+  {
+   "fieldname": "lms_po_released_section",
+   "fieldtype": "Section Break",
+   "label": "LMS PO Released"
+  },
+  {
+   "fieldname": "lms_po_issued_html",
+   "fieldtype": "HTML",
+   "label": "LMS PO Issued HTML"
+  },
+  {
+   "fieldname": "installed_product_section",
+   "fieldtype": "Section Break",
+   "label": "Installed Product "
+  },
+  {
+   "fieldname": "installed_product_html",
+   "fieldtype": "HTML",
+   "label": "Installed Product HTML"
+  },
+  {
+   "fieldname": "reson_for_self_approval",
+   "fieldtype": "Small Text",
+   "label": "Reson for Self Approval",
+   "read_only": 1
+  },
+  {
+   "fieldname": "customer_approved_attachment",
+   "fieldtype": "Attach",
+   "label": "Customer Approved Attachment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "site_updated_later_section",
+   "fieldtype": "Section Break",
+   "label": "Site Updated Later"
+  },
+  {
+   "fieldname": "reason_site_updated_later",
+   "fieldtype": "Text Editor",
+   "label": "Reason Site Updated Later",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_calendar_and_gantt": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2026-05-12 21:01:51.871840",
+ "modified": "2026-07-21 00:11:23.920456",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Site",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
-  {
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Desk User",
-   "share": 1
-  },
   {
    "create": 1,
    "email": 1,
@@ -1541,17 +1539,6 @@
    "write": 1
   },
   {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "All",
-   "share": 1,
-   "write": 1
-  },
-  {
    "email": 1,
    "export": 1,
    "print": 1,
@@ -1559,12 +1546,20 @@
    "report": 1,
    "role": "Accounts  & Finance Manager",
    "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Desk User",
+   "share": 1
   }
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
  "track_changes": 1,
- "track_seen": 1,
- "track_views": 1
+ "track_seen": 1
 }

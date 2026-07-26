@@ -8,14 +8,6 @@
   "name": "Pricing"
  },
  {
-  "description": "The prospect chose a competitor's product or service.",
-  "docstatus": 0,
-  "doctype": "CRM Lost Reason",
-  "lost_reason": "Competition",
-  "modified": "2025-08-04 23:44:33.647408",
-  "name": "Competition"
- },
- {
   "description": "The prospect did not have the budget to proceed with the purchase.",
   "docstatus": 0,
   "doctype": "CRM Lost Reason",
@@ -70,5 +62,13 @@
   "lost_reason": "Other",
   "modified": "2025-08-04 23:44:33.667232",
   "name": "Other"
+ },
+ {
+  "description": "The prospect chose a competitor's product or service.",
+  "docstatus": 0,
+  "doctype": "CRM Lost Reason",
+  "lost_reason": "Competition",
+  "modified": "2025-08-04 23:44:33.647408",
+  "name": "Competition"
  }
 ]

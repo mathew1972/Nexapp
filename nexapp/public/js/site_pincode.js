@@ -15,11 +15,15 @@ frappe.ui.form.on('Site', {
             if (pincode.length === 6) { // Ensure the pincode is 6 digits for India
                 frappe.show_alert({message: "Fetching location details...", indicator: "blue"});
 
-                // Make the external API call
-                fetch("https://api.postalpincode.in/pincode/" + pincode)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data && data[0].Status === "Success" && data[0].PostOffice.length > 0) {
+                // Make the API call via backend whitelisted method
+                frappe.call({
+                    method: "nexapp.api.get_pincode_details",
+                    args: {
+                        pincode: pincode
+                    },
+                    callback: function(r) {
+                        const data = r.message;
+                        if (data && data[0].Status === "Success" && data[0].PostOffice && data[0].PostOffice.length > 0) {
                             const postOffice = data[0].PostOffice[0]; // Get the first Post Office entry
 
                             frm.set_value("district", postOffice.District || "");
@@ -29,11 +33,12 @@ frappe.ui.form.on('Site', {
                         } else {
                             frappe.msgprint("Pincode not found or invalid.");
                         }
-                    })
-                    .catch(error => {
-                        console.error("API Error:", error);
+                    },
+                    error: function(err) {
+                        console.error("API Error:", err);
                         frappe.msgprint("Error fetching data from API.");
-                    });
+                    }
+                });
             } else if (pincode.length === 0) { // If pincode is cleared, reset the fields
                 frm.set_value("district", "");
                 frm.set_value("country", "");

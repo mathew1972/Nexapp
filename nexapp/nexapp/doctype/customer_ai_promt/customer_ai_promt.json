@@ -1,0 +1,64 @@
+{
+ "_comments": "[]",
+ "_liked_by": "[]",
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-06-11 21:39:20.331552",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "roles",
+  "promt"
+ ],
+ "fields": [
+  {
+   "fieldname": "roles",
+   "fieldtype": "Table MultiSelect",
+   "label": "Roles",
+   "options": "Customer AI Promt Role Detail"
+  },
+  {
+   "fieldname": "promt",
+   "fieldtype": "Table MultiSelect",
+   "label": "Promt",
+   "options": "Customer AI Promt Detail"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-11 23:29:55.154200",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Customer AI Promt",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Administrator",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,63 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-06-07 19:07:15.494377",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "status",
+  "tat_period",
+  "tat_action",
+  "solution_type",
+  "lms_type"
+ ],
+ "fields": [
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "\nFeasible\nHigh Commercials\nNot Feasible\nOn Hold\nIn-process\nInstallation Initiated\nProvisioning\nPartially Provisioning Completed\nProvisioning Completed\nAwaiting Customer Approval\nDelivered and Live\nCancelled"
+  },
+  {
+   "fieldname": "tat_action",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "TAT Action",
+   "options": "\nResolution Due\nFulfilled\nPause"
+  },
+  {
+   "fieldname": "solution_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Solution Type",
+   "options": "\nILL\nMBB\nSIM\nWireline\nLMS"
+  },
+  {
+   "fieldname": "tat_period",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "TAT Period (Days)"
+  },
+  {
+   "fieldname": "lms_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "LMS Type",
+   "options": "\nNo LMS\nSingle\nDual"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-06-16 16:51:35.830897",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "TAT Rule",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

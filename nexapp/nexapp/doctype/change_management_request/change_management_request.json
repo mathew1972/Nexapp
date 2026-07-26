@@ -6,24 +6,29 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "change_management_request_section",
   "change_request_type",
   "column_break_hvxe",
-  "approval_status",
-  "section_break_lysx",
-  "circuit_id",
-  "column_break_ulkh",
   "stage",
+  "approval_status",
   "section_break_rvde",
+  "circuit_id",
   "customer",
   "site_type",
-  "site_address",
   "column_break_aqez",
   "site_status",
   "solution",
-  "primary_plan",
-  "secondary_plan",
-  "section_break_zbkd",
-  "isp_change_reason",
+  "site_address",
+  "lms_information_section",
+  "lms__information",
+  "isp_change_section",
+  "lms_id",
+  "column_break_bjny",
+  "supplier",
+  "expected_date",
+  "isp_change_issue_and_reason_section",
+  "isp_change_issue",
+  "attachment",
   "section_break_hsqp",
   "column_break_lyxs",
   "column_break_rgex",
@@ -31,18 +36,8 @@
   "hold_reason",
   "hold_datetime",
   "disconnected_date",
-  "isp_change_tab",
-  "isp_change_section",
-  "lms_id",
-  "purchase_order_number",
-  "expected_date",
-  "column_break_bjny",
-  "isp_status",
-  "supplier",
-  "purchase_order_date",
-  "section_break_sjvk",
-  "isp_change_issue",
   "device_change_tab",
+  "section_break_tonn",
   "existing_device",
   "section_break_wwoe",
   "expected_delivery_date",
@@ -80,38 +75,30 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Customer",
-   "options": "Customer"
+   "options": "Customer",
+   "read_only": 1
   },
   {
    "fetch_from": "circuit_id.address_street",
    "fieldname": "site_address",
    "fieldtype": "Small Text",
-   "label": "Site Address"
+   "label": "Site Address",
+   "read_only": 1
   },
   {
    "bold": 1,
    "fetch_from": "circuit_id.site_type",
    "fieldname": "site_type",
    "fieldtype": "Data",
-   "label": "Site Type"
-  },
-  {
-   "fetch_from": "circuit_id.primary_data_plan",
-   "fieldname": "primary_plan",
-   "fieldtype": "Data",
-   "label": "Primary Plan"
-  },
-  {
-   "fetch_from": "circuit_id.secondary_plan",
-   "fieldname": "secondary_plan",
-   "fieldtype": "Data",
-   "label": "Secondary Plan"
+   "label": "Site Type",
+   "read_only": 1
   },
   {
    "fetch_from": "circuit_id.solution_name",
    "fieldname": "solution",
    "fieldtype": "Data",
-   "label": "Solution"
+   "label": "Solution",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_rgex",
@@ -126,16 +113,18 @@
    "options": "\nISP Change\nDevice Change\nSIM Change\nHardware Change\nDisconnection To Delivery And Live\nCancelled To Delivery And Live"
   },
   {
+   "depends_on": "eval:doc.change_request_type ==\"ISP Change\"",
    "fieldname": "isp_change_section",
    "fieldtype": "Section Break",
    "label": "ISP Change"
   },
   {
-   "fetch_from": "lms_id.lms_feasibility_partner",
+   "fetch_from": "lms_id.supplier",
    "fieldname": "supplier",
    "fieldtype": "Link",
    "label": "Supplier",
-   "options": "Supplier"
+   "options": "Supplier",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_bjny",
@@ -145,36 +134,14 @@
    "fieldname": "lms_id",
    "fieldtype": "Link",
    "label": "LMS ID",
-   "options": "Lastmile Services Master",
-   "reqd": 1
-  },
-  {
-   "fetch_from": "lms_id.po_number",
-   "fieldname": "purchase_order_number",
-   "fieldtype": "Link",
-   "label": "Purchase Order Number",
-   "options": "Purchase Order"
+   "mandatory_depends_on": "eval:doc.change_request_type ==\"ISP Change\"",
+   "options": "Lastmile Services Master"
   },
   {
    "fieldname": "isp_change_issue",
    "fieldtype": "Text Editor",
-   "label": "ISP Change Issue"
-  },
-  {
-   "fieldname": "section_break_sjvk",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fetch_from": "lms_id.po_released_datetime",
-   "fieldname": "purchase_order_date",
-   "fieldtype": "Datetime",
-   "label": "Purchase Order Date"
-  },
-  {
-   "depends_on": "eval:doc.change_request_type==\"ISP Change\" ",
-   "fieldname": "isp_change_tab",
-   "fieldtype": "Tab Break",
-   "label": "ISP Change"
+   "label": "Issue/ Reason",
+   "mandatory_depends_on": "eval:doc.change_request_type ==\"ISP Change\""
   },
   {
    "depends_on": "eval:doc.change_request_type==\"Device Change\" ",
@@ -266,8 +233,7 @@
    "fieldname": "expected_date",
    "fieldtype": "Date",
    "label": "Expected ISP Change Date",
-   "mandatory_depends_on": "eval:doc.change_request_type==\"ISP Change\" ",
-   "reqd": 1
+   "mandatory_depends_on": "eval:doc.change_request_type ==\"ISP Change\""
   },
   {
    "fieldname": "section_break_wwoe",
@@ -291,19 +257,12 @@
   },
   {
    "default": "Pending",
-   "fieldname": "isp_status",
+   "fieldname": "stage",
    "fieldtype": "Select",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "ISP Status",
-   "options": "Pending\nFeasibility Requested\nFeasibility Completed\nPO In-process\nLMS Delivered"
-  },
-  {
-   "default": "Pending",
-   "fieldname": "stage",
-   "fieldtype": "Select",
-   "label": "Stage",
-   "options": "Pending\nCompleted\nHold\nDisconnected"
+   "label": "Status",
+   "options": "Pending\nFeasibility Pending\nLMS Requested\nLMS Created\nPO Issued\nLMS Delivered\nHold\nCompleted"
   },
   {
    "depends_on": "eval:doc.stage==\"Disconnected\" ",
@@ -341,12 +300,9 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "section_break_lysx",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "section_break_rvde",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Sie Information"
   },
   {
    "fieldname": "column_break_aqez",
@@ -361,21 +317,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "column_break_ulkh",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "section_break_zbkd",
-   "fieldtype": "Section Break"
-  },
-  {
-   "depends_on": "eval:doc.change_request_type==\"ISP Change\"",
-   "fieldname": "isp_change_reason",
-   "fieldtype": "Small Text",
-   "label": "Reason",
-   "mandatory_depends_on": "eval:doc.change_request_type==\"ISP Change\""
-  },
-  {
    "default": "Draft",
    "fieldname": "approval_status",
    "fieldtype": "Select",
@@ -386,13 +327,45 @@
    "fetch_from": "circuit_id.site_status",
    "fieldname": "site_status",
    "fieldtype": "Data",
-   "label": "Site Status"
+   "label": "Site Status",
+   "read_only": 1
+  },
+  {
+   "fieldname": "attachment",
+   "fieldtype": "Attach",
+   "label": "Attachment"
+  },
+  {
+   "depends_on": "eval:doc.change_request_type ==\"ISP Change\"",
+   "fieldname": "lms_information_section",
+   "fieldtype": "Section Break",
+   "label": "LMS Information"
+  },
+  {
+   "fieldname": "lms__information",
+   "fieldtype": "HTML",
+   "label": "LMS  Information"
+  },
+  {
+   "fieldname": "section_break_tonn",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.change_request_type ==\"ISP Change\"",
+   "fieldname": "isp_change_issue_and_reason_section",
+   "fieldtype": "Section Break",
+   "label": "ISP Change Issue and Reason"
+  },
+  {
+   "fieldname": "change_management_request_section",
+   "fieldtype": "Section Break",
+   "label": "Change Management Request"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-05-11 23:54:55.704618",
+ "modified": "2026-07-20 12:49:39.089019",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Change Management Request",

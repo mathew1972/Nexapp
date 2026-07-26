@@ -7,7 +7,8 @@
  "field_order": [
   "history",
   "role",
-  "content"
+  "content",
+  "attachment"
  ],
  "fields": [
   {
@@ -26,12 +27,17 @@
    "fieldname": "content",
    "fieldtype": "Long Text",
    "label": "Content"
+  },
+  {
+   "fieldname": "attachment",
+   "fieldtype": "Data",
+   "label": "Attachment URL"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-27 10:48:26.124297",
+ "modified": "2026-06-24 00:52:10.851315",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "AI Assistant Message",

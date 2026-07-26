@@ -665,7 +665,8 @@ def get_custom_report_data(filters=None, fields=None):
             "cancel_reason": "s.cancel_reason",
             "territory": "s.territory",
             "email": "s.email",
-            "pincode": "s.pincode"
+            "pincode": "s.pincode",
+            "assigned_name": "s._assign as assigned_name"
         },
         "Lastmile Services Master": {
             "lms_id": "lms.name as lms_id",
@@ -803,6 +804,22 @@ def get_custom_report_data(filters=None, fields=None):
 
     data = frappe.db.sql(query, as_dict=True)
 
+    if data and "assigned_name" in fields.get("Site", []):
+        for d in data:
+            if d.get("assigned_name"):
+                try:
+                    assignees = frappe.parse_json(d.get("assigned_name"))
+                    if assignees and isinstance(assignees, list) and len(assignees) > 0:
+                        last_assignee = assignees[-1]
+                        full_name = frappe.get_cached_value("User", last_assignee, "full_name")
+                        d["assigned_name"] = full_name or last_assignee
+                    else:
+                        d["assigned_name"] = ""
+                except Exception:
+                    pass
+            else:
+                d["assigned_name"] = ""
+
     # Fetch status timestamp from Version if requested
     if data and "status_timestamp" in fields.get("Site", []):
         site_names = [d.get("circuit_id") for d in data if d.get("circuit_id")]
@@ -933,6 +950,7 @@ def download_custom_report_xlsx(filters=None, fields=None):
         "site_id__legal_code": "Site ID / Legal Code",
         "service_type": "Service Type",
         "solution_name": "Solution Name",
+        "assigned_name": "Assigned Name",
         "project_review": "Project Review",
         "lms_review": "LMS Review",
         "task_ownership": "Task Ownership",

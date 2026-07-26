@@ -10,9 +10,6 @@
  "engine": "InnoDB",
  "field_order": [
   "site_information_tab",
-  "column_break_fuxs",
-  "column_break_uzeq",
-  "info2",
   "site_information_section",
   "column_break_vfai",
   "feaseibility_from",
@@ -20,17 +17,17 @@
   "customer_type",
   "site_name",
   "customer_request",
-  "sales_person",
   "column_break_zthd",
-  "order_type",
-  "circuit_id",
-  "exiting_circuit_id",
   "feasibility_status",
+  "circuit_id",
   "reason_for_high_commercials",
   "reason_for_not_feasible",
+  "reason_for_on_hold",
+  "order_type",
+  "exiting_circuit_id",
   "site_type",
   "site_id__legal_code",
-  "territory",
+  "sales_person",
   "solution_section",
   "solution_code",
   "solution_name",
@@ -43,6 +40,8 @@
   "primary_data_plan_name",
   "secondary_data_plan",
   "secondary_data_plan_name",
+  "lms_type",
+  "solution_type",
   "central_spoke_information_section",
   "central_spoke",
   "column_break_iakp",
@@ -59,52 +58,58 @@
   "secondary_email",
   "adress_information_section",
   "address_street",
+  "section_break_xxnn",
   "city",
+  "state",
+  "territory",
+  "latitude",
   "column_break_kahz",
   "pincode",
   "district",
-  "state",
   "country",
+  "longitude",
+  "open_map_picker_btn",
   "description_information_section",
   "description",
   "site_address_section",
   "address",
+  "ai_evaluation",
   "column_break_iewh",
   "address_html",
   "lms_provider_information_tab",
-  "section_break_kfqx",
-  "column_break_yuuk",
-  "supplier_pool",
-  "column_break_hwvd",
-  "info",
   "lms_provider_information_section",
+  "lms_note",
   "lms_provider",
+  "section_break_dmtu",
+  "supplier_pool",
+  "column_break_ylse",
+  "info",
   "wireless_feasibility_tab",
   "section_break_eokw",
   "wireless_feasiblity",
   "isp_change_tab",
   "isp_change_feasibility_check",
-  "isp_change_supplier_details_section",
-  "lms_id",
-  "purchase_order_number",
-  "expected_date",
-  "column_break_qvoe",
-  "supplier",
-  "purchase_order_date",
-  "change_management_request_id",
-  "isp_change_issue_lable_section",
-  "isp_change_issue",
-  "section_break_qzkj",
+  "isp_pending",
+  "isp_change_supplier_section",
   "isp_change_feasibility",
   "billing_information_ta",
+  "feasibility_timeline_section",
+  "feasibility_created_date",
+  "tat_start_date",
+  "due_date",
+  "sla_status",
+  "remaining_days",
+  "on_hold_since",
+  "column_break_xhis",
+  "feasibility_completed_date",
+  "feasibility_tat",
+  "tat_status",
+  "overdue_days",
+  "hold_days",
   "sales_order_information_section",
   "sales_order",
   "column_break_jitn",
-  "sales_order_date",
-  "feasibility_timeline_section",
-  "feasibility_created_date",
-  "column_break_xhis",
-  "feasibility_completed_date"
+  "sales_order_date"
  ],
  "fields": [
   {
@@ -150,7 +155,8 @@
   },
   {
    "fieldname": "site_information_section",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Feasibility Information"
   },
   {
    "fieldname": "column_break_vfai",
@@ -184,7 +190,7 @@
   {
    "depends_on": "eval: doc.feasibility_status == \"Feasible\" || doc.feasibility_status == \"High Commercials\"\n",
    "fieldname": "feasibility_completed_date",
-   "fieldtype": "Datetime",
+   "fieldtype": "Date",
    "label": "Feasibility Completed Datetime",
    "read_only": 1
   },
@@ -248,7 +254,7 @@
    "depends_on": "eval:doc.customer_type ==\"Paid Customer\"",
    "fieldname": "billing_information_ta",
    "fieldtype": "Tab Break",
-   "label": "Sales Order ",
+   "label": "More Details",
    "placeholder": "This data will be automatically updated"
   },
   {
@@ -286,7 +292,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Feasibility Status",
-   "options": "\nPending\nFeasible\nNot Feasible\nHigh Commercials"
+   "options": "Pending\nFeasible\nHigh Commercials\nNot Feasible\nOn Hold"
   },
   {
    "depends_on": "eval:doc.order_type == \"Shifting\" || doc.order_type == \"Degrade\" || doc.order_type == \"Upgrade\"\n",
@@ -303,7 +309,6 @@
    "label": "Sales Order Information"
   },
   {
-   "description": "Submit accurate LMS Feasibility details based on real partner input or field survey. Do not enter dummy data.",
    "fieldname": "lms_provider_information_section",
    "fieldtype": "Section Break",
    "label": "LMS Feaibility Information"
@@ -338,6 +343,7 @@
   {
    "fieldname": "solution_code",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Solution Code",
    "link_filters": "[[\"Item\",\"custom_item_segment\",\"=\",\"Solution\"]]",
    "options": "Item",
@@ -401,8 +407,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Territory",
-   "options": "Territory",
-   "reqd": 1
+   "options": "Territory"
   },
   {
    "default": "Service",
@@ -477,7 +482,6 @@
    "fieldname": "primary_contact_mobile",
    "fieldtype": "Data",
    "label": "Primary Contact Mobile",
-   "length": 10,
    "mandatory_depends_on": "eval:doc.isp_change_feasibility_check != 1\n",
    "options": "Phone"
   },
@@ -496,7 +500,6 @@
    "fieldname": "alternate_contact_mobile",
    "fieldtype": "Data",
    "label": "Alternate Contact Mobile",
-   "length": 10,
    "options": "Phone"
   },
   {
@@ -522,72 +525,8 @@
    "default": "0",
    "fieldname": "isp_change_feasibility_check",
    "fieldtype": "Check",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "ISP Change Feasibility",
-   "read_only": 1
-  },
-  {
-   "fieldname": "lms_id",
-   "fieldtype": "Link",
-   "label": "LMS ID",
-   "options": "Lastmile Services Master",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_qvoe",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "section_break_qzkj",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "supplier",
-   "fieldtype": "Data",
-   "label": "Supplier",
-   "read_only": 1
-  },
-  {
-   "fieldname": "isp_change_supplier_details_section",
-   "fieldtype": "Section Break",
-   "label": "ISP Change Supplier Details"
-  },
-  {
-   "fieldname": "purchase_order_number",
-   "fieldtype": "Data",
-   "label": "Purchase Order Number",
-   "read_only": 1
-  },
-  {
-   "fieldname": "purchase_order_date",
-   "fieldtype": "Datetime",
-   "label": "Purchase Order Date",
-   "read_only": 1
-  },
-  {
-   "collapsible": 1,
-   "fieldname": "isp_change_issue_lable_section",
-   "fieldtype": "Section Break",
-   "label": "ISP Change Reason"
-  },
-  {
-   "fieldname": "isp_change_issue",
-   "fieldtype": "Text Editor",
-   "label": "ISP Change Issue",
-   "read_only": 1
-  },
-  {
-   "fieldname": "expected_date",
-   "fieldtype": "Date",
-   "ignore_xss_filter": 1,
-   "label": "Expected ISP Change Date",
-   "read_only": 1
-  },
-  {
-   "fieldname": "change_management_request_id",
-   "fieldtype": "Data",
-   "label": "Change Management Request ID"
+   "hidden": 1,
+   "label": "ISP Change Feasibility"
   },
   {
    "fieldname": "central_spoke",
@@ -625,18 +564,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "section_break_kfqx",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "column_break_yuuk",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_hwvd",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "info",
    "fieldtype": "HTML",
    "label": "Info"
@@ -644,7 +571,6 @@
   {
    "fieldname": "supplier_pool",
    "fieldtype": "HTML",
-   "hidden": 1,
    "label": "Supplier Pool"
   },
   {
@@ -654,23 +580,9 @@
    "read_only": 1
   },
   {
-   "fieldname": "info2",
-   "fieldtype": "HTML",
-   "label": "Info2"
-  },
-  {
-   "fieldname": "column_break_fuxs",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_uzeq",
-   "fieldtype": "Column Break"
-  },
-  {
-   "collapsible": 1,
    "fieldname": "feasibility_timeline_section",
    "fieldtype": "Section Break",
-   "label": "Feasibility Timeline"
+   "label": "Feasibility TAT"
   },
   {
    "fieldname": "column_break_xhis",
@@ -682,8 +594,7 @@
    "fieldtype": "Link",
    "in_standard_filter": 1,
    "label": "Sales Person",
-   "options": "User",
-   "reqd": 1
+   "options": "User"
   },
   {
    "fetch_from": "primary_data_plan.item_name",
@@ -698,6 +609,135 @@
    "fieldtype": "Data",
    "label": "Secondary Data Plan",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_xxnn",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "longitude",
+   "fieldtype": "Data",
+   "label": "Longitude"
+  },
+  {
+   "fieldname": "latitude",
+   "fieldtype": "Data",
+   "label": "Latitude"
+  },
+  {
+   "fieldname": "open_map_picker_btn",
+   "fieldtype": "Button",
+   "label": "Open Map & Pick Location"
+  },
+  {
+   "fetch_from": "solution_code.custom_lms_type",
+   "fieldname": "lms_type",
+   "fieldtype": "Select",
+   "label": "LMS Type",
+   "options": "\nNo LMS\nSingle\nDual"
+  },
+  {
+   "depends_on": "eval:doc.feasibility_status==\"On Hold\"",
+   "fieldname": "reason_for_on_hold",
+   "fieldtype": "Link",
+   "label": "Reason For On Hold",
+   "mandatory_depends_on": "eval:doc.feasibility_status==\"On Hold\"",
+   "options": "Reason Feasibility On Hold"
+  },
+  {
+   "fieldname": "solution_type",
+   "fieldtype": "Select",
+   "label": "Solution Type",
+   "options": "\nMBB\nILL\nSIM"
+  },
+  {
+   "fieldname": "tat_start_date",
+   "fieldtype": "Date",
+   "label": "TAT Start Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "label": "Due Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "tat_status",
+   "fieldtype": "Select",
+   "label": "TAT Status",
+   "options": "Resolution Due\nFailed\nFulfilled\nPaused",
+   "read_only": 1
+  },
+  {
+   "fieldname": "remaining_days",
+   "fieldtype": "Data",
+   "label": "Remaining Days",
+   "read_only": 1
+  },
+  {
+   "fieldname": "overdue_days",
+   "fieldtype": "Int",
+   "label": "Overdue Days",
+   "read_only": 1
+  },
+  {
+   "fieldname": "on_hold_since",
+   "fieldtype": "Datetime",
+   "label": "On Hold Since",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hold_days",
+   "fieldtype": "Int",
+   "label": "Hold Days",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sla_status",
+   "fieldtype": "Select",
+   "label": "SLA Status",
+   "options": "\nWithin TAT\nOverdue\nPaused\nCompleted\nNear Due",
+   "read_only": 1
+  },
+  {
+   "fieldname": "feasibility_tat",
+   "fieldtype": "Float",
+   "label": "Feasibility TAT (Days)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_dmtu",
+   "fieldtype": "Section Break",
+   "hidden": 1
+  },
+  {
+   "fieldname": "column_break_ylse",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "lms_note",
+   "fieldtype": "HTML",
+   "label": "LMS Note",
+   "options": "<div style=\"font-size: 12px; color: #475569; margin-top: 12px; padding: 10px 14px; background-color: #FFF1C2; border-left: 3px solid #71639e; border-radius: 6px; font-weight: 500; display: flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05);\"><span style=\"font-size: 16px; margin-right: 10px; display: inline-block;\">\ud83d\udca1</span><span>Submit accurate LMS Feasibility details based on real partner input or field survey. Do not enter dummy data.</span></div>"
+  },
+  {
+   "fieldname": "isp_change_supplier_section",
+   "fieldtype": "Section Break",
+   "label": "ISP Change Supplier"
+  },
+  {
+   "default": "0",
+   "fieldname": "isp_pending",
+   "fieldtype": "Check",
+   "in_standard_filter": 1,
+   "label": "ISP Pending"
+  },
+  {
+   "default": "JSON",
+   "fieldname": "ai_evaluation",
+   "fieldtype": "Code",
+   "label": "AI Evaluation"
   }
  ],
  "grid_page_length": 50,
@@ -706,7 +746,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2026-05-06 22:40:48.058926",
+ "modified": "2026-07-13 22:05:59.177916",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",
@@ -810,6 +850,18 @@
    "read": 1,
    "report": 1,
    "role": "Projects Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Administrator",
    "share": 1,
    "write": 1
   }

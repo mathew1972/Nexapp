@@ -316,7 +316,8 @@ async function add_lms_buttons(frm) {
         const items = frm.doc.table_djyj.map(item => ({
             item_code: item.item_code,
             rate: item.item_rate,
-            qty: item.qty
+            qty: item.qty,
+            custom_lms_id: frm.doc.name
         }));
 
         // -----------------------------------------
@@ -412,7 +413,8 @@ async function add_lms_buttons(frm) {
             const dist_items = frm.doc.lms_distribution_po.map(row => ({
                 item_code: row.item_code,
                 rate: row.item_rate,
-                qty: row.qty
+                qty: row.qty,
+                custom_lms_id: frm.doc.name
             }));
 
             const res_dist = await frappe.call({

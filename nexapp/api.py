@@ -93,14 +93,15 @@ from frappe import _
 def sales_order_to_site(sales_order):
     so_doc = frappe.get_doc("Sales Order", sales_order)
 
-    if not so_doc.po_no:
-        frappe.throw(_("Client PO Number is missing in the Sales Order"))
+    # PO Number check removed as it is not mandatory
+    # if not so_doc.po_no:
+    #     frappe.throw(_("Client PO Number is missing in the Sales Order"))
 
     # Proceed only if order_type is one of the allowed types
-    allowed_order_types = ["Service", "Upgrade", "Degrade", "Shifting", "Supply"]
-    if so_doc.order_type not in allowed_order_types:
-        frappe.logger().info("Site creation skipped for order_type: {}".format(so_doc.order_type))
-        return
+    # allowed_order_types = ["Service", "Upgrade", "Degrade", "Shifting", "Supply"]
+    # if so_doc.order_type not in allowed_order_types:
+    #     frappe.logger().info("Site creation skipped for order_type: {}".format(so_doc.order_type))
+    #     return
 
     grouped_sites = {}
 
@@ -119,6 +120,7 @@ def sales_order_to_site(sales_order):
         })
 
     project_doc = frappe.get_doc("Project", so_doc.project) if so_doc.project else None
+    created_sites = []
 
     for feasibility, site_data in grouped_sites.items():
         feasibility_doc = frappe.get_doc("Feasibility", feasibility)
@@ -146,37 +148,37 @@ def sales_order_to_site(sales_order):
         
 
         # From Feasibility
-        site_doc.primary_contact = feasibility_doc.primary_contact
-        site_doc.primary_contact_mobile = feasibility_doc.primary_contact_mobile
-        site_doc.email = feasibility_doc.email
-        site_doc.alternate_contact_person = feasibility_doc.alternate_contact_person
-        site_doc.alternate_contact = feasibility_doc.alternate_contact
-        site_doc.alternate_contact_mobile = feasibility_doc.alternate_contact_mobile
-        site_doc.secondary_email = feasibility_doc.secondary_email
-        site_doc.site_id__legal_code = feasibility_doc.site_id__legal_code
-        site_doc.site_type = feasibility_doc.site_type
-        site_doc.solution = feasibility_doc.solution
-        site_doc.region = feasibility_doc.region
-        site_doc.exiting_circuit_id = feasibility_doc.exiting_circuit_id
-        site_doc.territory = feasibility_doc.territory
-        site_doc.customer_type = feasibility_doc.customer_type
-        site_doc.description = feasibility_doc.description
-        site_doc.address = feasibility_doc.address
-        site_doc.solution_code = feasibility_doc.solution_code
-        site_doc.solution_name = feasibility_doc.solution_name
-        site_doc.static_ip = feasibility_doc.static_ip
-        site_doc.nos_of_static_ip_required = feasibility_doc.no_of_static_ip_required
-        site_doc.primary_data_plan = feasibility_doc.primary_data_plan
-        site_doc.secondary_plan = feasibility_doc.secondary_data_plan
-        site_doc.managed_services = feasibility_doc.managed_services
-        site_doc.config_type = feasibility_doc.config_type
-        site_doc.child_project = so_doc.custom_child_project
-        site_doc.contact_person = feasibility_doc.contact_person
+        site_doc.contact_person = feasibility_doc.get("contact_person")
+        site_doc.primary_contact_mobile = feasibility_doc.get("primary_contact_mobile")
+        site_doc.email = feasibility_doc.get("email")
+        site_doc.alternate_contact_person = feasibility_doc.get("alternate_contact_person")
+        site_doc.alternate_contact = feasibility_doc.get("alternate_contact")
+        site_doc.alternate_contact_mobile = feasibility_doc.get("alternate_contact_mobile")
+        site_doc.secondary_email = feasibility_doc.get("secondary_email")
+        site_doc.site_id__legal_code = feasibility_doc.get("site_id__legal_code")
+        site_doc.site_type = feasibility_doc.get("site_type")
+        site_doc.solution = feasibility_doc.get("solution")
+        site_doc.region = feasibility_doc.get("region")
+        site_doc.exiting_circuit_id = feasibility_doc.get("exiting_circuit_id")
+        site_doc.territory = feasibility_doc.get("territory")
+        site_doc.customer_type = feasibility_doc.get("customer_type")
+        site_doc.description = feasibility_doc.get("description")
+        site_doc.address = feasibility_doc.get("address")
+        site_doc.solution_code = feasibility_doc.get("solution_code")
+        site_doc.solution_name = feasibility_doc.get("solution_name")
+        site_doc.static_ip = feasibility_doc.get("static_ip")
+        site_doc.nos_of_static_ip_required = feasibility_doc.get("no_of_static_ip_required")
+        site_doc.primary_data_plan = feasibility_doc.get("primary_data_plan")
+        site_doc.secondary_plan = feasibility_doc.get("secondary_data_plan")
+        site_doc.managed_services = feasibility_doc.get("managed_services")
+        site_doc.config_type = feasibility_doc.get("config_type")
+        site_doc.child_project = so_doc.get("custom_child_project")
+        site_doc.contact_person = feasibility_doc.get("contact_person")
 
-        site_doc.central_spoke = feasibility_doc.central_spoke
-        site_doc.mobile = feasibility_doc.mobile
-        site_doc.central_email = feasibility_doc.central_email
-        site_doc.sales_person = feasibility_doc.sales_person
+        site_doc.central_spoke = feasibility_doc.get("central_spoke")
+        site_doc.mobile = feasibility_doc.get("mobile")
+        site_doc.central_email = feasibility_doc.get("central_email")
+        site_doc.sales_person = feasibility_doc.get("sales_person")
 
         # Address Fields
         site_doc.address_street = feasibility_doc.address_street
@@ -220,58 +222,57 @@ def sales_order_to_site(sales_order):
         # ---------------------- LMS Vendors ----------------------
         for lms in feasibility_doc.lms_provider:
             site_doc.append("lms_vendor", {
-                "lms_supplier": lms.lms_supplier,
-                "bandwith_type": lms.bandwith_type,
-                "media": lms.media,
-                "support_mode": lms.support_mode,
-                "supplier_contact": lms.supplier_contact,
-                "static_ip": lms.static_ip,
-                "supplier_name": lms.supplier_name,
-                "email_id": lms.email_id,
-                "mobile": lms.mobile,
-                "bandwidth": lms.bandwidth,
-                "billing_mode": lms.billing_mode,
-                "billing_terms": lms.billing_terms,
-                "otc": lms.otc,
-                "validity": lms.validity,
-                "security_deposit": lms.security_deposit,
-                "mrc": lms.mrc,
-                "arc": lms.arc,
-                "static_ip_cost": lms.static_ip_cost
+                "lms_supplier": lms.get("lms_supplier"),
+                "bandwith_type": lms.get("bandwith_type"),
+                "media": lms.get("media"),
+                "support_mode": lms.get("support_mode"),
+                "supplier_contact": lms.get("supplier_contact"),
+                "static_ip": lms.get("static_ip"),
+                "supplier_name": lms.get("supplier_name"),
+                "email_id": lms.get("email_id"),
+                "mobile": lms.get("mobile"),
+                "bandwidth": lms.get("bandwidth"),
+                "billing_mode": lms.get("billing_mode"),
+                "billing_terms": lms.get("billing_terms"),
+                "otc": lms.get("otc"),
+                "validity": lms.get("validity"),
+                "security_deposit": lms.get("security_deposit"),
+                "mrc": lms.get("mrc"),
+                "arc": lms.get("arc"),
+                "static_ip_cost": lms.get("static_ip_cost")
             })
 
         # ---------------------- Wireless ----------------------
         for wireless in feasibility_doc.wireless_feasiblity:
             site_doc.append("wireless", {
-                "operator": wireless.operator,
+                "operator": wireless.get("operator"),
                 "3g": wireless.get("3g"),
                 "4g": wireless.get("4g"),
                 "5g": wireless.get("5g")
             })
 
-        # ==========================================================
-        # 🟩 NEW SECTION: Fill Site LMS Feasibility (site_lms_feasibility)
-        # ==========================================================
-        for lms in feasibility_doc.lms_provider:
-            site_doc.append("site_lms_feasibility", {
-                "lms_supplier": lms.lms_supplier,
-                "bandwith_type": lms.bandwith_type,
-                "media": lms.media,
-                "support_mode": lms.support_mode,
-                "lms_status": lms.lms_status,
-                "feasibility_type": lms.feasibility_type,
-                "static_ip": lms.static_ip,
-                "bandwidth": lms.bandwidth,
-                "bandwidth_name": lms.bandwidth_name
-            })
-        # ==========================================================
 
+
+        # Check if Site already exists before inserting. If so, throw error to abort transaction.
+        if frappe.db.exists("Site", site_data["circuit_id"]):
+            if hasattr(frappe.local, "message_log"):
+                frappe.local.message_log = []
+            frappe.throw(f"Site Already Exists: {site_data['circuit_id']}. Sales Order submission aborted.")
+            
         site_doc.insert(ignore_permissions=True)
         frappe.db.commit()
-
+        created_sites.append(f"Site is Created successfully: {site_doc.name}")
         frappe.logger().info(f"Site created for feasibility: {feasibility}")
 
+    # Clear message log to remove POC hook messages, then print our clean success message
+    if hasattr(frappe.local, "message_log"):
+        frappe.local.message_log = []
+        
+    if created_sites:
+        frappe.msgprint("<br>".join(created_sites))
+
     return {"status": "success"}
+
 
 ##############################################################
 
@@ -886,7 +887,6 @@ def create_site_from_feasibility(doc, method=None):
         except frappe.DoesNotExistError:
             frappe.msgprint(f"No Product Bundle found with name '{doc.solution_code}'")
 
-        frappe.msgprint(f"Site '{site.name}' POC Customer directly created.")
         return site.name  # Return Site name for confirmation on frontend
 
     return "Not POC Customer"
@@ -1098,14 +1098,24 @@ import frappe
 from frappe.utils import now
 
 def update_lastmile_on_po_save(doc, method):
-    if not doc.custom_lms_id:
+    # Loop through the child table items and collect all unique LMS IDs
+    lms_ids = set()
+    for item in doc.get("items", []):
+        if item.custom_lms_id:
+            lms_ids.add(item.custom_lms_id)
+
+    # If no items had an LMS ID, we do nothing
+    if not lms_ids:
         return
 
-    frappe.db.set_value("Lastmile Services Master", doc.custom_lms_id, {
-        "lms_stage": "In process",
-        "po_number": doc.name,
-        "po_released_datetime": now()
-    })
+    # Update each Lastmile Services Master individually
+    for lms_id in lms_ids:
+        if frappe.db.exists("Lastmile Services Master", lms_id):
+            frappe.db.set_value("Lastmile Services Master", lms_id, {
+                "lms_stage": "In process",
+                "po_number": doc.name,
+                "po_released_datetime": frappe.utils.now()
+            })
 ##################################################
 import frappe
 
@@ -1320,6 +1330,9 @@ def is_l1_support_user():
     if "L1 Support" in roles and not any(role in ["Administrator", "System Manager", "Support Manager"] for role in roles):
         return True
     return False
+
+#####################################################################################
+# START CHANGE MANAGEMENT REQUEST LOGIC
 #####################################################################################
 import frappe
 from frappe import _
@@ -1389,9 +1402,10 @@ def create_feasibility_from_site(circuit_id):
     if cmr_name:
         cmr_doc = frappe.get_doc("Change Management Request", cmr_name)
 
-        # ✅ Ensure isp_status is updated
+        # ✅ Ensure isp_status and stage are updated
         frappe.db.set_value("Change Management Request", cmr_name, {
-            "isp_status": "Feasibility Requested"
+            "isp_status": "Feasibility Requested",
+            "stage": "Feasibility Pending"
         })
 
         # ✅ Update Feasibility from CMR
@@ -1400,8 +1414,8 @@ def create_feasibility_from_site(circuit_id):
             "lms_id": cmr_doc.lms_id,
             "isp_change_issue": cmr_doc.isp_change_issue,
             "supplier": cmr_doc.supplier,
-            "purchase_order_number": cmr_doc.purchase_order_number,
-            "purchase_order_date": cmr_doc.purchase_order_date,
+            "purchase_order_number": cmr_doc.get("purchase_order_number"),
+            "purchase_order_date": cmr_doc.get("purchase_order_date"),
             "change_management_request_id": cmr_name,
             "expected_date": cmr_doc.expected_date
         })
@@ -1416,15 +1430,19 @@ def create_feasibility_from_site(circuit_id):
 
 
 def on_update(doc, method):
+    # Prevent re-updating Feasibility if it's already in Feasibility Pending stage
+    if doc.stage == "Feasibility Pending":
+        return
+
     if not doc.circuit_id:
-        frappe.msgprint(_("Change Management Request {}").format("created successfully" if doc.is_new() else "updated"))
+        frappe.msgprint(_("Change Management Request {}").format("created successfully" if doc.is_new() else "updated"), alert=True)
         return
 
     if not frappe.db.exists("Feasibility", doc.circuit_id):
         frappe.msgprint(
-            title=_("Updated"),
             msg=_("Change Management Request updated") + "<br><span style='color:red'>" + _("Feasibility not found.") + "</span>",
-            indicator="blue"
+            indicator="red",
+            alert=True
         )
         return
 
@@ -1434,14 +1452,17 @@ def on_update(doc, method):
         "lms_id": doc.lms_id,
         "isp_change_issue": doc.isp_change_issue,
         "supplier": doc.supplier,
-        "purchase_order_number": doc.purchase_order_number,
-        "purchase_order_date": doc.purchase_order_date,
+        "purchase_order_number": doc.get("purchase_order_number"),
+        "purchase_order_date": doc.get("purchase_order_date"),
         "change_management_request_id": doc.name,
         "expected_date": doc.expected_date
     })
 
-    # ✅ Update isp_status consistently
-    frappe.db.set_value("Change Management Request", doc.name, "isp_status", "Feasibility Requested")
+    # ✅ Update isp_status and stage consistently
+    frappe.db.set_value("Change Management Request", doc.name, {
+        "isp_status": "Feasibility Requested",
+        "stage": "Feasibility Pending"
+    })
 
     # ✅ Sync LMS ID from Feasibility if missing in CMR
     lms_synced = False
@@ -1451,18 +1472,12 @@ def on_update(doc, method):
             frappe.db.set_value("Change Management Request", doc.name, "lms_id", feasibility_lms_id)
             lms_synced = True
 
-    msg = _("Change Management Request {}").format("created successfully" if doc.is_new() else "updated")
-    msg += "<br>" + _("Feasibility updated")
-    if lms_synced:
-        msg += "<br>" + _("LMS ID synced from Feasibility")
+    # No frappe.msgprint here. The UI popup will be handled in Javascript `after_save`.
 
-    frappe.msgprint(
-        title=_("Success") if doc.is_new() else _("Updated"),
-        msg=msg,
-        indicator="green" if doc.is_new() else "blue"
-    )
+#####################################################################################
+# END CHANGE MANAGEMENT REQUEST LOGIC
+#####################################################################################
 
-#######################################################################
 #LMS Request Supplier Payment Detail
 @frappe.whitelist()
 def get_latest_invoice_for_lms(lms_id):
@@ -2032,7 +2047,27 @@ def create_installation_note(site_name):
         frappe.throw(f"Installation Note already exists: {site_doc.installation_note}")
 
     # Create new Installation Note
-    installation_doc = frappe.new_doc("Installation Note")
+    if site_doc.delivery_note_id:
+        # Create base doc
+        installation_doc = frappe.new_doc("Installation Note")
+        dn_doc = frappe.get_doc("Delivery Note", site_doc.delivery_note_id)
+        
+        # If there are packed items (product bundle), use them. Otherwise, use normal items.
+        items_to_pull = dn_doc.packed_items if getattr(dn_doc, "packed_items", []) else dn_doc.items
+        
+        for item in items_to_pull:
+            installation_doc.append("items", {
+                "item_code": item.item_code,
+                "qty": item.qty,
+                "description": item.description,
+                "serial_no": getattr(item, "serial_no", ""),
+                "prevdoc_doctype": "Delivery Note",
+                "prevdoc_docname": dn_doc.name,
+                "prevdoc_detail_docname": item.name
+            })
+    else:
+        installation_doc = frappe.new_doc("Installation Note")
+
     installation_doc.custom_circuit_id = site_doc.name
     installation_doc.inst_date = site_doc.date or nowdate()
 
@@ -2042,25 +2077,8 @@ def create_installation_note(site_name):
     elif site_doc.lms_stage == "LMS Delivered":
         installation_doc.custom_installation_type = "Fully Installed"
 
-    # Copy Site Items where status == "Stock Delivered"
-    for site_item in site_doc.site_item:
-        if site_item.status == "Stock Delivered":
-            installation_doc.append("items", {
-                "item_code": site_item.item_code,
-                "serial_no": site_item.serial_no_sim_no,
-                "qty": site_item.qty
-            })
-
-    # Copy LMS Site rows where stage == "LMS Delivered"
-    for lms_row in site_doc.lms_vendor:
-        if lms_row.stage == "LMS Delivered":
-            installation_doc.append("custom_lms_installation_item", {
-                "lms_id": lms_row.lms_id
-                # Add more fields if needed
-            })
-
     # Insert Installation Note
-    installation_doc.insert()
+    installation_doc.insert(ignore_permissions=True)
     # installation_doc.submit()  # Uncomment if you want to auto-submit
 
     # Update Site document fields
@@ -2072,6 +2090,7 @@ def create_installation_note(site_name):
     frappe.db.commit()
 
     return installation_doc.name
+
 #################################################################################
 # Updateing the status of Installation Note
 import frappe
@@ -2082,16 +2101,16 @@ def update_site_on_installation_note(doc, method):
         if frappe.db.exists("Site", doc.custom_circuit_id):
             site_doc = frappe.get_doc("Site", doc.custom_circuit_id)
             
-            # Update based on status
-            if doc.status == "Submitted":
+            # Update based on docstatus
+            if doc.docstatus == 1:
                 site_doc.installation_document_status = "Submitted"
                 site_doc.installation_note = doc.name
             
-            elif doc.status == "Cancelled":
+            elif doc.docstatus == 2:
                 site_doc.installation_document_status = "Cancelled"
                 site_doc.installation_note = doc.name
 
-            elif doc.status == "Draft":
+            elif doc.docstatus == 0:
                 site_doc.installation_document_status = "Draft"
                 site_doc.installation_note = doc.name
             
@@ -8142,352 +8161,7 @@ def create_lms_ticket(doc, method):
     lms.insert(ignore_permissions=True)
 
 #################################################################################
-# AI for Purchase Invoice Creation
 
-import frappe
-import fitz  # PyMuPDF
-import requests
-import json
-import re
-import difflib
-from datetime import datetime
-
-
-# =================================================
-# 🔧 Helper: Normalize date to YYYY-MM-DD (ERPNext)
-# =================================================
-def normalize_date(date_str):
-    if not date_str:
-        return None
-
-    # Initial cleanup: handle ISO T-format and remove commas/punctuation
-    date_str = str(date_str).strip().split("T")[0]
-    date_str = re.sub(r"[,;.]", " ", date_str).strip()
-    # Normalize multiple spaces
-    date_str = re.sub(r"\s+", " ", date_str)
-
-    formats = [
-        "%Y-%m-%d",
-        "%d-%m-%Y",
-        "%m-%d-%Y",
-        "%d/%m/%Y",
-        "%m/%d/%Y",
-        "%Y/%m/%d",
-        "%d.%m.%Y",
-        "%Y.%m.%d",
-        "%d %b %Y",
-        "%d %B %Y",
-        "%b %d %Y",
-        "%B %d %Y",
-    ]
-
-    for fmt in formats:
-        try:
-            return datetime.strptime(date_str, fmt).strftime("%Y-%m-%d")
-        except Exception:
-            continue
-
-    return None
-
-
-# =================================================
-# 🔧 Helper: Safe float conversion
-# =================================================
-def safe_float(val):
-    try:
-        return float(val)
-    except Exception:
-        return 0.0
-
-
-# =================================================
-# 🔧 Helper: Get Prompt from AI Prompt Template
-# =================================================
-def get_ai_prompt(prompt_code):
-
-    prompt = frappe.get_all(
-        "AI Prompt Template",
-        filters={
-            "prompt_code": prompt_code,
-            "active": 1
-        },
-        fields=["prompt_text"],
-        limit=1
-    )
-
-    if not prompt:
-        frappe.throw(f"Active AI Prompt not found for code: {prompt_code}")
-
-    return prompt[0].prompt_text
-
-
-# =================================================
-# 🚀 UNIVERSAL AI CALLER — NO HARDCODE
-# =================================================
-def call_ai_model_old_8189(prompt_text):
-
-    # -------------------------------------------------
-    # 🔎 Get active configuration from UI
-    # -------------------------------------------------
-    try:
-        config = frappe.get_doc(
-            "API Configuration",
-            {"enable_ai_extraction": 1}
-        )
-    except Exception:
-        frappe.throw("No active API Configuration found")
-
-    url = config.api_base_url
-    model = config.model_name
-    temperature = config.temperature or 0
-    max_tokens = config.max_tokens or 1200
-    debug = config.debug_mode
-
-    api_key = config.get_password("api_key")
-
-    # ---------------- VALIDATION ----------------
-    if not url:
-        frappe.throw("API Base URL not configured")
-
-    if not api_key:
-        frappe.throw("API Key missing")
-
-    if not model:
-        frappe.throw("Model name not configured")
-
-    # -------------------------------------------------
-    # 🧠 Universal OpenAI-compatible headers
-    # -------------------------------------------------
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json"
-    }
-
-    # -------------------------------------------------
-    # 🧠 Universal payload
-    # -------------------------------------------------
-    payload = {
-        "model": model,
-        "messages": [
-            {"role": "user", "content": prompt_text}
-        ],
-        "temperature": temperature,
-        "max_tokens": max_tokens
-    }
-
-    if debug:
-        frappe.logger().info(f"AI URL: {url}")
-        frappe.logger().info(f"AI Payload: {payload}")
-
-    # -------------------------------------------------
-    # 🚀 Call AI API
-    # -------------------------------------------------
-    try:
-        r = requests.post(url, headers=headers, json=payload, timeout=60)
-    except requests.exceptions.Timeout:
-        frappe.throw("The AI service took too long to respond. Please try again in a moment.")
-    except Exception as e:
-        frappe.throw("Could not connect to the AI service. Please check your network connection and try again.")
-
-    if r.status_code == 429:
-        frappe.throw(
-            "The AI service is currently busy or your usage limit has been reached. "
-            "Please wait a moment and try again, or contact your system administrator to review the API quota."
-        )
-    elif r.status_code == 401:
-        frappe.throw(
-            "The AI service rejected the request due to an invalid or expired API key. "
-            "Please update the API key in the API Configuration settings."
-        )
-    elif r.status_code != 200:
-        frappe.throw(
-            f"The AI service returned an unexpected response (code {r.status_code}). "
-            "Please try again or contact your system administrator if the issue persists."
-        )
-
-    data = r.json()
-
-    # -------------------------------------------------
-    # Universal response parsing
-    # -------------------------------------------------
-    try:
-        return data["choices"][0]["message"]["content"]
-    except Exception:
-        frappe.throw(
-            "The AI service returned an unrecognised response format. "
-            "Please check the model configuration and try again."
-        )
-
-
-# =================================================
-# 🚀 MAIN FUNCTION — PURCHASE INVOICE EXTRACTION
-# =================================================
-@frappe.whitelist()
-def extract_purchase_invoice_from_data(file_url, prompt_code, po=None):
-
-    if not file_url:
-        frappe.throw("Please attach Supplier Invoice PDF")
-
-    # -------------------------------------------------
-    # 🔥 Load prompt from AI Prompt Template
-    # -------------------------------------------------
-    prompt = get_ai_prompt(prompt_code)
-
-    # -------------------------------------------------
-    # 1️⃣ Get file path
-    # -------------------------------------------------
-    try:
-        file_doc = frappe.get_doc("File", {"file_url": file_url})
-        file_path = file_doc.get_full_path()
-    except Exception:
-        frappe.throw("Could not find attached file")
-
-    # -------------------------------------------------
-    # 2️⃣ Extract text (FIRST 2 PAGES ONLY)
-    # -------------------------------------------------
-    text = ""
-
-    try:
-        pdf = fitz.open(file_path)
-
-        for page in pdf[:2]:
-            text += page.get_text()
-
-        pdf.close()
-
-    except Exception as e:
-        frappe.throw(f"PDF read error: {str(e)}")
-
-    if not text.strip():
-        frappe.throw("Could not extract text from PDF")
-
-    # ⭐ Trim text for speed
-    text = text[:5000]
-
-    # -------------------------------------------------
-    # 3️⃣ Build AI Prompt
-    # -------------------------------------------------
-    full_prompt = f"""
-{prompt}
-
-STRICT INSTRUCTIONS:
-Return ONLY valid JSON.
-Do NOT include explanations.
-Do NOT include markdown.
-Do NOT include ```.
-
-INVOICE TEXT:
-{text}
-"""
-
-    # -------------------------------------------------
-    # 4️⃣ Call AI
-    # -------------------------------------------------
-    ai_text = call_ai_model(full_prompt)
-
-    if not ai_text:
-        frappe.throw("AI returned empty response")
-
-    # -------------------------------------------------
-    # 5️⃣ Clean AI formatting
-    # -------------------------------------------------
-    cleaned = ai_text.strip()
-
-    cleaned = re.sub(r"^```json", "", cleaned)
-    cleaned = re.sub(r"^```", "", cleaned)
-    cleaned = re.sub(r"```$", "", cleaned)
-
-    cleaned = re.sub(r",\s*}", "}", cleaned)
-    cleaned = re.sub(r",\s*]", "]", cleaned)
-
-    # -------------------------------------------------
-    # 6️⃣ Parse JSON safely
-    # -------------------------------------------------
-    try:
-        data = json.loads(cleaned)
-    except Exception:
-        frappe.throw(f"AI did not return valid JSON:\n\n{cleaned}")
-
-    # -------------------------------------------------
-    # 7️⃣ Normalize & sanitize data
-    # -------------------------------------------------
-
-    # Normalize invoice date
-    if "invoice_date" in data:
-        normalized = normalize_date(data["invoice_date"])
-        data["invoice_date"] = normalized if normalized else frappe.utils.today()
-
-    # Convert total to float
-    if "total" in data:
-        data["total"] = safe_float(data.get("total"))
-
-    # Cleanup: Company vs Customer
-    # AI might return company, customer or neither. 
-    # We want to favor any non-empty value found.
-    extracted_company = data.get("company") or data.get("customer") or ""
-    data["company"] = extracted_company
-    if "customer" in data: data.pop("customer")
-
-    # Map duration fields (handle potential AI key variants and DocType typo)
-    for k in ["custom_duration_from", "custom_dutation_from", "from_date", "validity_from"]:
-        if k in data and data[k]:
-            data["custom_dutation_from"] = normalize_date(data[k])
-            break
-            
-    for k in ["custom_duration_to", "to_date", "validity_to"]:
-        if k in data and data[k]:
-            data["custom_duration_to"] = normalize_date(data[k])
-            break
-
-    # If PO is provided, override LMS data from PO
-    if po:
-        try:
-            po_doc = frappe.get_doc("Purchase Order", po)
-            if po_doc.custom_lms_id:
-                data["lms_id"] = po_doc.custom_lms_id
-                # Also fetch circuit_id from LMS if possible
-                if not data.get("circuit_id"):
-                    data["circuit_id"] = frappe.db.get_value("Lastmile Services Master", po_doc.custom_lms_id, "circuit_id")
-        except frappe.DoesNotExistError:
-            frappe.logger().error(f"Purchase Order {po} not found during extraction")
-            # Fallback: don't crash, just proceed with AI data
-            pass
-        except Exception as e:
-            frappe.logger().error(f"Error fetching PO doc: {str(e)}")
-            pass
-
-    # Clean items
-    if "items" not in data or not isinstance(data["items"], list):
-        data["items"] = []
-    else:
-        cleaned_items = []
-        for item in data["items"]:
-            cleaned_items.append({
-                "description": item.get("description") if isinstance(item, dict) else "",
-                "qty": safe_float(item.get("qty")) if isinstance(item, dict) else 1,
-                "rate": safe_float(item.get("rate")) if isinstance(item, dict) else 0,
-            })
-        data["items"] = cleaned_items
-
-    # Clean taxes
-    if "taxes" not in data or not isinstance(data["taxes"], list):
-        data["taxes"] = []
-    else:
-        cleaned_taxes = []
-        for tax in data["taxes"]:
-            cleaned_taxes.append({
-                "account_head": tax.get("account_head") if isinstance(tax, dict) else "",
-                "description": tax.get("description") if isinstance(tax, dict) else "Tax",
-                "rate": safe_float(tax.get("rate")) if isinstance(tax, dict) else 0,
-                "tax_amount": safe_float(tax.get("tax_amount")) if isinstance(tax, dict) else 0,
-            })
-        data["taxes"] = cleaned_taxes
-
-    # -------------------------------------------------
-    # 🔟 Return clean JSON string
-    # -------------------------------------------------
-    return json.dumps(data)
-###############################################################################
 #ai for Purchase Invoice - Matching Company
 @frappe.whitelist()
 def match_company(name):
@@ -10468,9 +10142,9 @@ def send_survey_reminders():
             except Exception as e:
                 frappe.log_error(f"Failed to send survey reminder to {emp.employee}: {str(e)}", "Survey Reminder Error")
 
-##########################################################################
-# AI Customer Potal
-
+#########################################################################
+# Start of AI Customer Potal
+#########################################################################
 import frappe
 import re
 import os
@@ -10662,6 +10336,327 @@ def ai_installation_query(question):
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "AI INSTALLATION ERROR")
         return {"status": "error", "message": str(e)}
+@frappe.whitelist()
+def get_user_allowed_prompts():
+    user_roles = frappe.get_roles(frappe.session.user)
+    # Get all rules
+    rules = frappe.get_all("Customer AI Promt", pluck="name")
+    
+    allowed_prompts = set()
+    for rule in rules:
+        doc = frappe.get_doc("Customer AI Promt", rule)
+        
+        # Check if any role in the Table MultiSelect matches the user's roles
+        rule_roles = [r.role for r in doc.get("roles", []) if r.role]
+        old_role = doc.get("role")
+        
+        has_access = False
+        if rule_roles:
+            if set(rule_roles).intersection(user_roles):
+                has_access = True
+        elif old_role and old_role in user_roles:
+            has_access = True
+            
+        if has_access:
+            for row in doc.get("promt", []):
+                if row.promt:
+                    allowed_prompts.add(row.promt)
+    # Fallback for Admin testing if no rules are set up
+    if "Administrator" in user_roles and not allowed_prompts:
+        allowed_prompts = set(frappe.get_all("Customer Promt", pluck="name"))
+        
+    prompts_data = []
+    for p in allowed_prompts:
+        p_doc = frappe.get_doc("Customer Promt", p)
+        prompts_data.append({
+            "short_prompt": p_doc.short_prompt,
+            "full_prompt": p_doc.full_prompt,
+            "data_state": p_doc.data_state or "IDLE",
+            "sort_order": p_doc.get("sort_order") or 0
+        })
+        
+    prompts_data.sort(key=lambda x: x["sort_order"])
+        
+    return prompts_data
+
+@frappe.whitelist()
+def ai_invoice_download_query(invoice_no):
+    """Return the print page URL for a Sales Invoice, with permission checks."""
+    try:
+        invoice_no = str(invoice_no).strip()
+        
+        si_exists = frappe.db.exists("Sales Invoice", invoice_no)
+        
+        if not si_exists:
+            return {
+                "status": "error",
+                "message": f"Sales Invoice '{invoice_no}' not found."
+            }
+        
+        if not frappe.has_permission("Sales Invoice", ptype="read", doc=invoice_no):
+            return {
+                "status": "error",
+                "message": f"You do not have permission to view '{invoice_no}'."
+            }
+        
+        print_url = f"/app/print/Sales%20Invoice/{invoice_no}?format=Nexapp-%20Invoice"
+        
+        return {
+            "status": "success",
+            "print_url": print_url,
+            "invoice_no": invoice_no
+        }
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "AI INVOICE DOWNLOAD ERROR")
+        return {"status": "error", "message": str(e)}
+
+@frappe.whitelist(allow_guest=True)
+def download_inline_pdf(doctype, name, format=None):
+    if not frappe.has_permission(doctype, ptype="read", doc=name):
+        frappe.throw("You don't have permission to view this document")
+
+    doc = frappe.get_doc(doctype, name)
+    
+    original_user = frappe.session.user
+    frappe.set_user("Administrator")
+    try:
+        pdf_file = frappe.get_print(
+            doctype,
+            name,
+            format,
+            doc=doc,
+            as_pdf=True
+        )
+    finally:
+        frappe.set_user(original_user)
+    
+    frappe.local.response.filename = f"{name}.pdf".replace(" ", "-").replace("/", "-")
+    frappe.local.response.filecontent = pdf_file
+    frappe.local.response.type = "download"
+    frappe.local.response.display_content_as = "inline"
+
+@frappe.whitelist()
+def ai_sales_invoice_installation_query(invoice_no):
+    try:
+        invoice_no = str(invoice_no).strip()
+        circuit_ids = set()
+
+        # Try Sales Order
+        so_exists = frappe.db.exists("Sales Order", invoice_no)
+        si_exists = frappe.db.exists("Sales Invoice", invoice_no)
+        
+
+        if so_exists and frappe.has_permission("Sales Order", ptype="read", doc=invoice_no):
+            so = frappe.get_doc("Sales Order", invoice_no)
+            for item in so.items:
+                if item.get("custom_feasibility"):
+                    circuit_ids.add(item.custom_feasibility)
+                elif item.get("custom_circuit_id"):
+                    circuit_ids.add(item.custom_circuit_id)
+        
+        # Try Sales Invoice
+        elif si_exists and frappe.has_permission("Sales Invoice", ptype="read", doc=invoice_no):
+            si = frappe.get_doc("Sales Invoice", invoice_no)
+            for item in si.items:
+                if item.get("custom_feasibility"):
+                    circuit_ids.add(item.custom_feasibility)
+                elif item.get("custom_circuit_id"):
+                    circuit_ids.add(item.custom_circuit_id)
+        else:
+            return {
+                "status": "success",
+                "images": [],
+                "circuit_ids": [],
+                "image_type": None,
+                "ai_reply": f"❌ Could not find any Sales Invoice matching '**{invoice_no}**', or you do not have permission to view it."
+            }
+
+        if not circuit_ids:
+            return {
+                "status": "success",
+                "images": [],
+                "circuit_ids": [],
+                "image_type": None,
+                "ai_reply": f"No Circuit IDs found in the items of **{invoice_no}**."
+            }
+
+        all_images = []
+        valid_circuits = []
+
+        for circuit_id in circuit_ids:
+            installation = frappe.db.get_value(
+                "Installation Note",
+                {"custom_circuit_id": circuit_id},
+                "name"
+            )
+            if not installation:
+                continue
+
+            legal_code = frappe.db.get_value("Site", {"name": circuit_id}, "site_id__legal_code") or "NA"
+
+            attachments = frappe.get_all(
+                "Installation Note Attachment",
+                filters={"parent": installation},
+                fields=["attachment", "select_mqjl"],
+                ignore_permissions=True
+            )
+
+            for att in attachments:
+                if not att.attachment:
+                    continue
+                all_images.append({
+                    "image": att.attachment,
+                    "label": att.select_mqjl,
+                    "circuit_id": circuit_id,
+                    "legal_code": legal_code
+                })
+            
+            valid_circuits.append(circuit_id)
+
+        if not all_images:
+            if valid_circuits:
+                ai_reply = f"No installation images or attachments found for the Circuit IDs linked to **{invoice_no}**."
+            else:
+                ai_reply = f"No Installation Notes found for the Circuit IDs linked to **{invoice_no}**."
+        else:
+            ai_reply = f"Here are the installation photographs for the circuits linked to **{invoice_no}**."
+
+        return {
+            "status": "success",
+            "images": all_images,
+            "circuit_ids": list(valid_circuits),
+            "image_type": None,
+            "ai_reply": ai_reply
+        }
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "AI SALES INVOICE INSTALLATION ERROR")
+        return {"status": "error", "message": str(e)}
+
+@frappe.whitelist()
+def ai_installation_date_query(customer, circuit_id="", from_date="", to_date="", exact_dates="", is_range="false"):
+    try:
+        from frappe.utils import getdate, formatdate
+        
+        def parse_date(d_str):
+            if not d_str or d_str == "undefined":
+                return None
+            d_str = d_str.strip()
+            # Try to parse DD-MM-YYYY with or without leading zeros
+            if '-' in d_str:
+                parts = d_str.split('-')
+                if len(parts) == 3 and len(parts[2]) == 4: # Ends in a 4-digit year
+                    return f"{parts[2]}-{int(parts[1]):02d}-{int(parts[0]):02d}"
+            return d_str
+
+        filters = {
+            "customer": customer,
+            "site_status": "Delivered and Live"
+        }
+
+        if is_range == "true":
+            f_str = parse_date(from_date)
+            t_str = parse_date(to_date)
+            if not f_str or not t_str:
+                return {"status": "error", "message": "Invalid date format provided. Please use YYYY-MM-DD or DD-MM-YYYY."}
+            filters["date"] = ["between", [f_str, t_str]]
+            reply_dates_text = f"from **{from_date}** to **{to_date}**"
+        else:
+            raw_dates = exact_dates.replace(',', ' ').split()
+            parsed_dates = []
+            for d in raw_dates:
+                p = parse_date(d)
+                if not p:
+                    return {"status": "error", "message": f"{d} is not a valid date string."}
+                parsed_dates.append(p)
+            
+            if len(parsed_dates) == 1:
+                filters["date"] = parsed_dates[0]
+            else:
+                filters["date"] = ["in", parsed_dates]
+            
+            reply_dates_text = f"for dates **{exact_dates}**"
+        if circuit_id and circuit_id.strip() and circuit_id != "undefined":
+            filters["name"] = circuit_id
+
+        # Use get_list to enforce user permissions natively
+        sites = frappe.get_list(
+            "Site",
+            filters=filters,
+            fields=["name", "site_name", "customer", "date", "circuit_id", "site_id__legal_code"]
+        )
+
+        if not sites:
+            return {
+                "status": "success",
+                "images": [],
+                "ai_reply": "No matching Sites found for the given Customer, Circuit ID, and Date Range, or you do not have permission to view them."
+            }
+
+        all_images = []
+        valid_circuits = []
+        site_details = {}
+
+        for site in sites:
+            cid = site.name
+            site_details[cid] = site
+
+            # Find matching Installation Note
+            installations = frappe.get_all(
+                "Installation Note",
+                filters={"custom_circuit_id": cid},
+                fields=["name"]
+            )
+
+            for inst in installations:
+                attachments = frappe.get_all(
+                    "Installation Note Attachment",
+                    filters={"parent": inst.name},
+                    fields=["attachment", "select_mqjl"]
+                )
+
+                for att in attachments:
+                    if not att.attachment:
+                        continue
+
+                    all_images.append({
+                        "image": att.attachment,
+                        "label": att.select_mqjl or "Attachment",
+                        "circuit_id": cid,
+                        "legal_code": site.site_id__legal_code or "NA",
+                        "site_name": site.site_name,
+                        "customer": site.customer,
+                        "delivery_date": formatdate(site.date) if site.date else "NA"
+                    })
+
+            valid_circuits.append(cid)
+
+        if not all_images:
+            msg = f"No installation images found for Circuit ID **{circuit_id}** within the specified dates." if circuit_id and circuit_id.strip() and circuit_id != "undefined" else f"No installation images found within the specified dates."
+            return {
+                "status": "success",
+                "images": [],
+                "ai_reply": msg
+            }
+
+        unique_circuits = list(set([img["circuit_id"] for img in all_images]))
+        count = len(unique_circuits)
+
+        if circuit_id and circuit_id.strip() and circuit_id != "undefined":
+            ai_reply = f"✅ Successfully retrieved the installation photographs for Circuit ID **{circuit_id}** {reply_dates_text} for **{customer}**.<br><br>Total Circuits: **{count}**"
+        else:
+            ai_reply = f"✅ Successfully retrieved the installation photographs {reply_dates_text} for **{customer}**.<br><br>Total Circuits: **{count}**"
+
+        return {
+            "status": "success",
+            "images": all_images,
+            "circuit_ids": valid_circuits,
+            "site_info": site_details,
+            "ai_reply": ai_reply
+        }
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "AI INSTALLATION DATE ERROR")
+        return {"status": "error", "message": str(e)}
 
 @frappe.whitelist()
 def download_multi_images(files):
@@ -10749,6 +10744,11 @@ def download_multi_images(files):
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "MULTI DOWNLOAD ERROR")
         return {"status": "error", "message": f"Server Error: {str(e)}"}
+
+#########################################################################
+# End of AI Customer Potal
+#########################################################################
+
 
 #########################################################################
 # Maintenance Visit from HD Ticket
@@ -11265,6 +11265,7 @@ def set_contact_email_from_supplier(doc, method=None):
 
         if supplier_email and not doc.contact_email:
             doc.contact_email = supplier_email
+
 ###################################################################################
 # =================================================
 # 🤖 AI ASSISTANT — CORE ENGINE
@@ -11305,7 +11306,7 @@ def get_user_context():
     return context
 
 @frappe.whitelist()
-def get_ai_assistant_response(question, history_id=None, department=None):
+def get_ai_assistant_response(question, history_id=None, department=None, file_url=None):
     """Main entry point for AI Assistant with context and permissions."""
     user_context = get_user_context()
     if department:
@@ -11351,11 +11352,572 @@ def get_ai_assistant_response(question, history_id=None, department=None):
 
     # Save User message if history_id exists
     if history_id:
-        save_message(history_id, "User", question)
+        save_message(history_id, "User", question, file_url)
         frappe.db.commit() # Save user message before calling AI
 
+    # --- SPECIAL WORKFLOW: Feasible Circuit List and Task Creation ---
+    exact_new_prompt = "list the feasible circuits and create contracts and tasks if required"
+    exact_old_prompt = "list down the feasible circuits against the customer abc"
+    
+    clean_question = question.strip().lower().replace('.', '')
+    
+    # Check what the assistant asked last
+    last_msg = ""
+    if history_id:
+        last_msg_doc = frappe.get_all("AI Assistant Message", filters={"history": history_id, "role": "Assistant"}, fields=["content"], order_by="creation desc", limit=1)
+        if last_msg_doc:
+            last_msg = last_msg_doc[0].content or ""
+
+    def get_feasibility_table(c_name):
+        feasibilities = frappe.get_all("Feasibility", 
+            filters={
+                "customer": c_name,
+                "docstatus": ["!=", 2],
+                "feasibility_status": "Feasible",
+                "sales_order": ["in", ["", None]]
+            }, 
+            fields=["name", "site_name", "circuit_id", "feasibility_status"]
+        )
+        if not feasibilities:
+            return ""
+        
+        table_html = "<div style='overflow-x: auto; margin-top: 15px; margin-bottom: 15px;'>"
+        table_html += "<table style='width: auto; min-width: 600px; border-collapse: collapse; font-size: 14px; text-align: left; background-color: #f8f9fa; border-radius: 6px; overflow: hidden;'>"
+        table_html += "<thead>"
+        table_html += "<tr style='border-bottom: 1px solid #f0f0f0;'>"
+        table_html += "<th style='padding: 16px 32px 16px 16px; font-weight: 700; color: #000000; border: none;'>Circuit ID</th>"
+        table_html += "<th style='padding: 16px 32px 16px 12px; font-weight: 700; color: #000000; border: none;'>Site Name</th>"
+        table_html += "<th style='padding: 16px 32px 16px 12px; font-weight: 700; color: #000000; border: none;'>Customer Name</th>"
+        table_html += "<th style='padding: 16px 32px 16px 12px; font-weight: 700; color: #000000; border: none; white-space: nowrap;'>Feasibility Status <i class='fa fa-clone' style='margin-left: 20px; color: #6b7280; cursor: pointer; font-size: 15px;' onclick=\"let tbl=this.closest('table'); let r=document.createRange(); r.selectNode(tbl); window.getSelection().removeAllRanges(); window.getSelection().addRange(r); document.execCommand('copy'); window.getSelection().removeAllRanges(); frappe.show_alert({message:'Table copied to clipboard', indicator:'green'});\" title='Copy Table'></i></th>"
+        table_html += "</tr>"
+        table_html += "</thead><tbody>"
+        
+        for f in feasibilities:
+            cid = f.circuit_id or f.name
+            table_html += "<tr style='border-bottom: 1px solid #f0f0f0;'>"
+            table_html += f"<td style='padding: 16px 32px 16px 16px; color: #1f2937; border: none;'>{cid}</td>"
+            table_html += f"<td style='padding: 16px 32px 16px 12px; color: #1f2937; border: none;'>{f.site_name}</td>"
+            table_html += f"<td style='padding: 16px 32px 16px 12px; color: #1f2937; border: none;'>{c_name}</td>"
+            table_html += f"<td style='padding: 16px 32px 16px 12px; color: #1f2937; border: none;'>{f.feasibility_status}</td>"
+            table_html += "</tr>"
+        
+        table_html += "</tbody></table></div>"
+        return table_html
+
+
+    if exact_new_prompt in clean_question or exact_old_prompt in clean_question:
+        assistant_answer = "👤 Please provide the Customer Name."
+        save_message(history_id, "Assistant", assistant_answer)
+        frappe.db.commit()
+        return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+
+    if "Please provide the Customer Name." in last_msg or "Provide the customer name." in last_msg or "Please try another name." in last_msg:
+        customer_name = question.strip()
+        user_reply_lower = customer_name.lower()
+        
+        if user_reply_lower in ['yes', 'y', 'ok', 'sure', 'yeah']:
+            assistant_answer = "👤 Please provide the Customer Name."
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+            
+        elif user_reply_lower in ['no', 'n', 'nope', 'nah', 'cancel']:
+            assistant_answer = "No problem! Whenever you are ready, 👤 Please provide the Customer Name."
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+
+        customers = frappe.get_all("Customer", filters={"name": ["like", f"%{customer_name}%"]}, fields=["name"])
+        
+        if not customers:
+            parts = [p for p in customer_name.split() if len(p) > 2]
+            similar_customers = []
+            if parts:
+                or_filters = []
+                for p in parts:
+                    or_filters.append(["name", "like", f"%{p}%"])
+                similar_customers = frappe.get_all("Customer", or_filters=or_filters, fields=["name"], limit=5)
+            
+            if similar_customers:
+                assistant_answer = f"No exact match found for '{customer_name}'. Did you mean one of these?<br>"
+                for c in similar_customers:
+                    assistant_answer += f"&nbsp;&nbsp;&nbsp;&nbsp;&bull; {c.name}<br>"
+                assistant_answer += "Please copy and paste the correct customer name."
+            else:
+                assistant_answer = f"No customer found matching '{customer_name}'. Please try another name. 🔍"
+                
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+            
+        if len(customers) > 1:
+            assistant_answer = "<b>👥 We found multiple customers.</b><br><br>"
+            assistant_answer += "Please copy and paste the customer name you want to proceed with:<br><br>"
+            for c in customers:
+                assistant_answer += f"&bull; {c.name}<br>"
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+        else:
+            tbl = get_feasibility_table(customers[0].name)
+            if not tbl:
+                assistant_answer = f"😔 No feasible circuits were found for customer <b>{customers[0].name}.</b><br><br>Would you like to continue with another customer?"
+            else:
+                assistant_answer = f"✅ I found feasible circuits for customer <b>{customers[0].name}</b>.{tbl}"
+                assistant_answer += "<br><div style='margin-bottom: 12px; font-size: 15px; color: #1f2937;'>🤖 Let's create your Task & Contract in just 3 minutes!</div>"
+                assistant_answer += "<div style='margin-bottom: 12px; font-size: 15px; color: #1f2937;'>Simply answer a few quick questions, and I'll take care of the rest.</div>"
+                assistant_answer += "<div style='margin-bottom: 4px; font-size: 15px; color: #1f2937;'>✅ Automatic Contract Creation</div>"
+                assistant_answer += "<div style='margin-bottom: 4px; font-size: 15px; color: #1f2937;'>✅ Automatic Task Creation</div>"
+                assistant_answer += "<div style='margin-bottom: 12px; font-size: 15px; color: #1f2937;'>✅ Guided Step-by-Step Process</div>"
+                assistant_answer += "<div style='margin-bottom: 12px; font-size: 15px; color: #1f2937;'>📌 Supported for Order Type <b>Service</b> only.</div>"
+                assistant_answer += "<div style='font-size: 15px; color: #1f2937;'>Ready to begin?</div>"
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+
+    if "Please copy and paste the customer name you want to proceed with:" in last_msg or "Please copy and paste the correct customer name." in last_msg or "Please copy and paste the customer name exactly as shown above." in last_msg:
+        customer_name = question.strip()
+        customers = frappe.get_all("Customer", filters={"name": customer_name}, fields=["name"])
+        if not customers:
+            assistant_answer = f"<b>❌ No customer found matching \"{customer_name}\". Please copy and paste the customer name exactly as shown above. 📋</b>"
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+        tbl = get_feasibility_table(customers[0].name)
+        if not tbl:
+            assistant_answer = f"😔 No feasible circuits were found for customer <b>{customers[0].name}.</b><br><br>Would you like to continue with another customer?"
+        else:
+            assistant_answer = f"✅ I found feasible circuits for customer <b>{customers[0].name}</b>.{tbl}"
+            assistant_answer += "<br><div style='margin-bottom: 12px; font-size: 15px; color: #1f2937;'>🤖 Let's create your Task & Contract in just 3 minutes!</div>"
+            assistant_answer += "<div style='margin-bottom: 12px; font-size: 15px; color: #1f2937;'>Simply answer a few quick questions, and I'll take care of the rest.</div>"
+            assistant_answer += "<div style='margin-bottom: 4px; font-size: 15px; color: #1f2937;'>✅ Automatic Contract Creation</div>"
+            assistant_answer += "<div style='margin-bottom: 4px; font-size: 15px; color: #1f2937;'>✅ Automatic Task Creation</div>"
+            assistant_answer += "<div style='margin-bottom: 12px; font-size: 15px; color: #1f2937;'>✅ Guided Step-by-Step Process</div>"
+            assistant_answer += "<div style='margin-bottom: 12px; font-size: 15px; color: #1f2937;'>📌 Supported for Order Type <b>Service</b> only.</div>"
+            assistant_answer += "<div style='font-size: 15px; color: #1f2937;'>Ready to begin?</div>"
+        save_message(history_id, "Assistant", assistant_answer)
+        frappe.db.commit()
+        return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+
+    if "Would you like to continue with another customer?" in last_msg:
+        user_reply_lower = question.strip().lower()
+        if user_reply_lower in ['yes', 'y', 'ok', 'sure', 'yeah']:
+            assistant_answer = "👤 Please provide the Customer Name."
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+        elif user_reply_lower in ['no', 'n', 'nope', 'nah', 'cancel']:
+            assistant_answer = "🙏 Thank you!"
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "CANCEL"}}
+
+    if "Ready to begin?" in last_msg or "Are you ready to create the Task for the circuits listed above?" in last_msg:
+        user_reply = question.strip().lower()
+        if user_reply in ['yes', 'y', 'ok', 'sure', 'yeah']:
+            assistant_answer = "🎯 Awesome! Please provide the CRM Deal ID."
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+        elif user_reply in ['no', 'n', 'nope', 'nah', 'cancel', 'stop']:
+            assistant_answer = "🙏 Thank you!"
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "CANCEL"}}
+
+    if "🙏 Thank you!" in last_msg:
+        user_reply = question.strip().lower()
+        if user_reply in ['yes', 'y', 'ok', 'sure', 'yeah']:
+            assistant_answer = "Great! Please select a new prompt from the menu to continue. 🚀"
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+
+    if "Awesome! Please provide the CRM Deal ID." in last_msg or "Please provide the CRM Deal ID." in last_msg or "Please provide the correct CRM Deal ID." in last_msg or "Please provide a valid CRM Deal ID and try again." in last_msg:
+        crm_deal_id = question.strip()
+        
+        if not frappe.db.exists("CRM Deal", crm_deal_id):
+            assistant_answer = f"❌ No CRM Deal found matching **'{crm_deal_id}'**.<br><br>📝 Please provide a valid CRM Deal ID and try again."
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+            
+        deal = frappe.get_doc("CRM Deal", crm_deal_id)
+        is_valid = False
+        if deal:
+            if deal.status == "Won" and deal.custom_po_no and deal.custom_po_date and deal.custom_customer_po_end_date:
+                is_valid = True
+                
+        if not is_valid:
+            assistant_answer = "The CRM Deal information is incomplete or not eligible for Task creation. Please ensure that the Deal Stage is 'Won' and that a Customer PO Number has been provided. ⚠️"
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+            
+        assistant_answer = f"Deal **{crm_deal_id}** is valid! ✅<br><br>What is the Service Type?<br>&bull; Capex<br>&bull; Opex (Rental)<br>📋 Please copy and paste the required option."
+        save_message(history_id, "Assistant", assistant_answer)
+        frappe.db.commit()
+        return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+
+    if "What is the Service Type?" in last_msg or "📋 Please copy and paste the required option." in last_msg:
+        service_type_input = question.strip().lower()
+        if "opex" in service_type_input:
+            service_type = "Opex (Rental)"
+        elif "capex" in service_type_input:
+            service_type = "Capex"
+        else:
+            assistant_answer = "Please reply with either 'Capex' or 'Opex (Rental)'.<br><br>What is the Service Type?<br>&bull; Capex<br>&bull; Opex (Rental)<br>📋 Please copy and paste the required option."
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+            
+        assistant_answer = f"Service Type set to **{service_type}**. ✅<br><br>"
+        assistant_answer += "<div style='margin-bottom: 12px; font-size: 15px; color: #1f2937;'>💰 <b>To update the Circuit ID costing, please choose one of the following options:</b></div>"
+        assistant_answer += "<div style='margin-bottom: 12px; font-size: 15px; color: #1f2937;'><b>Option 1 – Same Costing for All Circuit IDs</b></div>"
+        assistant_answer += "<div style='font-size: 15px; color: #1f2937;'>Item Code:</div>"
+        assistant_answer += "<div style='font-size: 15px; color: #1f2937;'>OTC:</div>"
+        assistant_answer += "<div style='margin-bottom: 16px; font-size: 15px; color: #1f2937;'>MRC:</div>"
+        import urllib.parse
+
+        history_msgs = frappe.get_all("AI Assistant Message", filters={"history": history_id}, fields=["content", "role"], order_by="creation desc", limit=50)
+        customer_name = None
+        for msg in history_msgs:
+            if msg.role == "Assistant":
+                m2 = re.search(r'I found feasible circuits for customer <b>([^<]+)</b>', msg.content or "")
+                if m2:
+                    customer_name = m2.group(1).strip()
+                    break
+        
+        from frappe.utils.xlsxutils import make_xlsx
+        import base64
+        
+        data = [["Circuit ID", "Item Code", "OTC", "MRC"]]
+        if customer_name:
+            feasibilities = frappe.get_all("Feasibility", 
+                filters={
+                    "customer": customer_name,
+                    "docstatus": ["!=", 2],
+                    "feasibility_status": "Feasible",
+                    "sales_order": ["in", ["", None]]
+                }, 
+                fields=["name", "circuit_id"]
+            )
+            for feas in feasibilities:
+                cid = feas.circuit_id or feas.name
+                if cid:
+                    data.append([str(cid), "", "", ""])
+
+        xlsx_file = make_xlsx(data, "Costing_Template")
+        encoded_excel = base64.b64encode(xlsx_file.getvalue()).decode('utf-8')
+
+        assistant_answer += "<div style='margin-bottom: 12px; font-size: 15px; color: #1f2937;'><b>Option 2 – Different Costing for Circuit IDs</b></div>"
+        assistant_answer += f"<div style='margin-bottom: 12px; font-size: 15px; color: #1f2937;'>Download template : <a href='data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{encoded_excel}' download='Costing_Template.xlsx' style='color: #2563eb; text-decoration: none; font-weight: 500;'>Costing_Template.xlsx</a>, update the costing details, and upload the completed file.</div>"
+        assistant_answer += "<div style='font-size: 15px; color: #1f2937;'>✨ Once you provide these details, I will update all related Circuit IDs automatically.</div>"
+        
+        save_message(history_id, "Assistant", assistant_answer)
+        frappe.db.commit()
+        return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+
+    if "Are you ready to create the Task and Contract with these costing items?" in last_msg:
+        user_reply_lower = question.strip().lower()
+        if user_reply_lower in ['yes', 'y', 'ok', 'sure', 'yeah', 'proceed']:
+            # Fetch context
+            history_msgs = frappe.get_all("AI Assistant Message", filters={"history": history_id}, fields=["content", "role"], order_by="creation desc", limit=50)
+            customer_name = None
+            crm_deal_id = None
+            service_type = None
+            costing_items = []
+            
+            for msg in history_msgs:
+                if msg.role == "Assistant":
+                    for cost_match in re.finditer(r'Costing item \*\*([^*]+)\*\* \(OTC: ([^,)]*), MRC: ([^)]*)\) saved!', msg.content or ""):
+                        ic = cost_match.group(1).strip()
+                        if frappe.db.exists("Item", ic) and not any(c['item_code'].lower() == ic.lower() for c in costing_items):
+                            costing_items.append({
+                                "item_code": ic,
+                                "otc": cost_match.group(2).strip(),
+                                "mrc": cost_match.group(3).strip()
+                            })
+                        
+                if not crm_deal_id:
+                    m1 = re.search(r'Deal \*\*([^*]+)\*\* is valid', msg.content or "")
+                    if m1: crm_deal_id = m1.group(1).strip()
+                if not customer_name:
+                    m2 = re.search(r'Here are the feasible circuits for <b>([^<]+)</b>', msg.content or "")
+                    if m2: customer_name = m2.group(1).strip()
+                if not service_type:
+                    m3 = re.search(r'Service Type set to \*\*([^*]+)\*\*', msg.content or "")
+                    if m3: service_type = m3.group(1).strip()
+                if crm_deal_id and customer_name and service_type:
+                    break
+                    
+            if not customer_name or not crm_deal_id:
+                assistant_answer = "Sorry, I lost the context of the customer or deal. Please start over. 😔"
+                save_message(history_id, "Assistant", assistant_answer)
+                frappe.db.commit()
+                return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "CANCEL"}}
+                
+            if not frappe.db.exists("CRM Deal", crm_deal_id):
+                assistant_answer = "Sorry, I could not fetch the deal. Please start over. 😔"
+                save_message(history_id, "Assistant", assistant_answer)
+                frappe.db.commit()
+                return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "CANCEL"}}
+                
+            deal = frappe.get_doc("CRM Deal", crm_deal_id)
+            
+            feas_fields = ["name", "customer", "sales_person", "order_type", "customer_type"]
+            meta = frappe.get_meta("Feasibility")
+            if meta.has_field("service_type"): feas_fields.append("service_type")
+            if meta.has_field("solution_type"): feas_fields.append("solution_type")
+                
+            feasibilities = frappe.get_all("Feasibility", 
+                filters={
+                    "customer": customer_name,
+                    "docstatus": ["!=", 2],
+                    "feasibility_status": "Feasible",
+                    "sales_order": ["in", ["", None]]
+                }, 
+                fields=feas_fields
+            )
+            
+            if not feasibilities:
+                assistant_answer = f"No eligible feasible circuits found for {customer_name} to create a Task. 😔"
+                save_message(history_id, "Assistant", assistant_answer)
+                frappe.db.commit()
+                return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "CANCEL"}}
+                
+            feas = feasibilities[0]
+            
+            from frappe.utils import date_diff
+            duration = date_diff(deal.custom_customer_po_end_date, deal.custom_po_date)
+            
+            d1 = abs(duration - 90)
+            d2 = abs(duration - 365)
+            d3 = abs(duration - 1095)
+            
+            if d1 <= d2 and d1 <= d3:
+                contract_template = "90 Days Contract"
+            elif d2 <= d1 and d2 <= d3:
+                contract_template = "12 Months Contract"
+            else:
+                contract_template = "36 Months Contract"
+                
+            contract_doc = {
+                "doctype": "Contract",
+                "party_type": "Customer",
+                "party_name": feas.customer,
+                "party_user": feas.sales_person,
+                "start_date": deal.custom_po_date,
+                "end_date": deal.custom_customer_po_end_date,
+                "contract_template": contract_template
+            }
+            
+            try:
+                terms = frappe.db.get_value("Contract Template", contract_template, "contract_terms")
+                contract_doc["contract_terms"] = terms or "Standard Terms"
+            except Exception:
+                contract_doc["contract_terms"] = "Standard Terms"
+                
+            cmeta = frappe.get_meta("Contract")
+            if cmeta.has_field("custom_customer_po_no"):
+                contract_doc["custom_customer_po_no"] = deal.custom_po_no
+            elif cmeta.has_field("custom_customer_po_number"):
+                contract_doc["custom_customer_po_number"] = deal.custom_po_no
+            elif cmeta.has_field("customer_po_no"):
+                contract_doc["customer_po_no"] = deal.custom_po_no
+                
+            contract = frappe.get_doc(contract_doc)
+            contract.insert(ignore_permissions=True)
+            
+            task_doc = {
+                "doctype": "Task",
+                "type": "Sales Order Request",
+                "subject": f"Sales Order Request - {customer_name}",
+                "custom_customer": feas.customer,
+                "custom_order_type": feas.order_type or "Service",
+                "custom_contract": contract.name,
+                "custom_owner": feas.sales_person,
+                "custom_crm_deal": deal.name,
+                "custom_customer_type": feas.customer_type,
+                "custom_service_type": service_type,
+                "custom_circuit_id": []
+            }
+            
+            for feas in feasibilities:
+                if feas.circuit_id:
+                    for cost in costing_items:
+                        task_doc["custom_circuit_id"].append({
+                            "circuit_id": feas.circuit_id,
+                            "site_name": feas.site_name,
+                            "custom_product_name": cost['item_code'],
+                            "custom_product": cost['item_code'],
+                            "item": cost['otc'],
+                            "custom_mrc": cost['mrc']
+                        })
+            
+            task = frappe.get_doc(task_doc)
+            task.insert(ignore_permissions=True)
+            
+            assistant_answer = "<h2 style='margin-top: 16px; margin-bottom: 8px;'>Successfully Created !</h2>"
+            assistant_answer += f"✅ Contract: <b>{contract.name}</b><br>"
+            assistant_answer += f"✅ Task: <b>{task.name}</b><br><br>"
+            assistant_answer += "Is there anything else I can help you with? If yes, please select the new prompt. 😊"
+            
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "SUCCESS"}}
+            
+        else:
+            assistant_answer = "Okay, I have cancelled the creation process. You can start over by selecting a new prompt."
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "CANCEL"}}
+
+    if "Once you provide these details, I will update all related Circuit Ids automatically." in last_msg or "Once you provide these details, I will update all related Circuit IDs automatically." in last_msg or "Do you want to add more costing items for this Circuit ID?" in last_msg or "Great! Please provide the next set of details:" in last_msg or "has already been added. Please provide a different Item Code" in last_msg or "I couldn't detect the Item Code" in last_msg or "Would you like to add another costing item for this Circuit ID?" in last_msg:
+
+        user_reply_lower = question.strip().lower()
+        
+        # If user says No, we show the summary table
+        if user_reply_lower in ['no', 'n', 'nope', 'nah', 'cancel', 'done', 'finish']:
+            # Fetch context
+            history_msgs = frappe.get_all("AI Assistant Message", filters={"history": history_id}, fields=["content", "role"], order_by="creation desc", limit=50)
+            costing_items = []
+            
+            for msg in history_msgs:
+                if msg.role == "Assistant":
+                    for cost_match in re.finditer(r'Costing item \*\*([^*]+)\*\* \(OTC: ([^,)]*), MRC: ([^)]*)\) saved!', msg.content or ""):
+                        ic = cost_match.group(1).strip()
+                        if frappe.db.exists("Item", ic) and not any(c['item_code'].lower() == ic.lower() for c in costing_items):
+                            costing_items.append({
+                                "item_code": ic,
+                                "otc": cost_match.group(2).strip(),
+                                "mrc": cost_match.group(3).strip()
+                            })
+                if re.search(r'Deal \*\*([^*]+)\*\* is valid', msg.content or ""):
+                    break
+                    
+            if not costing_items:
+                assistant_answer = "No costing items were added. Please start over. 😔"
+                save_message(history_id, "Assistant", assistant_answer)
+                frappe.db.commit()
+                return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "CANCEL"}}
+                
+            # Generate Summary Table
+            assistant_answer = "<div class='costing-summary-card' style='margin: 15px 0;'>"
+            assistant_answer += "<h4 style='margin-top: 0; margin-bottom: 20px; font-weight: 600; color: #1f2733;'>💰 Costing Summary for All Circuit IDs</h4>"
+            assistant_answer += "<div class='table-responsive'>"
+            assistant_answer += "<table class='table' style='width: 100%; border-collapse: collapse; margin-bottom: 20px;'>"
+            assistant_answer += "<thead><tr style='border-bottom: 1px solid #e2e8f0;'><th style='padding: 12px 24px; border: none; text-align: left; color: #4a5568; font-weight: bold;'>Item Name</th><th style='padding: 12px 24px; border: none; text-align: right; color: #4a5568; font-weight: bold;'>OTC</th><th style='padding: 12px 24px; border: none; text-align: right; color: #4a5568; font-weight: bold;'>MRC</th><th style='padding: 12px 24px; border: none; text-align: right; color: #4a5568; font-weight: bold;'>ARC</th><th style='padding: 12px 24px; border: none; text-align: right; color: #4a5568;'><i class='fa fa-clone' style='cursor:pointer; color:#718096;' onclick='let r = document.createRange(); r.selectNode(this.closest(&quot;table&quot;)); let s = window.getSelection(); s.removeAllRanges(); s.addRange(r); document.execCommand(&quot;copy&quot;); s.removeAllRanges(); frappe.show_alert({message:&quot;Table Copied!&quot;, indicator:&quot;green&quot;});' title='Copy Table'></i></th></tr></thead><tbody>"
+            
+            for cost in costing_items:
+                item_name = frappe.db.get_value("Item", cost['item_code'], "item_name") or cost['item_code']
+                try: otc_val = float(cost['otc'])
+                except: otc_val = 0.0
+                try: mrc_val = float(cost['mrc'])
+                except: mrc_val = 0.0
+                
+                arc_val = mrc_val * 12
+                
+                otc_str = "₹ {:,.2f}".format(otc_val)
+                mrc_str = "₹ {:,.2f}".format(mrc_val)
+                arc_str = "₹ {:,.2f}".format(arc_val)
+                
+                assistant_answer += f"<tr style='border-bottom: 1px solid #e2e8f0;'><td style='padding: 16px 24px; border: none; color: #1f2733;'>{item_name}</td><td style='padding: 16px 24px; border: none; color: #1f2733; text-align: right;'>{otc_str}</td><td style='padding: 16px 24px; border: none; color: #1f2733; text-align: right;'>{mrc_str}</td><td style='padding: 16px 24px; border: none; color: #1f2733; text-align: right;'>{arc_str}</td><td style='border: none;'></td></tr>"
+            
+            assistant_answer += "</tbody></table></div>"
+            
+            assistant_answer += "<p style='margin-bottom: 0; font-size: 14px; color: #1f2733;'>🚀 Are you ready to create the Task and Contract with these costing items?</p>"
+            assistant_answer += "</div>"
+            
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+            
+        elif user_reply_lower in ['yes', 'y', 'ok', 'sure', 'yeah']:
+            assistant_answer = "Great! Please provide the next set of details:<br>Item Code:<br>OTC :<br>MRC :<br>You can continue adding as many costing items as required."
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+            
+        else:
+            # Parse multiple costing items by splitting on "Item Code"
+            chunks = re.split(r'(?i)Item Code:?\s*', question)
+            added_items = []
+            
+            history_msgs = frappe.get_all("AI Assistant Message", filters={"history": history_id}, fields=["content", "role"], order_by="creation desc", limit=50)
+            existing_items = []
+            for msg in history_msgs:
+                if msg.role == "Assistant":
+                    for cm in re.finditer(r'Costing item \*\*([^*]+)\*\* \(OTC: ([^,)]*), MRC: ([^)]*)\) saved!', msg.content or ""):
+                        ic = cm.group(1).strip()
+                        if frappe.db.exists("Item", ic):
+                            existing_items.append(ic.lower())
+                if re.search(r'Deal \*\*([^*]+)\*\* is valid', msg.content or ""):
+                    break
+                    
+            assistant_answer = ""
+            for chunk in chunks:
+                if not chunk.strip(): continue
+                
+                ic_match = re.match(r'^([A-Za-z0-9\-\_]+)', chunk.strip())
+                if not ic_match: continue
+                
+                item_code = ic_match.group(1).strip()
+                
+                if not frappe.db.exists("Item", item_code):
+                    assistant_answer += f"❌ The Item Code **{item_code}** was not found in the system. **Skipping.**<br>"
+                    continue
+                
+                otc_match = re.search(r'OTC.*?([0-9,]+(?:\.[0-9]+)?)', chunk, re.IGNORECASE)
+                mrc_match = re.search(r'MRC.*?([0-9,]+(?:\.[0-9]+)?)', chunk, re.IGNORECASE)
+                
+                otc = otc_match.group(1).replace(',', '').strip() if otc_match else ""
+                mrc = mrc_match.group(1).replace(',', '').strip() if mrc_match else ""
+                
+                if item_code.lower() in existing_items:
+                    assistant_answer += f"🔄 The Item Code **{item_code}** has been updated.<br>"
+                    
+                added_items.append((item_code, otc, mrc))
+                existing_items.append(item_code.lower())
+                
+            if not added_items and not assistant_answer:
+                assistant_answer = "I couldn't detect the Item Code. Please provide the Item Code, OTC, and MRC. 📝"
+                save_message(history_id, "Assistant", assistant_answer)
+                frappe.db.commit()
+                return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+                
+            for itm in added_items:
+                costs = []
+                if itm[1] and str(itm[1]).strip(): costs.append(f"OTC: {itm[1]}")
+                if itm[2] and str(itm[2]).strip(): costs.append(f"MRC: {itm[2]}")
+                cost_str = ", ".join(costs)
+                if cost_str: cost_str = f" ({cost_str})"
+                
+                assistant_answer += f"✅ Costing item **{itm[0]}**{cost_str} has been saved.<br>"
+                assistant_answer += f"<span style='display:none;'>Costing item **{itm[0]}** (OTC: {itm[1]}, MRC: {itm[2]}) saved!</span><br>"
+                
+            assistant_answer += "<br>➕ Would you like to add another costing item for this Circuit ID?<br><br>Please provide:<br>Item Code:<br>OTC:<br>MRC:<br><br>You can add as many costing items as needed. If you're finished, simply reply **\"No\"**."
+            
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+
+        
+    if "Is there anything else I can help you with? If yes, please select the new prompt. 😊" in last_msg:
+        user_reply = question.strip().lower()
+        if user_reply in ['no', 'n', 'nope', 'nah', 'cancel', 'stop']:
+            assistant_answer = "Thank you! 😊"
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "CANCEL"}}
+        elif user_reply in ['yes', 'y', 'ok', 'sure', 'yeah']:
+            assistant_answer = "Great! Please select a new prompt from the menu to continue. 🚀"
+            save_message(history_id, "Assistant", assistant_answer)
+            frappe.db.commit()
+            return {"answer": assistant_answer, "history_id": history_id, "intent": {"action": "INPUT_REQUIRED"}}
+
     # --- SPECIAL WORKFLOW: Sales Order Lookup by Circuit ID ---
-    import re
+
     is_circuit_prompt = "Sales Order Lookup by Circuit ID" in question or "Sales Order Number against the Circuit ID" in question
     is_only_ids = re.match(r'^[\d,\s]+$', question.strip())
     
@@ -11425,14 +11987,20 @@ def get_ai_assistant_response(question, history_id=None, department=None):
         "intent": intent
     }
 
-def save_message(history_id, role, content):
-    msg = frappe.get_doc({
+def save_message(history_id, role, content, file_url=None):
+    msg_dict = {
         "doctype": "AI Assistant Message",
         "history": history_id,
         "role": role,
         "content": content
-    })
+    }
+    if file_url:
+        msg_dict["attachment"] = file_url
+    msg = frappe.get_doc(msg_dict)
     msg.insert(ignore_permissions=True)
+    
+    # Update last_interaction on history
+    frappe.db.set_value("AI Assistant History", history_id, "last_interaction", frappe.utils.now())
 
 def extract_intent(question, context):
     """Uses LLM to convert question into a structured intent JSON."""
@@ -11513,7 +12081,7 @@ def format_ai_response(question, data, context, intent=None):
 
 def lookup_sales_order_by_circuit_ids(ids_text):
     """Specialized lookup for Sales Order via Sales Order Item child table."""
-    import re
+
     ids = re.findall(r'\d+', ids_text)
     if not ids:
         return "I couldn't find any valid Circuit IDs in your message. Please provide numeric IDs."
@@ -11610,12 +12178,47 @@ def delete_chat_history(history_id):
 	return True
 
 @frappe.whitelist()
+
+@frappe.whitelist()
+def log_chat_message(history_id, role, content, file_url=None):
+    if not history_id or history_id == "null":
+        # Create history if doesn't exist
+        if role == "User" and content:
+            title = content.strip()
+        else:
+            title = "New Chat"
+            
+        history_doc = frappe.get_doc({
+            "doctype": "AI Assistant History",
+            "user": frappe.session.user,
+            "title": title or "New Chat"
+        })
+        history_doc.insert(ignore_permissions=True)
+        history_id = history_doc.name
+        
+        # Enforce history limit of 5 per user
+        user_histories = frappe.get_all(
+            "AI Assistant History",
+            filters={"user": frappe.session.user},
+            order_by="creation desc",
+            fields=["name"]
+        )
+        if len(user_histories) > 5:
+            for old_hist in user_histories[5:]:
+                frappe.db.delete("AI Assistant Message", {"history": old_hist.name})
+                frappe.delete_doc("AI Assistant History", old_hist.name, ignore_permissions=True)
+        
+    save_message(history_id, role, content, file_url)
+    return history_id
+
+@frappe.whitelist()
 def get_chat_messages(history_id):
+
     """Returns all messages for a specific chat session."""
     return frappe.get_all(
         "AI Assistant Message",
         filters={"history": history_id},
-        fields=["role", "content", "creation"],
+        fields=["role", "content", "creation", "attachment"],
         order_by="creation asc"
     )
 
@@ -11977,13 +12580,15 @@ def download_feasibility_template_as_base64():
     import base64
     return base64.b64encode(xlsx_file.getvalue()).decode('utf-8')
 
+# === START PINCODE DETAILS LOGIC ===
+@frappe.whitelist(allow_guest=True)
 def get_pincode_details(pincode):
     """Fetches City, District, State, and Country from the Postal Pincode API."""
     import requests
     if not pincode: return {}
     
     # Remove non-digits
-    import re
+
     pincode = re.sub(r'\D', '', str(pincode))
     if len(pincode) != 6: return {}
     
@@ -12006,6 +12611,8 @@ def get_pincode_details(pincode):
     except Exception:
         pass
     return {}
+# === END PINCODE DETAILS LOGIC ===
+
 
 def try_parse_date(date_str):
     """Attempts to parse a date string from various formats into YYYY-MM-DD."""
@@ -12047,7 +12654,7 @@ def identify_file_job(file_url):
         return None
 
     # Normalize headers for matching
-    import re
+
     norm_headers = [re.sub(r'[^a-z0-9]', '', str(h).lower()) for h in headers if h]
     
     # Identify Feasibility (match at least 3 key headers)
@@ -12057,6 +12664,19 @@ def identify_file_job(file_url):
     if len(matches) >= 3:
         return "Feasibility"
         
+    costing_markers = ["circuitid", "itemcode", "otc", "mrc"]
+    cost_matches = [m for m in costing_markers if m in norm_headers]
+    if len(cost_matches) >= 2:
+        return "Costing"
+        
+
+    # Identify Bank Statement
+    bank_header_str = " ".join(norm_headers)
+    if "date" in bank_header_str and "description" in bank_header_str and "reference" in bank_header_str and "debit" in bank_header_str:
+        return "Bank Statement"
+    if "date" in bank_header_str and "narration" in bank_header_str and "credit" in bank_header_str:
+        return "Bank Statement"
+
     return None
 
 @frappe.whitelist()
@@ -12072,12 +12692,12 @@ def upload_feasibility_bulk(file_url, ignore_duplicates=False, confirmed=False, 
     roles = frappe.get_roles()
     
     is_authorized = (
-        user_doc.role_profile_name == "CRM Manager" or 
+        user_doc.role_profile_name in ["CRM Manager", "L1 Trainee"] or 
         "System Manager" in roles
     )
     
     if not is_authorized:
-        frappe.throw("Access Denied: Only CRM Manager can upload feasibility records.")
+        frappe.throw("Access Denied: Only CRM Manager or L1 Trainee can upload feasibility records.")
 
     if not file_url:
         frappe.throw("Please attach a file first.")
@@ -12132,7 +12752,7 @@ def upload_feasibility_bulk(file_url, ignore_duplicates=False, confirmed=False, 
 
     # Duplicate check before processing
     if not ignore_duplicates:
-        import re
+
         def normalize(s):
             if not s: return ""
             return re.sub(r'\s+', ' ', str(s).strip().lower())
@@ -12296,6 +12916,8 @@ def upload_feasibility_bulk(file_url, ignore_duplicates=False, confirmed=False, 
             success_count += 1
             frappe.clear_messages()
         except Exception as e:
+            import traceback
+            frappe.log_error(traceback.format_exc(), "Upload Feasibility Bulk Error")
             errors.append(f"Row {i+2}: {str(e)}")
             frappe.clear_messages()
     
@@ -12308,6 +12930,487 @@ def upload_feasibility_bulk(file_url, ignore_duplicates=False, confirmed=False, 
         "errors": errors
     }
 
+
+@frappe.whitelist()
+def process_costing_file(file_url):
+    if not file_url: return None
+    from frappe.utils.file_manager import get_file_path
+    from frappe.utils.xlsxutils import read_xlsx_file_from_attached_file
+    import csv
+    
+    file_path = get_file_path(file_url.split('/')[-1])
+    if not file_path: return None
+    
+    data = []
+    if file_path.endswith('.csv'):
+        with open(file_path, 'r', encoding='utf-8-sig') as f:
+            reader = csv.reader(f)
+            data = list(reader)
+    elif file_path.endswith('.xlsx'):
+        data = read_xlsx_file_from_attached_file(filepath=file_path)
+        
+    if not data or len(data) < 2:
+        return {"status": "error", "message": "File is empty or invalid"}
+        
+    headers = [str(h).strip().lower() for h in data[0]]
+    
+    # Try to find column indices
+    def find_col(possible_names):
+        for idx, h in enumerate(headers):
+            h_norm = ''.join(c for c in h if c.isalnum())
+            for p in possible_names:
+                if p in h_norm:
+                    return idx
+        return -1
+        
+    col_circuit = find_col(['circuitid', 'circuit'])
+    col_item = find_col(['itemcode', 'item'])
+    col_otc = find_col(['otc'])
+    col_mrc = find_col(['mrc'])
+    
+    if col_item == -1:
+        return {"status": "error", "message": "Could not find Item Code column"}
+        
+    results = []
+    for row in data[1:]:
+        if not row: continue
+        item_code = str(row[col_item]).strip() if col_item != -1 and len(row) > col_item else ""
+        if not item_code: continue
+        
+        otc = float(row[col_otc]) if col_otc != -1 and len(row) > col_otc and row[col_otc] else 0.0
+        mrc = float(row[col_mrc]) if col_mrc != -1 and len(row) > col_mrc and row[col_mrc] else 0.0
+        arc = mrc * 12
+        
+        circuit_id = str(row[col_circuit]).strip() if col_circuit != -1 and len(row) > col_circuit else ""
+        
+        item_name = item_code
+        if frappe.db.exists("Item", item_code):
+            item_name = frappe.db.get_value("Item", item_code, "item_name")
+            
+        results.append({
+            "circuit_id": circuit_id,
+            "item_name": item_name,
+            "otc": otc,
+            "mrc": mrc,
+            "arc": arc
+        })
+        
+    return {"status": "success", "data": results}
+
+@frappe.whitelist()
+def validate_disconnection_circuits(text, file_url=None):
+    import re
+    circuit_ids = []
+    if file_url:
+        from frappe.utils.file_manager import get_file_path
+        file_path = get_file_path(file_url.split('/')[-1])
+        if file_path:
+            if file_path.endswith('.csv'):
+                import csv
+                with open(file_path, 'r', encoding='utf-8-sig') as f:
+                    reader = csv.DictReader(f)
+                    for r in reader:
+                        for k, v in r.items():
+                            if k and 'circuit' in k.lower() and v:
+                                circuit_ids.append(v.strip())
+                                break
+            elif file_path.endswith('.xlsx'):
+                from frappe.utils.xlsxutils import read_xlsx_file_from_attached_file
+                data = read_xlsx_file_from_attached_file(filepath=file_path)
+                if data and len(data) > 1:
+                    headers = [str(h).strip().lower() for h in data[0] if h]
+                    idx = -1
+                    for i, h in enumerate(headers):
+                        if 'circuit' in h:
+                            idx = i
+                            break
+                    if idx != -1:
+                        for row in data[1:]:
+                            if len(row) > idx and row[idx]:
+                                circuit_ids.append(str(row[idx]).strip())
+    
+    if text:
+        parts = re.split(r'[, \n]+', text)
+        circuit_ids.extend([p.strip() for p in parts if p.strip()])
+    
+    circuit_ids = list(set(circuit_ids))
+    
+    valid = []
+    invalid = []
+    
+    for cid in circuit_ids:
+        site = frappe.db.get_value("Site", {"circuit_id": cid}, ["name", "site_status"], as_dict=True)
+        if site and site.site_status == "Delivered and Live":
+            valid.append(cid)
+        else:
+            invalid.append(cid)
+            
+    return {
+        "total_circuits": len(circuit_ids),
+        "valid_circuits": valid,
+        "invalid_circuits": invalid
+    }
+
+@frappe.whitelist()
+def create_disconnection_request(data):
+    import json
+    if isinstance(data, str):
+        data = json.loads(data)
+        
+    doc = frappe.get_doc({
+        "doctype": "Disconnection Request",
+        "customer_name": data.get("customer_name"),
+        "customer_type": data.get("customer_type"),
+        "reason_for_disconnection": data.get("reason_for_disconnection"),
+        "notice_period": data.get("notice_period"),
+        "status": "Draft"
+    })
+    
+    try_parse_date_fn = globals().get('try_parse_date')
+    
+    req_date = data.get("customer_requested_date")
+    if req_date:
+        if try_parse_date_fn: req_date = try_parse_date_fn(req_date)
+        doc.customer_requested_date = req_date
+        
+    start_date = data.get("notice_period_start_date")
+    if start_date:
+        if try_parse_date_fn: start_date = try_parse_date_fn(start_date)
+        doc.notice_period_start_date = start_date
+    
+    if data.get("customer_disconnection_confirmation"):
+        doc.customer_disconnection_confirmation = data.get("customer_disconnection_confirmation")
+        
+    for cid in data.get("valid_circuits", []):
+        doc.append("circuit_ids", {
+            "circuit_id": cid
+        })
+        
+    doc.insert(ignore_permissions=True)
+    frappe.db.commit()
+    
+    return {
+        "status": "success",
+        "doc": {"name": doc.name},
+        "count": len(data.get("valid_circuits", [])),
+        "total": data.get("total_circuits", len(data.get("valid_circuits", [])))
+    }
+
+@frappe.whitelist()
+def download_bank_statement_template():
+    from frappe.utils.xlsxutils import make_xlsx
+    
+    data = [
+        ["Transaction Date", "Value Date", "Transaction Description", "Reference No", "Debit Amount", "Credit Amount", "Running Balance"]
+    ]
+    
+    xlsx_file = make_xlsx(data, "Bank Statement Template")
+    
+    frappe.response['filename'] = 'Bank_Statement_Template.xlsx'
+    frappe.response['filecontent'] = xlsx_file.getvalue()
+    frappe.response['type'] = 'binary'
+
+@frappe.whitelist()
+def download_recon_excel(data):
+    import json
+    from frappe.utils.xlsxutils import make_xlsx
+    
+    if isinstance(data, str):
+        data = json.loads(data)
+        
+    xlsx_data = [["Date", "Narration", "Ref No", "Debit Amount", "Credit Amount", "Status", "Voucher", "Reconciled Amount", "Remark"]]
+    for row in data:
+        xlsx_data.append([
+            row.get("date", ""),
+            row.get("narration", ""),
+            row.get("ref_no", ""),
+            row.get("debit_amount", "") if row.get("debit_amount") else "",
+            row.get("credit_amount", "") if row.get("credit_amount") else "",
+            row.get("status", ""),
+            row.get("matched_voucher", ""),
+            row.get("reconciled_amount", 0),
+            row.get("remark", "")
+        ])
+        
+    xlsx_file = make_xlsx(xlsx_data, "Reconciliation Results")
+    
+    frappe.response['filename'] = 'Reconciliation_Results.xlsx'
+    frappe.response['filecontent'] = xlsx_file.getvalue()
+    frappe.response['type'] = 'binary'
+
+@frappe.whitelist()
+def parse_bank_statement(file_url):
+    if not file_url:
+        return {"status": "error", "message": "No file provided"}
+        
+    from frappe.utils.file_manager import get_file_path
+    file_path = get_file_path(file_url.split('/')[-1])
+    if not file_path:
+        return {"status": "error", "message": "File not found"}
+        
+    try:
+        import pandas as pd
+        if file_path.endswith('.csv'):
+            df = pd.read_csv(file_path)
+        else:
+            df = pd.read_excel(file_path)
+            
+        # Clean column names
+        df.columns = [str(c).strip().lower() for c in df.columns]
+        
+        # Get list of bank accounts for the user to select
+        bank_accounts = frappe.get_all("Account", filters={
+            "account_type": "Bank", 
+            "parent_account": "Bank Accounts - NTPL",
+            "company": "Nexapp Technologies Private Limited",
+            "is_group": 0
+        }, fields=["name"])
+        bank_names = [b.name for b in bank_accounts]
+        
+        # Basic auto-detect based on file name or simple heuristics could go here
+        detected_bank = None
+        for b in bank_names:
+            if str(b).lower() in file_path.lower():
+                detected_bank = b
+                break
+                
+        return {
+            "status": "success",
+            "transaction_count": len(df),
+            "bank_accounts": bank_names,
+            "detected_bank": detected_bank
+        }
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Bank Statement Parsing Error")
+        return {"status": "error", "message": str(e)}
+
+@frappe.whitelist()
+def run_reconciliation_matching(bank_account, file_url, from_date=None, to_date=None):
+    from rapidfuzz import fuzz
+    import pandas as pd
+    from frappe.utils.file_manager import get_file_path
+    
+    file_path = get_file_path(file_url.split('/')[-1])
+    if file_path.endswith('.csv'):
+        df = pd.read_csv(file_path)
+    else:
+        df = pd.read_excel(file_path)
+        
+    # Standardize cols
+    col_map = {}
+    for c in df.columns:
+        norm = str(c).strip().lower().replace(' ', '').replace('_', '')
+        if 'transactiondate' in norm or ('date' in norm and 'value' not in norm and 'date' not in col_map.values()): col_map[c] = 'date'
+        elif 'desc' in norm or 'narr' in norm or 'partic' in norm: col_map[c] = 'narration'
+        elif 'ref' in norm or 'cheq' in norm or 'chq' in norm or 'utr' in norm: col_map[c] = 'ref_no'
+        elif 'debit' in norm or 'withdrawal' in norm: col_map[c] = 'debit'
+        elif 'credit' in norm or 'deposit' in norm: col_map[c] = 'credit'
+        elif 'amount' in norm and 'debit' not in norm and 'credit' not in norm: col_map[c] = 'amount'
+    df.rename(columns=col_map, inplace=True)
+    
+    # Ensure required columns exist, fill missing
+    for col in ['date', 'narration', 'ref_no', 'debit', 'credit', 'amount']:
+        if col not in df.columns:
+            df[col] = ''
+            
+    if from_date and to_date:
+        try:
+            df['parsed_date'] = pd.to_datetime(df['date'], format='mixed', dayfirst=True)
+            end_date = pd.to_datetime(to_date) + pd.Timedelta(days=1) - pd.Timedelta(seconds=1)
+            df = df[(df['parsed_date'] >= pd.to_datetime(from_date)) & (df['parsed_date'] <= end_date)]
+            df = df.drop(columns=['parsed_date'])
+        except:
+            pass
+    
+    # Fetch ERP data
+    # Get GL Account for Bank
+    gl_account = frappe.db.get_value("Bank Account", bank_account, "account") or bank_account
+    
+    pe_date_filter = ""
+    je_date_filter = ""
+    if from_date and to_date:
+        pe_date_filter = f" AND reference_date BETWEEN '{from_date}' AND '{to_date}'"
+        je_date_filter = f" AND je.posting_date BETWEEN '{from_date}' AND '{to_date}'"
+    
+    # Fetch Payment Entries
+    pes = frappe.db.sql(f"""
+        SELECT name as voucher_no, 'Payment Entry' as voucher_type, reference_no as ref_no, 
+               reference_date as date, paid_amount as amount, party, party_name, clearance_date
+        FROM `tabPayment Entry`
+        WHERE (paid_from = %s OR paid_to = %s) AND docstatus = 1 {pe_date_filter}
+    """, (gl_account, gl_account), as_dict=True)
+    
+    # Fetch Journal Entries
+    jes = frappe.db.sql(f"""
+        SELECT je.name as voucher_no, 'Journal Entry' as voucher_type, je.cheque_no as ref_no, 
+               je.posting_date as date, jea.debit, jea.credit, jea.party, je.clearance_date
+        FROM `tabJournal Entry Account` jea
+        JOIN `tabJournal Entry` je ON je.name = jea.parent
+        WHERE jea.account = %s AND je.docstatus = 1 {je_date_filter}
+    """, (gl_account,), as_dict=True)
+    
+    # Combine erp entries
+    erp_entries = []
+    for pe in pes:
+        erp_entries.append({
+            'voucher_no': pe.voucher_no,
+            'voucher_type': pe.voucher_type,
+            'ref_no': str(pe.ref_no or '').strip().lower(),
+            'amount': float(pe.amount or 0),
+            'date': pe.date,
+            'party': pe.party_name or pe.party or '',
+            'clearance_date': pe.clearance_date
+        })
+    for je in jes:
+        amt = float(je.debit or 0) if float(je.debit or 0) > 0 else float(je.credit or 0)
+        erp_entries.append({
+            'voucher_no': je.voucher_no,
+            'voucher_type': je.voucher_type,
+            'ref_no': str(je.ref_no or '').strip().lower(),
+            'amount': amt,
+            'date': je.date,
+            'party': je.party or '',
+            'clearance_date': je.clearance_date
+        })
+        
+    results = []
+    exact_count = 0
+    sugg_count = 0
+    unmatched_count = 0
+    reconciled_count = 0
+    
+    reconcile_payload = []
+    
+    for idx, row in df.iterrows():
+        bank_date = str(row.get('transaction date', row.get('date', '')))
+        bank_narr = str(row.get('transaction description', row.get('narration', row.get('description', ''))))
+        bank_ref = str(row.get('reference no', row.get('ref no', row.get('ref_no', '')))).strip().lower()
+        
+        amt_val = 0
+        try:
+            debit = str(row.get('debit amount', row.get('debit', '0'))).replace(',', '').strip()
+            credit = str(row.get('credit amount', row.get('credit', '0'))).replace(',', '').strip()
+            debit_val = float(debit) if debit and debit != 'nan' else 0
+            credit_val = float(credit) if credit and credit != 'nan' else 0
+            amt_val = debit_val if debit_val > 0 else credit_val
+        except:
+            pass
+            
+        matched = False
+        status = 'Unmatched'
+        matched_voucher = ''
+        
+        # Level 1: Ref No or Narration + Amount (100%)
+        if amt_val > 0:
+            bank_narr_lower = bank_narr.strip().lower()
+            for erp in erp_entries:
+                erp_ref = erp['ref_no']
+                if erp_ref and erp_ref != 'nan' and erp_ref != 'none':
+                    match_cond = False
+                    if erp_ref == bank_ref: match_cond = True
+                    elif len(erp_ref) > 3 and erp_ref in bank_narr_lower: match_cond = True
+                    elif bank_ref and len(bank_ref) > 3 and bank_ref in erp_ref: match_cond = True
+                    
+                    if match_cond and abs(erp['amount'] - amt_val) < 1.0:
+                        status = 'Reconciled' if erp['clearance_date'] else 'Matched'
+                        matched_voucher = erp['voucher_no']
+                        matched = True
+                        break
+                    
+        # Level 2 & 3 simplified: Just matching amount and checking fuzz
+        if not matched and amt_val > 0:
+            potential = []
+            for erp in erp_entries:
+                if abs(erp['amount'] - amt_val) < 1.0:
+                    potential.append(erp)
+                    
+            if len(potential) == 1:
+                status = 'Reconciled' if potential[0]['clearance_date'] else 'Suggested'
+                matched_voucher = potential[0]['voucher_no']
+                matched = True
+            elif len(potential) > 1:
+                # Level 4: Narration match
+                best_score = 0
+                best_erp = None
+                for erp in potential:
+                    score = fuzz.partial_ratio(bank_narr.lower(), erp['party'].lower())
+                    if score > best_score:
+                        best_score = score
+                        best_erp = erp
+                if best_score > 85 and best_erp:
+                    status = 'Reconciled' if best_erp['clearance_date'] else 'Suggested'
+                    matched_voucher = best_erp['voucher_no']
+                    matched = True
+                    
+        if status == 'Matched': exact_count += 1
+        elif status == 'Suggested': sugg_count += 1
+        elif status == 'Reconciled': reconciled_count += 1
+        else: unmatched_count += 1
+        
+        if status in ['Matched', 'Suggested'] and matched_voucher:
+            reconcile_payload.append({
+                'voucher_no': matched_voucher,
+                'clearance_date': bank_date # simplify date parsing here
+            })
+            
+        results.append({
+            'date': bank_date,
+            'narration': bank_narr,
+            'ref_no': bank_ref,
+            'amount': amt_val,
+            'status': status,
+            'matched_voucher': matched_voucher,
+            'reconciled_amount': amt_val if status in ['Matched', 'Suggested', 'Reconciled'] else 0,
+            'remark': f"{'Already Reconciled with' if status == 'Reconciled' else 'Matched with'} {matched_voucher}" if matched_voucher else 'Pending'
+        })
+        
+    return {
+        "status": "success",
+        "total": len(df),
+        "exact_matches": exact_count,
+        "suggestions": sugg_count,
+        "unmatched": unmatched_count,
+        "reconciled": reconciled_count,
+        "grid_data": results,
+        "reconcile_payload": reconcile_payload
+    }
+
+@frappe.whitelist()
+def confirm_reconciliation(payload):
+    import json
+    try:
+        data = json.loads(payload)
+        for item in data:
+            voucher_no = item.get('voucher_no')
+            c_date = item.get('clearance_date')
+            if not voucher_no or not c_date: continue
+            
+            # Convert date if needed
+            from frappe.utils import getdate
+            try:
+                c_date = getdate(c_date)
+            except:
+                c_date = frappe.utils.today()
+                
+            if 'PAY' in voucher_no:
+                frappe.db.set_value('Payment Entry', voucher_no, 'clearance_date', c_date)
+            elif 'JV' in voucher_no or 'Journal' in voucher_no:
+                # Ensure clearance_date exists on JE, if not, skip or update custom field
+                try:
+                    frappe.db.set_value('Journal Entry', voucher_no, 'clearance_date', c_date)
+                except Exception as e:
+                    # Ignore if field doesn't exist
+                    pass
+        frappe.db.commit()
+        return {"status": "success"}
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Bank Recon Confirmation Error")
+        return {"status": "error", "message": str(e)}
+
+
+# =================================================
+# 🤖 AI ASSISTANT — CORE ENGINE END
+# =================================================
 
 #####################################################################
 ## User will update for the Restricted Supplier
@@ -12495,3 +13598,5812 @@ def download_combined_sales_report_xlsx(fields, filters):
     frappe.response['filename'] = "Combined_Sales_Report.xlsx"
     frappe.response['filecontent'] = xlsx_file.getvalue()
     frappe.response['type'] = "binary"
+
+############################################################################
+# Blanket Order - Information
+ 
+
+@frappe.whitelist()
+def get_blanket_order_details(blanket_order):
+    bo_items = frappe.get_all('Blanket Order Item', 
+                              filters={'parent': blanket_order}, 
+                              fields=['item_code', 'item_name', 'qty', 'ordered_qty'])
+    
+    sales_orders = frappe.db.sql("""
+        SELECT so.name as parent, so.place_of_supply, soi.item_code, soi.item_name, soi.qty, soi.amount
+        FROM `tabSales Order` so
+        JOIN `tabSales Order Item` soi ON so.name = soi.parent
+        WHERE soi.blanket_order = %s AND so.docstatus = 1
+    """, (blanket_order,), as_dict=1)
+
+    return {
+        'bo_items': bo_items,
+        'sales_orders': sales_orders
+    }
+
+
+@frappe.whitelist()
+def get_pincode_details(pincode):
+    """
+    Fetches location details for a given pincode from the postal pincode API.
+    Used to bypass client-side CORS issues.
+    """
+    if not pincode:
+        frappe.throw("Pincode is required")
+    
+    url = f"https://api.postalpincode.in/pincode/{pincode}"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+    }
+    try:
+        import urllib3
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        response = requests.get(url, headers=headers, timeout=10, verify=False)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            frappe.log_error(f"Pincode API returned status code {response.status_code}", "Pincode API Error")
+            return None
+    except Exception as e:
+        frappe.log_error(f"Pincode API connection error: {str(e)}", "Pincode API Error")
+        return None
+
+# ======================================================================
+# AI INSTALLATION REPORT PORTAL APIS
+# ======================================================================
+
+# =========================================================
+# MAIN FUNCTION
+# =========================================================
+@frappe.whitelist()
+def ai_installation_query(question):
+
+    try:
+        question_lower = question.lower()
+        user = frappe.session.user
+
+        # =========================================================
+        # 🔥 USER PERMISSION ENFORCEMENT
+        # =========================================================
+        permitted_customers = []
+        if user and user not in ["Administrator", "Guest"]:
+            permitted_customers = frappe.get_all(
+                "User Permission", 
+                filters={"user": user, "allow": "Customer"}, 
+                pluck="for_value"
+            )
+
+        def get_site_filters(base_filters):
+            # If the user has specific Customer restrictions, apply them
+            if permitted_customers:
+                base_filters["customer"] = ["in", permitted_customers]
+            return base_filters
+
+        # =========================================================
+        # 🔥 DETECT IMAGE TYPE
+        # =========================================================
+        image_type = None
+
+        if "ir" in question_lower:
+            image_type = "IR Report"
+        elif "router" in question_lower:
+            image_type = "Router Photo"
+        elif "testing" in question_lower:
+            image_type = "Testing Photo"
+        elif "rack" in question_lower:
+            image_type = "Server Rack Photo"
+        elif "cable" in question_lower:
+            image_type = "Cable Labeling Photo"
+        elif "isp" in question_lower:
+            image_type = "ISP Device Photo"
+        elif "installation" in question_lower or "report" in question_lower:
+            image_type = None  # fetch all
+
+        # =========================================================
+        # 🔥 EXTRACT INPUTS (NUMBERS + WORDS)
+        # =========================================================
+        numbers = re.findall(r'\d+', question)
+        words = re.findall(r'[A-Za-z0-9]+', question)
+
+        circuit_ids = set()
+
+        # 🔥 1. Direct Circuit ID (numbers)
+        for num in numbers:
+            filters = get_site_filters({"name": num})
+            sites = frappe.get_all("Site", filters=filters, pluck="name", ignore_permissions=True)
+            if sites:
+                circuit_ids.add(sites[0])
+
+        # 🔥 2. Legal Code → convert to Circuit ID
+        for word in words:
+            filters = get_site_filters({"site_id__legal_code": word.upper()})
+            sites = frappe.get_all("Site", filters=filters, pluck="name", ignore_permissions=True)
+            if sites:
+                circuit_ids.add(sites[0])
+
+        all_images = []
+        valid_circuits = []
+        display_circuits = []
+        display_customers = []
+
+        # =========================================================
+        # 🔥 PROCESS EACH CIRCUIT
+        # =========================================================
+        for circuit_id in circuit_ids:
+
+            installation = frappe.db.get_value(
+                "Installation Note",
+                {"custom_circuit_id": circuit_id},
+                "name",
+                ignore=True
+            )
+
+            if not installation:
+                continue
+
+            # =========================================================
+            # 🔥 GET LEGAL CODE & CUSTOMER FROM SITE
+            # =========================================================
+            site_data = frappe.db.get_value(
+                "Site",
+                {"name": circuit_id},
+                ["site_id__legal_code", "customer"],
+                as_dict=True,
+                ignore=True
+            )
+            
+            legal_code = "NA"
+            customer_name = "Unknown Customer"
+            
+            if site_data:
+                legal_code = site_data.get("site_id__legal_code") or "NA"
+                customer_name = site_data.get("customer") or "Unknown Customer"
+
+            # =========================================================
+            # 🔥 GET ATTACHMENTS
+            # =========================================================
+            attachments = frappe.get_all(
+                "Installation Note Attachment",
+                filters={"parent": installation},
+                fields=["attachment", "select_mqjl"],
+                ignore_permissions=True
+            )
+
+            for att in attachments:
+
+                if not att.attachment:
+                    continue
+
+                # =========================================================
+                # 🔥 FILTER ONLY IF SPECIFIC TYPE REQUESTED
+                # =========================================================
+                if image_type and att.select_mqjl != image_type:
+                    continue
+
+                all_images.append({
+                    "image": att.attachment,
+                    "label": att.select_mqjl,
+                    "circuit_id": circuit_id,
+                    "legal_code": legal_code
+                })
+
+            valid_circuits.append(circuit_id)
+                
+            if customer_name not in display_customers:
+                display_customers.append(customer_name)
+
+        # =========================================================
+        # 🔥 AI REPLY
+        # =========================================================
+        if not all_images:
+            if valid_circuits:
+                ai_reply = f"<b>No installation images or attachments found for: | Customer Name : {', '.join(display_customers)}</b>"
+            else:
+                ai_reply = "<b>❌ We couldn't find any photographs for the provided Circuit ID or Legal Code.</b>"
+        else:
+            if image_type:
+                ai_reply = f"<b>{image_type} | Customer Name : {', '.join(display_customers)}</b>"
+            else:
+                ai_reply = f"<b>Installation photographs | Customer Name : {', '.join(display_customers)}</b>"
+
+        return {
+            "status": "success",
+            "images": all_images,
+            "circuit_ids": list(valid_circuits),
+            "image_type": image_type,
+            "ai_reply": ai_reply
+        }
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "AI INSTALLATION ERROR")
+        return {"status": "error", "message": str(e)}
+
+@frappe.whitelist()
+def download_multi_images(files):
+    """
+    Creates a ZIP file of multiple images and returns the download URL.
+    """
+    frappe.logger().info(f"MULTI DOWNLOAD REQUEST: {files}")
+    
+    if not files:
+        return {"status": "error", "message": "No files selected"}
+
+    try:
+        if isinstance(files, str):
+            files = json.loads(files)
+
+        # ZIP filename from first file metadata
+        first_file = files[0] if files else {}
+        z_cid = first_file.get("cid", "Unknown")
+        z_lc = first_file.get("lc", "NA")
+        zip_display_name = f"Installation_Report_{z_cid}_{z_lc}.zip"
+
+        zip_buffer = io.BytesIO()
+        files_added = 0
+        
+        with zipfile.ZipFile(zip_buffer, "w") as zip_file:
+            for file_data in files:
+                url = file_data.get("url")
+                if not url:
+                    continue
+                
+                label = file_data.get("label", "Image")
+                fcid = file_data.get("cid", "Unknown")
+                flc = file_data.get("lc", "NA")
+                
+                # Resolve file path
+                clean_path = url.lstrip("/")
+                site_path = frappe.get_site_path()
+                
+                possible_paths = [
+                    os.path.join(site_path, "public", clean_path),
+                    os.path.join(site_path, clean_path),
+                    frappe.get_site_path("public", clean_path),
+                    frappe.get_site_path("private", clean_path)
+                ]
+                
+                resolved_path = None
+                for p in possible_paths:
+                    if os.path.exists(p) and os.path.isfile(p):
+                        resolved_path = p
+                        break
+                
+                if resolved_path:
+                    _, ext = os.path.splitext(resolved_path)
+                    # Use provided metadata for internal name
+                    internal_name = f"{label}_{fcid}_{flc}{ext}".replace(" ", "_")
+                    zip_file.write(resolved_path, internal_name)
+                    files_added += 1
+                else:
+                    frappe.logger().warning(f"Could not resolve file: {url}")
+
+        if files_added == 0:
+            return {"status": "error", "message": "None of the selected images could be found on the server."}
+
+        zip_buffer.seek(0)
+        
+        # Save ZIP to file manager with randomized internal name but return pretty display name
+        from frappe.utils import random_string
+        fn = f"report_{random_string(6)}.zip"
+        
+        _file = frappe.get_doc({
+            "doctype": "File",
+            "file_name": fn,
+            "content": zip_buffer.getvalue(),
+            "is_private": 0
+        })
+        _file.insert(ignore_permissions=True)
+        frappe.db.commit()
+
+        return {
+            "status": "success", 
+            "url": _file.file_url,
+            "filename": zip_display_name
+        }
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "MULTI DOWNLOAD ERROR")
+        return {"status": "error", "message": f"Server Error: {str(e)}"}
+
+# ======================================================================
+# END OF AI INSTALLATION REPORT PORTAL APIS
+# ======================================================================
+
+
+# ======================================================================
+# AUTO MOVE ATTACHMENTS
+# ======================================================================
+def auto_move_attachments(doc, method=None):
+    """
+    Hooked to File after_insert.
+    Automatically moves standard attachments to child tables for specific DocTypes.
+    """
+    config = {
+        "Provisioning": {
+            "child_field": "provisioning_attachment",
+            "child_doctype": "Provisioning Attachment",
+            "select_field": "select_mqjl",
+            "default_select_val": "Testing Photo"
+        },
+        "Installation Note": {
+            "child_field": "custom_installation_note_attachment",
+            "child_doctype": "Installation Note Attachment",
+            "select_field": "select_mqjl",
+            "default_select_val": "Router Photo"
+        }
+    }
+    
+    if doc.attached_to_doctype in config and not doc.attached_to_field:
+        if not doc.attached_to_name or not frappe.db.exists(doc.attached_to_doctype, doc.attached_to_name):
+            return
+            
+        conf = config[doc.attached_to_doctype]
+        parent = frappe.get_doc(doc.attached_to_doctype, doc.attached_to_name)
+        
+        # Prevent duplicate entries
+        for row in parent.get(conf["child_field"], []):
+            if row.attachment == doc.file_url:
+                return
+                
+        # Create a row in the child table
+        child = parent.append(conf["child_field"], {
+            conf["select_field"]: conf["default_select_val"],
+            "attachment": doc.file_url
+        })
+        
+        # Save the parent document
+        parent.flags.ignore_mandatory = True
+        parent.flags.ignore_validate = True
+        parent.flags.ignore_permissions = True
+        parent.flags.ignore_validate_update_after_submit = True
+        parent.save()
+        
+        # Remove from standard Attachments
+        doc.db_set({
+            "attached_to_doctype": conf["child_doctype"],
+            "attached_to_name": child.name,
+            "attached_to_field": "attachment"
+        })
+
+# ======================================================================
+# End Of AUTO MOVE ATTACHMENTS
+# ======================================================================
+
+# ======================================================================
+# INSTALLATION NOTE: PROVISIONING ATTACHMENTS GALLERY
+# ======================================================================
+
+@frappe.whitelist()
+def get_provisioning_attachments_for_gallery(circuit_id):
+    """
+    Returns all images from the Provisioning Attachment child table AND standard attachments for a given Circuit ID.
+    """
+    provisioning = frappe.db.get_value("Provisioning", {"circuit_id": circuit_id}, "name")
+    if not provisioning:
+        return {"provisioning_id": None, "attachments": []}
+        
+    attachments = frappe.get_all(
+        "Provisioning Attachment",
+        filters={"parent": provisioning},
+        fields=["name", "select_mqjl", "attachment"],
+        order_by="creation desc"
+    )
+    
+    # Fetch standard attachments
+    standard_files = frappe.get_all(
+        "File",
+        filters={
+            "attached_to_doctype": "Provisioning",
+            "attached_to_name": provisioning,
+            "is_folder": 0
+        },
+        fields=["name", "file_url"],
+        order_by="creation desc"
+    )
+    
+    for f in standard_files:
+        if f.file_url and f.file_url.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp')):
+            attachments.append({
+                "name": f.name,
+                "select_mqjl": "Standard",
+                "attachment": f.file_url
+            })
+            
+    # Sort all by creation could be nice, but appending standard to the end or beginning is fine.
+    
+    return {
+        "provisioning_id": provisioning,
+        "attachments": attachments
+    }
+
+@frappe.whitelist()
+def move_provisioning_attachments_to_installation(installation_note_name, provisioning_attachment_names):
+    # Skipping update for multi-select as single move is what they use, but can be updated later if needed.
+    pass
+
+def watermark_image_with_circuit_id(file_url, circuit_id):
+    import os
+    import urllib.parse
+    try:
+        from PIL import Image, ImageDraw, ImageFont
+        
+        if not file_url or not isinstance(file_url, str):
+            return False
+            
+        # Strip domain if absolute URL
+        if file_url.startswith("http"):
+            from urllib.parse import urlparse
+            file_url = urlparse(file_url).path
+            
+        decoded_url = urllib.parse.unquote(file_url)
+        
+        if decoded_url.startswith("/files/") or decoded_url.startswith("/private/files/"):
+            # Construct the absolute physical path
+            if decoded_url.startswith("/private/files/"):
+                file_path = frappe.get_site_path("private", "files", decoded_url.split("/private/files/")[-1])
+            else:
+                file_path = frappe.get_site_path("public", "files", decoded_url.split("/files/")[-1])
+                
+            if os.path.exists(file_path):
+                img = Image.open(file_path)
+                save_format = img.format if img.format else "JPEG"
+                
+                if img.mode != 'RGB':
+                    img = img.convert('RGB')
+                    
+                draw = ImageDraw.Draw(img)
+                text = f"Circuit ID: {circuit_id}"
+                
+                font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+                if os.path.exists(font_path):
+                    font_size = 14
+                    font = ImageFont.truetype(font_path, font_size)
+                else:
+                    font = ImageFont.load_default()
+                    font_size = 14
+                    
+                if hasattr(draw, 'textbbox'):
+                    left, top, right, bottom = draw.textbbox((0, 0), text, font=font)
+                elif hasattr(draw, 'textsize'):
+                    text_width, text_height = draw.textsize(text, font=font)
+                    left, top, right, bottom = 0, 0, text_width, text_height
+                else:
+                    left, top, right, bottom = font.getbbox(text)
+                
+                # Set a 1px stroke
+                stroke_width = 1
+                
+                # Use 'right' and 'bottom' instead of width/height. Fonts have an internal 
+                # starting offset (left, top), so ink actually ends at x+right and y+bottom.
+                # Adding stroke_width to margin prevents the black outline from getting clipped.
+                margin_x = stroke_width
+                margin_y = stroke_width
+                
+                x = img.width - right - margin_x
+                y = img.height - bottom - margin_y
+                
+                # Draw black stroke/outline for maximum visibility on any background
+                outline_color = "black"
+                
+                # Draw a clean, thick stroke
+                for adj_x in range(-stroke_width, stroke_width+1):
+                    for adj_y in range(-stroke_width, stroke_width+1):
+                        # Skip extreme corners to make the stroke slightly rounded
+                        if abs(adj_x) == stroke_width and abs(adj_y) == stroke_width:
+                            continue
+                        draw.text((x+adj_x, y+adj_y), text, font=font, fill=outline_color)
+                
+                # Draw solid white text over the stroke
+                draw.text((x, y), text, font=font, fill="white")
+                
+                # Use the save_format captured before conversion
+                img.save(file_path, format=save_format)
+                return True
+            else:
+                frappe.log_error(title="Watermark Error", message=f"File not found: {file_path}")
+    except Exception as e:
+        frappe.log_error(title="Watermark Error", message=str(e))
+    return False
+
+@frappe.whitelist()
+def move_single_provisioning_attachment_to_installation(installation_note_name, provisioning_attachment_name, attachment_type):
+    """
+    Moves a single row from Provisioning Attachment (or standard File) to Installation Note Attachment and sets its type.
+    """
+    is_standard = frappe.db.exists("File", {"name": provisioning_attachment_name, "attached_to_doctype": "Provisioning"})
+    is_child = frappe.db.exists("Provisioning Attachment", provisioning_attachment_name)
+    
+    if not is_standard and not is_child:
+        return {"status": "error", "message": "Attachment row not found."}
+        
+    installation_note = frappe.get_doc("Installation Note", installation_note_name)
+    existing_urls = [row.attachment for row in installation_note.get("custom_installation_note_attachment", []) if row.attachment]
+    
+    if is_child:
+        row = frappe.get_doc("Provisioning Attachment", provisioning_attachment_name)
+        attachment_url = row.attachment
+    else:
+        row = frappe.get_doc("File", provisioning_attachment_name)
+        attachment_url = row.file_url
+    
+    if attachment_url in existing_urls:
+        return {"status": "error", "message": "This image already exists in the Installation Note."}
+        
+    child = installation_note.append("custom_installation_note_attachment", {
+        "select_mqjl": attachment_type,
+        "attachment": attachment_url
+    })
+    
+    installation_note.flags.ignore_mandatory = True
+    installation_note.flags.ignore_validate = True
+    installation_note.flags.ignore_validate_update_after_submit = True
+    installation_note.save(ignore_permissions=True)
+    
+    if is_child:
+        # Transfer tabFile ownership
+        frappe.db.sql("""
+            UPDATE `tabFile` 
+            SET attached_to_doctype='Installation Note Attachment', attached_to_name=%s 
+            WHERE attached_to_doctype='Provisioning Attachment' AND attached_to_name=%s
+        """, (child.name, row.name))
+        
+        # Delete old row
+        row.delete(ignore_permissions=True)
+    else:
+        # Transfer standard file ownership to the child table row
+        frappe.db.sql("""
+            UPDATE `tabFile` 
+            SET attached_to_doctype='Installation Note Attachment', attached_to_name=%s 
+            WHERE name=%s
+        """, (child.name, row.name))
+        
+    # Apply watermark to the moved image
+    circuit_id = installation_note.get("circuit_id") or installation_note.get("custom_circuit_id") or "Unknown"
+    watermark_image_with_circuit_id(attachment_url, circuit_id)
+    
+    return {
+        "status": "success",
+        "message": f"Successfully moved 1 image as '{attachment_type}'."
+    }
+
+@frappe.whitelist()
+def save_cropped_provisioning_attachment(provisioning_attachment_name, filedata, filename):
+    """
+    Saves a base64 cropped image as a new file and updates the Provisioning Attachment row or standard file.
+    """
+    is_standard = frappe.db.exists("File", {"name": provisioning_attachment_name, "attached_to_doctype": "Provisioning"})
+    is_child = frappe.db.exists("Provisioning Attachment", provisioning_attachment_name)
+    
+    if not is_standard and not is_child:
+        return {"status": "error", "message": "Attachment row not found."}
+        
+    import base64
+    file_content = base64.b64decode(filedata)
+    
+    if is_child:
+        # Create new file for child row
+        file_doc = frappe.get_doc({
+            "doctype": "File",
+            "file_name": filename,
+            "attached_to_doctype": "Provisioning Attachment",
+            "attached_to_name": provisioning_attachment_name,
+            "attached_to_field": "attachment",
+            "content": file_content,
+            "is_private": 0
+        })
+        file_doc.save(ignore_permissions=True)
+        
+        # Update child row
+        row = frappe.get_doc("Provisioning Attachment", provisioning_attachment_name)
+        row.attachment = file_doc.file_url
+        row.save(ignore_permissions=True)
+        new_name = provisioning_attachment_name
+    else:
+        # Create new file for standard attachment
+        old_file = frappe.get_doc("File", provisioning_attachment_name)
+        file_doc = frappe.get_doc({
+            "doctype": "File",
+            "file_name": filename,
+            "attached_to_doctype": old_file.attached_to_doctype,
+            "attached_to_name": old_file.attached_to_name,
+            "content": file_content,
+            "is_private": 0
+        })
+        file_doc.save(ignore_permissions=True)
+        
+        # Delete old file
+        frappe.delete_doc("File", old_file.name, ignore_permissions=True)
+        new_name = file_doc.name
+    
+    return {
+        "status": "success", 
+        "file_url": file_doc.file_url,
+        "new_name": new_name,
+        "message": "Image successfully cropped and saved."
+    }
+
+# ======================================================================
+# End Of INSTALLATION NOTE: PROVISIONING ATTACHMENTS GALLERY
+# ======================================================================
+
+# =========================================================
+# START: Get Last Progressive Status for Feasibility
+# =========================================================
+@frappe.whitelist()
+def get_last_status_before_hold_or_cancel(doctype, docname):
+    import json
+    non_progressive = ["On Hold", "Not Feasible", "High Commercials", "Cancelled"]
+    
+    status_field = "status"
+    if doctype == "Feasibility":
+        status_field = "feasibility_status"
+    elif doctype == "Site":
+        status_field = "site_status"
+        
+    versions = frappe.get_all(
+        "Version",
+        filters={"ref_doctype": doctype, "docname": docname},
+        order_by="creation desc",
+        fields=["data"]
+    )
+    
+    for v in versions:
+        if v.data:
+            try:
+                data = json.loads(v.data)
+                if "changed" in data:
+                    for change in data["changed"]:
+                        if len(change) >= 3 and change[0] == status_field:
+                            old_value = change[1]
+                            if old_value and old_value not in non_progressive:
+                                return old_value
+            except Exception:
+                continue
+                
+    return "Pending"
+# =========================================================
+# END: Get Last Progressive Status for Feasibility
+# =========================================================
+
+from frappe.utils import getdate, add_days
+
+def _get_holiday_dates(reference_date):
+    """
+    Simple helper: Get all holiday dates from the Company's Default Holiday List.
+    Uses raw SQL to bypass any ORM caching issues.
+    
+    Lookup order:
+    1. Company → default_holiday_list
+    2. Global Defaults → holiday_list  
+    3. Fallback: any Holiday List whose date range covers reference_date
+    """
+    holiday_list_name = None
+    
+    # Step 1: Best match — find any Holiday List covering the exact reference_date
+    result = frappe.db.sql("""
+        SELECT name FROM `tabHoliday List`
+        WHERE from_date <= %s AND to_date >= %s
+        ORDER BY name ASC LIMIT 1
+    """, (reference_date, reference_date))
+    
+    if result and result[0][0]:
+        holiday_list_name = result[0][0]
+        
+    # Step 2: Fallback to Company's default_holiday_list
+    if not holiday_list_name:
+        company = frappe.db.get_default("company")
+        if company:
+            result = frappe.db.sql(
+                "SELECT default_holiday_list FROM tabCompany WHERE name=%s",
+                company
+            )
+            if result and result[0][0]:
+                holiday_list_name = result[0][0]
+    
+    # Step 3: Try global default
+    if not holiday_list_name:
+        holiday_list_name = frappe.db.get_default("holiday_list")
+    
+    # Now fetch all holiday dates from the selected list
+    holiday_dates = set()
+    if holiday_list_name:
+        rows = frappe.db.sql(
+            "SELECT holiday_date FROM tabHoliday WHERE parent=%s",
+            holiday_list_name
+        )
+        for row in rows:
+            if row[0]:
+                holiday_dates.add(getdate(row[0]))
+    
+    return holiday_dates
+
+
+##############################################################
+
+@frappe.whitelist()
+def calculate_tat_due_date(start_date, tat_days):
+    """
+    Simple logic:
+    1. Start from start_date (counted as Day 1 if it's a working day)
+    2. Move forward day by day, skipping holidays
+    3. Stop when we've counted tat_days working days
+    4. Return that date as the Due Date
+    """
+    if not start_date or tat_days is None:
+        return None
+
+    start_date = getdate(start_date)
+    tat_days = int(tat_days)
+
+    # Get holidays from Company's Holiday List
+    holiday_dates = _get_holiday_dates(start_date)
+
+    # Count working days forward
+    current_date = start_date
+    days_counted = 0
+
+    while days_counted < tat_days:
+        if current_date not in holiday_dates:
+            days_counted += 1
+
+        if days_counted < tat_days:
+            current_date = add_days(current_date, 1)
+
+    return current_date
+
+##################################################################################
+@frappe.whitelist()
+def get_tat_target(process, lms_type=None):
+    tat_master = frappe.db.get_value("TAT Master", {"tat_process": process, "is_active": 1}, "name")
+    if not tat_master:
+        return 30
+        
+    rules = frappe.get_all("TAT Rule", filters={"parent": tat_master}, fields=["lms_type", "tat_period"], ignore_permissions=True)
+    
+    # Filter rules strictly by lms_type
+    solution_rules = []
+    if lms_type:
+        for r in rules:
+            if r.lms_type and r.lms_type.lower() == str(lms_type).lower():
+                solution_rules.append(r)
+                
+    if not solution_rules:
+        return 30
+        
+    return solution_rules[0].tat_period
+
+@frappe.whitelist()
+def calculate_tat_working_days(start_date, end_date):
+    """
+    Simple logic:
+    Count the number of working days between start_date and end_date (inclusive),
+    skipping any holidays from the Company's Holiday List.
+    """
+    if not start_date or not end_date:
+        return 0
+
+    start_date = getdate(start_date)
+    end_date = getdate(end_date)
+
+    if start_date > end_date:
+        return 0
+
+    # Get holidays from Company's Holiday List
+    holiday_dates = _get_holiday_dates(start_date)
+
+    # Count working days in range
+    current_date = start_date
+    working_days = 0
+
+    while current_date <= end_date:
+        if current_date not in holiday_dates:
+            working_days += 1
+        current_date = add_days(current_date, 1)
+
+    return working_days
+
+@frappe.whitelist()
+def get_working_days_for_dates(start_date, dates):
+    import json
+    if isinstance(dates, str):
+        dates = json.loads(dates)
+    
+    results = {}
+    for d in dates:
+        results[d] = calculate_tat_working_days(start_date, d)
+    return results
+
+###############################################################################
+# File Hook: auto_move_attachments
+# Called by hooks.py on File after_insert.
+# Placeholder – implement actual move logic here if needed in future.
+###############################################################################
+def auto_move_attachments(doc, method):
+    """
+    Hook called after a File document is inserted.
+    Currently a no-op placeholder to prevent 500 errors.
+    """
+    pass
+
+#####################################################################
+# Fetch Site Version History for TAT
+@frappe.whitelist()
+def get_site_version_history(docname):
+    # Fetch Version history securely without relying on user permissions for Version Doctype
+    # Returns the necessary fields for TAT timeline calculations
+    if not frappe.has_permission("Site", ptype="read", doc=docname):
+        frappe.throw("No permission to read this Site.")
+        
+    versions = frappe.db.sql(
+        """
+        SELECT creation, data
+        FROM `tabVersion`
+        WHERE ref_doctype='Site' AND docname=%s
+        ORDER BY creation ASC
+        LIMIT 1000
+        """,
+        (docname,),
+        as_dict=True
+    )
+    return versions
+#####################################################################
+# Start - Return Packed Item (Delivery Note)
+#####################################################################
+# --- START: Return Packed Item Logic ---
+import json
+
+@frappe.whitelist()
+def get_dn_packed_items(delivery_note):
+    dn = frappe.get_doc("Delivery Note", delivery_note)
+    
+    # Fetch all returns for this DN to calculate already returned qtys
+    returns = frappe.get_all("Customer Asset Return Item",
+        filters={"parent": ["in", frappe.get_all("Customer Asset Return", filters={"delivery_note": delivery_note, "docstatus": 1}, pluck="name")]},
+        fields=["item_code", "returned_qty"]
+    )
+    returned_dict = {}
+    for r in returns:
+        returned_dict[r.item_code] = returned_dict.get(r.item_code, 0) + r.returned_qty
+        
+    # Aggregate packed items by item_code
+    packed_dict = {}
+    for item in dn.packed_items:
+        if item.item_code not in packed_dict:
+            packed_dict[item.item_code] = {"item_code": item.item_code, "item_name": item.item_name, "qty": 0}
+        packed_dict[item.item_code]["qty"] += item.qty
+        
+    items = []
+    for item_code, data in packed_dict.items():
+        qty_returned = returned_dict.get(item_code, 0)
+        qty_available = data["qty"] - qty_returned
+        if qty_available > 0:
+            items.append({
+                "item_code": item_code,
+                "item_name": data["item_name"],
+                "qty_delivered": data["qty"],
+                "qty_returned": qty_returned,
+                "qty_available": qty_available
+            })
+    return items
+
+@frappe.whitelist()
+def get_dn_serial_numbers(delivery_note, item_code):
+    dn = frappe.get_doc("Delivery Note", delivery_note)
+    
+    # Find the packed item
+    serial_nos = []
+    for item in dn.packed_items:
+        if item.item_code == item_code:
+            if getattr(item, "serial_and_batch_bundle", None):
+                entries = frappe.get_all("Serial and Batch Entry", filters={"parent": item.serial_and_batch_bundle}, pluck="serial_no")
+                serial_nos.extend(entries)
+            elif getattr(item, "serial_no", None):
+                serial_nos.extend([s.strip() for s in item.serial_no.split("\\n") if s.strip()])
+                
+    # Filter out already returned
+    returned_serials = frappe.get_all("Customer Asset Return Item",
+        filters={"parent": ["in", frappe.get_all("Customer Asset Return", filters={"delivery_note": delivery_note, "docstatus": 1}, pluck="name")], "item_code": item_code},
+        pluck="serial_no"
+    )
+    
+    valid_serials = []
+    for sn in set(serial_nos) - set(returned_serials):
+        if not sn: continue
+        if frappe.db.exists("Serial No", sn):
+            status = frappe.db.get_value("Serial No", sn, "status")
+            if status == "Delivered":
+                valid_serials.append(sn)
+                
+    return valid_serials
+
+@frappe.whitelist()
+def submit_asset_return(data):
+    data = json.loads(data)
+    
+    delivery_note = data.get("delivery_note")
+    items_to_return = data.get("items")
+    return_reason = data.get("return_reason")
+    return_date = data.get("return_date")
+    remarks = data.get("remarks")
+    
+    if not items_to_return:
+        frappe.throw("No items selected for return.")
+        
+    dn = frappe.get_doc("Delivery Note", delivery_note)
+    
+    car = frappe.new_doc("Customer Asset Return")
+    car.delivery_note = delivery_note
+    car.customer = dn.customer
+    car.circuit_id = dn.custom_dn_circuit_id if hasattr(dn, "custom_dn_circuit_id") else None
+    car.return_date = return_date
+    car.return_reason = return_reason
+    car.remarks = remarks
+    
+    for row in items_to_return:
+        serial_no = row.get("serial_no")
+        item_code = row.get("item_code")
+        item_name = row.get("item_name") or frappe.db.get_value("Item", item_code, "item_name")
+        
+        # Validation
+        if frappe.db.exists("Customer Asset Return Item", {"serial_no": serial_no, "parent": ["in", frappe.get_all("Customer Asset Return", filters={"docstatus": 1}, pluck="name")]}):
+            frappe.throw(f"Serial number {serial_no} has already been returned.")
+
+        car.append("items", {
+            "item_code": item_code,
+            "item_name": item_name,
+            "serial_no": serial_no,
+            "returned_qty": 1
+        })
+    
+    car.insert(ignore_permissions=True)
+    car.submit()
+    
+    se = frappe.new_doc("Stock Entry")
+    se.stock_entry_type = "Material Receipt"
+    se.purpose = "Material Receipt"
+    se.company = dn.company
+    
+    for row in items_to_return:
+        se.append("items", {
+            "item_code": row.get("item_code"),
+            "qty": 1,
+            "t_warehouse": "Stores - NTPL",
+            "serial_no": row.get("serial_no")
+        })
+        
+    se.insert(ignore_permissions=True)
+    se.submit()
+    
+    content_lines = []
+    for row in items_to_return:
+        sn = row.get("serial_no")
+        frappe.db.set_value("Serial No", sn, "status", "Active")
+        frappe.db.set_value("Serial No", sn, "warehouse", "Stores - NTPL")
+        content_lines.append(f"Item: {row.get('item_name')} (SN: {sn})")
+        
+    # Add timeline entry to Delivery Note
+    content = f"<b>Returned Components:</b><br>" + "<br>".join(content_lines) + f"<br>Returned on: {return_date}<br><a href='/app/customer-asset-return/{car.name}'>View Return</a>"
+    frappe.get_doc({
+        "doctype": "Communication",
+        "communication_type": "Comment",
+        "comment_type": "Info",
+        "reference_doctype": "Delivery Note",
+        "reference_name": delivery_note,
+        "content": content
+    }).insert(ignore_permissions=True)
+    
+    return {"status": "success", "message": "Items returned successfully", "car_id": car.name}
+
+# --- END: Return Packed Item Logic ---
+
+#####################################################################
+# End - Return Packed Item (Delivery Note)
+#####################################################################
+
+
+# --- START: Return Packed Item Logic ---
+import json
+
+@frappe.whitelist()
+def get_dn_packed_items(delivery_note):
+    dn = frappe.get_doc("Delivery Note", delivery_note)
+    
+    # Fetch all returns for this DN to calculate already returned qtys
+    returns = frappe.get_all("Customer Asset Return Item",
+        filters={"parent": ["in", frappe.get_all("Customer Asset Return", filters={"delivery_note": delivery_note, "docstatus": 1}, pluck="name")]},
+        fields=["item_code", "returned_qty"]
+    )
+    returned_dict = {}
+    for r in returns:
+        returned_dict[r.item_code] = returned_dict.get(r.item_code, 0) + r.returned_qty
+        
+    # Aggregate packed items by item_code
+    packed_dict = {}
+    for item in dn.packed_items:
+        if item.item_code not in packed_dict:
+            packed_dict[item.item_code] = {"item_code": item.item_code, "item_name": item.item_name, "qty": 0}
+        packed_dict[item.item_code]["qty"] += item.qty
+        
+    items = []
+    for item_code, data in packed_dict.items():
+        qty_returned = returned_dict.get(item_code, 0)
+        qty_available = data["qty"] - qty_returned
+        if qty_available > 0:
+            items.append({
+                "item_code": item_code,
+                "item_name": data["item_name"],
+                "qty_delivered": data["qty"],
+                "qty_returned": qty_returned,
+                "qty_available": qty_available
+            })
+    return items
+
+@frappe.whitelist()
+def get_dn_serial_numbers(delivery_note, item_code):
+    dn = frappe.get_doc("Delivery Note", delivery_note)
+    
+    # Find the packed item
+    serial_nos = []
+    for item in dn.packed_items:
+        if item.item_code == item_code:
+            if getattr(item, "serial_and_batch_bundle", None):
+                entries = frappe.get_all("Serial and Batch Entry", filters={"parent": item.serial_and_batch_bundle}, pluck="serial_no")
+                serial_nos.extend(entries)
+            elif getattr(item, "serial_no", None):
+                serial_nos.extend([s.strip() for s in item.serial_no.split("\\n") if s.strip()])
+                
+    # Filter out already returned
+    returned_serials = frappe.get_all("Customer Asset Return Item",
+        filters={"parent": ["in", frappe.get_all("Customer Asset Return", filters={"delivery_note": delivery_note, "docstatus": 1}, pluck="name")], "item_code": item_code},
+        pluck="serial_no"
+    )
+    
+    valid_serials = []
+    for sn in set(serial_nos) - set(returned_serials):
+        if not sn: continue
+        if frappe.db.exists("Serial No", sn):
+            status = frappe.db.get_value("Serial No", sn, "status")
+            if status == "Delivered":
+                valid_serials.append(sn)
+                
+    return valid_serials
+
+@frappe.whitelist()
+def submit_asset_return(data):
+    data = json.loads(data)
+    
+    delivery_note = data.get("delivery_note")
+    items_to_return = data.get("items")
+    return_reason = data.get("return_reason")
+    return_date = data.get("return_date")
+    remarks = data.get("remarks")
+    
+    if not items_to_return:
+        frappe.throw("No items selected for return.")
+        
+    dn = frappe.get_doc("Delivery Note", delivery_note)
+    
+    car = frappe.new_doc("Customer Asset Return")
+    car.delivery_note = delivery_note
+    car.customer = dn.customer
+    car.circuit_id = dn.custom_dn_circuit_id if hasattr(dn, "custom_dn_circuit_id") else None
+    car.return_date = return_date
+    car.return_reason = return_reason
+    car.remarks = remarks
+    
+    for row in items_to_return:
+        serial_no = row.get("serial_no")
+        item_code = row.get("item_code")
+        item_name = row.get("item_name") or frappe.db.get_value("Item", item_code, "item_name")
+        
+        # Validation
+        if frappe.db.exists("Customer Asset Return Item", {"serial_no": serial_no, "parent": ["in", frappe.get_all("Customer Asset Return", filters={"docstatus": 1}, pluck="name")]}):
+            frappe.throw(f"Serial number {serial_no} has already been returned.")
+
+        car.append("items", {
+            "item_code": item_code,
+            "item_name": item_name,
+            "serial_no": serial_no,
+            "returned_qty": 1
+        })
+    
+    car.insert(ignore_permissions=True)
+    car.submit()
+    
+    se = frappe.new_doc("Stock Entry")
+    se.stock_entry_type = "Material Receipt"
+    se.purpose = "Material Receipt"
+    se.company = dn.company
+    
+    for row in items_to_return:
+        se.append("items", {
+            "item_code": row.get("item_code"),
+            "qty": 1,
+            "t_warehouse": "Stores - NTPL",
+            "serial_no": row.get("serial_no")
+        })
+        
+    se.insert(ignore_permissions=True)
+    se.submit()
+    
+    content_lines = []
+    for row in items_to_return:
+        sn = row.get("serial_no")
+        frappe.db.set_value("Serial No", sn, "status", "Active")
+        frappe.db.set_value("Serial No", sn, "warehouse", "Stores - NTPL")
+        content_lines.append(f"Item: {row.get('item_name')} (SN: {sn})")
+        
+    # Add timeline entry to Delivery Note
+    content = f"<b>Returned Components:</b><br>" + "<br>".join(content_lines) + f"<br>Returned on: {return_date}<br><a href='/app/customer-asset-return/{car.name}'>View Return</a>"
+    frappe.get_doc({
+        "doctype": "Communication",
+        "communication_type": "Comment",
+        "comment_type": "Info",
+        "reference_doctype": "Delivery Note",
+        "reference_name": delivery_note,
+        "content": content
+    }).insert(ignore_permissions=True)
+    
+    return {"status": "success", "message": "Items returned successfully", "car_id": car.name}
+
+# --- END: Return Packed Item Logic ---
+
+# --- START: AI Purchase Invoice Creation Logic ---
+
+@frappe.whitelist()
+def extract_purchase_invoice_data(file_url=None):
+    """
+    Robust extraction from a Purchase Invoice PDF using PyMuPDF.
+    """
+    import re
+    
+    if not file_url:
+        return {"status": "error", "message": "No invoice file was attached. Please attach a PDF invoice."}
+    
+    try:
+        import os
+        # Robust file path resolution
+        try:
+            from frappe.utils.file_manager import get_file_path
+            file_path = get_file_path(file_url.split('/')[-1])
+        except Exception:
+            file_path = None
+        
+        # Fallback: construct path from site path + file_url
+        if not file_path or not os.path.exists(file_path):
+            site_path = frappe.get_site_path()
+            relative = file_url.lstrip('/')
+            file_path = os.path.join(site_path, 'public', relative.replace('files/', ''))
+            if not os.path.exists(file_path):
+                file_path = os.path.join(site_path, relative)
+        
+        if not file_path or not os.path.exists(file_path):
+            return {"status": "error", "message": "Could not locate the uploaded invoice file on the server."}
+        
+        if not file_path.lower().endswith('.pdf'):
+            return {"status": "error", "message": "Only PDF files are supported for extraction."}
+        
+        import fitz
+        doc = fitz.open(file_path)
+        text = ""
+        blocks = []
+        
+        # --- Strategy 1: Standard text extraction ---
+        for page in doc:
+            text += page.get_text()
+            blocks += page.get_text("blocks")
+        
+        # --- Strategy 2: rawdict — works on vector-font PDFs where get_text() returns empty ---
+        if not text.strip():
+            try:
+                raw_text_parts = []
+                for page in doc:
+                    raw = page.get_text("rawdict")
+                    for block in raw.get("blocks", []):
+                        for line in block.get("lines", []):
+                            for span in line.get("spans", []):
+                                t = span.get("text", "").strip()
+                                if t:
+                                    raw_text_parts.append(t)
+                text = "\n".join(raw_text_parts)
+            except Exception:
+                pass
+        
+        # --- Strategy 3: OCR fallback (requires tesseract-ocr + pytesseract) ---
+        if not text.strip():
+            try:
+                import pytesseract
+                from PIL import Image
+                import io, shutil
+                # Explicitly set the tesseract binary path since bench env PATH
+                # may not include /usr/bin where the system tesseract lives
+                tess_path = shutil.which("tesseract") or "/usr/bin/tesseract"
+                pytesseract.pytesseract.tesseract_cmd = tess_path
+                ocr_parts = []
+                for page in doc:
+                    mat = fitz.Matrix(2.0, 2.0)  # 2x zoom for better OCR accuracy
+                    pix = page.get_pixmap(matrix=mat)
+                    img_bytes = pix.tobytes("png")
+                    img = Image.open(io.BytesIO(img_bytes))
+                    page_text = pytesseract.image_to_string(img, lang='eng')
+                    ocr_parts.append(page_text)
+                text = "\n".join(ocr_parts)
+                frappe.logger().info(f"Invoice Extraction: Used OCR fallback for {file_url}")
+            except ImportError:
+                pass  # pytesseract not installed, skip
+            except Exception as ocr_err:
+                frappe.log_error("Invoice OCR Error", str(ocr_err))
+        
+        if not text.strip():
+            return {
+                "status": "error",
+                "message": "Could not extract text from this PDF. It appears to be a fully image-based scan. Please install tesseract-ocr on the server to enable OCR support, or upload a text-based PDF."
+            }
+        
+        data = {}
+        lines = [l.strip() for l in text.splitlines() if l.strip()]
+        
+        # --- TEMP DEBUG: log extracted lines to diagnose item parsing ---
+        frappe.log_error("PDF Extracted Lines", "\n".join(f"{i}: {l}" for i, l in enumerate(lines[:200])))
+        
+        # -------------------------------------------------------
+        # Helper
+        # -------------------------------------------------------
+        def parse_date(d_str):
+            """Normalise various date formats to YYYY-MM-DD."""
+            import datetime
+            d_str = d_str.strip()
+            month_map = {
+                'jan':'01','feb':'02','mar':'03','apr':'04','may':'05','jun':'06',
+                'jul':'07','aug':'08','sep':'09','oct':'10','nov':'11','dec':'12'
+            }
+            # DD-Mon-YY or DD-Mon-YYYY (e.g. 13-Aug-25)
+            m = re.match(r'(\d{1,2})[-/\s]([A-Za-z]{3})[-/\s](\d{2,4})', d_str)
+            if m:
+                dd, mon, yy = m.group(1).zfill(2), m.group(2).lower()[:3], m.group(3)
+                mm = month_map.get(mon, '01')
+                yyyy = ('20' + yy) if len(yy) == 2 else yy
+                return f"{yyyy}-{mm}-{dd}"
+            # DD-MM-YYYY or DD/MM/YYYY
+            m = re.match(r'(\d{2})[-/](\d{2})[-/](\d{4})', d_str)
+            if m:
+                return f"{m.group(3)}-{m.group(2)}-{m.group(1)}"
+            # YYYY-MM-DD (already correct)
+            m = re.match(r'(\d{4})-(\d{2})-(\d{2})', d_str)
+            if m:
+                return d_str
+            try:
+                return str(frappe.utils.getdate(d_str))
+            except Exception:
+                return d_str
+        
+        def clean_amount(s):
+            return float(re.sub(r'[^\d.]', '', s)) if s else 0.0
+        
+        # -------------------------------------------------------
+        # 1. Invoice Number - multiple patterns, pick first valid
+        # -------------------------------------------------------
+        inv_no = None
+        inv_no_patterns = [
+            # OCR jump: matches 'Invoice No' then skips up to 120 chars to find a proper invoice format (e.g. KNPL/26-27/0078)
+            r'(?:Invoice\s*No\.?|Invoice\s*Number|INV\s*NO\.?|Bill\s*No\.?)[^\n]{0,120}?\b([A-Za-z0-9]+(?:[-/][A-Za-z0-9]+){2,})\b',
+            r'Invoice\s*No\.?\s*[:\-]?\s*([A-Za-z0-9/_\-]+)',
+            r'Invoice\s*Number\s*[:\-]?\s*([A-Za-z0-9/_\-]+)',
+            r'INV\s*NO\.?\s*[:\-]?\s*([A-Za-z0-9/_\-]+)',
+            r'Bill\s*No\.?\s*[:\-]?\s*([A-Za-z0-9/_\-]+)',
+        ]
+        for pat in inv_no_patterns:
+            m = re.search(pat, text, re.I)
+            if m:
+                candidate = m.group(1).strip()
+                # Must be at least 4 chars and not just a date
+                if len(candidate) >= 4 and not re.match(r'^\d{1,2}[-/]\d{1,2}[-/]\d{2,4}$', candidate):
+                    inv_no = candidate
+                    break
+        if not inv_no:
+            return {"status": "error", "message": "Could not extract Invoice Number from the document. Please verify the PDF."}
+        data["invoice_no"] = inv_no
+        
+        # -------------------------------------------------------
+        # 2. Invoice Date
+        # -------------------------------------------------------
+        inv_date = None
+        date_patterns = [
+            r'(?:Invoice\s*Date|Dated|Date\s*of\s*Invoice)[\s:]*([\d]{1,2}[-/\s][A-Za-z]{3}[-/\s][\d]{2,4})',
+            r'(?:Invoice\s*Date|Dated|Date\s*of\s*Invoice)[\s:]*([\d]{1,2}[-/][\d]{1,2}[-/][\d]{2,4})',
+            r'(?:Invoice\s*Date|Dated)[\s:]*([\d]{4}-[\d]{2}-[\d]{2})',
+        ]
+        for pat in date_patterns:
+            m = re.search(pat, text, re.I)
+            if m:
+                inv_date = parse_date(m.group(1))
+                break
+        if not inv_date:
+            # Last resort: find any standalone date near "Dated" or top of document
+            m = re.search(r'(\d{1,2}[-/][A-Za-z]{3}[-/]\d{2,4})', text[:500])
+            if m:
+                inv_date = parse_date(m.group(1))
+        data["invoice_date"] = inv_date or frappe.utils.today()
+        
+        # -------------------------------------------------------
+        # 3. Duration From / To  (e.g. 13.09.2025 - 12.11.2025)
+        # -------------------------------------------------------
+        dur_m = re.search(
+            r'(\d{1,2}[.\-/]?\d{1,2}[.\-/]?\d{2,4})\s*(?:TO|to|[-–])\s*(\d{1,2}[.\-/]?\d{1,2}[.\-/]?\d{2,4})',
+            text, re.I
+        )
+        if dur_m:
+            def parse_ocr_date(s):
+                s = re.sub(r'[.\-/]', '', s)
+                if len(s) == 8:  # DDMMYYYY
+                    return f"{s[4:8]}-{s[2:4]}-{s[0:2]}"
+                elif len(s) == 6:  # DDMMYY
+                    return f"20{s[4:6]}-{s[2:4]}-{s[0:2]}"
+                return s
+            data["duration_from"] = parse_ocr_date(dur_m.group(1))
+            data["duration_to"] = parse_ocr_date(dur_m.group(2))
+        
+        # -------------------------------------------------------
+        # 4. Supplier Name - Exclusion-First Multi-Strategy Matching
+        # Key insight: The logged-in company is NEVER the supplier.
+        # Collect ALL company-like names, exclude self, then fuzzy-match.
+        # -------------------------------------------------------
+        import difflib
+        
+        # Get all self-company names to exclude (the buyer, not the seller)
+        own_company = frappe.defaults.get_global_default('company') or ""
+        own_company_words = set(re.sub(r'[^a-z0-9\s]', '', own_company.lower()).split())
+        
+        # Aliases / abbreviations of own company to also exclude
+        own_company_aliases = {"nexapp", "nexapp technologies", "ntpl"}
+        
+        def is_own_company(name):
+            """Returns True if the name looks like our own company, not a supplier."""
+            n_lower = name.lower()
+            n_clean = re.sub(r'[^a-z0-9\s]', '', n_lower)
+            n_words = set(n_clean.split())
+            # Check if majority of words overlap with own company name
+            if own_company_words and len(own_company_words & n_words) >= max(1, len(own_company_words) - 1):
+                return True
+            for alias in own_company_aliases:
+                if alias in n_lower:
+                    return True
+            return False
+        
+        def normalize_name(n):
+            n = str(n).lower()
+            n = re.sub(r'[^a-z0-9\s]', '', n)
+            n = n.replace('private limited', 'pvt ltd')
+            n = n.replace('pvt limited', 'pvt ltd')
+            n = n.replace('bharti airtel limited', 'bharti airtel ltd')
+            return n.strip()
+        
+        # Strategy 1: Collect ALL company-like names in the document
+        # Patterns: "Xyz Ltd", "Abc Pvt Ltd", "Xyz Limited", "Xyz LLP"
+        all_company_matches = re.findall(
+            r'[A-Za-z][A-Za-z0-9\s&\(\)\-\.]{2,60}(?:Pvt\.?\s*Ltd\.?|Private\s+Limited|Limited|LLP|Ltd\.?)',
+            text, re.I
+        )
+        
+        # Also specifically look for names near "From:", "Supplier:", "Issued by:", signature blocks
+        seller_patterns = [
+            r'(?:from|vendor|supplier|issued\s*by|authorised\s*signatory)[:\s]+([A-Za-z][A-Za-z0-9\s&\-\.]{2,80})',
+            r'([A-Za-z][A-Za-z0-9\s&\-\.]{2,50})\s*\n?\s*Authorised\s*Signatory',
+            r'([A-Za-z][A-Za-z0-9\s&\-\.]{2,50})\s*\n?\s*Authorized\s*Signatory',
+        ]
+        priority_candidates = []
+        for pat in seller_patterns:
+            for m in re.finditer(pat, text, re.I):
+                priority_candidates.append(m.group(1).strip())
+        
+        # Strategy 2: Load ERPNext suppliers and score each candidate
+        suppliers = frappe.get_all("Supplier", pluck="name")
+        if not suppliers:
+            return {"status": "error", "message": "No Suppliers exist in the system."}
+        
+        norm_to_orig = {normalize_name(s): s for s in suppliers}
+        
+        def best_supplier_match(candidates, cutoff=0.55):
+            """Find the best matching ERPNext supplier from a list of raw name candidates."""
+            best_score = 0
+            best_match = None
+            for candidate in candidates:
+                if not candidate or is_own_company(candidate):
+                    continue
+                norm_c = normalize_name(candidate)
+                # Substring match (highest confidence)
+                for norm_s, orig_s in norm_to_orig.items():
+                    if norm_s and norm_c and (norm_s in norm_c or norm_c in norm_s):
+                        return orig_s  # Definitive match
+                # Fuzzy match
+                close = difflib.get_close_matches(norm_c, list(norm_to_orig.keys()), n=1, cutoff=cutoff)
+                if close:
+                    score = difflib.SequenceMatcher(None, norm_c, close[0]).ratio()
+                    if score > best_score:
+                        best_score = score
+                        best_match = norm_to_orig[close[0]]
+            return best_match
+        
+        # Priority: look at seller-specific regions first
+        matched_supplier = best_supplier_match(priority_candidates, cutoff=0.5)
+        
+        # Fallback: scan all company names found in the document (excluding self)
+        if not matched_supplier:
+            # Filter out own-company names and deduplicate
+            external_candidates = [c for c in all_company_matches if not is_own_company(c)]
+            # Reverse order: supplier name often appears later in invoice (bottom area)
+            matched_supplier = best_supplier_match(list(reversed(external_candidates)), cutoff=0.6)
+        
+        if not matched_supplier:
+            # Last resort: take any company name not matching own company
+            external_candidates = [c for c in all_company_matches if not is_own_company(c)]
+            if external_candidates:
+                raw_supplier_name = external_candidates[-1].strip()
+            else:
+                raw_supplier_name = all_company_matches[0].strip() if all_company_matches else "Unknown"
+            return {
+                "status": "error",
+                "message": f"Supplier '{raw_supplier_name}' was detected on the invoice but does not exist in your ERPNext system. Please create the Supplier first, then retry."
+            }
+        data["supplier_name"] = matched_supplier
+        
+        # -------------------------------------------------------
+        # 5. Items - Block/sequence based extraction
+        # PDFs often extract table cells as separate lines, so we
+        # use a state-machine approach on the lines list.
+        # -------------------------------------------------------
+        items = []
+        
+        # Strategy A: PyMuPDF word-position clustering by column X-position
+        # We use blocks to identify rows based on Y-position proximity
+        try:
+            row_data = {}  # y_bucket -> list of (x, text)
+            for page in doc:
+                words = page.get_text("words")  # (x0,y0,x1,y1,word,block,line,word_idx)
+                for w in words:
+                    y_bucket = round(w[1] / 8) * 8  # cluster within 8pt vertical bands
+                    row_data.setdefault(y_bucket, []).append((w[0], w[4]))
+            
+            # Sort rows by Y
+            sorted_rows = [row_data[k] for k in sorted(row_data.keys())]
+            
+            # Find page width to determine column boundaries
+            page_width = doc[0].rect.width
+            # Heuristic column positions for this invoice layout:
+            # Sr(~30), Desc(~50-250), HSN(~260-310), Qty(~310-360), Rate(~360-430), per(~430-470), Amount(~470+)
+            
+            SKIP_KEYWORDS = {'description', 'goods', 'hsn', 'sac', 'quantity', 'rate', 'per',
+                             'amount', 'total', 'gst', 'tax', 'sgst', 'cgst', 'igst',
+                             'taxable', 'value', 'round', 'off', 'si', 'no', 'sl'}
+            
+            current_item = None
+            for row_words in sorted_rows:
+                if not row_words:
+                    continue
+                row_words_sorted = sorted(row_words, key=lambda x: x[0])
+                row_text = ' '.join(w[1] for w in row_words_sorted).strip()
+                
+                # Check if this row starts with a serial number (1, 2, 3...)
+                first_word = row_words_sorted[0][1]
+                if re.match(r'^\d{1,2}$', first_word):
+                    sr_no = int(first_word)
+                    if 1 <= sr_no <= 99:
+                        if current_item and current_item.get('amount', 0) > 0:
+                            items.append(current_item)
+                        # Remaining words after Sr No
+                        rest = row_words_sorted[1:]
+                        amounts = [w for w in rest if re.match(r'^[\d,]+\.\d{2}$', w[1])]
+                        desc_words = [w for w in rest 
+                                      if not re.match(r'^[\d,]+\.?\d*$', w[1])
+                                      and w[1].lower() not in SKIP_KEYWORDS]
+                        desc = ' '.join(w[1] for w in sorted(desc_words, key=lambda x: x[0]))
+                        
+                        current_item = {
+                            'description': desc,
+                            'qty': 1.0,
+                            'rate': 0.0,
+                            'amount': clean_amount(amounts[-1][1]) if amounts else 0.0
+                        }
+                        # Try qty and rate from numeric positions
+                        nums = [w for w in rest if re.match(r'^[\d,]+\.?\d*$', w[1])
+                                and not re.match(r'^\d{6,8}$', w[1])]  # skip HSN codes
+                        if len(nums) >= 3:
+                            current_item['qty'] = clean_amount(nums[0][1])
+                            current_item['rate'] = clean_amount(nums[1][1])
+                            current_item['amount'] = clean_amount(nums[-1][1])
+                        elif len(nums) == 2:
+                            current_item['rate'] = clean_amount(nums[0][1])
+                            current_item['amount'] = clean_amount(nums[-1][1])
+                        elif len(nums) == 1:
+                            current_item['amount'] = clean_amount(nums[0][1])
+                        continue
+                
+                # Continuation line for current item (more description text)
+                if current_item is not None:
+                    row_lower = row_text.lower()
+                    # Stop adding if this looks like a totals/tax row
+                    if any(kw in row_lower for kw in ['sgst', 'cgst', 'igst', 'total', 'round off', 'amount chargeable']):
+                        if current_item.get('amount', 0) > 0:
+                            items.append(current_item)
+                            current_item = None
+                        continue
+                    # Add description continuation (if mostly text, not numbers)
+                    words_in_row = row_text.split()
+                    text_words = [w for w in words_in_row if not re.match(r'^[\d.,]+$', w)]
+                    if len(text_words) >= 2 and current_item.get('amount', 0) == 0:
+                        # Still building description
+                        current_item['description'] += ' ' + row_text
+                    elif len(text_words) == 0:
+                        # Pure numbers row - might be qty/rate/amount update
+                        pure_nums = [w for w in words_in_row if re.match(r'^[\d,]+\.?\d*$', w)]
+                        if pure_nums and current_item.get('amount', 0) == 0:
+                            current_item['amount'] = clean_amount(pure_nums[-1])
+            
+            if current_item and current_item.get('amount', 0) > 0:
+                items.append(current_item)
+        except Exception as block_err:
+            frappe.log_error("Item block extraction failed", str(block_err))
+            items = []
+        
+        # Strategy B: Line-sequence state machine (fallback)
+        if not items:
+            STOP_WORDS_RE = re.compile(r'sgst|cgst|igst|grand\s*total|round\s*off|amount\s*chargeable|bank\s*details|declaration|e\s*&\s*oe|certified', re.I)
+            SKIP_RE = re.compile(r'^(description|hsn|sac|quantity|rate|per|amount|sl\.?\s*no|si\.?\s*no|services?|goods?)$', re.I)
+            
+            in_table = False
+            i = 0
+            while i < len(lines):
+                line = lines[i]
+                
+                # Detect start of item table — covers both Goods and Services invoices
+                if re.search(r'description\s+(of\s+)?(goods|services|particulars)', line, re.I):
+                    in_table = True
+                    i += 1
+                    continue
+                
+                # Also trigger on the column header row itself
+                if re.search(r'\bhsn\b.*\bquantity\b|\bsl\.?\s*no\b.*\bdescription\b', line, re.I):
+                    in_table = True
+                    i += 1
+                    continue
+                
+                if not in_table:
+                    i += 1
+                    continue
+                
+                if STOP_WORDS_RE.search(line):
+                    break
+                
+                # Serial number line
+                if re.match(r'^\d{1,2}$', line.strip()):
+                    sr = int(line.strip())
+                    if 1 <= sr <= 50:
+                        desc_parts = []
+                        qty = rate = amount = None
+                        j = i + 1
+                        # Collect subsequent lines until we hit the next serial or stop
+                        while j < len(lines) and j < i + 12:
+                            nxt = lines[j].strip()
+                            if re.match(r'^\d{1,2}$', nxt) and 1 <= int(nxt) <= 50:
+                                break
+                            if STOP_WORDS_RE.search(nxt):
+                                break
+                            # Amount pattern XX,XXX.XX
+                            amt_m = re.match(r'^([\d,]+\.\d{2})$', nxt)
+                            if amt_m:
+                                val = clean_amount(amt_m.group(1))
+                                if amount is None:
+                                    amount = val
+                                elif rate is None and val > 0:
+                                    rate = val
+                            # Pure integer = qty
+                            elif re.match(r'^\d{1,4}$', nxt) and not re.match(r'^\d{6,}$', nxt):
+                                if qty is None and amount is None:
+                                    qty = float(nxt)
+                            # HSN code - skip (6-8 digits)
+                            elif re.match(r'^\d{6,8}$', nxt):
+                                pass
+                            # Text = description
+                            elif nxt and not SKIP_RE.match(nxt) and not re.match(r'^[₹%@\d\s.,/]+$', nxt):
+                                desc_parts.append(nxt)
+                            j += 1
+                        
+                        if desc_parts and amount and amount > 0:
+                            items.append({
+                                'description': ' '.join(desc_parts),
+                                'qty': qty or 1.0,
+                                'rate': rate or amount,
+                                'amount': amount
+                            })
+                        i = j
+                        continue
+                i += 1
+        
+        # Strategy C: Find standalone amount lines and pair with nearby description
+        if not items:
+            amount_lines = [(i, clean_amount(l)) for i, l in enumerate(lines)
+                           if re.match(r'^[\d,]+\.\d{2}$', l.strip()) and clean_amount(l) > 10]
+            for idx, amt in amount_lines:
+                desc = ''
+                for di in range(max(0, idx-5), idx):
+                    candidate = lines[di].strip()
+                    if candidate and not re.match(r'^[\d,.\s%@₹]+$', candidate):
+                        if not re.search(r'total|gst|tax|hsn|quantity|rate|amount', candidate, re.I):
+                            desc = candidate
+                if desc and amt > 0:
+                    # Avoid duplicates — don't add if same amount already captured
+                    if not any(abs(existing.get('amount', 0) - amt) < 0.01 for existing in items):
+                        items.append({'description': desc, 'qty': 1.0, 'rate': amt, 'amount': amt})
+        
+        # Strategy D: OCR-resilient extraction — handles merged table cells
+        if not items:
+            full_text = ' '.join(lines)
+            # Pattern: serial_no + description + HSN(6 digits) + amount
+            for m in re.finditer(r'(?<!\d)([1-9])\s+([A-Za-z][\w\s,./\-()]{3,80}?)\s+(\d{6})\s+.*?([\d,]+\.\d{2})', full_text):
+                desc = m.group(2).strip()
+                amt = clean_amount(m.group(4))
+                if amt > 0 and not re.search(r'total|sgst|cgst|igst|round|chargeable|taxable|bank', desc, re.I):
+                    if not any(abs(ex.get('amount', 0) - amt) < 0.01 for ex in items):
+                        items.append({'description': desc, 'qty': 1.0, 'rate': amt, 'amount': amt})
+        
+        # Strategy E: Find amounts within lines (not requiring standalone amount lines)
+        if not items:
+            for i, line in enumerate(lines):
+                if re.search(r'total|sgst|cgst|igst|round|chargeable|taxable|tax\s*amount|hsn.*taxable', line, re.I):
+                    continue
+                amounts_in_line = re.findall(r'([\d,]+\.\d{2})', line)
+                for amt_str in amounts_in_line:
+                    amt = clean_amount(amt_str)
+                    if amt < 50:
+                        continue
+                    # Extract description from text before the amount in the same line
+                    idx = line.index(amt_str)
+                    before = re.sub(r'^\d{1,2}\s+', '', line[:idx]).strip()
+                    before = re.sub(r'\d{6,8}\s*', '', before).strip()
+                    desc = before if len(before) > 3 else ''
+                    # Fallback: look in previous lines
+                    if not desc:
+                        for di in range(max(0, i-5), i):
+                            c = lines[di].strip()
+                            if c and not re.match(r'^[\d,.\s%@₹|]+$', c) and not re.search(r'total|gst|tax|hsn|quantity|rate|amount|description', c, re.I):
+                                desc = c
+                    if desc and not any(abs(ex.get('amount', 0) - amt) < 0.01 for ex in items):
+                        items.append({'description': desc, 'qty': 1.0, 'rate': amt, 'amount': amt})
+                        break
+        
+        if not items:
+            preview = "\n".join(lines[:40]) if lines else "(no text extracted)"
+            return {"status": "error", "message": f"Could not extract line items from this invoice.\n\n--- Extracted Text (first 40 lines) ---\n{preview}"}
+        
+        # Clean up descriptions
+        for it in items:
+            it['description'] = re.sub(r'\s+', ' ', it['description']).strip()
+        
+        data["items"] = items
+
+        
+        # -------------------------------------------------------
+        # 6. Amounts - Grand Total (last occurrence wins)
+        # -------------------------------------------------------
+        all_totals = re.findall(r'(?:Grand\s*Total|Total\s*Amount)[\s:₹Rs.]*([\d,]+(?:\.\d+)?)', text, re.I)
+        if all_totals:
+            data["grand_total"] = clean_amount(all_totals[-1])
+        else:
+            # Sum items as fallback
+            data["grand_total"] = sum(it["amount"] for it in items)
+        
+        # -------------------------------------------------------
+        # 7. GST / Tax Rate extraction  
+        # KEY INSIGHT: PDFs double-print GST amounts (main table + HSN
+        # summary). So we extract the RATE from text and calculate
+        # the amount from taxable value × rate. This is 100% reliable.
+        # -------------------------------------------------------
+        gst_rate = 0.0
+        gst_amount = 0.0
+        round_off = 0.0
+        
+        # Get taxable base (net of items before tax)
+        taxable_base = sum(it.get("amount", 0) for it in items)
+        
+        # Extract tax RATES from text (rates appear exactly once, amounts appear multiple times)
+        sgst_rate_m = re.findall(r'SGST\s*@\s*(\d+(?:\.\d+)?)\s*%', text, re.I)
+        cgst_rate_m = re.findall(r'CGST\s*@\s*(\d+(?:\.\d+)?)\s*%', text, re.I)
+        igst_rate_m = re.findall(r'IGST\s*@\s*(\d+(?:\.\d+)?)\s*%', text, re.I)
+        
+        # Also look for rate patterns like "9 %" or "18%" near tax keywords
+        if not sgst_rate_m:
+            sgst_rate_m = re.findall(r'SGST[^\n]{0,30}?(\d+(?:\.\d+)?)\s*%', text, re.I)
+        if not cgst_rate_m:
+            cgst_rate_m = re.findall(r'CGST[^\n]{0,30}?(\d+(?:\.\d+)?)\s*%', text, re.I)
+        if not igst_rate_m:
+            igst_rate_m = re.findall(r'IGST[^\n]{0,30}?(\d+(?:\.\d+)?)\s*%', text, re.I)
+        
+        if igst_rate_m:
+            # Out-state: single IGST
+            gst_rate = float(igst_rate_m[-1])
+            gst_amount = round(taxable_base * gst_rate / 100, 2)
+        elif sgst_rate_m or cgst_rate_m:
+            # Same-state: SGST + CGST
+            sr = float(sgst_rate_m[-1]) if sgst_rate_m else 0
+            cr = float(cgst_rate_m[-1]) if cgst_rate_m else 0
+            gst_rate = round(sr + cr, 2)
+            gst_amount = round(taxable_base * gst_rate / 100, 2)
+        
+        # Fallback: try to find total tax from "Tax Amount" summary table
+        if gst_amount == 0:
+            # Look for "Total" row in HSN summary - last big amount before end
+            tax_total_m = re.findall(
+                r'(?:Total\s+Tax\s*Amount|Tax\s+Amount|Taxes?\s+and\s+Charges?\s+Added)[^\n]*?([\d,]+\.\d{2})',
+                text, re.I
+            )
+            if tax_total_m:
+                gst_amount = clean_amount(tax_total_m[-1])
+        
+        # -------------------------------------------------------
+        # 8. Round Off - extract from invoice
+        # -------------------------------------------------------
+        # Pattern: "Round Off" followed by optional -ve amount on same or next line
+        round_off_m = re.search(
+            r'Round\s*(?:Off|off)[^\n]*?(-?\s*[\d,]+\.\d{2})',
+            text, re.I
+        )
+        if round_off_m:
+            round_off = float(round_off_m.group(1).replace(',', '').replace(' ', ''))
+        else:
+            # Try line-window scan
+            for i, line in enumerate(lines):
+                if re.search(r'round\s*off', line, re.I):
+                    for j in range(i, min(i + 4, len(lines))):
+                        nxt = lines[j].strip()
+                        amt_m = re.match(r'^-?\s*[\d,]+\.\d{2}$', nxt)
+                        if amt_m:
+                            round_off = float(nxt.replace(',', ''))
+                            break
+                    break
+        
+        # -------------------------------------------------------
+        # 9. Final Invoice Amount (Grand Total with round off)
+        # -------------------------------------------------------
+        # Try multiple patterns to find the final payable amount
+        final_amount = 0.0
+        
+        # Pattern A: "₹ XXXX.XX" - rupee symbol with amount (most reliable for Indian invoices)
+        rupee_amounts = re.findall(r'[₹\u20b9]\s*([\d,]+\.\d{2})', text)
+        if rupee_amounts:
+            # Take the last (usually the grand total at the bottom)
+            final_amount = clean_amount(rupee_amounts[-1])
+        
+        # Pattern B: "Grand Total" or "Total Amount"
+        if not final_amount:
+            gt_m = re.findall(r'(?:Grand\s*Total|Total\s*Amount|Net\s*Payable)[^\n\d₹]*([\d,]+\.\d{2})', text, re.I)
+            if gt_m:
+                final_amount = clean_amount(gt_m[-1])
+        
+        # Pattern C: Calculate from parts
+        if not final_amount:
+            final_amount = round(taxable_base + gst_amount + round_off, 2)
+        
+        # Cross-check: if grand_total was already found and is close, use it
+        existing_grand = data.get('grand_total', 0)
+        if existing_grand > 0 and abs(existing_grand - final_amount) < 10:
+            final_amount = existing_grand  # They agree, use what we already have
+        
+        data["gst_amount"] = round(gst_amount, 2)
+        data["gst_rate"] = gst_rate
+        data["round_off"] = round_off
+        data["grand_total"] = final_amount if final_amount > 0 else existing_grand
+        
+        # -------------------------------------------------------
+        # Done
+        # -------------------------------------------------------
+        return {"status": "success", "data": data}
+        
+    except Exception as e:
+        frappe.log_error("Invoice Extraction Error", frappe.get_traceback())
+        return {"status": "error", "message": f"An error occurred while processing the invoice: {str(e)}"}
+
+
+@frappe.whitelist()
+def fetch_po_and_site_details(text_input, invoice_data):
+    """
+    Parses user natural language input for Circuit ID/PO No and payment details.
+    Fetches Site and PO data to populate the missing fields.
+    """
+    import json
+    import re
+    data = json.loads(invoice_data)
+    
+    circuit_match = re.search(r'\b\d{5,8}\b', text_input)
+    po_match = re.search(r'PO-\d{4}-\d+', text_input)
+    
+    circuit_id = circuit_match.group(0) if circuit_match else "71249"
+    
+    payment_type = "QRC" if "qrc" in text_input.lower() else "MRC"
+    expense_type = "Variable" if "variable" in text_input.lower() else "Fixed"
+    
+    # Default mock fetched data
+    site_name = "The Kangra Central - Dharamshala"
+    lms_id = "LMS-003721"
+    payment_cycle = "15"
+    duration_from = "01-07-2026"
+    duration_to = "30-09-2026"
+    
+    # Try fetching real data from Site
+    if frappe.db.exists("Site", {"circuit_id": circuit_id}):
+        site_doc = frappe.get_doc("Site", {"circuit_id": circuit_id})
+        site_name = site_doc.site_name or site_name
+        lms_id = site_doc.lms_id or lms_id
+    
+    data.update({
+        "circuit_id": circuit_id,
+        "site_name": site_name,
+        "lms_id": lms_id,
+        "payment_type": payment_type,
+        "expense_type": expense_type,
+        "payment_cycle": payment_cycle,
+        "duration_from": duration_from,
+        "duration_to": duration_to
+    })
+    
+    return {
+        "status": "success",
+        "data": data
+    }
+
+@frappe.whitelist()
+def create_draft_purchase_invoice(invoice_data):
+    """
+    Creates a draft Purchase Invoice in ERPNext using the structured data.
+    """
+    import json
+    
+    # DEBUG: Log every single call
+    frappe.log_error("API Reached - create_draft_purchase_invoice", str(invoice_data)[:1000])
+    
+    data = json.loads(invoice_data)
+    
+    try:
+        # Prevent Duplicate
+        if frappe.db.exists("Purchase Invoice", {"supplier": data.get("supplier_name"), "bill_no": data.get("invoice_no")}):
+            return {"status": "error", "message": "Duplicate Invoice! An invoice with this Supplier and Invoice No already exists."}
+            
+        # Supplier check
+        supplier = data.get("supplier_name")
+        if not frappe.db.exists("Supplier", supplier):
+            # Create a mock supplier or fail
+            supplier = frappe.db.get_value("Supplier", {"supplier_name": ["like", "%Bharti%"]}) or "Bharti Airtel Limited"
+            if not frappe.db.exists("Supplier", supplier):
+                doc = frappe.get_doc({
+                    "doctype": "Supplier",
+                    "supplier_name": supplier,
+                    "supplier_group": "All Supplier Groups"
+                })
+                doc.insert(ignore_permissions=True)
+                
+        # Basic formatting dates (DD-MM-YYYY to YYYY-MM-DD)
+        def format_date(d_str):
+            if "-" in d_str and len(d_str.split("-")[0]) == 2:
+                parts = d_str.split("-")
+                return f"{parts[2]}-{parts[1]}-{parts[0]}"
+            return d_str
+
+        pi = frappe.new_doc("Purchase Invoice")
+        pi.supplier = supplier
+        pi.bill_no = data.get("invoice_no")
+        pi.bill_date = format_date(data.get("invoice_date"))
+        pi.posting_date = format_date(data.get("posting_date"))
+        
+        pi.custom_dutation_from = format_date(data.get("duration_from")) if data.get("duration_from") else None
+        pi.custom_duration_to = format_date(data.get("duration_to")) if data.get("duration_to") else None
+        pi.custom_lms_id = data.get("lms_id")
+        pi.custom_circuit_id = data.get("circuit_id")
+        
+        po_number = None
+        if pi.custom_lms_id:
+            lms_doc = frappe.db.get_value("Lastmile Services Master", pi.custom_lms_id, 
+                                          ["circuit_id", "po_number", "billing_mode", "payment_cycle"], as_dict=True)
+            if lms_doc:
+                if not pi.custom_circuit_id:
+                    pi.custom_circuit_id = lms_doc.circuit_id
+                pi.custom_payment_type = data.get("payment_type") or lms_doc.billing_mode
+                pi.custom_payment_cycle = data.get("payment_cycle") or lms_doc.payment_cycle
+                po_number = lms_doc.po_number
+
+        pi.custom_payment_catogery = data.get("po_category")
+        if not pi.custom_payment_catogery and po_number:
+            po_cat = frappe.db.get_value("Purchase Order", po_number, "custom_po_category")
+            if po_cat:
+                pi.custom_payment_catogery = po_cat
+
+        if pi.custom_circuit_id and not pi.custom_site_name:
+            site_name = frappe.db.get_value("Site", pi.custom_circuit_id, "site_name")
+            if site_name:
+                pi.custom_site_name = site_name
+
+        # Add items
+        for item in data.get("items", []):
+            item_code = item.get("item_code")
+            if not item_code:
+                item_code = "Misc"
+            if po_number:
+                po_items = frappe.get_all("Purchase Order Item", filters={"parent": po_number}, fields=["item_code", "item_name"])
+                if len(po_items) == 1:
+                    item_code = po_items[0].item_code
+                elif po_items:
+                    desc_lower = (item.get("description") or "").lower()
+                    for pi_item in po_items:
+                        if pi_item.item_name and pi_item.item_name.lower() in desc_lower:
+                            item_code = pi_item.item_code
+                            break
+
+            if not frappe.db.exists("Item", item_code):
+                item_code = frappe.db.get_value("Item", {"item_name": ["like", "%Internet%"]}) or "Misc"
+            
+            item_circuit_id = pi.custom_circuit_id or data.get("circuit_id")
+            item_lms_id = pi.custom_lms_id or data.get("lms_id")
+            item_site_name = pi.custom_site_name or data.get("site_name")
+            
+            row = {
+                "item_code": item_code,
+                "description": item.get("description"),
+                "qty": item.get("qty"),
+                "rate": item.get("rate"),
+                "custom_circuit_id": item_circuit_id,
+                "custom_lms_id": item_lms_id,
+                "circuit_id": item_circuit_id,
+                "lms_id": item_lms_id,
+                "site_name": item_site_name,
+            }
+            if po_number:
+                row["purchase_order"] = po_number
+                po_item_data = frappe.db.get_value("Purchase Order Item", {"parent": po_number, "item_code": item_code}, 
+                    ["name", "project", "cost_center", "expense_account"], as_dict=True)
+                if po_item_data:
+                    row["po_detail"] = po_item_data.name
+                    if po_item_data.project:
+                        row["project"] = po_item_data.project
+                    if po_item_data.cost_center:
+                        row["cost_center"] = po_item_data.cost_center
+                    if po_item_data.expense_account:
+                        row["expense_account"] = po_item_data.expense_account
+                    
+            pi.append("items", row)
+            
+        # Auto-apply taxes based on Supplier/Company default and matched Item Codes
+        pi.set_missing_values()
+        
+        pi.taxes_and_charges = data.get("taxes_and_charges") or ""
+        
+        pi.set_taxes()
+        pi.calculate_taxes_and_totals()
+        
+        if not data.get("taxes_and_charges"):
+            pi.set("taxes", [])
+            
+        round_off = data.get("round_off", 0)
+        if round_off:
+            round_off_account = frappe.db.get_value("Account", {
+                "account_name": ["like", "%Round%"], 
+                "is_group": 0,
+                "company": pi.company
+            })
+            if round_off_account:
+                pi.append("taxes", {
+                    "charge_type": "Actual",
+                    "account_head": round_off_account,
+                    "description": "Round Off",
+                    "tax_amount": round_off
+                })
+                
+        pi.calculate_taxes_and_totals()
+            
+        if pi.shipping_address and not frappe.db.exists("Address", pi.shipping_address):
+            pi.shipping_address = None
+        if pi.billing_address and not frappe.db.exists("Address", pi.billing_address):
+            pi.billing_address = None
+        if pi.supplier_address and not frappe.db.exists("Address", pi.supplier_address):
+            pi.supplier_address = None
+            
+        pi.flags.ignore_mandatory = True
+        pi.insert(ignore_permissions=True)
+        
+        # Attach the original supplier invoice to the Purchase Invoice
+        file_url = data.get("file_url")
+        if file_url:
+            try:
+                existing = frappe.db.exists("File", {
+                    "file_url": file_url,
+                    "attached_to_doctype": "Purchase Invoice",
+                    "attached_to_name": pi.name
+                })
+                if not existing:
+                    file_doc = frappe.get_doc({
+                        "doctype": "File",
+                        "file_url": file_url,
+                        "attached_to_doctype": "Purchase Invoice",
+                        "attached_to_name": pi.name,
+                        "folder": "Home/Attachments",
+                        "is_private": 0
+                    })
+                    file_doc.insert(ignore_permissions=True)
+            except Exception as attach_err:
+                frappe.log_error("Invoice Attachment Error", str(attach_err))
+        
+        if hasattr(frappe.local, "message_log"):
+            frappe.local.message_log = []
+        if "_server_messages" in frappe.local.response:
+            del frappe.local.response["_server_messages"]
+            
+        return {
+            "status": "success",
+            "invoice_name": pi.name
+        }
+    except Exception as e:
+        if hasattr(frappe.local, "message_log"):
+            frappe.local.message_log = []
+        if "exc" in frappe.local.response:
+            del frappe.local.response["exc"]
+        if "_server_messages" in frappe.local.response:
+            del frappe.local.response["_server_messages"]
+        return {
+            "status": "error",
+            "message": str(e)
+        }
+####################################################################################
+# --- START: Job Applicant Stage TAT & Ageing ---
+@frappe.whitelist()
+def get_job_applicant_stage_history(docname, creation):
+    from frappe.utils import getdate, nowdate, date_diff
+    import json
+    
+    # 1. Calendar Ageing (count all days, no holiday list)
+    ageing = date_diff(nowdate(), getdate(creation))
+    
+    # 2. Fetch TAT Target
+    tat_target = 30
+    grade_name = "Not Specified"
+    try:
+        job_applicant = frappe.get_doc("Job Applicant", docname)
+        if job_applicant.job_title: # 'job_title' is the fieldname for Job Opening in Job Applicant Doctype
+            job_opening = frappe.get_doc("Job Opening", job_applicant.job_title)
+            if job_opening.custom_grade:
+                grade = frappe.get_doc("Employee Grade", job_opening.custom_grade)
+                grade_name = grade.name
+                if getattr(grade, "custom_tat_days", None):
+                    tat_target = int(grade.custom_tat_days)
+    except Exception as e:
+        frappe.log_error(f"Error fetching TAT: {str(e)}", "Ageing Debug")
+
+    # 3. Stage history
+    versions = frappe.db.sql("""
+        SELECT creation, data
+        FROM `tabVersion`
+        WHERE ref_doctype='Job Applicant' AND docname=%s
+        ORDER BY creation ASC
+    """, (docname,), as_dict=True)
+    
+    history = {}
+    for v in versions:
+        try:
+            data = json.loads(v.data)
+            for change in data.get("changed", []):
+                if change[0] == "custom_stage":
+                    new_stage = change[2]
+                    if new_stage not in history:
+                        history[new_stage] = v.creation
+        except Exception:
+            pass
+            
+    # 4. Fallback for missing history from related documents
+    try:
+        # Fallback for Interview stages
+        if frappe.db.exists("DocType", "Interview"):
+            interviews = frappe.get_all("Interview", 
+                filters={"job_applicant": docname}, 
+                fields=["interview_round", "scheduled_on", "creation", "status"],
+                order_by="creation ASC"
+            )
+            for intv in interviews:
+                date_val = intv.scheduled_on or intv.creation
+                rnd = str(intv.interview_round or "").lower()
+                stage_key = "Interview Round 1 Scheduled"
+                if "2" in rnd:
+                    stage_key = "Interview Round 2 Scheduled"
+                
+                if stage_key not in history:
+                    history[stage_key] = date_val
+                if "Interview to be scheduled" not in history:
+                    history["Interview to be scheduled"] = date_val
+                    
+        # Fallback for Job Offer
+        if frappe.db.exists("DocType", "Job Offer"):
+            offers = frappe.get_all("Job Offer",
+                filters={"job_applicant": docname},
+                fields=["offer_date", "creation", "status", "modified"],
+                order_by="creation ASC"
+            )
+            for offer in offers:
+                date_val = offer.offer_date or offer.creation
+                if "Offered" not in history:
+                    history["Offered"] = date_val
+                if offer.status == "Accepted" and "Offer Accepted" not in history:
+                    history["Offer Accepted"] = offer.modified
+    except Exception as e:
+        frappe.log_error(f"Error fetching fallback history: {str(e)}", "Ageing Debug")
+            
+    return {
+        "ageing_days": ageing,
+        "tat_target": tat_target,
+        "grade_name": grade_name,
+        "history": history
+    }
+# --- END: Job Applicant Stage TAT & Ageing ---
+
+# --- START: AI Candidate Evaluation ---
+
+# ==========================================
+# AI CANDIDATE EVALUATION V4.0 MODULE
+# ==========================================
+
+import re
+import json
+import requests
+import frappe
+
+# Configuration
+MATCH_SCORE_MAP = {
+    "Direct Match": 10,
+    "Strong Match": 8,
+    "Transferable Match": 6,
+    "Limited Match": 3,
+    "No Evidence": 0
+}
+
+WEIGHTS = {
+    "Technical Skills": 0.25,
+    "Experience": 0.20,
+    "Industry": 0.15,
+    "Campaign Ownership": 0.15,
+    "Marketing Capability": 0.10,
+    "Transferable Skills": 0.10,
+    "Education": 0.05
+}
+
+def extract_resume(applicant_name):
+    applicant = frappe.get_doc("Job Applicant", applicant_name)
+    resume_file = frappe.get_all("File", filters={"attached_to_doctype": "Job Applicant", "attached_to_name": applicant.name}, order_by="creation desc", limit=1)
+    
+    text = ""
+    if resume_file:
+        file_doc = frappe.get_doc("File", resume_file[0].name)
+        file_url = applicant.resume_attachment
+        if file_url:
+            import fitz
+            import os
+            import urllib.parse
+            import zipfile
+            import io
+            import xml.etree.ElementTree as ET
+            
+            decoded_url = urllib.parse.unquote(file_url)
+            if "private/files/" in decoded_url:
+                f_name = decoded_url.split("private/files/")[-1]
+                file_path = frappe.get_site_path("private", "files", f_name)
+            elif "/files/" in decoded_url:
+                f_name = decoded_url.split("/files/")[-1]
+                file_path = frappe.get_site_path("public", "files", f_name)
+            else:
+                file_path = ""
+                
+            if file_path and os.path.exists(file_path):
+                file_ext = os.path.splitext(file_path)[1].lower()
+                with open(file_path, "rb") as f:
+                    file_bytes = f.read()
+                    
+                if file_ext == '.pdf':
+                    try:
+                        doc = fitz.open(stream=file_bytes, filetype="pdf")
+                        for page in doc:
+                            try:
+                                text += page.get_text(sort=True)
+                            except TypeError:
+                                text += page.get_text()
+                    except Exception as e:
+                        frappe.log_error(f"PDF Parse Error: {str(e)}")
+                elif file_ext in ['.doc', '.docx']:
+                    try:
+                        with zipfile.ZipFile(io.BytesIO(file_bytes)) as docx:
+                            tree = ET.XML(docx.read('word/document.xml'))
+                            paragraphs = []
+                            for paragraph in tree.iter('{http://schemas.openxmlformats.org/wordprocessingml/2006/main}p'):
+                                texts = [node.text for node in paragraph.iter('{http://schemas.openxmlformats.org/wordprocessingml/2006/main}t') if node.text]
+                                if texts:
+                                    paragraphs.append(''.join(texts))
+                            text = '\n'.join(paragraphs)
+                    except Exception:
+                        pass
+    
+    return applicant, text[:8000]
+
+def extract_requirements(job_opening_name):
+    if not job_opening_name:
+        return ""
+    job = frappe.get_doc("Job Opening", job_opening_name)
+    return job.description
+
+def call_llm(job_desc, cv_text):
+    system_prompt = """You are a Senior Talent Acquisition Director. Evaluate the CV against the Job Description.
+
+Perform ONLY reasoning. For each Job Description requirement, return an evaluation object.
+
+Each evaluation must have:
+- "requirement": The specific JD requirement.
+- "category": Choose ONE of ["Technical Skills", "Experience", "Industry", "Campaign Ownership", "Marketing Capability", "Education", "Transferable Skills"].
+- "match_level": Choose ONLY ONE of ["Direct Match", "Strong Match", "Transferable Match", "Limited Match", "No Evidence"].
+- "evidence_found": Array of facts from CV. (Empty if None)
+- "missing": Array of missing elements.
+- "justification": Why you chose this match level.
+- "recommendation": Suggested action to address gaps.
+- "interview_question": A personalized question to validate gaps or experience.
+
+Also return a "hiring_manager_verdict" (max 4 sentences) explaining why to interview, risks, what to validate, and training.
+
+Return ONLY valid JSON:
+{
+  "hiring_manager_verdict": "...",
+  "evaluations": [
+    {
+      "requirement": "...",
+      "category": "...",
+      "match_level": "...",
+      "evidence_found": ["..."],
+      "missing": ["..."],
+      "justification": "...",
+      "recommendation": "...",
+      "interview_question": "..."
+    }
+  ]
+}"""
+
+    user_prompt = f"Job Description:\n{job_desc}\n\nCandidate CV:\n{cv_text}"
+    try:
+        api_config = frappe.get_doc("API Configuration")
+    except Exception:
+        api_configs = frappe.get_all("API Configuration", limit=1)
+        if not api_configs:
+            frappe.throw("No API Configuration found.")
+        api_config = frappe.get_doc("API Configuration", api_configs[0].name)
+        
+    api_key = api_config.get_password("api_key") or api_config.api_key
+    base_url = api_config.api_base_url or "https://api.groq.com/openai/v1/chat/completions"
+    model_name = api_config.model_name or "llama3-70b-8192"
+    
+    if not api_key:
+        frappe.throw("API Key missing.")
+        
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+    
+    payload = {
+        "model": model_name,
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        "temperature": 0.1
+    }
+    
+    response = requests.post(base_url, headers=headers, json=payload, timeout=20)
+    response.raise_for_status()
+    result = response.json()
+    
+    return result['choices'][0]['message']['content'].strip()
+
+def parse_ai_response(content):
+    if content.startswith("```json"):
+        content = content.replace("```json", "", 1)
+    if content.startswith("```"):
+        content = content.replace("```", "", 1)
+    if content.endswith("```"):
+        content = content[:-3]
+    return json.loads(content.strip())
+
+def calculate_scores(parsed_json):
+    cat_sums = {}
+    cat_counts = {}
+    
+    for ev in parsed_json.get("evaluations", []):
+        cat = ev.get("category", "Transferable Skills")
+        ml = ev.get("match_level", "No Evidence")
+        ml_clean = ml.replace("🟢", "").replace("🟡", "").replace("🔴", "").strip()
+        
+        score = 0
+        for k, v in MATCH_SCORE_MAP.items():
+            if k.lower() in ml_clean.lower():
+                score = v
+                ml_clean = k
+                break
+                
+        ev["score"] = score
+        ev["match_level"] = ml_clean
+        
+        cat_sums[cat] = cat_sums.get(cat, 0) + score
+        cat_counts[cat] = cat_counts.get(cat, 0) + 1
+        
+    category_scores = {k: v / cat_counts[k] for k, v in cat_sums.items()}
+    
+    overall_score = 0
+    total_w = 0
+    for cat, val in category_scores.items():
+        w = WEIGHTS.get(cat, 0)
+        overall_score += val * w
+        total_w += w
+        
+    if total_w > 0:
+        overall_score /= total_w
+    else:
+        overall_score = 0
+        
+    return category_scores, overall_score
+
+def calculate_confidence(evaluations):
+    total = len(evaluations)
+    if total == 0: return 0
+    direct = sum(1 for e in evaluations if "Direct" in str(e.get("match_level", "")))
+    transfer = sum(1 for e in evaluations if "Transferable" in str(e.get("match_level", "")))
+    
+    ratio = direct / total
+    conf = int((ratio * 100) + (transfer / total * 50) + 15)
+    return min(100, max(0, conf))
+
+def calculate_business_risk(evaluations):
+    # Deterministic risk based on missing items or low scores
+    missing_technical = sum(1 for e in evaluations if e.get("category") == "Technical Skills" and e.get("score", 0) <= 3)
+    missing_industry = sum(1 for e in evaluations if e.get("category") == "Industry" and e.get("score", 0) <= 3)
+    
+    tech_risk = "High" if missing_technical > 1 else ("Medium" if missing_technical == 1 else "Low")
+    domain_risk = "High" if missing_industry > 1 else ("Medium" if missing_industry == 1 else "Low")
+    
+    overall = "High" if tech_risk == "High" or domain_risk == "High" else "Medium"
+    if tech_risk == "Low" and domain_risk == "Low": overall = "Low"
+    
+    return {
+        "overall": overall,
+        "technical_risk": tech_risk,
+        "domain_risk": domain_risk,
+        "leadership_risk": "Cannot determine from CV",
+        "retention_risk": "Needs Discussion"
+    }
+
+def calculate_resume_quality(cv_text):
+    text_lower = cv_text.lower()
+    sections = ["summary", "experience", "education", "projects", "achievements", "certifications", "skills", "languages", "portfolio", "linkedin"]
+    includes = []
+    missing = []
+    
+    for s in sections:
+        if s in text_lower:
+            includes.append(s.title())
+        else:
+            missing.append(s.title())
+            
+    score = int((len(includes) / len(sections)) * 100)
+    advice = "Add missing sections: " + ", ".join(missing[:3]) if missing else "Excellent completeness."
+    
+    return {
+        "score": f"{score}%",
+        "includes": includes,
+        "improvement_advice": advice
+    }
+
+def calculate_career_growth(cv_text):
+    text_lower = cv_text.lower()
+    promotions = len(re.findall(r'senior|manager|director|lead|head', text_lower))
+    if promotions >= 3:
+        return {"rating": "Strong Growth", "reasoning": "CV contains multiple progressive titles (e.g. Senior, Manager)."}
+    elif promotions >= 1:
+        return {"rating": "Moderate Growth", "reasoning": "Some evidence of increasing responsibility."}
+    return {"rating": "Limited Growth", "reasoning": "No clear evidence of title progression."}
+
+def calculate_career_stability(cv_text):
+    years = re.findall(r'(20\d{2})', cv_text)
+    years = sorted([int(y) for y in set(years)])
+    rating = "Moderate"
+    if len(years) > 2:
+        span = max(years) - min(years)
+        if span > 5:
+            rating = "Good"
+    
+    return {
+        "rating": rating,
+        "average_tenure": "Approx 2-3 Years based on date ranges.",
+        "observation": "Employment timeline suggests standard industry tenure.",
+        "interview_question": "Can you walk me through the timeline of your previous roles?"
+    }
+
+def calculate_recommendation(overall_score):
+    pct = overall_score * 10
+    if pct >= 85: return "Excellent Match"
+    if pct >= 75: return "Strong Match"
+    if pct >= 65: return "Good Match"
+    if pct >= 50: return "Interview Recommended (Conditional)"
+    if pct >= 35: return "Potential Candidate"
+    return "Not Recommended"
+
+def calculate_ramp_up(evaluations):
+    gaps = sum(1 for e in evaluations if e.get("score", 0) <= 6)
+    if gaps <= 2: return "2 Weeks"
+    if gaps <= 5: return "1 Month"
+    return "2 Months"
+
+def calculate_role_fit(overall_score):
+    pct = min(100, int(overall_score * 10))
+    return [{"role": "Primary Target Role", "percentage": pct, "reason": "Calculated deterministically from weighted category scores."}]
+
+def build_interview_questions(evaluations):
+    q_dict = {"technical": [], "behavioral": [], "gap_validation": []}
+    for e in evaluations:
+        q = e.get("interview_question")
+        if q and e.get("score", 0) <= 6:
+            q_dict["gap_validation"].append(q)
+        elif q:
+            q_dict["technical"].append(q)
+            
+    # deduplicate and cap at 3
+    return {k: list(set(v))[:3] for k, v in q_dict.items() if v}
+
+@frappe.whitelist()
+def evaluate_candidate_cv(job_applicant_name):
+    try:
+        applicant, cv_text = extract_resume(job_applicant_name)
+        if not cv_text:
+            frappe.throw("Could not extract text from Candidate CV.")
+            
+        job_desc = extract_requirements(applicant.job_title)
+        
+        llm_response = call_llm(job_desc, cv_text)
+        parsed_json = parse_ai_response(llm_response)
+        
+        # Deterministic Rules
+        cat_scores, overall_score = calculate_scores(parsed_json)
+        evals = parsed_json.get("evaluations", [])
+        
+        parsed_json["category_scores"] = {k: round(v, 1) for k, v in cat_scores.items()}
+        parsed_json["overall_score"] = round(overall_score, 1)
+        parsed_json["overall_rating"] = calculate_recommendation(overall_score)
+        
+        parsed_json["ai_confidence"] = calculate_confidence(evals)
+        parsed_json["business_risk"] = calculate_business_risk(evals)
+        parsed_json["resume_completeness"] = calculate_resume_quality(cv_text)
+        parsed_json["career_growth"] = calculate_career_growth(cv_text)
+        parsed_json["career_stability"] = calculate_career_stability(cv_text)
+        parsed_json["role_fit"] = calculate_role_fit(overall_score)
+        
+        parsed_json["final_hiring_recommendation"] = {
+            "hiring_recommendation": parsed_json["overall_rating"],
+            "training_required": "High" if parsed_json["business_risk"]["overall"] == "High" else "Moderate",
+            "ramp_up": calculate_ramp_up(evals),
+            "confidence": parsed_json["ai_confidence"]
+        }
+        
+        parsed_json["interview_questions"] = build_interview_questions(evals)
+        
+        # We don't overwrite why_good_match etc, just let them be empty if not provided, UI handles it.
+        
+        applicant.db_set("custom_ai_evaluation", json.dumps(parsed_json))
+        return parsed_json
+        
+    except Exception as e:
+        frappe.log_error(f"AI Eval V4 Failed: {str(e)}", "Resume AI Evaluation")
+        frappe.throw(f"AI Evaluation Failed: {str(e)}")
+
+# --- END: AI Candidate Evaluation ---
+
+# --- START: AI Feasibility Evaluation ---
+@frappe.whitelist()
+def evaluate_feasibility_with_ai(doc_data):
+    import json
+    import requests
+    import traceback
+    
+    try:
+        doc = json.loads(doc_data)
+        
+        # Context gathering from ERPNext DB
+        pincode = doc.get('pincode')
+        place = doc.get('city') or doc.get('address_street') or "Unknown"
+        lms_type = doc.get('lms_type') or "Single"
+        primary_plan = doc.get('primary_data_plan') or "Unknown"
+        secondary_plan = doc.get('secondary_data_plan') or "Unknown"
+        circuit_id = doc.get('site_id__legal_code') or "Unknown"
+        
+        from nexapp.nexapp.doctype.feasibility.feasibility import get_supplier_pool_by_pincode
+        
+        # Use the exact same logic as the Supplier Pool UI
+        pool_data = {"isp_pool": [], "feas_pool": []}
+        if pincode:
+            try:
+                pool_data = get_supplier_pool_by_pincode(pincode, circuit_id)
+            except Exception:
+                pass
+                
+        isp_pool = pool_data.get("isp_pool", [])
+        
+        # Extract valid suppliers from ISP pool
+        valid_suppliers = list(set([s.get("supplier_name") for s in isp_pool if s.get("supplier_name")]))
+        valid_suppliers_str = ", ".join(valid_suppliers) if valid_suppliers else "NONE"
+        
+        # Get total active sites for these suppliers globally for context
+        supplier_active_sites = {}
+        if valid_suppliers:
+            counts = frappe.db.get_all("Lastmile Services Master", 
+                filters={"supplier": ["in", valid_suppliers], "lms_stage": ["in", ["Delivered", "Live"]]},
+                fields=["supplier", "count(name) as count"],
+                group_by="supplier"
+            )
+            for c in counts:
+                supplier_active_sites[c.supplier] = c.count
+        
+        # Extract PO details for the prompt and attach active site counts
+        po_with_items = []
+        for s in isp_pool:
+            po_info = s.get("latest_po")
+            supp_name = s.get("supplier_name")
+            if po_info:
+                po_with_items.append({
+                    "po_number": po_info.get("po_name"),
+                    "supplier": supp_name,
+                    "date": po_info.get("po_date"),
+                    "grand_total": po_info.get("grand_total"),
+                    "items": po_info.get("items", []),
+                    "circuit_id": po_info.get("circuit_id"),
+                    "total_active_sites_globally": supplier_active_sites.get(supp_name, 0)
+                })
+            else:
+                po_with_items.append({
+                    "supplier": supp_name,
+                    "total_active_sites_globally": supplier_active_sites.get(supp_name, 0)
+                })
+        # Also extract Feasibility pool (suppliers evaluated but maybe no PO yet)
+        feas_pool = pool_data.get("feas_pool", [])
+        feas_suppliers = list(set([s.get("supplier_name") for s in feas_pool if s.get("supplier_name")]))
+        
+        all_suppliers_for_intel = list(set(valid_suppliers + feas_suppliers))
+        
+        # Pricing Intelligence
+        supplier_items = []
+        if all_suppliers_for_intel:
+            supplier_items = frappe.db.get_all("Item Price",
+                filters={"item_code": ["in", [primary_plan, secondary_plan]], "supplier": ["in", all_suppliers_for_intel]},
+                fields=["supplier", "item_code", "price_list_rate as price", "currency", "lead_time_days"],
+                limit=50
+            )
+
+        system_prompt = """You are an AI Supplier Recommendation Engine for ERPNext.
+Your objective is to help the user find the best Supplier based on the provided Feasibility, Purchase Order, and Site data.
+
+IMPORTANT: All data provided to you has been pre-filtered to the SPECIFIC PINCODE of the Feasibility request.
+The Purchase Orders shown are ONLY those from the Supplier Pool where the LMS stage is 'Delivered' or 'Live'.
+Additionally, you are provided "Other Potential Suppliers" from the Feasibility Pool in this pincode. These are suppliers that were evaluated previously but may not have a recent PO. You MUST use them as valid options to fill out your 5 supplier comparison.
+
+Scoring Criteria:
+- 40% Location Match (same Place/Pincode)
+- 30% Price (compare Data Plan pricing)
+- 20% Recent Orders (recent Purchase Orders)
+- 10% Number of Successful Deliveries
+
+You must NEVER guess or hallucinate suppliers. ONLY explain the data returned from ERPNext.
+If Active Suppliers in Pincode is NONE, you MUST state that no recommendation can be made and set recommended_supplier to "No Suppliers Found".
+IMPORTANT FOR SUPPLIER COMPARISON: You MUST include up to 5 available suppliers in the supplier_comparison array. You MUST assign a strict Letter Grade (A+, A, B, C, D) to each supplier based on their rate and active sites. NEVER output "N/A" for the grade.
+
+Return ONLY valid JSON matching this exact structure:
+{
+    "pincode": "Pin Code Evaluated",
+    "city": "City Evaluated",
+    "recommended_supplier": "Supplier Name",
+    "confidence_score": 95,
+    "reason": [
+        "✓ Supplier has delivered POs in Kochi",
+        "✓ Lowest cost",
+        "✓ Available Secondary Data Plan"
+    ],
+    "supplier_comparison": [
+        {
+            "supplier": "Supplier A",
+            "rate": "₹ 499",
+            "item_name": "40Mbps-MBB",
+            "active_sites": 12,
+            "grade": "A+",
+            "notes": "Lowest rate, highly active."
+        },
+        {
+            "supplier": "Supplier B",
+            "rate": "₹ 600",
+            "item_name": "40Mbps-MBB",
+            "active_sites": 5,
+            "grade": "B",
+            "notes": "More expensive, fewer active sites."
+        }
+    ],
+    "po_details": [
+        {"po_number": "PO-001", "supplier": "Supplier A", "date": "2023-10-01", "item_rate": "₹ 499"}
+    ],
+    "evaluation_steps": [
+        "Identified Active Suppliers in Pincode 682001.",
+        "Traced Purchase Orders from the 'Delivered' supplier pool.",
+        "Compared pricing for Primary Plan (100MBPS) and found Supplier A is cheapest.",
+        "Analyzed recent PO volume for Supplier A."
+    ]
+}"""
+
+        user_prompt = f"""Feasibility Request Data:
+LMS Type: {lms_type}
+Circuit ID: {circuit_id}
+Primary Plan: {primary_plan}
+Secondary Plan: {secondary_plan}
+Pincode: {pincode}
+Place: {place}
+Active Suppliers in Pincode (from Delivered PO data): {valid_suppliers_str}
+
+Purchase Orders linked to Sites in Pincode {pincode} (System Data):
+{json.dumps(po_with_items, indent=2, default=str)}
+
+Other Potential Suppliers (from Feasibility Pool in this Pincode):
+{json.dumps(feas_pool, indent=2, default=str)}
+
+Supplier Item Pricing Intelligence (System Data):
+{json.dumps(supplier_items, indent=2, default=str)}"""
+
+        # API Call setup
+        try:
+            api_config = frappe.get_doc("API Configuration")
+        except Exception:
+            api_configs = frappe.get_all("API Configuration", limit=1)
+            if not api_configs:
+                frappe.throw("No API Configuration found. Cannot run AI Evaluation.")
+            api_config = frappe.get_doc("API Configuration", api_configs[0].name)
+            
+        api_key = api_config.get_password("api_key") or api_config.api_key
+        base_url = api_config.api_base_url or "https://api.groq.com/openai/v1/chat/completions"
+        model_name = api_config.model_name or "llama3-70b-8192"
+        
+        if not api_key:
+            frappe.throw("API Key missing in API Configuration.")
+            
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "model": model_name,
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            "temperature": 0.2
+        }
+        
+        response = requests.post(base_url, headers=headers, json=payload, timeout=30)
+        response.raise_for_status()
+        result = response.json()
+        
+        content = result['choices'][0]['message']['content'].strip()
+        
+        # Cleanup JSON formatting if present
+        import re
+        json_match = re.search(r'\{.*\}', content, re.DOTALL)
+        if json_match:
+            content = json_match.group(0)
+            
+        try:
+            parsed_result = json.loads(content.strip())
+        except Exception as e:
+            frappe.log_error(f"Failed to parse LLM output: {content}", "AI Evaluation Error")
+            frappe.throw(f"AI returned invalid JSON: {str(e)}")
+        
+        # Auto-save logic
+        doc_name = doc.get("name")
+        if doc_name and not str(doc_name).startswith("new-"):
+            if frappe.db.exists("Feasibility", doc_name):
+                # Check if custom field exists
+                if not frappe.db.has_column("Feasibility", "custom_ai_evaluation"):
+                    from frappe.custom.doctype.custom_field.custom_field import create_custom_field
+                    create_custom_field("Feasibility", {
+                        "fieldname": "custom_ai_evaluation",
+                        "label": "AI Evaluation",
+                        "fieldtype": "Code",
+                        "options": "JSON",
+                        "insert_after": "feasibility_status",
+                        "read_only": 1,
+                        "hidden": 1
+                    })
+                # Save the evaluation to the database
+                frappe.db.set_value("Feasibility", doc_name, "custom_ai_evaluation", json.dumps(parsed_result))
+        
+        return parsed_result
+        
+    except Exception as e:
+        error_msg = str(e)
+        frappe.log_error(f"Feasibility AI Eval Failed: {error_msg}\n{traceback.format_exc()}", "Feasibility AI Evaluation")
+        return {"error": error_msg}
+# --- END: AI Feasibility Evaluation ---
+
+# --- START: AI Purchase Invoice Creation Logic ---
+
+@frappe.whitelist()
+def extract_purchase_invoice_data(file_url=None):
+    """
+    Robust extraction from a Purchase Invoice PDF using PyMuPDF.
+    """
+    import re
+    
+    if not file_url:
+        return {"status": "error", "message": "No invoice file was attached. Please attach a PDF invoice."}
+    
+    try:
+        import os
+        # Robust file path resolution
+        try:
+            from frappe.utils.file_manager import get_file_path
+            file_path = get_file_path(file_url.split('/')[-1])
+        except Exception:
+            file_path = None
+        
+        # Fallback: construct path from site path + file_url
+        if not file_path or not os.path.exists(file_path):
+            site_path = frappe.get_site_path()
+            relative = file_url.lstrip('/')
+            file_path = os.path.join(site_path, 'public', relative.replace('files/', ''))
+            if not os.path.exists(file_path):
+                file_path = os.path.join(site_path, relative)
+        
+        if not file_path or not os.path.exists(file_path):
+            return {"status": "error", "message": "Could not locate the uploaded invoice file on the server."}
+        
+        if not file_path.lower().endswith('.pdf'):
+            return {"status": "error", "message": "Only PDF files are supported for extraction."}
+        
+        import fitz
+        doc = fitz.open(file_path)
+        text = ""
+        blocks = []
+        
+        # --- Strategy 1: Standard text extraction ---
+        for page in doc:
+            text += page.get_text()
+            blocks += page.get_text("blocks")
+        
+        # --- Strategy 2: rawdict — works on vector-font PDFs where get_text() returns empty ---
+        if not text.strip():
+            try:
+                raw_text_parts = []
+                for page in doc:
+                    raw = page.get_text("rawdict")
+                    for block in raw.get("blocks", []):
+                        for line in block.get("lines", []):
+                            for span in line.get("spans", []):
+                                t = span.get("text", "").strip()
+                                if t:
+                                    raw_text_parts.append(t)
+                text = "\n".join(raw_text_parts)
+            except Exception:
+                pass
+        
+        # --- Strategy 3: OCR fallback (requires tesseract-ocr + pytesseract) ---
+        if not text.strip():
+            try:
+                import pytesseract
+                from PIL import Image
+                import io, shutil
+                # Explicitly set the tesseract binary path since bench env PATH
+                # may not include /usr/bin where the system tesseract lives
+                tess_path = shutil.which("tesseract") or "/usr/bin/tesseract"
+                pytesseract.pytesseract.tesseract_cmd = tess_path
+                ocr_parts = []
+                for page in doc:
+                    mat = fitz.Matrix(2.0, 2.0)  # 2x zoom for better OCR accuracy
+                    pix = page.get_pixmap(matrix=mat)
+                    img_bytes = pix.tobytes("png")
+                    img = Image.open(io.BytesIO(img_bytes))
+                    page_text = pytesseract.image_to_string(img, lang='eng')
+                    ocr_parts.append(page_text)
+                text = "\n".join(ocr_parts)
+                frappe.logger().info(f"Invoice Extraction: Used OCR fallback for {file_url}")
+            except ImportError:
+                pass  # pytesseract not installed, skip
+            except Exception as ocr_err:
+                frappe.log_error("Invoice OCR Error", str(ocr_err))
+        
+        if not text.strip():
+            return {
+                "status": "error",
+                "message": "Could not extract text from this PDF. It appears to be a fully image-based scan. Please install tesseract-ocr on the server to enable OCR support, or upload a text-based PDF."
+            }
+        
+        data = {}
+        lines = [l.strip() for l in text.splitlines() if l.strip()]
+        
+        # --- TEMP DEBUG: log extracted lines to diagnose item parsing ---
+        frappe.log_error("PDF Extracted Lines", "\n".join(f"{i}: {l}" for i, l in enumerate(lines[:200])))
+        
+        # -------------------------------------------------------
+        # Helper
+        # -------------------------------------------------------
+        def parse_date(d_str):
+            """Normalise various date formats to YYYY-MM-DD."""
+            import datetime
+            d_str = d_str.strip()
+            month_map = {
+                'jan':'01','feb':'02','mar':'03','apr':'04','may':'05','jun':'06',
+                'jul':'07','aug':'08','sep':'09','oct':'10','nov':'11','dec':'12'
+            }
+            # DD-Mon-YY or DD-Mon-YYYY (e.g. 13-Aug-25)
+            m = re.match(r'(\d{1,2})[-/\s]([A-Za-z]{3})[-/\s](\d{2,4})', d_str)
+            if m:
+                dd, mon, yy = m.group(1).zfill(2), m.group(2).lower()[:3], m.group(3)
+                mm = month_map.get(mon, '01')
+                yyyy = ('20' + yy) if len(yy) == 2 else yy
+                return f"{yyyy}-{mm}-{dd}"
+            # DD-MM-YYYY or DD/MM/YYYY
+            m = re.match(r'(\d{2})[-/](\d{2})[-/](\d{4})', d_str)
+            if m:
+                return f"{m.group(3)}-{m.group(2)}-{m.group(1)}"
+            # YYYY-MM-DD (already correct)
+            m = re.match(r'(\d{4})-(\d{2})-(\d{2})', d_str)
+            if m:
+                return d_str
+            try:
+                return str(frappe.utils.getdate(d_str))
+            except Exception:
+                return d_str
+        
+        def clean_amount(s):
+            return float(re.sub(r'[^\d.]', '', s)) if s else 0.0
+        
+        # -------------------------------------------------------
+        # 1. Invoice Number - multiple patterns, pick first valid
+        # -------------------------------------------------------
+        inv_no = None
+        inv_no_patterns = [
+            # OCR jump: matches 'Invoice No' then skips up to 120 chars to find a proper invoice format (e.g. KNPL/26-27/0078)
+            r'(?:Invoice\s*No\.?|Invoice\s*Number|INV\s*NO\.?|Bill\s*No\.?)[^\n]{0,120}?\b([A-Za-z0-9]+(?:[-/][A-Za-z0-9]+){2,})\b',
+            r'Invoice\s*No\.?\s*[:\-]?\s*([A-Za-z0-9/_\-]+)',
+            r'Invoice\s*Number\s*[:\-]?\s*([A-Za-z0-9/_\-]+)',
+            r'INV\s*NO\.?\s*[:\-]?\s*([A-Za-z0-9/_\-]+)',
+            r'Bill\s*No\.?\s*[:\-]?\s*([A-Za-z0-9/_\-]+)',
+        ]
+        for pat in inv_no_patterns:
+            m = re.search(pat, text, re.I)
+            if m:
+                candidate = m.group(1).strip()
+                # Must be at least 2 chars and not just a date
+                if len(candidate) >= 2 and not re.match(r'^\d{1,2}[-/]\d{1,2}[-/]\d{2,4}$', candidate):
+                    inv_no = candidate
+                    break
+        if not inv_no:
+            frappe.logger().warning("Could not extract Invoice Number.")
+            data["invoice_no"] = None
+            data["invoice_no_warning"] = "Could not extract Invoice Number from the document."
+        else:
+            data["invoice_no"] = inv_no
+        
+        # -------------------------------------------------------
+        # 2. Invoice Date
+        # -------------------------------------------------------
+        inv_date = None
+        date_patterns = [
+            r'(?:Invoice\s*Date|Dated|Date\s*of\s*Invoice)[\s:]*([\d]{1,2}[-/\s][A-Za-z]{3}[-/\s][\d]{2,4})',
+            r'(?:Invoice\s*Date|Dated|Date\s*of\s*Invoice)[\s:]*([\d]{1,2}[-/][\d]{1,2}[-/][\d]{2,4})',
+            r'(?:Invoice\s*Date|Dated)[\s:]*([\d]{4}-[\d]{2}-[\d]{2})',
+        ]
+        for pat in date_patterns:
+            m = re.search(pat, text, re.I)
+            if m:
+                inv_date = parse_date(m.group(1))
+                break
+        if not inv_date:
+            # Last resort: find any standalone date near "Dated" or top of document
+            m = re.search(r'(\d{1,2}[-/][A-Za-z]{3}[-/]\d{2,4})', text[:500])
+            if m:
+                inv_date = parse_date(m.group(1))
+        data["invoice_date"] = inv_date or frappe.utils.today()
+        
+        # -------------------------------------------------------
+        # 3. Duration From / To  (e.g. 13.09.2025 - 12.11.2025)
+        # -------------------------------------------------------
+        dur_m = re.search(
+            r'(\d{1,2}[.\-/]?\d{1,2}[.\-/]?\d{2,4})\s*(?:TO|to|[-–])\s*(\d{1,2}[.\-/]?\d{1,2}[.\-/]?\d{2,4})',
+            text, re.I
+        )
+        if dur_m:
+            def parse_ocr_date(s):
+                s = re.sub(r'[.\-/]', '', s)
+                if len(s) == 8:  # DDMMYYYY
+                    return f"{s[4:8]}-{s[2:4]}-{s[0:2]}"
+                elif len(s) == 6:  # DDMMYY
+                    return f"20{s[4:6]}-{s[2:4]}-{s[0:2]}"
+                return s
+            data["duration_from"] = parse_ocr_date(dur_m.group(1))
+            data["duration_to"] = parse_ocr_date(dur_m.group(2))
+        
+        # -------------------------------------------------------
+        # 3.5. Extract LMS ID & PO Number
+        # -------------------------------------------------------
+        po_match = re.search(r'(?:PO\s*No|Purchase\s*Order|PO#|PO\s*Number)[\s\.:\-#]*([A-Za-z0-9\-/_]+)', text, re.I)
+        if po_match:
+            data["po_number"] = po_match.group(1).strip()
+            
+        lms_match = re.search(r'(?:LMS\s*Id|LMS\s*No|LMS#)[\s\.:\-#]*([A-Za-z0-9\-/_]+)', text, re.I)
+        if lms_match:
+            data["lms_id"] = lms_match.group(1).strip()
+
+        # -------------------------------------------------------
+        # 4. Supplier Name - Exclusion-First Multi-Strategy Matching
+        # Key insight: The logged-in company is NEVER the supplier.
+        # Collect ALL company-like names, exclude self, then fuzzy-match.
+        # -------------------------------------------------------
+        import difflib
+        
+        # Get all self-company names to exclude (the buyer, not the seller)
+        own_company = frappe.defaults.get_global_default('company') or ""
+        own_company_words = set(re.sub(r'[^a-z0-9\s]', '', own_company.lower()).split())
+        
+        # Aliases / abbreviations of own company to also exclude
+        own_company_aliases = {"nexapp", "nexapp technologies", "ntpl"}
+        
+        def is_own_company(name):
+            """Returns True if the name looks like our own company, not a supplier."""
+            n_lower = name.lower()
+            n_clean = re.sub(r'[^a-z0-9\s]', '', n_lower)
+            n_words = set(n_clean.split())
+            # Check if majority of words overlap with own company name
+            if own_company_words and len(own_company_words & n_words) >= max(1, len(own_company_words) - 1):
+                return True
+            for alias in own_company_aliases:
+                if alias in n_lower:
+                    return True
+            return False
+        
+        def normalize_name(n):
+            n = str(n).lower()
+            n = re.sub(r'[^a-z0-9\s]', '', n)
+            n = n.replace('private limited', 'pvt ltd')
+            n = n.replace('pvt limited', 'pvt ltd')
+            n = n.replace('bharti airtel limited', 'bharti airtel ltd')
+            return n.strip()
+        
+        # Strategy 1: Collect ALL company-like names in the document
+        # Patterns: "Xyz Ltd", "Abc Pvt Ltd", "Xyz Limited", "Xyz LLP"
+        all_company_matches = re.findall(
+            r'[A-Za-z][A-Za-z0-9\s&\(\)\-\.]{2,60}(?:Pvt\.?\s*Ltd\.?|Private\s+Limited|Limited|LLP|Ltd\.?)',
+            text, re.I
+        )
+        
+        # Also specifically look for names near "From:", "Supplier:", "Issued by:", signature blocks
+        seller_patterns = [
+            r'(?:from|vendor|supplier|issued\s*by|authorised\s*signatory)[:\s]+([A-Za-z][A-Za-z0-9\s&\-\.]{2,80})',
+            r'([A-Za-z][A-Za-z0-9\s&\-\.]{2,50})\s*\n?\s*Authorised\s*Signatory',
+            r'([A-Za-z][A-Za-z0-9\s&\-\.]{2,50})\s*\n?\s*Authorized\s*Signatory',
+        ]
+        priority_candidates = []
+        for pat in seller_patterns:
+            for m in re.finditer(pat, text, re.I):
+                priority_candidates.append(m.group(1).strip())
+        
+        # Strategy 2: Load ERPNext suppliers and score each candidate
+        suppliers = frappe.get_all("Supplier", pluck="name")
+        if not suppliers:
+            return {"status": "error", "message": "No Suppliers exist in the system."}
+        
+        norm_to_orig = {normalize_name(s): s for s in suppliers}
+        
+        def best_supplier_match(candidates, cutoff=0.55):
+            """Find the best matching ERPNext supplier from a list of raw name candidates."""
+            best_score = 0
+            best_match = None
+            for candidate in candidates:
+                if not candidate or is_own_company(candidate):
+                    continue
+                norm_c = normalize_name(candidate)
+                # Substring match (highest confidence)
+                for norm_s, orig_s in norm_to_orig.items():
+                    if norm_s and norm_c and (norm_s in norm_c or norm_c in norm_s):
+                        return orig_s  # Definitive match
+                # Fuzzy match
+                close = difflib.get_close_matches(norm_c, list(norm_to_orig.keys()), n=1, cutoff=cutoff)
+                if close:
+                    score = difflib.SequenceMatcher(None, norm_c, close[0]).ratio()
+                    if score > best_score:
+                        best_score = score
+                        best_match = norm_to_orig[close[0]]
+            return best_match
+        
+        # Priority: look at seller-specific regions first
+        matched_supplier = best_supplier_match(priority_candidates, cutoff=0.5)
+        
+        # Fallback: scan all company names found in the document (excluding self)
+        if not matched_supplier:
+            # Filter out own-company names and deduplicate
+            external_candidates = [c for c in all_company_matches if not is_own_company(c)]
+            # Reverse order: supplier name often appears later in invoice (bottom area)
+            matched_supplier = best_supplier_match(list(reversed(external_candidates)), cutoff=0.6)
+        
+        if not matched_supplier:
+            # Last resort: take any company name not matching own company
+            external_candidates = [c for c in all_company_matches if not is_own_company(c)]
+            if external_candidates:
+                raw_supplier_name = external_candidates[-1].strip()
+            else:
+                raw_supplier_name = all_company_matches[0].strip() if all_company_matches else "Unknown"
+            
+            # --- START FIX FOR MISSING SUPPLIER ---
+            # Instead of returning an error and halting extraction, we just log it
+            frappe.logger().warning(f"Supplier '{raw_supplier_name}' detected but not found in ERPNext.")
+            data["supplier_name"] = None
+            data["supplier_warning"] = f"Supplier '{raw_supplier_name}' was detected but does not exist in the system."
+            # --- END FIX FOR MISSING SUPPLIER ---
+        else:
+            data["supplier_name"] = matched_supplier
+        
+        
+        # -------------------------------------------------------
+        # 5. Items - Block/sequence based extraction
+        # PDFs often extract table cells as separate lines, so we
+        # use a state-machine approach on the lines list.
+        # -------------------------------------------------------
+        items = []
+        
+        # Strategy A: PyMuPDF word-position clustering by column X-position
+        # We use blocks to identify rows based on Y-position proximity
+        try:
+            row_data = {}  # y_bucket -> list of (x, text)
+            for page in doc:
+                words = page.get_text("words")  # (x0,y0,x1,y1,word,block,line,word_idx)
+                for w in words:
+                    y_bucket = round(w[1] / 8) * 8  # cluster within 8pt vertical bands
+                    row_data.setdefault(y_bucket, []).append((w[0], w[4]))
+            
+            # Sort rows by Y
+            sorted_rows = [row_data[k] for k in sorted(row_data.keys())]
+            
+            # Find page width to determine column boundaries
+            page_width = doc[0].rect.width
+            # Heuristic column positions for this invoice layout:
+            # Sr(~30), Desc(~50-250), HSN(~260-310), Qty(~310-360), Rate(~360-430), per(~430-470), Amount(~470+)
+            
+            SKIP_KEYWORDS = {'description', 'goods', 'hsn', 'sac', 'quantity', 'rate', 'per',
+                             'amount', 'total', 'gst', 'tax', 'sgst', 'cgst', 'igst',
+                             'taxable', 'value', 'round', 'off', 'si', 'no', 'sl'}
+            
+            current_item = None
+            for row_words in sorted_rows:
+                if not row_words:
+                    continue
+                row_words_sorted = sorted(row_words, key=lambda x: x[0])
+                row_text = ' '.join(w[1] for w in row_words_sorted).strip()
+                
+                # Check if this row starts with a serial number (1, 2, 3...)
+                first_word = row_words_sorted[0][1]
+                if re.match(r'^\d{1,2}$', first_word):
+                    sr_no = int(first_word)
+                    if 1 <= sr_no <= 99:
+                        if current_item and current_item.get('amount', 0) > 0:
+                            items.append(current_item)
+                        # Remaining words after Sr No
+                        rest = row_words_sorted[1:]
+                        amounts = [w for w in rest if re.match(r'^[\d,]+\.\d{2}$', w[1])]
+                        desc_words = [w for w in rest 
+                                      if not re.match(r'^[\d,]+\.?\d*$', w[1])
+                                      and w[1].lower() not in SKIP_KEYWORDS]
+                        desc = ' '.join(w[1] for w in sorted(desc_words, key=lambda x: x[0]))
+                        
+                        current_item = {
+                            'description': desc,
+                            'qty': 1.0,
+                            'rate': 0.0,
+                            'amount': clean_amount(amounts[-1][1]) if amounts else 0.0
+                        }
+                        # Try qty and rate from numeric positions
+                        nums = [w for w in rest if re.match(r'^[\d,]+\.?\d*$', w[1])
+                                and not re.match(r'^\d{6,8}$', w[1])]  # skip HSN codes
+                        if len(nums) >= 3:
+                            current_item['qty'] = clean_amount(nums[0][1])
+                            current_item['rate'] = clean_amount(nums[1][1])
+                            current_item['amount'] = clean_amount(nums[-1][1])
+                        elif len(nums) == 2:
+                            current_item['rate'] = clean_amount(nums[0][1])
+                            current_item['amount'] = clean_amount(nums[-1][1])
+                        elif len(nums) == 1:
+                            current_item['amount'] = clean_amount(nums[0][1])
+                        continue
+                
+                # Continuation line for current item (more description text)
+                if current_item is not None:
+                    row_lower = row_text.lower()
+                    # Stop adding if this looks like a totals/tax row
+                    if any(kw in row_lower for kw in ['sgst', 'cgst', 'igst', 'total', 'round off', 'amount chargeable']):
+                        if current_item.get('amount', 0) > 0:
+                            items.append(current_item)
+                            current_item = None
+                        continue
+                    # Add description continuation (if mostly text, not numbers)
+                    words_in_row = row_text.split()
+                    text_words = [w for w in words_in_row if not re.match(r'^[\d.,]+$', w)]
+                    if len(text_words) >= 2 and current_item.get('amount', 0) == 0:
+                        # Still building description
+                        current_item['description'] += ' ' + row_text
+                    elif len(text_words) == 0:
+                        # Pure numbers row - might be qty/rate/amount update
+                        pure_nums = [w for w in words_in_row if re.match(r'^[\d,]+\.?\d*$', w)]
+                        if pure_nums and current_item.get('amount', 0) == 0:
+                            current_item['amount'] = clean_amount(pure_nums[-1])
+            
+            if current_item and current_item.get('amount', 0) > 0:
+                items.append(current_item)
+        except Exception as block_err:
+            frappe.log_error("Item block extraction failed", str(block_err))
+            items = []
+        
+        # Strategy B: Line-sequence state machine (fallback)
+        if not items:
+            STOP_WORDS_RE = re.compile(r'sgst|cgst|igst|grand\s*total|round\s*off|amount\s*chargeable|bank\s*details|declaration|e\s*&\s*oe|certified', re.I)
+            SKIP_RE = re.compile(r'^(description|hsn|sac|quantity|rate|per|amount|sl\.?\s*no|si\.?\s*no|services?|goods?)$', re.I)
+            
+            in_table = False
+            i = 0
+            while i < len(lines):
+                line = lines[i]
+                
+                # Detect start of item table — covers both Goods and Services invoices
+                if re.search(r'description\s+(of\s+)?(goods|services|particulars)', line, re.I):
+                    in_table = True
+                    i += 1
+                    continue
+                
+                # Also trigger on the column header row itself
+                if re.search(r'\bhsn\b.*\bquantity\b|\bsl\.?\s*no\b.*\bdescription\b', line, re.I):
+                    in_table = True
+                    i += 1
+                    continue
+                
+                if not in_table:
+                    i += 1
+                    continue
+                
+                if STOP_WORDS_RE.search(line):
+                    break
+                
+                # Serial number line
+                if re.match(r'^\d{1,2}$', line.strip()):
+                    sr = int(line.strip())
+                    if 1 <= sr <= 50:
+                        desc_parts = []
+                        qty = rate = amount = None
+                        j = i + 1
+                        # Collect subsequent lines until we hit the next serial or stop
+                        while j < len(lines) and j < i + 12:
+                            nxt = lines[j].strip()
+                            if re.match(r'^\d{1,2}$', nxt) and 1 <= int(nxt) <= 50:
+                                break
+                            if STOP_WORDS_RE.search(nxt):
+                                break
+                            # Amount pattern XX,XXX.XX
+                            amt_m = re.match(r'^([\d,]+\.\d{2})$', nxt)
+                            if amt_m:
+                                val = clean_amount(amt_m.group(1))
+                                if amount is None:
+                                    amount = val
+                                elif rate is None and val > 0:
+                                    rate = val
+                            # Pure integer = qty
+                            elif re.match(r'^\d{1,4}$', nxt) and not re.match(r'^\d{6,}$', nxt):
+                                if qty is None and amount is None:
+                                    qty = float(nxt)
+                            # HSN code - skip (6-8 digits)
+                            elif re.match(r'^\d{6,8}$', nxt):
+                                pass
+                            # Text = description
+                            elif nxt and not SKIP_RE.match(nxt) and not re.match(r'^[₹%@\d\s.,/]+$', nxt):
+                                desc_parts.append(nxt)
+                            j += 1
+                        
+                        if desc_parts and amount and amount > 0:
+                            items.append({
+                                'description': ' '.join(desc_parts),
+                                'qty': qty or 1.0,
+                                'rate': rate or amount,
+                                'amount': amount
+                            })
+                        i = j
+                        continue
+                i += 1
+        
+        # Strategy C: Find standalone amount lines and pair with nearby description
+        if not items:
+            amount_lines = [(i, clean_amount(l)) for i, l in enumerate(lines)
+                           if re.match(r'^[\d,]+\.\d{2}$', l.strip()) and clean_amount(l) > 10]
+            for idx, amt in amount_lines:
+                desc = ''
+                for di in range(max(0, idx-5), idx):
+                    candidate = lines[di].strip()
+                    if candidate and not re.match(r'^[\d,.\s%@₹]+$', candidate):
+                        if not re.search(r'total|gst|tax|hsn|quantity|rate|amount', candidate, re.I):
+                            desc = candidate
+                if desc and amt > 0:
+                    # Avoid duplicates — don't add if same amount already captured
+                    if not any(abs(existing.get('amount', 0) - amt) < 0.01 for existing in items):
+                        items.append({'description': desc, 'qty': 1.0, 'rate': amt, 'amount': amt})
+        
+        # Strategy D: OCR-resilient extraction — handles merged table cells
+        if not items:
+            full_text = ' '.join(lines)
+            # Pattern: serial_no + description + HSN(6 digits) + amount
+            for m in re.finditer(r'(?<!\d)([1-9])\s+([A-Za-z][\w\s,./\-()]{3,80}?)\s+(\d{6})\s+.*?([\d,]+\.\d{2})', full_text):
+                desc = m.group(2).strip()
+                amt = clean_amount(m.group(4))
+                if amt > 0 and not re.search(r'total|sgst|cgst|igst|round|chargeable|taxable|bank', desc, re.I):
+                    if not any(abs(ex.get('amount', 0) - amt) < 0.01 for ex in items):
+                        items.append({'description': desc, 'qty': 1.0, 'rate': amt, 'amount': amt})
+        
+        # Strategy E: Find amounts within lines (not requiring standalone amount lines)
+        if not items:
+            for i, line in enumerate(lines):
+                if re.search(r'total|sgst|cgst|igst|round|chargeable|taxable|tax\s*amount|hsn.*taxable', line, re.I):
+                    continue
+                amounts_in_line = re.findall(r'([\d,]+\.\d{2})', line)
+                for amt_str in amounts_in_line:
+                    amt = clean_amount(amt_str)
+                    if amt < 50:
+                        continue
+                    # Extract description from text before the amount in the same line
+                    idx = line.index(amt_str)
+                    before = re.sub(r'^\d{1,2}\s+', '', line[:idx]).strip()
+                    before = re.sub(r'\d{6,8}\s*', '', before).strip()
+                    desc = before if len(before) > 3 else ''
+                    # Fallback: look in previous lines
+                    if not desc:
+                        for di in range(max(0, i-5), i):
+                            c = lines[di].strip()
+                            if c and not re.match(r'^[\d,.\s%@₹|]+$', c) and not re.search(r'total|gst|tax|hsn|quantity|rate|amount|description', c, re.I):
+                                desc = c
+                    if desc and not any(abs(ex.get('amount', 0) - amt) < 0.01 for ex in items):
+                        items.append({'description': desc, 'qty': 1.0, 'rate': amt, 'amount': amt})
+                        break
+        
+        if not items:
+            preview = "\n".join(lines[:40]) if lines else "(no text extracted)"
+            frappe.logger().warning(f"Could not extract line items from this invoice.\n\n--- Extracted Text (first 40 lines) ---\n{preview}")
+            data["items_warning"] = "Could not extract line items from this invoice."
+            items = []
+        
+        # Clean up descriptions
+        for it in items:
+            it['description'] = re.sub(r'\s+', ' ', it['description']).strip()
+        
+        data["items"] = items
+
+        
+        # -------------------------------------------------------
+        # 6. Amounts - Grand Total (last occurrence wins)
+        # -------------------------------------------------------
+        all_totals = re.findall(r'(?:Grand\s*Total|Total\s*Amount)[\s:₹Rs.]*([\d,]+(?:\.\d+)?)', text, re.I)
+        if all_totals:
+            data["grand_total"] = clean_amount(all_totals[-1])
+        else:
+            # Sum items as fallback
+            data["grand_total"] = sum(it["amount"] for it in items)
+        
+        # -------------------------------------------------------
+        # 7. GST / Tax Rate extraction  
+        # KEY INSIGHT: PDFs double-print GST amounts (main table + HSN
+        # summary). So we extract the RATE from text and calculate
+        # the amount from taxable value × rate. This is 100% reliable.
+        # -------------------------------------------------------
+        gst_rate = 0.0
+        gst_amount = 0.0
+        round_off = 0.0
+        
+        # Get taxable base (net of items before tax)
+        taxable_base = sum(it.get("amount", 0) for it in items)
+        
+        # Extract tax RATES from text (rates appear exactly once, amounts appear multiple times)
+        sgst_rate_m = re.findall(r'SGST\s*@\s*(\d+(?:\.\d+)?)\s*%', text, re.I)
+        cgst_rate_m = re.findall(r'CGST\s*@\s*(\d+(?:\.\d+)?)\s*%', text, re.I)
+        igst_rate_m = re.findall(r'IGST\s*@\s*(\d+(?:\.\d+)?)\s*%', text, re.I)
+        
+        # Also look for rate patterns like "9 %" or "18%" near tax keywords
+        if not sgst_rate_m:
+            sgst_rate_m = re.findall(r'SGST[^\n]{0,30}?(\d+(?:\.\d+)?)\s*%', text, re.I)
+        if not cgst_rate_m:
+            cgst_rate_m = re.findall(r'CGST[^\n]{0,30}?(\d+(?:\.\d+)?)\s*%', text, re.I)
+        if not igst_rate_m:
+            igst_rate_m = re.findall(r'IGST[^\n]{0,30}?(\d+(?:\.\d+)?)\s*%', text, re.I)
+        
+        if igst_rate_m:
+            # Out-state: single IGST
+            gst_rate = float(igst_rate_m[-1])
+            gst_amount = round(taxable_base * gst_rate / 100, 2)
+        elif sgst_rate_m or cgst_rate_m:
+            # Same-state: SGST + CGST
+            sr = float(sgst_rate_m[-1]) if sgst_rate_m else 0
+            cr = float(cgst_rate_m[-1]) if cgst_rate_m else 0
+            gst_rate = round(sr + cr, 2)
+            gst_amount = round(taxable_base * gst_rate / 100, 2)
+        
+        # Fallback: try to find total tax from "Tax Amount" summary table
+        if gst_amount == 0:
+            # Look for "Total" row in HSN summary - last big amount before end
+            tax_total_m = re.findall(
+                r'(?:Total\s+Tax\s*Amount|Tax\s+Amount|Taxes?\s+and\s+Charges?\s+Added)[^\n]*?([\d,]+\.\d{2})',
+                text, re.I
+            )
+            if tax_total_m:
+                gst_amount = clean_amount(tax_total_m[-1])
+        
+        # -------------------------------------------------------
+        # 8. Round Off - extract from invoice
+        # -------------------------------------------------------
+        # Pattern: "Round Off" followed by optional -ve amount on same or next line
+        round_off_m = re.search(
+            r'Round\s*(?:Off|off)[^\n]*?(-?\s*[\d,]+\.\d{2})',
+            text, re.I
+        )
+        if round_off_m:
+            round_off = float(round_off_m.group(1).replace(',', '').replace(' ', ''))
+        else:
+            # Try line-window scan
+            for i, line in enumerate(lines):
+                if re.search(r'round\s*off', line, re.I):
+                    for j in range(i, min(i + 4, len(lines))):
+                        nxt = lines[j].strip()
+                        amt_m = re.match(r'^-?\s*[\d,]+\.\d{2}$', nxt)
+                        if amt_m:
+                            round_off = float(nxt.replace(',', ''))
+                            break
+                    break
+        
+        # -------------------------------------------------------
+        # 9. Final Invoice Amount (Grand Total with round off)
+        # -------------------------------------------------------
+        # Try multiple patterns to find the final payable amount
+        final_amount = 0.0
+        
+        # Pattern A: "₹ XXXX.XX" - rupee symbol with amount (most reliable for Indian invoices)
+        rupee_amounts = re.findall(r'[₹\u20b9]\s*([\d,]+\.\d{2})', text)
+        if rupee_amounts:
+            # Take the last (usually the grand total at the bottom)
+            final_amount = clean_amount(rupee_amounts[-1])
+        
+        # Pattern B: "Grand Total" or "Total Amount"
+        if not final_amount:
+            gt_m = re.findall(r'(?:Grand\s*Total|Total\s*Amount|Net\s*Payable)[^\n\d₹]*([\d,]+\.\d{2})', text, re.I)
+            if gt_m:
+                final_amount = clean_amount(gt_m[-1])
+        
+        # Pattern C: Calculate from parts
+        if not final_amount:
+            final_amount = round(taxable_base + gst_amount + round_off, 2)
+        
+        # Cross-check: if grand_total was already found and is close, use it
+        existing_grand = data.get('grand_total', 0)
+        if existing_grand > 0 and abs(existing_grand - final_amount) < 10:
+            final_amount = existing_grand  # They agree, use what we already have
+        
+        data["gst_amount"] = round(gst_amount, 2)
+        data["gst_rate"] = gst_rate
+        data["round_off"] = round_off
+        data["grand_total"] = final_amount if final_amount > 0 else existing_grand
+        data["raw_text"] = text
+        
+        # -------------------------------------------------------
+        # Done
+        # -------------------------------------------------------
+        return {"status": "success", "data": data}
+        
+    except Exception as e:
+        frappe.log_error("Invoice Extraction Error", frappe.get_traceback())
+        return {"status": "error", "message": f"An error occurred while processing the invoice: {str(e)}"}
+
+
+@frappe.whitelist()
+def fetch_po_and_site_details(text_input, invoice_data):
+    """
+    Parses user natural language input for Circuit ID/PO No and payment details.
+    Fetches Site and PO data to populate the missing fields.
+    """
+    import json
+    import re
+    data = json.loads(invoice_data)
+    
+    circuit_match = re.search(r'\b\d{5,8}\b', text_input)
+    po_match = re.search(r'PO-\d{4}-\d+', text_input)
+    
+    circuit_id = circuit_match.group(0) if circuit_match else "71249"
+    
+    payment_type = "QRC" if "qrc" in text_input.lower() else "MRC"
+    expense_type = "Variable" if "variable" in text_input.lower() else "Fixed"
+    
+    # Default mock fetched data
+    site_name = "The Kangra Central - Dharamshala"
+    lms_id = "LMS-003721"
+    payment_cycle = "15"
+    duration_from = "01-07-2026"
+    duration_to = "30-09-2026"
+    
+    # Try fetching real data from Site
+    if frappe.db.exists("Site", {"circuit_id": circuit_id}):
+        site_doc = frappe.get_doc("Site", {"circuit_id": circuit_id})
+        site_name = site_doc.site_name or site_name
+        lms_id = site_doc.lms_id or lms_id
+    
+    data.update({
+        "circuit_id": circuit_id,
+        "site_name": site_name,
+        "lms_id": lms_id,
+        "payment_type": payment_type,
+        "expense_type": expense_type,
+        "payment_cycle": payment_cycle,
+        "duration_from": duration_from,
+        "duration_to": duration_to
+    })
+    
+    return {
+        "status": "success",
+        "data": data
+    }
+
+@frappe.whitelist()
+def create_draft_purchase_invoice(invoice_data):
+    """
+    Creates a draft Purchase Invoice in ERPNext using the structured data.
+    """
+    import json
+    
+    # DEBUG: Log every single call
+    frappe.log_error("API Reached - create_draft_purchase_invoice", str(invoice_data)[:1000])
+    
+    data = json.loads(invoice_data)
+    
+    try:
+        # Prevent Duplicate
+        if frappe.db.exists("Purchase Invoice", {"supplier": data.get("supplier_name"), "bill_no": data.get("invoice_no")}):
+            return {"status": "error", "message": "Duplicate Invoice! An invoice with this Supplier and Invoice No already exists."}
+            
+        # Supplier check
+        supplier = data.get("supplier_name")
+        if not frappe.db.exists("Supplier", supplier):
+            # Create a mock supplier or fail
+            supplier = frappe.db.get_value("Supplier", {"supplier_name": ["like", "%Bharti%"]}) or "Bharti Airtel Limited"
+            if not frappe.db.exists("Supplier", supplier):
+                doc = frappe.get_doc({
+                    "doctype": "Supplier",
+                    "supplier_name": supplier,
+                    "supplier_group": "All Supplier Groups"
+                })
+                doc.insert(ignore_permissions=True)
+                
+        # Basic formatting dates (DD-MM-YYYY to YYYY-MM-DD)
+        def format_date(d_str):
+            if "-" in d_str and len(d_str.split("-")[0]) == 2:
+                parts = d_str.split("-")
+                return f"{parts[2]}-{parts[1]}-{parts[0]}"
+            return d_str
+
+        pi = frappe.new_doc("Purchase Invoice")
+        pi.supplier = supplier
+        pi.bill_no = data.get("invoice_no")
+        pi.bill_date = format_date(data.get("invoice_date"))
+        pi.posting_date = format_date(data.get("posting_date"))
+        
+        pi.custom_dutation_from = format_date(data.get("duration_from")) if data.get("duration_from") else None
+        pi.custom_duration_to = format_date(data.get("duration_to")) if data.get("duration_to") else None
+        pi.custom_lms_id = data.get("lms_id")
+        pi.custom_circuit_id = data.get("circuit_id")
+        
+        po_number = None
+        if pi.custom_lms_id:
+            lms_doc = frappe.db.get_value("Lastmile Services Master", pi.custom_lms_id, 
+                                          ["circuit_id", "po_number", "billing_mode", "payment_cycle"], as_dict=True)
+            if lms_doc:
+                if not pi.custom_circuit_id:
+                    pi.custom_circuit_id = lms_doc.circuit_id
+                pi.custom_payment_type = data.get("payment_type") or lms_doc.billing_mode
+                pi.custom_payment_cycle = data.get("payment_cycle") or lms_doc.payment_cycle
+                po_number = lms_doc.po_number
+
+        pi.custom_payment_catogery = data.get("po_category")
+        if not pi.custom_payment_catogery and po_number:
+            po_cat = frappe.db.get_value("Purchase Order", po_number, "custom_po_category")
+            if po_cat:
+                pi.custom_payment_catogery = po_cat
+
+        if pi.custom_circuit_id and not pi.custom_site_name:
+            site_name = frappe.db.get_value("Site", pi.custom_circuit_id, "site_name")
+            if site_name:
+                pi.custom_site_name = site_name
+
+        # Add items
+        for item in data.get("items", []):
+            item_code = item.get("item_code")
+            if not item_code:
+                item_code = "Misc"
+            if po_number:
+                po_items = frappe.get_all("Purchase Order Item", filters={"parent": po_number}, fields=["item_code", "item_name"])
+                if len(po_items) == 1:
+                    item_code = po_items[0].item_code
+                elif po_items:
+                    desc_lower = (item.get("description") or "").lower()
+                    for pi_item in po_items:
+                        if pi_item.item_name and pi_item.item_name.lower() in desc_lower:
+                            item_code = pi_item.item_code
+                            break
+
+            if not frappe.db.exists("Item", item_code):
+                item_code = frappe.db.get_value("Item", {"item_name": ["like", "%Internet%"]}) or "Misc"
+            
+            item_circuit_id = pi.custom_circuit_id or data.get("circuit_id")
+            item_lms_id = pi.custom_lms_id or data.get("lms_id")
+            item_site_name = pi.custom_site_name or data.get("site_name")
+            
+            row = {
+                "item_code": item_code,
+                "description": item.get("description"),
+                "qty": item.get("qty"),
+                "rate": item.get("rate"),
+                "custom_circuit_id": item_circuit_id,
+                "custom_lms_id": item_lms_id,
+                "circuit_id": item_circuit_id,
+                "lms_id": item_lms_id,
+                "site_name": item_site_name,
+            }
+            if po_number:
+                row["purchase_order"] = po_number
+                po_item_data = frappe.db.get_value("Purchase Order Item", {"parent": po_number, "item_code": item_code}, 
+                    ["name", "project", "cost_center", "expense_account"], as_dict=True)
+                if po_item_data:
+                    row["po_detail"] = po_item_data.name
+                    if po_item_data.project:
+                        row["project"] = po_item_data.project
+                    if po_item_data.cost_center:
+                        row["cost_center"] = po_item_data.cost_center
+                    if po_item_data.expense_account:
+                        row["expense_account"] = po_item_data.expense_account
+                    
+            pi.append("items", row)
+            
+        # Auto-apply taxes based on Supplier/Company default and matched Item Codes
+        pi.set_missing_values()
+        
+        pi.taxes_and_charges = data.get("taxes_and_charges") or ""
+        
+        pi.set_taxes()
+        pi.calculate_taxes_and_totals()
+        
+        if not data.get("taxes_and_charges"):
+            pi.set("taxes", [])
+            
+        round_off = data.get("round_off", 0)
+        if round_off:
+            round_off_account = frappe.db.get_value("Account", {
+                "account_name": ["like", "%Round%"], 
+                "is_group": 0,
+                "company": pi.company
+            })
+            if round_off_account:
+                pi.append("taxes", {
+                    "charge_type": "Actual",
+                    "account_head": round_off_account,
+                    "description": "Round Off",
+                    "tax_amount": round_off
+                })
+                
+        pi.calculate_taxes_and_totals()
+            
+        if pi.shipping_address and not frappe.db.exists("Address", pi.shipping_address):
+            pi.shipping_address = None
+        if pi.billing_address and not frappe.db.exists("Address", pi.billing_address):
+            pi.billing_address = None
+        if pi.supplier_address and not frappe.db.exists("Address", pi.supplier_address):
+            pi.supplier_address = None
+            
+        pi.flags.ignore_mandatory = True
+        pi.insert(ignore_permissions=True)
+        
+        # Attach the original supplier invoice to the Purchase Invoice
+        file_url = data.get("file_url")
+        if file_url:
+            try:
+                existing = frappe.db.exists("File", {
+                    "file_url": file_url,
+                    "attached_to_doctype": "Purchase Invoice",
+                    "attached_to_name": pi.name
+                })
+                if not existing:
+                    file_doc = frappe.get_doc({
+                        "doctype": "File",
+                        "file_url": file_url,
+                        "attached_to_doctype": "Purchase Invoice",
+                        "attached_to_name": pi.name,
+                        "folder": "Home/Attachments",
+                        "is_private": 0
+                    })
+                    file_doc.insert(ignore_permissions=True)
+            except Exception as attach_err:
+                frappe.log_error("Invoice Attachment Error", str(attach_err))
+        
+        if hasattr(frappe.local, "message_log"):
+            frappe.local.message_log = []
+        if "_server_messages" in frappe.local.response:
+            del frappe.local.response["_server_messages"]
+            
+        return {
+            "status": "success",
+            "invoice_name": pi.name
+        }
+    except Exception as e:
+        if hasattr(frappe.local, "message_log"):
+            frappe.local.message_log = []
+        if "exc" in frappe.local.response:
+            del frappe.local.response["exc"]
+        if "_server_messages" in frappe.local.response:
+            del frappe.local.response["_server_messages"]
+        return {
+            "status": "error",
+            "message": str(e)
+        }
+
+###################################
+import frappe
+from frappe import _
+from frappe.utils import cint
+
+@frappe.whitelist()
+def get_supplier_activity_details(supplier, po_number=None, lms_id=None, raw_text=None):
+    if not supplier:
+        return {"status": "error", "message": "Supplier is required"}
+    
+    # We will fetch records matching the supplier. To be smart, we will calculate a matching percentage.
+    lms_records = frappe.get_all("Lastmile Services Master", 
+                                 filters={"supplier": supplier, "lms_stage": "Delivered"},
+                                 fields=["name", "supplier", "lms_stage", "lms_delivery_date", 
+                                         "billing_start_date", "order_type", "bandwith_type", "lms_brandwith_name", 
+                                         "circuit_id", "customer", "site", "solution", 
+                                         "customer_type", "site_address", "po_number", "po_released_datetime", "city"])
+    
+    results = []
+    
+    import re
+    norm_text = ""
+    if raw_text:
+        norm_text = re.sub(r'[^a-z0-9\s]', '', str(raw_text).lower())
+        
+    for row in lms_records:
+        match_score = 0
+        
+        # 1. PO Number Match
+        if po_number and row.po_number and str(po_number).lower() in str(row.po_number).lower():
+            match_score += 40
+            
+        # 2. LMS ID Match
+        if lms_id and (str(lms_id).lower() in str(row.name).lower() or str(lms_id).lower() in str(row.circuit_id or '').lower()):
+            match_score += 40
+            
+        # 3. Customer Match in Raw Text
+        if norm_text and row.customer:
+            cust_clean = re.sub(r'[^a-z0-9\s]', '', str(row.customer).lower())
+            cust_words = [w for w in cust_clean.split() if w not in ('ltd', 'pvt', 'private', 'limited', 'inc')]
+            if len(cust_words) >= 2:
+                phrase = " ".join(cust_words[:2])
+                if phrase in norm_text:
+                    match_score += 20
+            elif cust_words and cust_words[0] in norm_text:
+                match_score += 15
+                
+        # 4. Address/City Match in Raw Text
+        if norm_text:
+            if row.city and str(row.city).lower() in norm_text:
+                match_score += 10
+            if row.site_address:
+                addr_clean = re.sub(r'[^a-z0-9\s]', '', str(row.site_address).lower())
+                addr_words = [w for w in addr_clean.split() if len(w) > 4 and w not in ('road', 'street', 'floor', 'building')]
+                matched_words = sum(1 for w in addr_words if w in norm_text)
+                if matched_words > 0:
+                    match_score += (5 * min(matched_words, 4))
+                    
+        row.match_percentage = min(match_score, 100)
+        
+        # Payment Terms from Purchase Order if matched
+        row.payment_terms = ""
+        if row.po_number and frappe.db.exists("Purchase Order", row.po_number):
+            row.payment_terms = frappe.db.get_value("Purchase Order", row.po_number, "payment_terms_template") or ""
+            
+        # Fetch Site Status
+        row.site_status = ""
+        if row.site and frappe.db.exists("Site", row.site):
+            row.site_status = frappe.db.get_value("Site", row.site, "custom_stage") or frappe.db.get_value("Site", row.site, "status") or ""
+            
+        results.append(row)
+        
+    results.sort(key=lambda x: x.match_percentage, reverse=True)
+    return {"status": "success", "data": results}
+
+@frappe.whitelist()
+def get_po_or_lms_items(po_number=None, lms_id=None, circuit_id=None, ai_items=None):
+    import json
+    ai_item_list = []
+    if ai_items:
+        try:
+            ai_item_list = json.loads(ai_items)
+        except:
+            pass
+
+    items = []
+    po_items = []
+    
+    # 1. Check Purchase Order
+    if po_number and frappe.db.exists("Purchase Order", po_number):
+        po = frappe.get_doc("Purchase Order", po_number)
+        for po_item in po.items:
+            po_items.append({
+                "item_code": po_item.item_code,
+                "item_name": po_item.item_name,
+                "description": po_item.description,
+                "qty": po_item.qty,
+                "uom": po_item.uom,
+                "rate": po_item.rate,
+                "amount": po_item.amount,
+                "purchase_order": po_number,
+                "po_detail": po_item.name,
+                "cost_center": po_item.cost_center,
+                "project": po_item.project,
+                "expense_account": po_item.expense_account,
+                "circuit_id": circuit_id,
+                "custom_circuit_id": circuit_id,
+                "lms_id": lms_id,
+                "custom_lms_id": lms_id
+            })
+            
+    if ai_item_list and po_items:
+        import difflib
+        import re
+        
+        def normalize_str(s):
+            # Remove special chars and extra spaces
+            s = re.sub(r'[^a-z0-9]', '', str(s).lower())
+            return s
+            
+        for ai_item in ai_item_list:
+            ai_desc = str(ai_item.get("description") or ai_item.get("item_name") or "").lower()
+            ai_desc_norm = normalize_str(ai_desc)
+            
+            best_match = None
+            best_score = 0
+            
+            for p_item in po_items:
+                p_name = str(p_item.get("item_name") or "").lower()
+                p_desc = str(p_item.get("description") or "").lower()
+                
+                # Check for direct substring match
+                if (p_name and p_name in ai_desc) or (p_desc and p_desc in ai_desc) or \
+                   (ai_desc and ai_desc in p_name) or (ai_desc and ai_desc in p_desc):
+                    best_match = p_item
+                    best_score = 1.0
+                    break
+                    
+                # Check normalized words overlap
+                p_name_norm = normalize_str(p_name)
+                p_desc_norm = normalize_str(p_desc)
+                
+                # Use SequenceMatcher for similarity
+                score_name = difflib.SequenceMatcher(None, ai_desc_norm, p_name_norm).ratio() if p_name_norm else 0
+                score_desc = difflib.SequenceMatcher(None, ai_desc_norm, p_desc_norm).ratio() if p_desc_norm else 0
+                
+                max_score = max(score_name, score_desc)
+                
+                # Also try matching numeric parts (like "100")
+                ai_nums = re.findall(r'\d+', ai_desc)
+                p_nums = re.findall(r'\d+', p_name + " " + p_desc)
+                if ai_nums and p_nums and any(n in p_nums for n in ai_nums):
+                    max_score += 0.2  # Boost score if numbers match
+                    
+                if max_score > best_score and max_score > 0.4:
+                    best_score = max_score
+                    best_match = p_item
+            
+            if best_match:
+                # Check if we already added this PO item
+                if not any(i.get('item_code') == best_match.get('item_code') for i in items):
+                    matched_item = best_match.copy()
+                    
+                    # RATE: Always from Purchase Order (the agreed contracted rate)
+                    po_rate = float(best_match.get("rate") or 0)
+                    
+                    # QTY: Use AI-extracted qty, but sanitize it.
+                    # AI often misreads product specs as qty (e.g. "100" from "100 MBPS").
+                    # For telecom/ISP service invoices, qty is almost always 1 per billing cycle.
+                    # A qty > 10 for a service line item is almost certainly a misread.
+                    raw_ai_qty = ai_item.get("qty")
+                    try:
+                        raw_ai_qty = float(raw_ai_qty) if raw_ai_qty else 1
+                    except:
+                        raw_ai_qty = 1
+                    
+                    # If qty > 10, it's likely a bandwidth spec or product name number
+                    # that got misidentified as qty. Default to 1.
+                    if raw_ai_qty > 10:
+                        ai_qty = 1.0
+                    else:
+                        ai_qty = raw_ai_qty if raw_ai_qty > 0 else 1.0
+                    
+                    matched_item["rate"] = po_rate
+                    matched_item["qty"] = ai_qty
+                    matched_item["amount"] = round(po_rate * ai_qty, 2)
+                        
+                    items.append(matched_item)
+    else:
+        # If no AI items provided, fallback to all PO items
+        items = po_items
+            
+    # 2. Check LMS ID (if no PO items found)
+    if not items and lms_id and frappe.db.exists("Lastmile Services Master", lms_id):
+        lms_doc = frappe.get_doc("Lastmile Services Master", lms_id)
+        if hasattr(lms_doc, 'lms_items') and lms_doc.lms_items:
+            for lms_item in lms_doc.lms_items:
+                items.append({
+                    "item_code": lms_item.item_code,
+                    "item_name": getattr(lms_item, 'item_name', ''),
+                    "description": getattr(lms_item, 'description', ''),
+                    "qty": getattr(lms_item, 'qty', 1),
+                    "rate": getattr(lms_item, 'rate', 0),
+                    "amount": getattr(lms_item, 'amount', 0),
+                    "circuit_id": circuit_id,
+                    "custom_circuit_id": circuit_id,
+                    "lms_id": lms_id,
+                    "custom_lms_id": lms_id
+                })
+    
+    return items
+
+# --- END: AI Purchase Invoice Creation Logic ---
+
+# --- START: Purchase Invoice Stage TAT & Ageing ---
+@frappe.whitelist()
+def get_purchase_invoice_stage_history(docname, creation=None):
+    from frappe.utils import getdate, nowdate, date_diff
+    import json
+    
+    if not creation:
+        creation = nowdate()
+    
+    # 1. Calendar Ageing (count all days, no holiday list)
+    ageing = date_diff(nowdate(), getdate(creation))
+    
+    # 2. Fetch TAT Target
+    tat_target = 30
+    grade_name = "Standard"
+    
+    # 3. Stage history
+    versions = frappe.db.sql("""
+        SELECT creation, data
+        FROM `tabVersion`
+        WHERE ref_doctype='Purchase Invoice' AND docname=%s
+        ORDER BY creation ASC
+    """, (docname,), as_dict=True)
+    
+    history = {}
+    for v in versions:
+        try:
+            data = json.loads(v.data)
+            for change in data.get("changed", []):
+                if change[0] == "status":
+                    new_stage = change[2]
+                    if new_stage not in history:
+                        history[new_stage] = v.creation
+        except Exception:
+            pass
+            
+    return {
+        "ageing_days": ageing,
+        "tat_target": tat_target,
+        "grade_name": grade_name,
+        "history": history
+    }
+# --- END: Purchase Invoice Stage TAT & Ageing ---
+
+# --- Start: Bulk PO ---
+@frappe.whitelist()
+def make_po_from_multiple_mr(mr_names):
+    import json
+    try:
+        mr_names = json.loads(mr_names)
+    except Exception:
+        pass
+    
+    if not mr_names:
+        return
+        
+    suppliers = set()
+    company = None
+    for mr in mr_names:
+        mr_doc = frappe.db.get_value("Material Request", mr, ["custom_supplier", "company"], as_dict=True)
+        if mr_doc and mr_doc.get("custom_supplier"):
+            suppliers.add(mr_doc.custom_supplier)
+            
+        if mr_doc and not company:
+            company = mr_doc.company
+        elif mr_doc and company != mr_doc.company:
+            frappe.throw("Selected Material Requests belong to different companies.")
+
+    if len(suppliers) > 1:
+        frappe.throw("Selected Material Requests have different suppliers. Please select Material Requests with the same supplier.")
+    
+    from erpnext.stock.doctype.material_request.material_request import make_purchase_order
+    
+    po = None
+    for mr in mr_names:
+        mapped_po = make_purchase_order(mr)
+        if not po:
+            po = mapped_po
+        else:
+            for item in mapped_po.get("items", []):
+                po.append("items", item)
+                
+    if po:
+        if suppliers:
+            po.supplier = list(suppliers)[0]
+            
+        # Ensure schedule_date is set (it might be cleared by Frappe if the MR date is in the past)
+        if not po.schedule_date:
+            dates = [d.schedule_date for d in po.get("items") if d.schedule_date]
+            if dates:
+                po.schedule_date = min(dates)
+            else:
+                from frappe.utils import nowdate
+                po.schedule_date = nowdate()
+            
+        # Clear header-level fields that should not be set for bulk POs
+        po.custom_bandwidth = None
+        po.custom_lms_id = None
+        po.custom_site_circuit_id = None
+        
+        po.flags.ignore_mandatory = True
+        po.insert(ignore_permissions=True)
+        return po.name
+
+# --- END: Bulk PO ---
+
+###################################################################################
+
+################################################################################
+# --- START: Bulk Feasibility Upload ---
+################################################################################
+
+@frappe.whitelist()
+def download_feasibility_template():
+    import openpyxl
+    from io import BytesIO
+    
+    frappe.local.response.filename = "Feasibility_Upload_Template.xlsx"
+    
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Feasibility Template"
+    
+    headers = [
+        "Feasibility From", "Customer Name", "Site Name", "Customer Request", "Sales Person", 
+        "Customer Type", "Order Type", "Site Type", "Site ID / Legal Code", 
+        "Solution Code", "Static IP", "No. of Static IP Required", "Config Type", 
+        "Managed Services", "Primary Data Plan Code", "Secondary Data Plan Code", 
+        "Central Spoke", "Mobile", "Central Email", "Primary Contact Person", 
+        "Primary Contact Mobile", "Email", "Alternate Contact Person", 
+        "Alternate Contact Mobile", "Secondary Email", "Address/ Street", "Pincode",
+        "Latitude", "Longitude"
+    ]
+    
+    sample_data = [
+        "Customer", "Acme Corp", "Site 101", "2026-07-10", "John Sales", 
+        "Paid Customer", "Service", "Branch", "LGL-001", 
+        "SOL-001", "No", "0", "Remote Config", 
+        "Proactive", "PDP-001", "SDP-002", "CS-123", "9876543210", "central@acme.com",
+        "John Doe", "9876543211", "john@acme.com", "Jane Doe", 
+        "9876543212", "jane@acme.com", "123 Main St", "400001",
+        "28.6139", "77.2090"
+    ]
+    
+    # Instruction note row
+    ws.append(["NOTE: Please provide either a Pincode OR Latitude and Longitude. If coordinates are provided, the system will automatically fetch the address details."])
+    ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=len(headers))
+    # Style the note
+    from openpyxl.styles import Font, Alignment
+    note_cell = ws.cell(row=1, column=1)
+    note_cell.font = Font(bold=True, color="FF0000")
+    note_cell.alignment = Alignment(horizontal="center")
+
+    ws.append(headers)
+    
+    # mark mandatory in red
+    mandatory_headers = [
+        "Customer Name", "Site Name", "Customer Request", "Sales Person", 
+        "Customer Type", "Order Type", "Site Type", "Solution Code", 
+        "Config Type", "Managed Services", "Primary Contact Person", "Address/ Street"
+    ]
+    header_row = ws[2]
+    for cell in header_row:
+        if cell.value in mandatory_headers or cell.value == "Pincode":
+            cell.font = Font(bold=True, color="FF0000")
+        else:
+            cell.font = Font(bold=True)
+            
+    ws.append(sample_data)
+    
+    # Auto-adjust column widths
+    from openpyxl.utils import get_column_letter
+    for col in ws.columns:
+        max_length = 0
+        column = get_column_letter(col[0].column)
+        for cell in col:
+            try:
+                # Skip merged cell in row 1 for width calculation
+                if cell.row == 1:
+                    continue
+                if len(str(cell.value)) > max_length:
+                    max_length = len(str(cell.value))
+            except:
+                pass
+        adjusted_width = (max_length + 2)
+        ws.column_dimensions[column].width = adjusted_width
+
+    f = BytesIO()
+    wb.save(f)
+    file_bytes = f.getvalue()
+    
+    frappe.local.response.filecontent = file_bytes
+    frappe.local.response.type = "download"
+
+@frappe.whitelist()
+def process_bulk_feasibility(file_name, file_data, validate_only=0):
+    import base64
+    import csv
+    import re
+    from io import StringIO, BytesIO
+    from frappe.utils import nowdate
+    
+    try:
+        decoded_data = base64.b64decode(file_data)
+    except Exception as e:
+        frappe.throw(f"Error decoding file. {str(e)}")
+
+    HEADER_MAP = {
+        "feasibility from": "feaseibility_from",
+        "customer name": "customer",
+        "site name": "site_name",
+        "customer request": "customer_request",
+        "sales person": "sales_person",
+        "customer type": "customer_type",
+        "order type": "order_type",
+        "site type": "site_type",
+        "site id / legal code": "site_id__legal_code",
+        "solution code": "solution_code",
+        "static ip": "static_ip",
+        "no. of static ip required": "no_of_static_ip_required",
+        "no of static ip required": "no_of_static_ip_required",
+        "config type": "config_type",
+        "managed services": "managed_services",
+        "primary data plan code": "primary_data_plan",
+        "secondary data plan code": "secondary_data_plan",
+        "central spoke": "central_spoke",
+        "mobile": "mobile",
+        "central email": "central_email",
+        "primary contact person": "contact_person",
+        "primary contact mobile": "primary_contact_mobile",
+        "email": "email",
+        "alternate contact person": "alternate_contact_person",
+        "alternate contact mobile": "alternate_contact_mobile",
+        "secondary email": "secondary_email",
+        "address/ street": "address_street",
+        "pincode": "pincode",
+        "latitude": "latitude",
+        "longitude": "longitude"
+    }
+
+    rows = []
+    
+    if file_name.endswith('.csv'):
+        try:
+            f = StringIO(decoded_data.decode('utf-8'))
+            reader = csv.reader(f)
+            headers = []
+            header_found = False
+            for row in reader:
+                if not header_found:
+                    row_lower = [str(h).strip().lower() for h in row]
+                    if "customer name" in row_lower or "site name" in row_lower:
+                        headers = row_lower
+                        header_found = True
+                else:
+                    row_data = {}
+                    for i, cell in enumerate(row):
+                        if i < len(headers):
+                            mapped_header = HEADER_MAP.get(headers[i], headers[i])
+                            row_data[mapped_header] = cell
+                    if any(str(v).strip() for v in row_data.values() if v is not None):
+                        rows.append(row_data)
+        except Exception as e:
+            frappe.throw(f"Error reading CSV file. {str(e)}")
+    elif file_name.endswith('.xlsx') or file_name.endswith('.xls'):
+        try:
+            import openpyxl
+            wb = openpyxl.load_workbook(filename=BytesIO(decoded_data), data_only=True)
+            sheet = wb.active
+            
+            headers = []
+            header_found = False
+            for row in sheet.iter_rows(values_only=True):
+                if not header_found:
+                    row_lower = [str(cell).strip().lower() if cell else "" for cell in row]
+                    if "customer name" in row_lower or "site name" in row_lower:
+                        headers = [str(cell).strip().lower() if cell else f"col_{i}" for i, cell in enumerate(row)]
+                        header_found = True
+                else:
+                    row_data = {}
+                    for i, cell in enumerate(row):
+                        if i < len(headers):
+                            mapped_header = HEADER_MAP.get(headers[i], headers[i])
+                            row_data[mapped_header] = cell
+                    if any(str(v).strip() for v in row_data.values() if v is not None):
+                        rows.append(row_data)
+        except Exception as e:
+            frappe.throw(f"Error reading Excel file. {str(e)}")
+    else:
+        frappe.throw("Unsupported file format. Please upload a CSV or XLSX file.")
+
+    success_count = 0
+    errors = []
+    
+    # Helper: safely convert Excel values to string (Excel reads numbers as int/float)
+    def safe_str(val):
+        if val is None:
+            return None
+        # Excel reads numeric cells as float (e.g. 491228.0) — convert to int first
+        if isinstance(val, float) and val == int(val):
+            val = int(val)
+        s = str(val).strip()
+        return s if s else None
+
+    # Pass 1: Validate all rows before any updates
+    mandatory_fields = {
+        "customer": "Customer Name",
+        "site_name": "Site Name",
+        "customer_request": "Customer Request",
+        "sales_person": "Sales Person",
+        "customer_type": "Customer Type",
+        "order_type": "Order Type",
+        "site_type": "Site Type",
+        "solution_code": "Solution Code",
+        "config_type": "Config Type",
+        "managed_services": "Managed Services",
+        "contact_person": "Primary Contact Person",
+        "address_street": "Address/ Street"
+    }
+    validation_errors = []
+    for row_idx, row in enumerate(rows, start=2):
+        missing = []
+        for field, label in mandatory_fields.items():
+            if not safe_str(row.get(field)):
+                missing.append(label)
+                
+        has_pincode = bool(safe_str(row.get("pincode")))
+        has_lat_lon = bool(safe_str(row.get("latitude"))) and bool(safe_str(row.get("longitude")))
+        if not has_pincode and not has_lat_lon:
+            missing.append("Pincode OR (Latitude and Longitude)")
+            
+        if missing:
+            site_n = safe_str(row.get("site_name")) or "Unknown"
+            validation_errors.append(f"Row {row_idx} ({site_n}): Missing mandatory fields - {', '.join(missing)}")
+            
+    if validation_errors:
+        return {"status": "error", "errors": validation_errors, "success_count": 0, "total_rows": len(rows)}
+        
+    if int(validate_only) == 1:
+        return {"status": "success", "message": "Validation passed", "total_rows": len(rows)}
+        
+    pincode_cache = {}
+    
+    from datetime import datetime
+    def parse_date(date_val):
+        if not date_val: return nowdate()
+        if isinstance(date_val, datetime):
+            return date_val.strftime('%Y-%m-%d')
+        
+        date_str = str(date_val).strip()
+        # Common formats including DD-MM-YYYY
+        for fmt in ("%Y-%m-%d", "%d-%m-%Y", "%m/%d/%Y", "%d/%m/%Y", "%Y/%m/%d"):
+            try:
+                return datetime.strptime(date_str, fmt).strftime('%Y-%m-%d')
+            except ValueError:
+                pass
+        return date_str
+
+
+
+    for row_idx, row in enumerate(rows, start=2):
+        try:
+            doc = frappe.new_doc("Feasibility")
+            doc.feaseibility_from = safe_str(row.get("feaseibility_from")) or "Customer"
+            doc.site_name = safe_str(row.get("site_name"))
+            doc.customer = safe_str(row.get("customer"))
+            doc.customer_request = parse_date(row.get("customer_request"))
+            doc.sales_person = safe_str(row.get("sales_person"))
+            doc.customer_type = safe_str(row.get("customer_type"))
+            doc.order_type = safe_str(row.get("order_type")) or "Service"
+            doc.site_type = safe_str(row.get("site_type"))
+            doc.site_id__legal_code = safe_str(row.get("site_id__legal_code"))
+            doc.solution_code = safe_str(row.get("solution_code"))
+            doc.static_ip = safe_str(row.get("static_ip")) or "No"
+            doc.no_of_static_ip_required = safe_str(row.get("no_of_static_ip_required"))
+            doc.config_type = safe_str(row.get("config_type")) or "Remote Config"
+            doc.managed_services = safe_str(row.get("managed_services")) or "Proactive"
+            doc.primary_data_plan = safe_str(row.get("primary_data_plan"))
+            doc.secondary_data_plan = safe_str(row.get("secondary_data_plan"))
+            # Central Spoke will be linked dynamically after contact verification
+            # doc.central_spoke = safe_str(row.get("central_spoke"))
+            doc.contact_person = safe_str(row.get("contact_person"))
+            doc.primary_contact_mobile = safe_str(row.get("primary_contact_mobile"))
+            doc.email = safe_str(row.get("email"))
+            doc.alternate_contact_person = safe_str(row.get("alternate_contact_person"))
+            doc.alternate_contact_mobile = safe_str(row.get("alternate_contact_mobile"))
+            doc.secondary_email = safe_str(row.get("secondary_email"))
+            doc.address_street = safe_str(row.get("address_street"))
+            doc.pincode = safe_str(row.get("pincode"))
+            doc.latitude = safe_str(row.get("latitude"))
+            doc.longitude = safe_str(row.get("longitude"))
+            
+            # 1. Reverse Geocode if Lat & Lon are provided
+            if doc.latitude and doc.longitude:
+                try:
+                    lat_f = float(doc.latitude)
+                    lon_f = float(doc.longitude)
+                    import requests as req
+                    geo_url = f"https://nominatim.openstreetmap.org/reverse?format=json&lat={lat_f}&lon={lon_f}"
+                    geo_headers = {'User-Agent': 'Nexapp Feasibility Import'}
+                    geo_resp = req.get(geo_url, headers=geo_headers, timeout=10)
+                    geo_data = geo_resp.json()
+                    
+                    if geo_data and geo_data.get("address"):
+                        addr = geo_data.get("address")
+                        # Format address street just like JS
+                        street_val = geo_data.get("display_name", "")
+                        heading = "\n\nAddress as per Latitude & Longitude:\n____________________________________\n"
+                        if doc.address_street:
+                            doc.address_street += heading + street_val
+                        else:
+                            doc.address_street = "Address as per Latitude & Longitude:\n____________________________________\n" + street_val
+                            
+                        # If a pincode was found via lat/lon, use it for the API lookup, unless user explicitly provided one
+                        fetched_pincode = addr.get("postcode", "")
+                        if fetched_pincode and len(str(fetched_pincode).strip()) == 6 and not doc.pincode:
+                            doc.pincode = str(fetched_pincode).strip()
+                            
+                        # Fallback details directly from openstreetmap in case postal api fails
+                        doc.city = addr.get("city") or addr.get("town") or addr.get("village") or addr.get("suburb") or addr.get("county") or ""
+                        doc.district = addr.get("state_district") or addr.get("district") or addr.get("county") or ""
+                        doc.state = addr.get("state", "")
+                        doc.country = addr.get("country", "India")
+                        
+
+                except Exception as geo_err:
+                    frappe.log_error(f"Geocoding failed for row {row_idx}: {str(geo_err)}", "Bulk Feasibility Geocoding")
+
+            # 2. Pincode Auto-fetch (Overrides city/district/state if postal API succeeds)
+            if doc.pincode:
+                pin_val = str(doc.pincode).strip()
+                # Remove any non-digit chars and validate
+                pin_clean = re.sub(r'\D', '', pin_val)
+                if len(pin_clean) == 6:
+                    if pin_clean not in pincode_cache:
+                        try:
+                            import requests as req
+                            api_url = f"https://api.postalpincode.in/pincode/{pin_clean}"
+                            headers = {
+                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                            }
+                            resp = req.get(api_url, headers=headers, timeout=15)
+                            api_data = resp.json()
+                            if (isinstance(api_data, list) and len(api_data) > 0
+                                    and isinstance(api_data[0], dict)
+                                    and api_data[0].get("Status") == "Success"):
+                                po_list = api_data[0].get("PostOffice")
+                                if isinstance(po_list, list) and len(po_list) > 0:
+                                    po = po_list[0]
+                                    pincode_cache[pin_clean] = {
+                                        "city": po.get("Block", ""),
+                                        "district": po.get("District", ""),
+                                        "state": po.get("State", ""),
+                                        "country": po.get("Country", "India")
+                                    }
+                                else:
+                                    pincode_cache[pin_clean] = {}
+                            else:
+                                pincode_cache[pin_clean] = {}
+                        except Exception as api_err:
+                            frappe.log_error(f"Pincode API failed for {pin_clean}: {str(api_err)}", "Bulk Feasibility Pincode Lookup")
+                            pincode_cache[pin_clean] = {}
+                    
+                    details = pincode_cache.get(pin_clean, {})
+                    if details:
+                        doc.city = details.get("city")
+                        doc.district = details.get("district")
+                        doc.state = details.get("state")
+                        doc.country = details.get("country")
+            
+            state_territory_map = {
+                "Delhi": "North", "Haryana": "North", "Punjab": "North", "Himachal Pradesh": "North", "Uttar Pradesh": "North", "Uttarakhand": "North", "Jammu and Kashmir": "North", "Chandigarh": "North", "Rajasthan": "North", "Ladakh": "North",
+                "Karnataka": "South", "Tamil Nadu": "South", "Kerala": "South", "Andhra Pradesh": "South", "Telangana": "South", "Puducherry": "South", "Lakshadweep": "South",
+                "Maharashtra": "West", "Gujarat": "West", "Goa": "West", "Dadra and Nagar Haveli": "West", "Daman and Diu": "West", "Madhya Pradesh": "West", "Chattisgarh": "West", "Chhattisgarh": "West",
+                "West Bengal": "East", "Odisha": "East", "Bihar": "East", "Jharkhand": "East", "Assam": "East", "Sikkim": "East", "Meghalaya": "East", "Tripura": "East", "Arunachal Pradesh": "East", "Manipur": "East", "Nagaland": "East", "Mizoram": "East", "Andaman and Nicobar Islands": "East"
+            }
+            if doc.state and doc.state in state_territory_map:
+                doc.territory = state_territory_map[doc.state]
+
+            doc.feasibility_status = "Pending"
+            
+            # --- Contact Verification & Creation ---
+            mobile_num = safe_str(row.get("mobile"))
+            if mobile_num:
+                # Clean mobile number to prevent "Value too big" for max length 10
+                digits_only = re.sub(r'\D', '', mobile_num)
+                if len(digits_only) >= 10:
+                    mobile_num = digits_only[-10:]
+                else:
+                    # Fallback truncate to 10 chars if it's less than 10 digits but has other chars
+                    mobile_num = mobile_num[:10]
+                    
+            central_email = safe_str(row.get("central_email"))
+            if mobile_num:
+                # Check if contact exists by phone
+                existing_contact = frappe.db.get_value("Contact Phone", {"phone": mobile_num}, "parent")
+                contact_name = existing_contact
+                
+                if not contact_name:
+                    # Create new Contact
+                    contact_doc = frappe.new_doc("Contact")
+                    contact_doc.first_name = safe_str(row.get("central_spoke")) or safe_str(row.get("contact_person")) or safe_str(row.get("customer")) or "Unknown"
+                    contact_doc.status = "Passive"
+                    # Set type from Feasibility From
+                    contact_type = safe_str(row.get("feaseibility_from")) or "Customer"
+                    contact_doc.type = contact_type
+                    
+                    # Try to map Customer if it exists
+                    cust_link = safe_str(row.get("customer"))
+                    if cust_link and frappe.db.exists("Customer", cust_link):
+                        contact_doc.append("links", {
+                            "link_doctype": "Customer",
+                            "link_name": cust_link
+                        })
+                    
+                    contact_doc.append("phone_nos", {
+                        "phone": mobile_num,
+                        "is_primary_mobile_no": 1
+                    })
+                    
+                    if central_email:
+                        contact_doc.append("email_ids", {
+                            "email_id": central_email,
+                            "is_primary": 1
+                        })
+                        
+                    contact_doc.flags.ignore_mandatory = True
+                    contact_doc.flags.ignore_links = True
+                    contact_doc.insert(ignore_permissions=True)
+                    contact_name = contact_doc.name
+                    
+                # Link the verified/created Contact to the Feasibility record
+                doc.central_spoke = contact_name
+            # --- End Contact Logic ---
+            
+            doc.insert(ignore_permissions=True, ignore_mandatory=True)
+            success_count += 1
+        except Exception as e:
+            import traceback
+            tb = traceback.format_exc()
+            error_msg = str(e)
+            if "list" in error_msg.lower():
+                errors.append(f"Row {row_idx} ({row.get('site_name', 'Unknown')}): {error_msg}<br><pre style='font-size:10px;text-align:left;'>{tb}</pre>")
+            else:
+                errors.append(f"Row {row_idx} ({row.get('site_name', 'Unknown')}): {error_msg}")
+
+    if errors:
+        return {"status": "error", "errors": errors, "success_count": success_count}
+
+    return {"status": "success", "success_count": success_count}
+
+################################################################################
+# --- END: Bulk Feasibility Upload ---
+################################################################################
+
+# Start Roundoff for the Payment Entry
+import frappe
+from frappe.utils import flt
+
+
+ROUNDING_TOLERANCE = 0.50
+
+
+def update_expense_claim_rounding(doc, method=None):
+    """
+    Update Expense Claim reimbursement after Payment Entry
+    submit/cancel and ignore tiny rounding differences.
+    """
+
+    for ref in doc.references:
+
+        if ref.reference_doctype != "Expense Claim":
+            continue
+
+        expense_claim = ref.reference_name
+
+        # Calculate total reimbursed from all submitted Payment Entries
+        total_reimbursed = flt(frappe.db.sql("""
+            SELECT IFNULL(SUM(per.allocated_amount), 0)
+            FROM `tabPayment Entry Reference` per
+            INNER JOIN `tabPayment Entry` pe
+                ON pe.name = per.parent
+            WHERE pe.docstatus = 1
+              AND per.reference_doctype = 'Expense Claim'
+              AND per.reference_name = %s
+        """, expense_claim)[0][0])
+
+        ec = frappe.get_doc("Expense Claim", expense_claim)
+
+        outstanding = round(ec.grand_total - total_reimbursed, 2)
+
+        # Ignore tiny rounding differences
+        if abs(outstanding) <= ROUNDING_TOLERANCE:
+            total_reimbursed = ec.grand_total
+            status = "Paid"
+            is_paid = 1
+        else:
+            status = "Paid" if outstanding <= 0 else "Unpaid"
+            is_paid = 1 if status == "Paid" else 0
+
+        frappe.db.set_value(
+            "Expense Claim",
+            expense_claim,
+            {
+                "total_amount_reimbursed": total_reimbursed,
+                "status": status,
+                "is_paid": is_paid
+            },
+            update_modified=False
+        )
+# Start Roundoff for the Payment Entry            
+#################################################################################
+
+# NexAI Dashboard APIs
+
+import frappe
+import json
+from datetime import datetime
+from frappe.desk.reportview import get_filters_cond, get_match_cond
+
+# =============================================================================
+################################################################################
+# --- START: Helpdesk Custom Report Builder & Charts ---
+################################################################################
+@frappe.whitelist()
+def get_ticket_filter_options():
+    customers = frappe.db.sql("""
+        SELECT DISTINCT customer FROM `tabHD Ticket` 
+        WHERE customer IS NOT NULL AND customer != '' 
+        ORDER BY customer
+    """, as_list=True)
+    
+    statuses = frappe.db.sql("""
+        SELECT DISTINCT status FROM `tabHD Ticket` 
+        WHERE status IS NOT NULL AND status != '' 
+        ORDER BY status
+    """, as_list=True)
+    
+    raised_by = frappe.db.sql("""
+        SELECT DISTINCT raised_by FROM `tabHD Ticket` 
+        WHERE raised_by IS NOT NULL AND raised_by != '' 
+        ORDER BY raised_by
+    """, as_list=True)
+    
+    circuit_ids = frappe.db.sql("""
+        SELECT DISTINCT custom_circuit_id FROM `tabHD Ticket` 
+        WHERE custom_circuit_id IS NOT NULL AND custom_circuit_id != '' 
+        ORDER BY custom_circuit_id
+    """, as_list=True)
+    
+    return {
+        "customers": [c[0] for c in customers],
+        "statuses": [s[0] for s in statuses],
+        "users": [u[0] for u in raised_by],
+        "circuit_ids": [cid[0] for cid in circuit_ids]
+    }
+
+@frappe.whitelist()
+def get_ticket_custom_report_data(filters=None, fields=None):
+    if isinstance(filters, str):
+        filters = frappe.parse_json(filters)
+    if isinstance(fields, str):
+        fields = frappe.parse_json(fields)
+
+    if not fields:
+        return []
+
+    # Map requested labels/fields to actual DB columns
+    field_map = {
+        "HD Ticket": {
+            "ticket_id": "name as ticket_id",
+            "subject": "subject",
+            "status": "status",
+            "priority": "priority",
+            "raised_by": "raised_by",
+            "customer": "customer",
+            "assigned_to": "_assign as assigned_to",
+            "creation_date": "DATE(creation) as creation_date",
+            "resolution_date": "DATE(resolution_date) as resolution_date",
+            "first_responded_on": "DATE(first_responded_on) as first_responded_on",
+            "custom_circuit_id": "custom_circuit_id",
+            "custom_lms_id": "custom_lms_id",
+            "custom_channel": "custom_channel",
+            "description": "description"
+        }
+    }
+
+    select_clause = []
+    
+    for dt, dt_fields in fields.items():
+        if dt == "HD Ticket":
+            for f in dt_fields:
+                if f in field_map["HD Ticket"]:
+                    select_clause.append(field_map["HD Ticket"][f])
+
+    if not select_clause:
+        return []
+
+    conditions = []
+    if filters:
+        if filters.get("creation_date_range") == "Current Month":
+            conditions.append("MONTH(DATE(creation)) = MONTH(NOW()) AND YEAR(DATE(creation)) = YEAR(NOW())")
+        elif filters.get("creation_date_range") == "Last 3 Months":
+            conditions.append("DATE(creation) >= DATE_SUB(NOW(), INTERVAL 3 MONTH)")
+        elif filters.get("creation_date_range") == "Custom" and filters.get("creation_from_date") and filters.get("creation_to_date"):
+            conditions.append("DATE(creation) BETWEEN '%s' AND '%s'" % (filters.get("creation_from_date"), filters.get("creation_to_date")))
+        
+        if filters.get("resolution_date_range") == "Current Month":
+            conditions.append("MONTH(DATE(resolution_date)) = MONTH(NOW()) AND YEAR(DATE(resolution_date)) = YEAR(NOW())")
+        elif filters.get("resolution_date_range") == "Last 3 Months":
+            conditions.append("DATE(resolution_date) >= DATE_SUB(NOW(), INTERVAL 3 MONTH)")
+        elif filters.get("resolution_date_range") == "Custom" and filters.get("resolution_from_date") and filters.get("resolution_to_date"):
+            conditions.append("DATE(resolution_date) BETWEEN '%s' AND '%s'" % (filters.get("resolution_from_date"), filters.get("resolution_to_date")))
+        
+        if filters.get("status") and filters.get("status") != "All":
+            statuses_list = filters.get("status")
+            if isinstance(statuses_list, list):
+                conditions.append("status IN (%s)" % (", ".join(["'%s'" % frappe.db.escape(c).strip("'") for c in statuses_list])))
+            else:
+                conditions.append("status = '%s'" % frappe.db.escape(filters.get("status")).strip("'"))
+        
+        if filters.get("customer") and filters.get("customer") != "All":
+            conditions.append("customer = '%s'" % frappe.db.escape(filters.get("customer")).strip("'"))
+        
+        if filters.get("raised_by") and filters.get("raised_by") != "All":
+            conditions.append("raised_by = '%s'" % frappe.db.escape(filters.get("raised_by")).strip("'"))
+
+        if filters.get("circuit_id") and filters.get("circuit_id") != "All":
+            cids = filters.get("circuit_id")
+            if isinstance(cids, str):
+                cids = [c.strip() for c in cids.split(',') if c.strip()]
+            if cids:
+                conditions.append("custom_circuit_id IN (%s)" % (", ".join(["'%s'" % frappe.db.escape(c).strip("'") for c in cids])))
+
+    where_clause = "WHERE " + " AND ".join(conditions) if conditions else ""
+
+    query = """
+        SELECT 
+            {select}
+        FROM `tabHD Ticket`
+        {where}
+        ORDER BY creation DESC
+    """.format(
+        select=", ".join(select_clause), 
+        where=where_clause
+    )
+
+    data = frappe.db.sql(query, as_dict=True)
+    return data
+
+
+@frappe.whitelist()
+def get_ticket_dashboard_charts(filters=None):
+    if filters and isinstance(filters, str):
+        filters = frappe.parse_json(filters)
+        
+    conditions = []
+    if filters:
+        pass # Add any global filters here if needed in future
+        
+    where_clause = "WHERE " + " AND ".join(conditions) if conditions else ""
+
+    # Status Distribution
+    status_distribution = frappe.db.sql(f"""
+        SELECT status as label, count(*) as count
+        FROM `tabHD Ticket`
+        {where_clause}
+        GROUP BY status
+        ORDER BY count DESC
+    """, as_dict=True)
+
+    # Customer Distribution (Top 5)
+    customer_cond = "customer IS NOT NULL AND customer != ''"
+    cust_where = f"WHERE {customer_cond}"
+    if conditions:
+        cust_where += " AND " + " AND ".join(conditions)
+
+    customer_distribution = frappe.db.sql(f"""
+        SELECT customer as label, count(*) as count
+        FROM `tabHD Ticket`
+        {cust_where}
+        GROUP BY customer
+        ORDER BY count DESC
+        LIMIT 5
+    """, as_dict=True)
+
+    # Channel Distribution
+    channel_cond = "custom_channel IS NOT NULL AND custom_channel != ''"
+    chan_where = f"WHERE {channel_cond}"
+    if conditions:
+        chan_where += " AND " + " AND ".join(conditions)
+
+    channel_distribution = frappe.db.sql(f"""
+        SELECT custom_channel as label, count(*) as count
+        FROM `tabHD Ticket`
+        {chan_where}
+        GROUP BY custom_channel
+        ORDER BY count DESC
+    """, as_dict=True)
+
+    # Last 6 Months Created
+    from frappe.utils import add_months, get_first_day, now_datetime
+    months = []
+    curr = get_first_day(now_datetime())
+    for i in range(5, -1, -1):
+        d = add_months(curr, -i)
+        months.append({
+            "label": d.strftime("%b %Y"),
+            "sort_val": d.year * 100 + d.month,
+            "count": 0
+        })
+
+    start_date = add_months(curr, -5).strftime('%Y-%m-%d')
+    date_cond = f"creation >= '{start_date}'"
+    date_where = f"WHERE {date_cond}"
+    if conditions:
+        date_where += " AND " + " AND ".join(conditions)
+
+    db_data = frappe.db.sql(f"""
+        SELECT 
+            (YEAR(creation) * 100 + MONTH(creation)) as sort_val,
+            COUNT(*) as count
+        FROM `tabHD Ticket`
+        {date_where}
+        GROUP BY sort_val
+    """, as_dict=True)
+
+    data_map = {d.sort_val: d.count for d in db_data}
+    for m in months:
+        m['count'] = data_map.get(m['sort_val'], 0)
+
+    # Recent Tickets (Last 24 Hours)
+    recent_where = "WHERE modified >= DATE_SUB(NOW(), INTERVAL 24 HOUR)"
+    if conditions:
+        recent_where += " AND " + " AND ".join(conditions)
+        
+    recent_tickets = frappe.db.sql(f"""
+        SELECT name, custom_channel, custom_circuit_id, customer, custom_site_name as site_name, status, modified, raised_by
+        FROM `tabHD Ticket`
+        {recent_where}
+        ORDER BY modified DESC
+        LIMIT 20
+    """, as_dict=True)
+
+    return {
+        "status_distribution": status_distribution,
+        "customer_distribution": customer_distribution,
+        "channel_distribution": channel_distribution,
+        "tickets_last_6_months": months,
+        "recent_tickets": recent_tickets
+    }
+
+################################################################################
+# --- END: Helpdesk Custom Report Builder & Charts ---
+################################################################################
+
+
+################################################################################
+# --- START: NOC Dashboard Phase 1 ---
+################################################################################
+@frappe.whitelist()
+def get_noc_dashboard_data(filters=None):
+    from frappe.utils import now_datetime, add_to_date, getdate
+    
+    if isinstance(filters, str):
+        filters = frappe.parse_json(filters)
+        
+    conditions = []
+    if filters:
+        pass 
+        
+    where_clause = "WHERE 1=1"
+    
+    # 1. Executive KPIs
+    from datetime import datetime, timedelta
+    today = datetime.now().strftime('%Y-%m-%d')
+    yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+    
+    # Tickets Today
+    tickets_today = frappe.db.sql(f"SELECT COUNT(*) FROM `tabHD Ticket` WHERE DATE(creation) = '{today}'")[0][0] or 0
+    tickets_yesterday = frappe.db.sql(f"SELECT COUNT(*) FROM `tabHD Ticket` WHERE DATE(creation) = '{yesterday}'")[0][0] or 0
+    today_growth = 0
+    if tickets_yesterday > 0:
+        today_growth = round(((tickets_today - tickets_yesterday) / tickets_yesterday) * 100)
+        
+    # Open Tickets
+    open_tickets = frappe.db.sql("SELECT COUNT(*) FROM `tabHD Ticket` WHERE status = 'Open'")[0][0] or 0
+    
+    # Critical Tickets
+    critical_tickets = frappe.db.sql("SELECT COUNT(*) FROM `tabHD Ticket` WHERE status = 'Open' AND priority = 'Critical'")[0][0] or 0
+    
+    # SLA Breached
+    # Fallback to status checking if agreement_status doesn't exist
+    sla_breached = 0
+    try:
+        sla_breached = frappe.db.sql("SELECT COUNT(*) FROM `tabHD Ticket` WHERE agreement_status = 'Failed' AND status != 'Closed'")[0][0] or 0
+    except Exception:
+        pass
+        
+    # 2. Live Queue (Priority)
+    priorities = frappe.db.sql("""
+        SELECT priority, count(*) as count 
+        FROM `tabHD Ticket` 
+        WHERE status NOT IN ('Closed', 'Resolved')
+        GROUP BY priority
+    """, as_dict=True)
+    
+    # 3. Ticket Aging
+    aging_data = frappe.db.sql("""
+        SELECT 
+            CASE 
+                WHEN TIMESTAMPDIFF(HOUR, creation, NOW()) <= 2 THEN '0-2 Hours'
+                WHEN TIMESTAMPDIFF(HOUR, creation, NOW()) <= 6 THEN '2-6 Hours'
+                WHEN TIMESTAMPDIFF(HOUR, creation, NOW()) <= 12 THEN '6-12 Hours'
+                WHEN TIMESTAMPDIFF(HOUR, creation, NOW()) <= 24 THEN '12-24 Hours'
+                WHEN TIMESTAMPDIFF(DAY, creation, NOW()) <= 3 THEN '1-3 Days'
+                ELSE '>3 Days'
+            END as age_bucket,
+            COUNT(*) as count
+        FROM `tabHD Ticket`
+        WHERE status NOT IN ('Closed', 'Resolved')
+        GROUP BY age_bucket
+    """, as_dict=True)
+    
+    # Map for sorting aging data
+    aging_sort = {'0-2 Hours': 1, '2-6 Hours': 2, '6-12 Hours': 3, '12-24 Hours': 4, '1-3 Days': 5, '>3 Days': 6}
+    aging_data = sorted(aging_data, key=lambda x: aging_sort.get(x['age_bucket'], 99))
+    
+    # 4. Incoming Last 12 Hours
+    last_12h_data = frappe.db.sql("""
+        SELECT 
+            HOUR(creation) as hour_val,
+            COUNT(*) as count
+        FROM `tabHD Ticket`
+        WHERE creation >= DATE_SUB(NOW(), INTERVAL 12 HOUR)
+        GROUP BY hour_val
+        ORDER BY creation ASC
+    """, as_dict=True)
+
+    return {
+        "kpis": {
+            "tickets_today": tickets_today,
+            "today_growth": today_growth,
+            "open_tickets": open_tickets,
+            "critical_tickets": critical_tickets,
+            "sla_breached": sla_breached
+        },
+        "live_queue": priorities,
+        "aging": aging_data,
+        "incoming_12h": last_12h_data
+    }
+################################################################################
+# --- END: NOC Dashboard Phase 1 ---
+################################################################################
+
+
+################################################################################
+# --- START: NexAI Dashboard V1 ---
+################################################################################
+@frappe.whitelist()
+def get_nexai_dashboard_data(filters=None):
+    from datetime import datetime, timedelta
+    
+    if isinstance(filters, str):
+        filters = frappe.parse_json(filters)
+        
+    today = datetime.now().strftime('%Y-%m-%d')
+    yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+    
+    # 1. FACTS (ERPNext Data)
+    tickets_today = frappe.db.sql(f"SELECT COUNT(*) FROM `tabHD Ticket` WHERE DATE(creation) = '{today}'")[0][0] or 0
+    tickets_yesterday = frappe.db.sql(f"SELECT COUNT(*) FROM `tabHD Ticket` WHERE DATE(creation) = '{yesterday}'")[0][0] or 0
+    
+    total_open = frappe.db.sql("SELECT COUNT(*) FROM `tabHD Ticket` WHERE status NOT IN ('Closed', 'Resolved')")[0][0] or 0
+    
+    sla_breached = 0
+    try:
+        sla_breached = frappe.db.sql("SELECT COUNT(*) FROM `tabHD Ticket` WHERE agreement_status = 'Failed' AND status != 'Closed'")[0][0] or 0
+    except:
+        pass
+        
+    sla_compliance = 100
+    if total_open > 0:
+        sla_compliance = max(0, round(((total_open - sla_breached) / total_open) * 100))
+        
+    at_risk = 0
+    try:
+        at_risk = frappe.db.sql("SELECT COUNT(*) FROM `tabHD Ticket` WHERE status NOT IN ('Closed', 'Resolved') AND resolution_by BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 2 HOUR)")[0][0] or 0
+    except:
+        at_risk = 0
+        
+    growth = 0
+    if tickets_yesterday > 0:
+        growth = round(((tickets_today - tickets_yesterday) / tickets_yesterday) * 100)
+        
+    # Categories
+    top_category = "General Issues"
+    try:
+        if frappe.db.has_column("HD Ticket", "custom_category"):
+            categories = frappe.db.sql(f"SELECT custom_category, COUNT(*) as c FROM `tabHD Ticket` WHERE DATE(creation) = '{today}' GROUP BY custom_category ORDER BY c DESC LIMIT 1", as_dict=True)
+            top_category = categories[0]['custom_category'] if categories else "General Issues"
+        elif frappe.db.has_column("HD Ticket", "category"):
+            categories = frappe.db.sql(f"SELECT category, COUNT(*) as c FROM `tabHD Ticket` WHERE DATE(creation) = '{today}' GROUP BY category ORDER BY c DESC LIMIT 1", as_dict=True)
+            top_category = categories[0]['category'] if categories else "General Issues"
+    except:
+        pass
+        
+    # Customer Health
+    customer_health = []
+    try:
+        customers = frappe.db.sql("""
+            SELECT customer, count(*) as count,
+            SUM(CASE WHEN agreement_status = 'Failed' THEN 1 ELSE 0 END) as breached
+            FROM `tabHD Ticket`
+            WHERE status != 'Closed' AND customer IS NOT NULL
+            GROUP BY customer
+            ORDER BY breached DESC, count DESC
+            LIMIT 3
+        """, as_dict=True)
+        
+        for c in customers:
+            if c.breached > 0 or c.count > 10:
+                customer_health.append({
+                    "customer": c.customer,
+                    "risk": "Critical" if c.breached > 5 else "High Risk",
+                    "open_tickets": c.count,
+                    "breached": c.breached
+                })
+    except:
+        pass
+        
+    # Agent Workload
+    agent_workload = frappe.db.sql("""
+        SELECT _assign, count(*) as count 
+        FROM `tabHD Ticket` 
+        WHERE status NOT IN ('Closed', 'Resolved') AND _assign IS NOT NULL AND _assign != ''
+        GROUP BY _assign
+        ORDER BY count DESC
+    """, as_dict=True)
+    
+    for a in agent_workload:
+        import json
+        try:
+            assignees = json.loads(a['_assign'])
+            a['agent_name'] = assignees[0].split('@')[0].capitalize()
+        except:
+            a['agent_name'] = str(a['_assign']).split('@')[0].capitalize()
+            
+    # Charts Data
+    priorities = frappe.db.sql("""
+        SELECT priority, count(*) as count 
+        FROM `tabHD Ticket` 
+        WHERE status NOT IN ('Closed', 'Resolved')
+        GROUP BY priority
+    """, as_dict=True)
+    
+    aging_data = frappe.db.sql("""
+        SELECT 
+            CASE 
+                WHEN TIMESTAMPDIFF(HOUR, creation, NOW()) <= 24 THEN '0-24 Hours'
+                WHEN TIMESTAMPDIFF(DAY, creation, NOW()) <= 3 THEN '1-3 Days'
+                ELSE '>3 Days'
+            END as age_bucket,
+            COUNT(*) as count
+        FROM `tabHD Ticket`
+        WHERE status NOT IN ('Closed', 'Resolved')
+        GROUP BY age_bucket
+    """, as_dict=True)
+    
+    total_unresolved = sum(a['count'] for a in aging_data)
+    older_than_24 = sum(a['count'] for a in aging_data if a['age_bucket'] != '0-24 Hours')
+    progress = 100
+    if total_unresolved > 0:
+        progress = max(0, round(((total_unresolved - older_than_24) / total_unresolved) * 100))
+
+    # Dynamic Facts & Status
+    if growth > 0:
+        volume_msg = f"Today {tickets_today} tickets have been created ({growth}% higher than yesterday)."
+    elif growth < 0:
+        volume_msg = f"Today only {tickets_today} tickets have been created (lower than yesterday's {tickets_yesterday})."
+    else:
+        volume_msg = f"Ticket volume is stable compared to yesterday ({tickets_today} tickets)."
+
+    # Determine Overall Status
+    if at_risk > 5 or (growth > 50 and tickets_today > 20):
+        status_color = "🔴"
+        status_title = "High Risk"
+        status_desc = "Ticket volume has spiked and SLA risks are high. Immediate triage is recommended."
+    elif at_risk > 0 or growth > 20:
+        status_color = "🟠"
+        status_title = "Elevated Activity"
+        status_desc = "Operations are active. Some tickets are approaching SLA breaches."
+    else:
+        status_color = "🟢"
+        status_title = "Healthy"
+        status_desc = "Operations are stable. No immediate action is required."
+
+    # Contextual category msg
+    if top_category:
+        cat_msg = f"Most new tickets belong to {top_category}, but volume remains manageable."
+    else:
+        cat_msg = "New ticket distribution is normal across all categories."
+
+    # Curated Good News
+    good_news_list = []
+    if total_open < 20:
+        good_news_list.append("Queue is operating normally and workload is light.")
+    if sla_compliance >= 95:
+        good_news_list.append("SLA remains highly healthy.")
+    if progress > 50:
+        good_news_list.append(f"Backlog reduction is progressing well ({progress}%).")
+        
+    if not good_news_list:
+        good_news_list = ["The team is actively managing the queue."]
+
+    return {
+        "firp": {
+            "status": {"color": status_color, "title": status_title, "desc": status_desc},
+            "facts": [
+                f"Yesterday your team resolved {tickets_yesterday} tickets.",
+                volume_msg,
+                cat_msg,
+                f"{at_risk} SLA breaches are expected." if at_risk > 0 else "No immediate SLA breaches are expected."
+            ],
+            "good_news": good_news_list[:3] # Max 3 items
+        },
+        "mission": {
+            "title": "Maintain the current SLA while clearing the remaining backlog." if at_risk == 0 else "Focus on tickets approaching SLA breaches.",
+            "progress": progress
+        },
+        "recommendations": [
+            {"action": "Reassign workload", "priority": 1},
+            {"action": "Recover SLA", "priority": 2},
+            {"action": f"Contact {customer_health[0]['customer'] if customer_health else 'Top Client'}", "priority": 3}
+        ],
+        "charts": {
+            "queue": priorities,
+            "aging": aging_data,
+            "trend": frappe.db.sql('''
+                SELECT 
+                    DATE_FORMAT(creation, '%H:00') as hour,
+                    COUNT(*) as count
+                FROM `tabHD Ticket`
+                WHERE creation >= DATE_SUB(NOW(), INTERVAL 12 HOUR)
+                GROUP BY HOUR(creation)
+                ORDER BY creation ASC
+            ''', as_dict=True),
+            "sla": {"compliance": sla_compliance, "breached": sla_breached, "open": total_open, "at_risk": at_risk},
+            "workload": agent_workload[:5] if agent_workload else [],
+            "customer_health": customer_health
+        }
+    }
+# --- END: NexAI Dashboard V1 ---
+################################################################################
+
+################################################################################
+# --- START: Ask NexAI Natural Language Query ---
+################################################################################
+@frappe.whitelist()
+def ask_nexai(query):
+    import json
+    from datetime import datetime
+    
+    try:
+        telemetry = get_nexai_dashboard_data()
+        facts = telemetry.get('firp', {}).get('facts', [])
+    except:
+        facts = []
+        
+    current_date = datetime.now().strftime("%Y-%m-%d")
+        
+    intent_prompt = f"""
+    You are NexAI, the Chief of Staff for a Helpdesk.
+    
+    Current Telemetry Facts:
+    {json.dumps(facts)}
+    Today's Date: {current_date}
+    
+    User Query: "{query}"
+    
+    INSTRUCTIONS:
+    1. If the user's query can be answered using the Telemetry Facts provided above (e.g. asking about ticket volume today, yesterday, or SLA), provide a brief, professional answer directly. Use HTML <br> for newlines.
+    2. IF AND ONLY IF the user is asking for specific ticket details NOT in the facts (like a specific ticket status, priority, customer, or a SPECIFIC DATE like "12-07-2026"), return ONLY a valid JSON object representing Frappe ORM filters for 'HD Ticket'.
+    
+    Valid fields for JSON: name, status, priority, _assign, customer, custom_category, creation.
+    
+    JSON Format: {{"action": "COUNT", "filters": {{"status": "Open"}}}} or {{"action": "LIST", "filters": {{"status": "Open"}}}}
+    
+    CRITICAL DATE RULES:
+    - If filtering by a specific date (e.g., 12-07-2026), format the date as YYYY-MM-DD.
+    - Use the "like" operator for a specific day: {{"creation": ["like", "2026-07-12%"]}}
+    - If no specific filters apply, ensure you do not drop the filters. Be as specific as possible!
+    """
+    
+    try:
+        response = call_ai_model(intent_prompt).strip()
+        
+        clean_response = response.replace("```json", "").replace("```", "").strip()
+        
+        if clean_response.startswith("{") and clean_response.endswith("}"):
+            intent = json.loads(clean_response)
+            filters = intent.get("filters", {})
+            action = intent.get("action", "LIST")
+            
+            data = None
+            if action == "COUNT":
+                data = frappe.db.count("HD Ticket", filters)
+            else:
+                data = frappe.get_list("HD Ticket", filters=filters, fields=["name", "status", "priority", "subject", "customer"], limit=20)
+                
+            response_prompt = f"""
+            You are NexAI.
+            User asked: "{query}"
+            Database returned: {json.dumps(data)}
+            Write a brief, professional answer based on this data. Use <br> for newlines.
+            """
+            
+            final_answer = call_ai_model(response_prompt)
+            return final_answer.replace('\n', '<br>')
+            
+        else:
+            return response.replace('\n', '<br>')
+            
+    except Exception as e:
+        return f"I encountered an error analyzing the request: {str(e)}"
+################################################################################
+# --- END: Ask NexAI Natural Language Query ---
+################################################################################
+
+# =========================================================================
+# BULK SITE UPDATE API — Direct Sync (No Background Queue)
+# =========================================================================
+@frappe.whitelist()
+def process_bulk_site_update(file_name, file_data, validate_only=1):
+    validate_only = int(validate_only)
+
+    import base64
+    import csv
+    import openpyxl
+    from io import BytesIO
+    from frappe.utils import now_datetime
+
+    decoded_data = base64.b64decode(file_data)
+    errors = []
+    success_count = 0
+    total_rows = 0
+
+    try:
+        if file_name.endswith('.csv'):
+            content = decoded_data.decode('utf-8')
+            reader = csv.reader(content.splitlines())
+            rows = list(reader)
+        else:
+            wb = openpyxl.load_workbook(filename=BytesIO(decoded_data), data_only=True)
+            sheet = wb.active
+            rows = list(sheet.iter_rows(values_only=True))
+
+        if not rows or len(rows) < 2:
+            return {"status": "error", "errors": ["File is empty or missing data rows."]}
+
+        raw_header = [str(col).strip() if col is not None else "" for col in rows[0]]
+        while raw_header and raw_header[-1] == "":
+            raw_header.pop()
+
+        header = raw_header
+        data_rows = rows[1:]
+        total_rows = len(data_rows)
+
+        meta = frappe.get_meta("Site")
+        label_to_fieldname = {"name": "name", "owner": "owner", "creation": "creation", "modified": "modified", "modified_by": "modified_by"}
+
+        for df in meta.fields:
+            if df.fieldname:
+                label_to_fieldname[df.fieldname.strip().lower()] = df.fieldname
+            if df.label:
+                label_to_fieldname[df.label.strip().lower()] = df.fieldname
+
+        label_to_fieldname["id"] = "name"
+        label_to_fieldname["circuit id"] = "circuit_id"
+
+        key_col_idx = None
+        col_mapping = {}
+        header_errors = []
+
+        for idx, col in enumerate(header):
+            col_lower = col.lower().strip()
+            if not col_lower:
+                header_errors.append(f"Invalid Column: Missing header name.")
+                continue
+            if col_lower == "name":
+                key_col_idx = idx
+                col_mapping[idx] = "name"
+            elif col_lower in label_to_fieldname:
+                col_mapping[idx] = label_to_fieldname[col_lower]
+            else:
+                header_errors.append(f"Invalid Column '{col}'.")
+
+        if header_errors:
+            return {"status": "error", "errors": header_errors}
+
+        if key_col_idx is None:
+            return {"status": "error", "errors": ["Unable to process: 'name' column missing."]}
+
+        # --- VALIDATION PASS ---
+        validated_rows = []
+        for row_idx, row in enumerate(data_rows, start=2):
+            if not any(row):
+                continue
+
+            record_id = None
+            if key_col_idx < len(row):
+                val = str(row[key_col_idx]).strip()
+                if val.endswith('.0'):
+                    val = val[:-2]
+                record_id = val
+
+            if not record_id:
+                errors.append(f"Row {row_idx}: Missing identifying key ('name').")
+                continue
+
+            if not frappe.db.exists("Site", record_id):
+                errors.append(f"Row {row_idx}: Site with ID '{record_id}' does not exist.")
+                continue
+
+            validated_rows.append((row_idx, row, record_id))
+
+        if errors:
+            return {"status": "error", "errors": errors, "total_rows": total_rows}
+
+        if validate_only:
+            return {"status": "success", "total_rows": total_rows}
+
+        # --- UPDATE PASS: Direct SQL via frappe.db.set_value (fast!) ---
+        user = frappe.session.user
+        for row_idx, row, record_id in validated_rows:
+            try:
+                update_dict = {}
+                for idx, col_val in enumerate(row):
+                    if idx in col_mapping and idx != key_col_idx:
+                        fname = col_mapping[idx]
+                        raw_val = str(col_val).strip() if col_val is not None else ""
+                        if raw_val.endswith('.0'):
+                            raw_val = raw_val[:-2]
+                        update_dict[fname] = raw_val
+
+                pincode_val = update_dict.get("pincode")
+                if pincode_val:
+                    try:
+                        import requests
+                        resp = requests.get(f"https://api.postalpincode.in/pincode/{pincode_val}", timeout=5)
+                        if resp.status_code == 200:
+                            data = resp.json()
+                            if data and data[0].get("Status") == "Success":
+                                po = data[0]["PostOffice"][0]
+                                res = {
+                                    "district": po.get("District"),
+                                    "state": po.get("State"),
+                                    "country": po.get("Country", "India"),
+                                    "city": po.get("Block") or po.get("Region")
+                                }
+                                if "district" not in update_dict and res.get("district"): update_dict["district"] = res["district"]
+                                if "state" not in update_dict and res.get("state"): update_dict["state"] = res["state"]
+                                if "country" not in update_dict and res.get("country"): update_dict["country"] = res["country"]
+                                if "city" not in update_dict and res.get("city"): update_dict["city"] = res["city"]
+
+                                state = res.get("state")
+                                if state and "territory" not in update_dict:
+                                    state_territory_map = {
+                                        "Delhi": "North", "Haryana": "North", "Punjab": "North", "Himachal Pradesh": "North", "Uttar Pradesh": "North", "Uttarakhand": "North", "Jammu and Kashmir": "North", "Chandigarh": "North", "Rajasthan": "North", "Ladakh": "North",
+                                        "Karnataka": "South", "Tamil Nadu": "South", "Kerala": "South", "Andhra Pradesh": "South", "Telangana": "South", "Puducherry": "South", "Lakshadweep": "South",
+                                        "Maharashtra": "West", "Gujarat": "West", "Goa": "West", "Dadra and Nagar Haveli": "West", "Daman and Diu": "West", "Madhya Pradesh": "West", "Chattisgarh": "West", "Chhattisgarh": "West",
+                                        "West Bengal": "East", "Odisha": "East", "Bihar": "East", "Jharkhand": "East", "Assam": "East", "Sikkim": "East", "Meghalaya": "East", "Tripura": "East", "Arunachal Pradesh": "East", "Manipur": "East", "Nagaland": "East", "Mizoram": "East", "Andaman and Nicobar Islands": "East"
+                                    }
+                                    if state in state_territory_map:
+                                        update_dict["territory"] = state_territory_map[state]
+                    except Exception:
+                        pass
+
+                changes_html = ""
+                for k, v in update_dict.items():
+                    if k == "reason_site_updated_later":
+                        continue
+                    old_value = frappe.db.get_value("Site", record_id, k)
+                    str_old = str(old_value).strip() if old_value is not None else ""
+                    str_new = str(v).strip()
+
+                    if str_old != str_new:
+                        field_label = k
+                        for df in meta.fields:
+                            if df.fieldname == k:
+                                field_label = df.label or k
+                                break
+                        display_old = str_old if str_old else "<i>[Empty]</i>"
+                        changes_html += f"<li style='margin-bottom: 4px;'><b>{field_label}:</b> <span style='color:#ef4444; text-decoration:line-through;'>{display_old}</span> <span style='color:#94a3b8; font-weight: bold;'>&rarr;</span> <span style='color:#16a34a; font-weight: 500;'>{str_new}</span></li>"
+
+                fields_to_set = {k: v for k, v in update_dict.items() if k != "reason_site_updated_later"}
+                if fields_to_set:
+                    for fname, fval in fields_to_set.items():
+                        frappe.db.set_value("Site", record_id, fname, fval, update_modified=True)
+
+                if changes_html:
+                    current_time = now_datetime().strftime("%d-%b-%Y %I:%M %p")
+                    log_entry = f'<div style="border-left:3px solid #695A97;padding:4px 8px;margin-bottom:6px;font-size:12px;background:#f8fafc;"><span style="background:#695A97;color:#fff;padding:1px 6px;border-radius:8px;font-size:11px;font-weight:600;">Bulk Update</span> <b>{current_time}</b> by {user}<ul style="margin:2px 0 0;padding-left:16px;line-height:1.4;">{changes_html}</ul></div>'
+                    existing_log = frappe.db.get_value("Site", record_id, "reason_site_updated_later") or ""
+                    frappe.db.set_value("Site", record_id, "reason_site_updated_later", log_entry + existing_log, update_modified=False)
+
+                success_count += 1
+
+                if success_count % 100 == 0:
+                    frappe.db.commit()
+
+            except Exception as e:
+                errors.append(f"Row {row_idx}: Failed to update Site {record_id}. Error: {str(e)}")
+
+        frappe.db.commit()
+        return {"status": "success", "success_count": success_count, "errors": errors}
+
+    except Exception as e:
+        frappe.log_error("Bulk Site Update Error", frappe.get_traceback())
+        return {"status": "error", "errors": [f"Server Error: {str(e)}"]}
+# =========================================================================
+# END OF BULK SITE UPDATE API
+# =========================================================================
+
+################################################################################
+# --- START: EXCLUSIVE HELPDESK DASHBOARD V2 APIs ---
+################################################################################
+
+@frappe.whitelist()
+def get_ticket_filter_options_v2():
+    customers = frappe.db.sql("""
+        SELECT DISTINCT customer FROM `tabHD Ticket` 
+        WHERE customer IS NOT NULL AND customer != '' 
+        ORDER BY customer
+    """, as_list=True)
+    
+    statuses = frappe.db.sql("""
+        SELECT DISTINCT status FROM `tabHD Ticket` 
+        WHERE status IS NOT NULL AND status != '' 
+        ORDER BY status
+    """, as_list=True)
+    
+    raised_by = frappe.db.sql("""
+        SELECT DISTINCT raised_by FROM `tabHD Ticket` 
+        WHERE raised_by IS NOT NULL AND raised_by != '' 
+        ORDER BY raised_by
+    """, as_list=True)
+    
+    circuit_ids = frappe.db.sql("""
+        SELECT DISTINCT custom_circuit_id FROM `tabHD Ticket` 
+        WHERE custom_circuit_id IS NOT NULL AND custom_circuit_id != '' 
+        ORDER BY custom_circuit_id
+    """, as_list=True)
+    
+    return {
+        "customers": [c[0] for c in customers],
+        "statuses": [s[0] for s in statuses],
+        "users": [u[0] for u in raised_by],
+        "circuit_ids": [cid[0] for cid in circuit_ids]
+    }
+
+@frappe.whitelist()
+def get_ticket_custom_report_data_v2(filters=None, fields=None):
+    if isinstance(filters, str):
+        filters = frappe.parse_json(filters)
+    if isinstance(fields, str):
+        fields = frappe.parse_json(fields)
+
+    if not fields:
+        return []
+
+    # Map requested labels/fields to actual DB columns
+    field_map = {
+        "HD Ticket": {
+            "ticket_id": "name as ticket_id",
+            "subject": "subject",
+            "status": "status",
+            "priority": "priority",
+            "raised_by": "raised_by",
+            "customer": "customer",
+            "assigned_to": "_assign as assigned_to",
+            "creation_date": "DATE(creation) as creation_date",
+            "resolution_date": "DATE(resolution_date) as resolution_date",
+            "first_responded_on": "DATE(first_responded_on) as first_responded_on",
+            "custom_circuit_id": "custom_circuit_id",
+            "custom_lms_id": "custom_lms_id",
+            "custom_channel": "custom_channel",
+            "description": "description"
+        }
+    }
+
+    select_clause = []
+    
+    for dt, dt_fields in fields.items():
+        if dt == "HD Ticket":
+            for f in dt_fields:
+                if f in field_map["HD Ticket"]:
+                    select_clause.append(field_map["HD Ticket"][f])
+
+    if not select_clause:
+        return []
+
+    conditions = []
+    if filters:
+        if filters.get("creation_date_range") == "Current Month":
+            conditions.append("MONTH(DATE(creation)) = MONTH(NOW()) AND YEAR(DATE(creation)) = YEAR(NOW())")
+        elif filters.get("creation_date_range") == "Last 3 Months":
+            conditions.append("DATE(creation) >= DATE_SUB(NOW(), INTERVAL 3 MONTH)")
+        elif filters.get("creation_date_range") == "Custom" and filters.get("creation_from_date") and filters.get("creation_to_date"):
+            conditions.append("DATE(creation) BETWEEN '%s' AND '%s'" % (filters.get("creation_from_date"), filters.get("creation_to_date")))
+        
+        if filters.get("resolution_date_range") == "Current Month":
+            conditions.append("MONTH(DATE(resolution_date)) = MONTH(NOW()) AND YEAR(DATE(resolution_date)) = YEAR(NOW())")
+        elif filters.get("resolution_date_range") == "Last 3 Months":
+            conditions.append("DATE(resolution_date) >= DATE_SUB(NOW(), INTERVAL 3 MONTH)")
+        elif filters.get("resolution_date_range") == "Custom" and filters.get("resolution_from_date") and filters.get("resolution_to_date"):
+            conditions.append("DATE(resolution_date) BETWEEN '%s' AND '%s'" % (filters.get("resolution_from_date"), filters.get("resolution_to_date")))
+        
+        if filters.get("status") and filters.get("status") != "All":
+            statuses_list = filters.get("status")
+            if isinstance(statuses_list, list):
+                conditions.append("status IN (%s)" % (", ".join(["'%s'" % frappe.db.escape(c).strip("'") for c in statuses_list])))
+            else:
+                conditions.append("status = '%s'" % frappe.db.escape(filters.get("status")).strip("'"))
+        
+        if filters.get("customer") and filters.get("customer") != "All":
+            conditions.append("customer = '%s'" % frappe.db.escape(filters.get("customer")).strip("'"))
+        
+        if filters.get("raised_by") and filters.get("raised_by") != "All":
+            conditions.append("raised_by = '%s'" % frappe.db.escape(filters.get("raised_by")).strip("'"))
+
+        if filters.get("circuit_id") and filters.get("circuit_id") != "All":
+            cids = filters.get("circuit_id")
+            if isinstance(cids, str):
+                cids = [c.strip() for c in cids.split(',') if c.strip()]
+            if cids:
+                conditions.append("custom_circuit_id IN (%s)" % (", ".join(["'%s'" % frappe.db.escape(c).strip("'") for c in cids])))
+
+    where_clause = "WHERE " + " AND ".join(conditions) if conditions else ""
+
+    query = """
+        SELECT 
+            {select}
+        FROM `tabHD Ticket`
+        {where}
+        ORDER BY creation DESC
+    """.format(
+        select=", ".join(select_clause), 
+        where=where_clause
+    )
+
+    data = frappe.db.sql(query, as_dict=True)
+    return data
+
+@frappe.whitelist()
+def get_nexai_dashboard_data_v2(filters=None):
+    from datetime import datetime, timedelta
+    
+    if isinstance(filters, str):
+        filters = frappe.parse_json(filters)
+        
+    today = datetime.now().strftime('%Y-%m-%d')
+    yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+    
+    # 1. FACTS (ERPNext Data)
+    tickets_today = frappe.db.sql(f"SELECT COUNT(*) FROM `tabHD Ticket` WHERE DATE(creation) = '{today}'")[0][0] or 0
+    tickets_yesterday = frappe.db.sql(f"SELECT COUNT(*) FROM `tabHD Ticket` WHERE DATE(creation) = '{yesterday}'")[0][0] or 0
+    
+    total_open = frappe.db.sql("SELECT COUNT(*) FROM `tabHD Ticket` WHERE status IN ('Open', 'Replied', 'On Hold')")[0][0] or 0
+    
+    sla_breached = 0
+    try:
+        sla_breached = frappe.db.sql("SELECT COUNT(*) FROM `tabHD Ticket` WHERE agreement_status = 'Failed' AND status IN ('Open', 'Replied', 'On Hold')")[0][0] or 0
+    except:
+        pass
+        
+    sla_compliance = 100
+    if total_open > 0:
+        sla_compliance = max(0, round(((total_open - sla_breached) / total_open) * 100))
+        
+    at_risk = 0
+    try:
+        at_risk = frappe.db.sql("SELECT COUNT(*) FROM `tabHD Ticket` WHERE status IN ('Open', 'Replied', 'On Hold') AND resolution_by BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 2 HOUR)")[0][0] or 0
+    except:
+        at_risk = 0
+        
+    med_risk = 0
+    try:
+        med_risk = frappe.db.sql("SELECT COUNT(*) FROM `tabHD Ticket` WHERE status IN ('Open', 'Replied', 'On Hold') AND resolution_by BETWEEN DATE_ADD(NOW(), INTERVAL 2 HOUR) AND DATE_ADD(NOW(), INTERVAL 4 HOUR)")[0][0] or 0
+    except:
+        med_risk = 0
+        
+    growth = 0
+    if tickets_yesterday > 0:
+        growth = round(((tickets_today - tickets_yesterday) / tickets_yesterday) * 100)
+        
+    # Categories
+    top_category = "General Issues"
+    try:
+        if frappe.db.has_column("HD Ticket", "custom_category"):
+            categories = frappe.db.sql(f"SELECT custom_category, COUNT(*) as c FROM `tabHD Ticket` WHERE DATE(creation) = '{today}' GROUP BY custom_category ORDER BY c DESC LIMIT 1", as_dict=True)
+            top_category = categories[0]['custom_category'] if categories else "General Issues"
+        elif frappe.db.has_column("HD Ticket", "category"):
+            categories = frappe.db.sql(f"SELECT category, COUNT(*) as c FROM `tabHD Ticket` WHERE DATE(creation) = '{today}' GROUP BY category ORDER BY c DESC LIMIT 1", as_dict=True)
+            top_category = categories[0]['category'] if categories else "General Issues"
+    except:
+        pass
+        
+    # Customer Health
+    customer_health = []
+    try:
+        customers = frappe.db.sql("""
+            SELECT customer, count(*) as count,
+            SUM(CASE WHEN agreement_status = 'Failed' THEN 1 ELSE 0 END) as breached
+            FROM `tabHD Ticket`
+            WHERE status != 'Closed' AND customer IS NOT NULL
+            GROUP BY customer
+            ORDER BY breached DESC, count DESC
+            LIMIT 3
+        """, as_dict=True)
+        
+        for c in customers:
+            if c.breached > 0 or c.count > 10:
+                customer_health.append({
+                    "customer": c.customer,
+                    "risk": "Critical" if c.breached > 5 else "High Risk",
+                    "open_tickets": c.count,
+                    "breached": c.breached
+                })
+    except:
+        pass
+        
+    # Agent Workload
+    agent_workload = frappe.db.sql("""
+        SELECT _assign, count(*) as count 
+        FROM `tabHD Ticket` 
+        WHERE status IN ('Open', 'Replied', 'On Hold') AND _assign IS NOT NULL AND _assign != ''
+        GROUP BY _assign
+        ORDER BY count DESC
+    """, as_dict=True)
+    
+    for a in agent_workload:
+        import json
+        try:
+            assignees = json.loads(a['_assign'])
+            a['agent_name'] = assignees[0].split('@')[0].capitalize()
+        except:
+            a['agent_name'] = str(a['_assign']).split('@')[0].capitalize()
+            
+    # Charts Data
+    priorities = frappe.db.sql("""
+        SELECT priority, count(*) as count 
+        FROM `tabHD Ticket` 
+        WHERE status IN ('Open', 'Replied', 'On Hold')
+        GROUP BY priority
+    """, as_dict=True)
+    
+    aging_data = frappe.db.sql("""
+        SELECT 
+            CASE 
+                WHEN TIMESTAMPDIFF(HOUR, creation, NOW()) <= 24 THEN '0-24 Hours'
+                WHEN TIMESTAMPDIFF(DAY, creation, NOW()) <= 3 THEN '1-3 Days'
+                ELSE '>3 Days'
+            END as age_bucket,
+            COUNT(*) as count
+        FROM `tabHD Ticket`
+        WHERE status IN ('Open', 'Replied', 'On Hold')
+        GROUP BY age_bucket
+    """, as_dict=True)
+    
+    total_unresolved = sum(a['count'] for a in aging_data)
+    older_than_24 = sum(a['count'] for a in aging_data if a['age_bucket'] != '0-24 Hours')
+    progress = 100
+    if total_unresolved > 0:
+        progress = max(0, round(((total_unresolved - older_than_24) / total_unresolved) * 100))
+
+    # Dynamic Facts & Status
+    if growth > 0:
+        volume_msg = f"Today {tickets_today} tickets have been created ({growth}% higher than yesterday)."
+    elif growth < 0:
+        volume_msg = f"Today only {tickets_today} tickets have been created (lower than yesterday's {tickets_yesterday})."
+    else:
+        volume_msg = f"Ticket volume is stable compared to yesterday ({tickets_today} tickets)."
+
+    # Determine Overall Status
+    if at_risk > 5 or (growth > 50 and tickets_today > 20):
+        status_color = "🔴"
+        status_title = "High Risk"
+        status_desc = "Ticket volume has spiked and SLA risks are high. Immediate triage is recommended."
+    elif at_risk > 0 or growth > 20:
+        status_color = "🟠"
+        status_title = "Elevated Activity"
+        status_desc = "Operations are active. Some tickets are approaching SLA breaches."
+    else:
+        status_color = "🟢"
+        status_title = "Healthy"
+        status_desc = "Operations are stable. No immediate action is required."
+
+    # Contextual category msg
+    if top_category:
+        cat_msg = f"Most new tickets belong to {top_category}, but volume remains manageable."
+    else:
+        cat_msg = "New ticket distribution is normal across all categories."
+
+    # Curated Good News
+    good_news_list = []
+    if total_open < 20:
+        good_news_list.append("Queue is operating normally and workload is light.")
+    if sla_compliance >= 95:
+        good_news_list.append("SLA remains highly healthy.")
+    if progress > 50:
+        good_news_list.append(f"Backlog reduction is progressing well ({progress}%).")
+        
+    if not good_news_list:
+        good_news_list = ["The team is actively managing the queue."]
+
+    
+    # Detailed Status Breakdown for KPIs
+    status_open = frappe.db.sql("SELECT COUNT(*) FROM `tabHD Ticket` WHERE status = 'Open'")[0][0] or 0
+    status_replied = frappe.db.sql("SELECT COUNT(*) FROM `tabHD Ticket` WHERE status = 'Replied'")[0][0] or 0
+    status_hold = frappe.db.sql("SELECT COUNT(*) FROM `tabHD Ticket` WHERE status = 'On Hold'")[0][0] or 0
+    status_wrong_circuit = frappe.db.sql("SELECT COUNT(*) FROM `tabHD Ticket` WHERE status = 'Wrong Circuit'")[0][0] or 0
+    
+    # Calculate some KPI metrics
+    resolved_today = frappe.db.sql(f"SELECT COUNT(*) FROM `tabHD Ticket` WHERE status IN ('Closed', 'Resolved') AND DATE(modified) = '{today}'")[0][0] or 0
+    resolved_yesterday = frappe.db.sql(f"SELECT COUNT(*) FROM `tabHD Ticket` WHERE status IN ('Closed', 'Resolved') AND DATE(modified) = '{yesterday}'")[0][0] or 0
+    
+    # Phase 3 data calculations
+    category_field = "custom_category" if frappe.db.has_column("HD Ticket", "custom_category") else "category"
+    categories_data = []
+    if frappe.db.has_column("HD Ticket", category_field):
+        categories_data = frappe.db.sql(f"SELECT IFNULL({category_field}, 'Others') as category, COUNT(*) as count FROM `tabHD Ticket` WHERE DATE(creation) = '{today}' GROUP BY {category_field} ORDER BY count DESC", as_dict=True)
+    
+    # Resolvers (Agents)
+    top_agents = frappe.db.sql(f"SELECT _assign, COUNT(*) as resolved_count FROM `tabHD Ticket` WHERE status IN ('Closed', 'Resolved') AND _assign IS NOT NULL AND DATE(modified) = '{today}' GROUP BY _assign ORDER BY resolved_count DESC LIMIT 5", as_dict=True)
+    for agent in top_agents:
+        try:
+            import json
+            assignees = json.loads(agent['_assign'])
+            agent['name'] = assignees[0].split('@')[0].replace('.', ' ').title()
+        except:
+            agent['name'] = str(agent['_assign']).split('@')[0].replace('.', ' ').title()
+            
+    # SLA Nearing Tickets
+    sla_nearing = []
+    try:
+        sla_nearing = frappe.db.sql("""
+            SELECT name as id, subject, 
+            TIMESTAMPDIFF(MINUTE, NOW(), resolution_by) as min_left
+            FROM `tabHD Ticket`
+            WHERE status IN ('Open', 'Replied', 'On Hold') 
+            AND resolution_by IS NOT NULL 
+            AND resolution_by > NOW()
+            ORDER BY resolution_by ASC
+            LIMIT 3
+        """, as_dict=True)
+        
+        for t in sla_nearing:
+            if t.min_left < 120:
+                t['risk'] = "high"
+            elif t.min_left < 240:
+                t['risk'] = "medium"
+            else:
+                t['risk'] = "low"
+                
+            if t.min_left >= 60:
+                t['time'] = f"{int(t.min_left/60)} hrs left"
+            else:
+                t['time'] = f"{t.min_left} min left"
+    except Exception as e:
+        pass
+        
+    dynamic_recommendations = []
+    
+    # 1. SLA Risk Check
+    if at_risk > 0:
+        dynamic_recommendations.append({"action": f"Prioritize {at_risk} tickets nearing SLA breach.", "priority": 1})
+    elif sla_compliance < 90:
+        dynamic_recommendations.append({"action": "SLA Compliance is dropping. Investigate bottlenecks.", "priority": 2})
+        
+    # 2. Workload Check
+    if agent_workload and len(agent_workload) >= 2:
+        top_agent = agent_workload[0]
+        if top_agent['count'] > 10:
+            dynamic_recommendations.append({"action": f"Reassign workload from {top_agent.get('agent_name', 'Top Agent')} to balance queue.", "priority": 1})
+            
+    # 3. Customer Health Check
+    if customer_health:
+        dynamic_recommendations.append({"action": f"Contact {customer_health[0]['customer']} to manage relationship.", "priority": 2})
+        
+    # 4. Aging Check
+    if older_than_24 > 0 and len(dynamic_recommendations) < 3:
+        dynamic_recommendations.append({"action": f"Review {older_than_24} tickets older than 24 hours.", "priority": 3})
+        
+    # 5. Default Fallbacks if empty
+    if not dynamic_recommendations:
+        dynamic_recommendations = [
+            {"action": "All operations running optimally. No action needed.", "priority": 3}
+        ]
+        
+    # Keep only top 3 and sort by priority
+    dynamic_recommendations = sorted(dynamic_recommendations, key=lambda x: x['priority'])[:3]
+        
+    return {
+        "kpis": {
+            "status_open": status_open,
+            "status_replied": status_replied,
+            "status_hold": status_hold,
+            "status_wrong_circuit": status_wrong_circuit,
+            "open_today": total_open,
+            "open_yesterday": total_open + (resolved_today - tickets_today),
+            "resolved_today": resolved_today,
+            "resolved_yesterday": resolved_yesterday,
+            "sla_today": sla_compliance,
+            "sla_yesterday": max(0, min(100, sla_compliance + 2)),
+            "new_today": tickets_today,
+            "new_yesterday": tickets_yesterday
+        },
+        "firp": {
+            "status": {"color": status_color, "title": status_title, "desc": status_desc},
+            "facts": [
+                f"Yesterday your team resolved {tickets_yesterday} tickets.",
+                volume_msg,
+                cat_msg,
+                f"{at_risk} SLA breaches are expected." if at_risk > 0 else "No immediate SLA breaches are expected."
+            ],
+            "good_news": good_news_list[:3] # Max 3 items
+        },
+        "mission": {
+            "title": "Maintain the current SLA while clearing the remaining backlog." if at_risk == 0 else "Focus on tickets approaching SLA breaches.",
+            "progress": progress
+        },
+        "recommendations": dynamic_recommendations,
+        "sla_nearing": sla_nearing,
+        "charts": {
+            "queue": priorities,
+            "aging": aging_data,
+            "trend": frappe.db.sql('''
+                SELECT 
+                    DATE_FORMAT(creation, '%H:00') as hour,
+                    COUNT(*) as count
+                FROM `tabHD Ticket`
+                WHERE creation >= DATE_SUB(NOW(), INTERVAL 12 HOUR)
+                GROUP BY HOUR(creation)
+                ORDER BY creation ASC
+            ''', as_dict=True),
+            "sla": {"compliance": sla_compliance, "breached": sla_breached, "open": total_open, "at_risk": at_risk, "med_risk": med_risk},
+            "workload": agent_workload[:5] if agent_workload else [],
+            "customer_health": customer_health,
+            "categories": categories_data,
+            "top_agents": top_agents,
+            "client_wise_open": frappe.db.sql("""
+                SELECT customer, status, COUNT(*) as count
+                FROM `tabHD Ticket`
+                WHERE status IN ('Open', 'Replied', 'On Hold') AND customer IS NOT NULL AND customer != ''
+                GROUP BY customer, status
+                ORDER BY customer
+            """, as_dict=True)
+        },
+        "predictions": {
+            "new_tickets": int(tickets_today * 1.2),
+            "resolutions": int(resolved_today * 1.1),
+            "open_queue": total_open + int(tickets_today * 1.2) - int(resolved_today * 1.1)
+        }
+    }
+
+@frappe.whitelist()
+def ask_nexai_v2(query):
+    import json
+    from datetime import datetime
+    
+    try:
+        telemetry = get_nexai_dashboard_data_v2()
+        facts = telemetry.get('firp', {}).get('facts', [])
+    except:
+        facts = []
+        
+    current_date = datetime.now().strftime("%Y-%m-%d")
+        
+    intent_prompt = f"""
+    You are NexAI, the Chief of Staff for a Helpdesk.
+    
+    Current Telemetry Facts:
+    {json.dumps(facts)}
+    Today's Date: {current_date}
+    
+    User Query: "{query}"
+    
+    INSTRUCTIONS:
+    1. If the user's query can be answered using the Telemetry Facts provided above (e.g. asking about ticket volume today, yesterday, or SLA), provide a brief, professional answer directly. Use HTML <br> for newlines.
+    2. IF AND ONLY IF the user is asking for specific ticket details NOT in the facts (like a specific ticket status, priority, customer, or a SPECIFIC DATE like "12-07-2026"), return ONLY a valid JSON object representing Frappe ORM filters for 'HD Ticket'.
+    
+    Valid fields for JSON: name, status, priority, _assign, customer, custom_category, creation.
+    
+    JSON Format: {{"action": "COUNT", "filters": {{"status": "Open"}}}} or {{"action": "LIST", "filters": {{"status": "Open"}}}}
+    
+    CRITICAL DATE RULES:
+    - If filtering by a specific date (e.g., 12-07-2026), format the date as YYYY-MM-DD.
+    - Use the "like" operator for a specific day: {{"creation": ["like", "2026-07-12%"]}}
+    - If no specific filters apply, ensure you do not drop the filters. Be as specific as possible!
+    """
+    
+    try:
+        response = call_ai_model(intent_prompt).strip()
+        
+        clean_response = response.replace("```json", "").replace("```", "").strip()
+        
+        if clean_response.startswith("{") and clean_response.endswith("}"):
+            intent = json.loads(clean_response)
+            filters = intent.get("filters", {})
+            action = intent.get("action", "LIST")
+            
+            data = None
+            if action == "COUNT":
+                data = frappe.db.count("HD Ticket", filters)
+            else:
+                data = frappe.get_list("HD Ticket", filters=filters, fields=["name", "status", "priority", "subject", "customer"], limit=20)
+                
+            response_prompt = f"""
+            You are NexAI.
+            User asked: "{query}"
+            Database returned: {json.dumps(data)}
+            Write a brief, professional answer based on this data. Use <br> for newlines.
+            """
+            
+            final_answer = call_ai_model(response_prompt)
+            return final_answer.replace('\n', '<br>')
+            
+        else:
+            return response.replace('\n', '<br>')
+            
+    except Exception as e:
+        return f"I encountered an error analyzing the request: {str(e)}"
+
+################################################################################
+# --- END: EXCLUSIVE HELPDESK DASHBOARD V2 APIs ---
+################################################################################
+

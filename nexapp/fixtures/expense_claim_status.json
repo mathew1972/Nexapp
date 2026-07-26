@@ -21,18 +21,18 @@
   "name": "Approved"
  },
  {
-  "approval_status": "Approved By Manager",
-  "docstatus": 0,
-  "doctype": "Expense Claim Status",
-  "modified": "2025-08-29 16:40:10.472876",
-  "name": "Approved By Manager"
- },
- {
   "approval_status": "Submitted for Approval",
   "docstatus": 0,
   "doctype": "Expense Claim Status",
   "modified": "2025-08-29 16:40:00.945946",
   "name": "Submitted for Approval"
+ },
+ {
+  "approval_status": "Approved By Manager",
+  "docstatus": 0,
+  "doctype": "Expense Claim Status",
+  "modified": "2025-08-29 16:40:10.472876",
+  "name": "Approved By Manager"
  },
  {
   "approval_status": "Draft",

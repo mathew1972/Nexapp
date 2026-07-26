@@ -187,480 +187,496 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
       this.renderLayout();
       this.bindEvents();
       this.setupStatusButton();
-      this.loadTotalStats();
-      this.loadData();
+      // this.loadTotalStats(); // Disabled, stats now load via loadCharts
+      this.loadNexaiData();
+      this.loadCharts();
       this.startAutoRefresh(); // Start auto-refresh
+      this.loadData();
     },
 
+
+    // ══════════════════════════════════════════════════
+    //  Custom Report Builder — Full-screen Native Modal
+    // ══════════════════════════════════════════════════
+    _crb_selected_circuits: [],
+    
+    showCustomReportBuilder() {
+        frappe.call({
+            method: 'nexapp.api.get_ticket_filter_options',
+            callback: (r) => {
+                if (!r.message) return;
+                this._crb_selected_circuits = [];
+                this._crb_build_modal(r.message);
+            }
+        });
+    },
+
+    _crb_build_modal(opts) {
+        $('.crb-overlay').remove();
+        const self = this;
+        const status_options = (opts.statuses || []).map(s => `<option value="${s}">${s}</option>`).join('');
+        const customer_options = (opts.customers || []).map(c => `<option value="${c}">${c}</option>`).join('');
+        const user_options = (opts.users || []).map(u => `<option value="${u}">${u}</option>`).join('');
+
+        const field_groups = [
+            {
+                main_label: 'HD Ticket', icon: 'fa-ticket', doctype: 'HD Ticket',
+                sections: [
+                    {
+                        label: 'Core Information',
+                        fields: [
+                            { id: 'ticket_id', label: 'Ticket ID' },
+                            { id: 'subject', label: 'Subject' },
+                            { id: 'status', label: 'Status' },
+                            { id: 'priority', label: 'Priority' },
+                            { id: 'custom_channel', label: 'Channel' },
+                            { id: 'description', label: 'Description' }
+                        ]
+                    },
+                    {
+                        label: 'Contacts & Assignments',
+                        fields: [
+                            { id: 'raised_by', label: 'Raised By' },
+                            { id: 'customer', label: 'Customer' },
+                            { id: 'assigned_to', label: 'Assigned To' }
+                        ]
+                    },
+                    {
+                        label: 'Dates & Times',
+                        fields: [
+                            { id: 'creation_date', label: 'Creation Date' },
+                            { id: 'resolution_date', label: 'Resolution Date' },
+                            { id: 'first_responded_on', label: 'First Responded On' }
+                        ]
+                    },
+                    {
+                        label: 'Custom References',
+                        fields: [
+                            { id: 'custom_circuit_id', label: 'Circuit ID' },
+                            { id: 'custom_lms_id', label: 'LMS ID' }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        let fields_html = '';
+        field_groups.forEach(g => {
+            let sections_html = '';
+            g.sections.forEach(sec => {
+                const items = sec.fields.map(f =>
+                    `<label class="crb-field-item">
+                        <input type="checkbox" class="crb-field-cb" data-doctype="${g.doctype}" data-field="${f.id}">
+                        <span>${f.label}</span>
+                    </label>`
+                ).join('');
+                sections_html += `
+                    <div class="crb-sub-section">
+                        <div class="crb-sub-section-title">${sec.label}</div>
+                        <div class="crb-field-grid">${items}</div>
+                    </div>`;
+            });
+            fields_html += `
+                <div class="crb-field-group crb-main-group">
+                    <div class="crb-field-group-title main-title">
+                        <i class="fa ${g.icon}"></i> ${g.main_label}
+                        <span class="crb-select-all" data-group="${g.doctype}">Select All</span>
+                    </div>
+                    ${sections_html}
+                </div>`;
+        });
+
+        const overlay = $(`
+        <div class="crb-overlay">
+            <div class="crb-modal">
+                <div class="crb-topbar">
+                    <div class="crb-topbar-left">
+                        <div>
+                            <div class="crb-topbar-title">Custom Report Builder</div>
+                            <div class="crb-topbar-subtitle">Select filters, choose fields, then generate</div>
+                        </div>
+                    </div>
+                    <div class="crb-topbar-actions">
+                        <button class="crb-btn crb-btn-generate" id="crb-btn-generate">
+                            <i class="fa fa-play"></i> Generate Report
+                        </button>
+                        <button class="crb-btn crb-btn-excel" id="crb-btn-excel" disabled>
+                            <i class="fa fa-file-excel-o"></i> Download Excel
+                        </button>
+                        <button class="crb-close-btn" id="crb-close">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="crb-body">
+                    <div class="crb-panel-filters">
+                        <div class="crb-filter-section">
+                            <div class="crb-filter-group">
+                                <div class="crb-filter-label">Ticket Created Date</div>
+                                <select class="crb-filter-select" id="crb-creation-date-range">
+                                    <option value="All">All</option>
+                                    <option value="Current Month">Current Month</option>
+                                    <option value="Last 3 Months">Last 3 Months</option>
+                                    <option value="Custom">Custom</option>
+                                </select>
+                                <div class="crb-filter-dates" id="crb-creation-custom-dates">
+                                    <input type="date" class="crb-filter-input" id="crb-creation-from-date">
+                                    <input type="date" class="crb-filter-input" id="crb-creation-to-date">
+                                </div>
+                            </div>
+                            
+                            <div class="crb-filter-group">
+                                <div class="crb-filter-label">Resolution Date</div>
+                                <select class="crb-filter-select" id="crb-resolution-date-range">
+                                    <option value="All">All</option>
+                                    <option value="Current Month">Current Month</option>
+                                    <option value="Last 3 Months">Last 3 Months</option>
+                                    <option value="Custom">Custom</option>
+                                </select>
+                                <div class="crb-filter-dates" id="crb-resolution-custom-dates">
+                                    <input type="date" class="crb-filter-input" id="crb-resolution-from-date">
+                                    <input type="date" class="crb-filter-input" id="crb-resolution-to-date">
+                                </div>
+                            </div>
+
+                            <div class="crb-filter-group">
+                                <div class="crb-filter-label">Status</div>
+                                <select class="crb-filter-select" id="crb-status">
+                                    <option value="All">All</option>
+                                    ${status_options}
+                                </select>
+                            </div>
+                            
+                            <div class="crb-filter-group">
+                                <div class="crb-filter-label">Customer</div>
+                                <select class="crb-filter-select" id="crb-customer">
+                                    <option value="All">All</option>
+                                    ${customer_options}
+                                </select>
+                            </div>
+                            
+                            <div class="crb-filter-group">
+                                <div class="crb-filter-label">Raised By</div>
+                                <select class="crb-filter-select" id="crb-raised-by">
+                                    <option value="All">All</option>
+                                    ${user_options}
+                                </select>
+                            </div>
+                            
+                            <div class="crb-filter-group">
+                                <div class="crb-filter-label">Circuit ID Search</div>
+                                <input type="text" class="crb-filter-input" id="crb-circuit-search" placeholder="Type Circuit ID...">
+                                <div class="crb-circuit-dropdown" id="crb-circuit-dropdown"></div>
+                                <div class="crb-circuit-tags" id="crb-circuit-tags"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="crb-panel-fields">
+                        <div class="crb-panel-title">Select Report Columns</div>
+                        <div class="crb-field-groups">${fields_html}</div>
+                    </div>
+
+                    <div class="crb-panel-preview">
+                        <div class="crb-preview-header">
+                            <div class="crb-preview-title">Report Preview <span class="crb-preview-badge" id="crb-record-count">0 Records</span></div>
+                        </div>
+                        <div class="crb-preview-empty" id="crb-preview-empty">
+                            <i class="fa fa-table"></i>
+                            <p>Select fields and click <b>Generate Report</b></p>
+                        </div>
+                        <div class="crb-preview-table-wrap" id="crb-table-wrap" style="display:none;">
+                            <table class="crb-preview-table" id="crb-preview-table">
+                                <thead id="crb-thead"></thead>
+                                <tbody id="crb-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`);
+
+        $('body').append(overlay);
+
+        $('#crb-close').on('click', () => overlay.remove());
+        
+        $('#crb-creation-date-range').on('change', function() {
+            $('#crb-creation-custom-dates').toggleClass('visible', $(this).val() === 'Custom');
+        });
+        $('#crb-resolution-date-range').on('change', function() {
+            $('#crb-resolution-custom-dates').toggleClass('visible', $(this).val() === 'Custom');
+        });
+
+        overlay.on('click', '.crb-select-all', function () {
+            const group = $(this).data('group');
+            const cbs = overlay.find(`.crb-field-cb[data-doctype="${group}"]`);
+            const allChecked = cbs.filter(':checked').length === cbs.length;
+            cbs.prop('checked', !allChecked);
+            $(this).text(allChecked ? 'Select All' : 'Deselect All');
+        });
+
+        const circuit_ids = opts.circuit_ids || [];
+        $('#crb-circuit-search').on('input', function () {
+            const q = $(this).val().toLowerCase().trim();
+            if (q.length < 1) { $('#crb-circuit-dropdown').removeClass('visible').empty(); return; }
+            const matches = circuit_ids.filter(id => id.toLowerCase().includes(q) && !self._crb_selected_circuits.includes(id)).slice(0, 20);
+            if (matches.length === 0) { $('#crb-circuit-dropdown').removeClass('visible').empty(); return; }
+            let ddhtml = matches.map(id => `<div class="crb-circuit-option" data-id="${id}">${id}</div>`).join('');
+            $('#crb-circuit-dropdown').html(ddhtml).addClass('visible');
+        });
+
+        overlay.on('click', '.crb-circuit-option', function () {
+            const id = $(this).data('id');
+            if (!self._crb_selected_circuits.includes(id)) {
+                self._crb_selected_circuits.push(id);
+                self._crb_render_circuit_tags();
+            }
+            $('#crb-circuit-search').val('');
+            $('#crb-circuit-dropdown').removeClass('visible').empty();
+        });
+
+        overlay.on('click', '.crb-circuit-tag-remove', function () {
+            const id = $(this).data('id');
+            self._crb_selected_circuits = self._crb_selected_circuits.filter(c => c !== id);
+            self._crb_render_circuit_tags();
+        });
+
+        $('#crb-btn-generate').on('click', () => this._crb_generate(overlay));
+        $('#crb-btn-excel').on('click', () => this._crb_download_excel());
+    },
+
+    _crb_render_circuit_tags() {
+        const html = this._crb_selected_circuits.map(id =>
+            `<span class="crb-circuit-tag">${id}<span class="crb-circuit-tag-remove" data-id="${id}">&times;</span></span>`
+        ).join('');
+        $('#crb-circuit-tags').html(html);
+    },
+
+    _crb_generate(overlay) {
+        const filters = {
+            creation_date_range: $('#crb-creation-date-range').val(),
+            resolution_date_range: $('#crb-resolution-date-range').val(),
+            status: $('#crb-status').val(),
+            customer: $('#crb-customer').val(),
+            raised_by: $('#crb-raised-by').val()
+        };
+        if (filters.creation_date_range === 'Custom') {
+            filters.creation_from_date = $('#crb-creation-from-date').val();
+            filters.creation_to_date = $('#crb-creation-to-date').val();
+        }
+        if (filters.resolution_date_range === 'Custom') {
+            filters.resolution_from_date = $('#crb-resolution-from-date').val();
+            filters.resolution_to_date = $('#crb-resolution-to-date').val();
+        }
+        if (this._crb_selected_circuits.length > 0) {
+            filters.circuit_id = this._crb_selected_circuits.join(',');
+        }
+
+        const fields = { 'HD Ticket': ['ticket_id', 'subject', 'status'] };
+        overlay.find('.crb-field-cb:checked').each(function () {
+            const dt = $(this).data('doctype');
+            const f = $(this).data('field');
+            if (!fields[dt]) fields[dt] = [];
+            if (!fields[dt].includes(f)) fields[dt].push(f);
+        });
+
+        $('#crb-preview-empty').hide();
+        $('#crb-table-wrap').hide();
+        $('#crb-btn-generate').prop('disabled', true).html('<i class="fa fa-circle-o-notch fa-spin"></i> Generating...');
+        
+        frappe.call({
+            method: 'nexapp.api.get_ticket_custom_report_data',
+            args: { filters, fields },
+            callback: (r) => {
+                $('#crb-btn-generate').prop('disabled', false).html('<i class="fa fa-play"></i> Generate Report');
+                if (r.message && r.message.length > 0) {
+                    this._crb_report_data = r.message;
+                    this._crb_render_table(r.message);
+                    $('#crb-btn-excel').prop('disabled', false);
+                    $('#crb-record-count').text(r.message.length + ' Records');
+                } else {
+                    $('#crb-preview-empty').show().find('p').html('No data found for the selected criteria.');
+                    $('#crb-table-wrap').hide();
+                    $('#crb-btn-excel').prop('disabled', true);
+                    this._crb_report_data = null;
+                }
+            }
+        });
+    },
+
+    _crb_render_table(data) {
+        const keys = Object.keys(data[0]);
+        const thead = '<tr>' + keys.map(k => `<th>${frappe.unscrub(k)}</th>`).join('') + '</tr>';
+        const tbody = data.map(row => {
+            return '<tr>' + keys.map(k => `<td>${row[k] || ''}</td>`).join('') + '</tr>';
+        }).join('');
+        
+        $('#crb-thead').html(thead);
+        $('#crb-tbody').html(tbody);
+        $('#crb-table-wrap').show();
+        $('#crb-preview-empty').hide();
+    },
+
+    _crb_download_excel() {
+        if (!this._crb_report_data || this._crb_report_data.length === 0) return;
+        const keys = Object.keys(this._crb_report_data[0]);
+        const columns = keys.map(k => frappe.unscrub(k));
+        const rows = [columns];
+        
+        this._crb_report_data.forEach(d => {
+            rows.push(keys.map(k => d[k] || ''));
+        });
+        
+        frappe.call({
+            method: 'frappe.utils.xlsxutils.build_xlsx_response',
+            args: {
+                data: rows,
+                filename: 'HD_Ticket_Custom_Report.xlsx'
+            },
+            callback: function(r) {
+                if (r.message) {
+                    window.location.href = r.message;
+                }
+            }
+        });
+    },
+    
     renderLayout() {
       const layout = `
-        <div class="helpdesk-container">
-          <!-- Header - TOTALLY COMPACT -->
-          <div class="helpdesk-header">
-          <div class="header-spacer"></div>
-            <div class="header-content">
-              <div>
-                <h1>Helpdesk</h1>
-                <p class="subtitle">Stay updated on every ticket, anytime</p>               
-              </div>
-              <div class="header-actions">
-                <!-- Refresh button moved to tickets section -->
-              </div>              
-            </div>             
+        <div class="helpdesk-container" style="max-width: 1400px; margin: 0 auto;">
+          <!-- Ask NexAI Bar -->
+          <div class="nexai-ask-container" style="margin-bottom: 32px;">
+            <div class="nexai-ask-bar" style="background: white; border-radius: 12px; padding: 16px 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e5e7eb; display: flex; align-items: center; gap: 16px;">
+               <span style="font-size: 20px;">🔍</span>
+               <input type="text" id="nexai-ask-input" placeholder="Ask NexAI..." style="flex: 1; border: none; outline: none; font-size: 16px; color: #111827; background: transparent;">
+               <button id="nexai-ask-btn" style="background: #111827; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 600; cursor: pointer;">Ask</button>
+            </div>
+            <div style="margin-top: 12px; display: flex; gap: 8px; font-size: 13px; color: #6b7280; flex-wrap: wrap;">
+               <span>Try asking...</span>
+               <span class="nexai-chip" style="background: #f3f4f6; padding: 4px 12px; border-radius: 16px; cursor: pointer; color: #3b82f6;">Why did tickets increase today?</span>
+               <span class="nexai-chip" style="background: #f3f4f6; padding: 4px 12px; border-radius: 16px; cursor: pointer; color: #3b82f6;">Who needs attention?</span>
+               <span class="nexai-chip" style="background: #f3f4f6; padding: 4px 12px; border-radius: 16px; cursor: pointer; color: #3b82f6;">Which customer is at risk?</span>
+            </div>
           </div>
 
-          <!-- Quick Stats Cards -->
-          <div class="stats-section">
-            <div class="stats-grid">
-              <div class="stat-card total" data-status="total">
-                <div class="stat-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
-                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
-                  </svg>
-                </div>
-                <div class="stat-info">
-                  <div class="stat-value" id="stat-total">0</div>
-                  <div class="stat-label">Total Tickets</div>
-                </div>
+          <div class="nexai-layout" style="display: grid; grid-template-columns: 3fr 2fr; gap: 32px; margin-bottom: 40px;">
+              <!-- Left Column: The Story -->
+              <div class="nexai-left-column" style="display: flex; flex-direction: column; gap: 24px;">
+                  
+                  <!-- Morning Briefing -->
+                  <div class="nexai-briefing-card" style="background: white; border-radius: 16px; padding: 32px; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+                          <h2 id="nexai-main-title" style="font-size: 22px; font-weight: 700; color: #111827; margin: 0;">🧠 NexAI Operations Brief</h2>
+                      </div>
+                      
+                      <div style="font-size: 16px; color: #374151; line-height: 1.6;">
+                          <p id="nexai-dynamic-greeting" style="font-size: 18px; font-weight: 600; color: #111827; margin-bottom: 24px;">...</p>
+                          
+                          <div id="nexai-facts" style="display: flex; flex-direction: column; gap: 12px; font-size: 15px; color: #4b5563;">
+                              <!-- Emojis injected via JS -->
+                          </div>
+                      </div>
+                  </div>
+
+                  <!-- Mission Card -->
+                  <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">
+                      <h3 style="font-size: 14px; font-weight: 700; color: #334155; margin: 0 0 12px 0; letter-spacing: 1px;">🎯 TODAY'S MISSION</h3>
+                      <p id="nexai-mission" style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #0f172a;"></p>
+                      
+                      <div style="display: flex; align-items: center; gap: 12px;">
+                          <span style="font-size: 13px; font-weight: 600; color: #64748b;">Progress</span>
+                          <div style="flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                              <div id="nexai-mission-progress-bar" style="height: 100%; width: 0%; background: #3b82f6; border-radius: 4px;"></div>
+                          </div>
+                          <span id="nexai-mission-progress-text" style="font-size: 13px; font-weight: 600; color: #0f172a;">0%</span>
+                      </div>
+                  </div>
+
+                  <!-- Recommended Actions -->
+                  <div class="nexai-actions-card" style="background: white; border-radius: 12px; padding: 24px; border: 1px solid #e5e7eb;">
+                      <h3 style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 20px 0;">💡 Top 3 Recommendations</h3>
+                      <div id="nexai-actions-list" style="display: flex; flex-direction: column; gap: 16px;"></div>
+                  </div>
+
+                  <!-- Customer Health -->
+                  <div class="nexai-customer-card" style="background: white; border-radius: 12px; padding: 24px; border: 1px solid #e5e7eb;">
+                      <h3 style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 20px 0;">❤️ Customer Health</h3>
+                      <div id="nexai-customer-health" style="display: flex; flex-direction: column; gap: 16px;"></div>
+                  </div>
+
               </div>
 
-              <div class="stat-card open" data-status="Open">
-                <div class="stat-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                    <path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2"/>
-                  </svg>
-                </div>
-                <div class="stat-info">
-                  <div class="stat-value" id="stat-open">0</div>
-                  <div class="stat-label">Open</div>
-                </div>
-                <div class="stat-badge urgent">URGENT</div>
-              </div>
+              <!-- Right Column: The Evidence -->
+              <div class="nexai-right-column" style="display: flex; flex-direction: column; gap: 24px;">
+                  
+                  <!-- SLA Health Redesigned -->
+                  <div class="evidence-card" style="background: white; border-radius: 12px; padding: 24px; border: 1px solid #e5e7eb;">
+                      <h4 style="font-size: 15px; font-weight: 600; color: #374151; margin: 0 0 20px 0;">SLA Health</h4>
+                      <div id="nexai-sla-container">
+                          <!-- Injected via JS -->
+                      </div>
+                  </div>
 
-              <div class="stat-card replied" data-status="Replied">
-                <div class="stat-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2"/>
-                  </svg>
-                </div>
-                <div class="stat-info">
-                  <div class="stat-value" id="stat-replied">0</div>
-                  <div class="stat-label">Replied</div>
-                </div>
-              </div>
+                  <!-- Live Queue -->
+                  <div class="evidence-card" style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb;">
+                      <h4 style="font-size: 14px; font-weight: 600; color: #374151; margin: 0 0 16px 0;">Live Queue</h4>
+                      <div id="nexai-queue-bars" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                  </div>
 
-              <div class="stat-card hold" data-status="On Hold">
-                <div class="stat-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                    <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2"/>
-                  </svg>
-                </div>
-                <div class="stat-info">
-                  <div class="stat-value" id="stat-on-hold">0</div>
-                  <div class="stat-label">On Hold</div>
-                </div>
-              </div>
+                  <!-- Ticket Aging -->
+                  <div class="evidence-card" style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb;">
+                      <h4 style="font-size: 14px; font-weight: 600; color: #374151; margin: 0 0 16px 0;">Ticket Aging (Backlog)</h4>
+                      <div id="nexai-aging-bars" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                  </div>
 
-              <div class="stat-card wrong-circuit" data-status="Wrong Circuit">
-                <div class="stat-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path d="M18.364 5.636a9 9 0 0 1 0 12.728m-12.728 0a9 9 0 0 1 0-12.728"/>
-                    <path d="M9 12a3 3 0 1 0 6 0 3 3 0 1 0-6 0"/>
-                  </svg>
-                </div>
-                <div class="stat-info">
-                  <div class="stat-value" id="stat-wrong-circuit">0</div>
-                  <div class="stat-label">Wrong Circuit</div>
-                </div>
+                  <!-- Agent Workload -->
+                  <div class="evidence-card" style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb;">
+                      <h4 style="font-size: 14px; font-weight: 600; color: #374151; margin: 0 0 16px 0;">Agent Workload</h4>
+                      <div id="nexai-workload-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                  </div>
               </div>
-
-              <div class="stat-card resolved" data-status="Resolved">
-                <div class="stat-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2"/>
-                    <polyline points="22,4 12,14.01 9,11.01" stroke="currentColor" stroke-width="2"/>
-                  </svg>
-                </div>
-                <div class="stat-info">
-                  <div class="stat-value" id="stat-resolved">0</div>
-                  <div class="stat-label">Resolved</div>
-                </div>
-              </div>
-
-              <div class="stat-card closed" data-status="Closed">
-                <div class="stat-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="2"/>
-                  </svg>
-                </div>
-                <div class="stat-info">
-                  <div class="stat-value" id="stat-closed">0</div>
-                  <div class="stat-label">Closed</div>
-                  <div class="stat-percentage" id="closed-percentage">0%</div>
-                </div>
-              </div>
-            </div>
           </div>
 
           <!-- Main Content -->
-          <div class="main-content">
-            <!-- Tickets List -->
-            <div class="tickets-section">
-              <div class="section-header" style="display:flex; flex-direction:column; gap:12px;">
-
-    <!-- ROW 1: Title + Refresh Button -->
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h2>All Tickets</h2>
-
-        <button id="refresh-btn" class="refresh-btn" title="Refresh">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M23 4v6h-6"/>
-                <path d="M1 20v-6h6"/>
-                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
-            </svg>
-        </button>
-    </div>
-
-    <!-- ROW 2: Filters (Full Width) -->
-    <div class="filter-input-group" style="display:grid; grid-template-columns: repeat(6, 1fr); gap:12px;">
-        <input type="text" id="filter-ticket" placeholder="Ticket No" class="filter-input">
-        <input type="text" id="filter-channel" placeholder="Channel" class="filter-input">
-        <input type="text" id="filter-circuit" placeholder="Circuit ID" class="filter-input">
-        <input type="text" id="filter-customer" placeholder="Customer" class="filter-input">
-        <input type="text" id="filter-site" placeholder="Site Name" class="filter-input">
-        <input type="text" id="filter-status" placeholder="Status" class="filter-input">
-    </div>
-
-</div>
-
-
-              <div class="table-container">
-                <table class="tickets-table">
-                  <thead>
-                    <tr>
-                      <th>TICKET NO</th>
-                      <th>CHANNEL</th>
-                      <th>CIRCUIT ID</th>
-                      <th>CUSTOMER</th>
-                      <th>SITE NAME</th>
-                      <th>STATUS</th>
-                    </tr>
-                  </thead>
-                  <tbody id="table-body"></tbody>
-                </table>
-              </div>
-
-              <div class="table-footer">
-                <div class="table-info">
-                  <span id="table-info">Loading...</span>
-                </div>
-                <div class="table-controls">
-                  <div class="pagination" id="pagination"></div>
-                  <div class="rows-selector">
-                    <label>Rows:</label>
-                    <select id="rows-per-page">
-                      <option value="10">10</option>
-                      <option value="20" selected>20</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
+          <div class="main-content" style="width: 100%;">
+            <!-- Incoming Tickets Chart (Full Width) -->
+            <div style="width: 100%; background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e5e7eb; margin-bottom: 8px;">
+                <div style="font-size: 16px; font-weight: 600; color: #111827; margin-bottom: 16px;">Incoming Tickets (Last 12 Hours)</div>
+                <div id="nexai-incoming-trend-chart"></div>
             </div>
 
-            <!-- Right Panel Container - REDESIGNED -->
-            <div class="right-panel-wrapper">
-              <div id="details-panel" class="details-panel">
-                <!-- Panel Header with Gradient -->
-                <div class="panel-header gradient-bg">
-                  <div class="panel-header-content">
-                    <div class="ticket-header">
-                      <div class="ticket-title">
-                        <div class="ticket-header-top">
-                          <h3>TICKET DETAILS</h3>
-                          <button class="close-panel">&times;</button>
-                        </div>
-                        <div class="ticket-number">
-                          <span id="ticket-name-display">HD Ticket</span>
-                          <div class="status-display-header">
-                            <div id="status-ball" class="status-ball" data-status=""></div>
-                            <div id="status-text" class="status-text">-</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+            <!-- Recent Tickets -->
+            <div class="recent-sites-card" style="flex: 1; width: 100%; background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e5e7eb; margin-bottom: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <div style="font-size: 16px; font-weight: 600; color: #111827;">Recent Ticket Activity (Last 24 Hours)</div>
+                    <button id="open-report-builder" style="background: #f3f4f6; color: #374151; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">
+                        📊 Custom Report Builder
+                    </button>
                 </div>
-
-                <!-- UPDATED: Only Ticket Details Tab (Removed Email Activity Tab) -->
-                <div class="panel-tabs">
-                  <button class="tab-btn active" data-tab="details">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                      <polyline points="14 2 14 8 20 8"/>
-                    </svg>
-                    <span class="tab-label">Ticket Details</span>
-                  </button>
+                <div class="table-responsive" style="overflow-x: auto;">
+                    <table class="recent-sites-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid #e5e7eb; color: #6b7280; text-transform: uppercase; font-size: 11px;">
+                                <th style="padding: 12px 8px;">Ticket</th>
+                                <th style="padding: 12px 8px;">Channel</th>
+                                <th style="padding: 12px 8px;">Circuit ID</th>
+                                <th style="padding: 12px 8px;">Customer</th>
+                                <th style="padding: 12px 8px;">Status</th>
+                                <th style="padding: 12px 8px;">Last Updated</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <tr><td colspan="6" class="text-center" style="padding: 20px; text-align: center; color: #6b7280;">Loading...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
-
-                <div class="panel-content">
-                  <!-- Enhanced Details Tab -->
-                  <div id="tab-details" class="tab-content active">
-                    <!-- Quick Stats - UPDATED: Positions swapped (TICKET CREATED first, then CLOSED) -->
-                    <div class="quick-stats">
-                      <!-- TICKET CREATED (now in first position) -->
-                      <div class="stat-item">
-                        <div class="stat-icon-sm">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                            <polyline points="14 2 14 8 20 8"/>
-                          </svg>
-                        </div>
-                        <div class="stat-content">
-                          <div class="stat-title">TICKET CREATED</div>
-                          <div class="stat-value" id="ticket-created">-</div>
-                        </div>
-                      </div>
-                      <div class="stat-item">
-                        <div class="stat-icon-sm">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-                            <path d="M12 6v6l4 2"/>
-                          </svg>
-                        </div>
-                        <div class="stat-content">
-                          <div class="stat-title">RESOLUTION BY (SLA)</div>
-                          <div class="stat-value" id="resolution-by">-</div>
-                        </div>
-                      </div>
-                      <div class="stat-item">
-                        <div class="stat-icon-sm">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                            <circle cx="12" cy="7" r="4"/>
-                          </svg>
-                        </div>
-                        <div class="stat-content">
-                          <div class="stat-title">AGENT RESPONSE</div>
-                          <div class="stat-value" id="agent-response">-</div>
-                        </div>
-                      </div>
-                      <!-- CLOSED (now in fourth position) -->
-                      <div class="stat-item">
-                        <div class="stat-icon-sm">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M6 18L18 6M6 6l12 12"/>
-                          </svg>
-                        </div>
-                        <div class="stat-content">
-                          <div class="stat-title">CLOSED</div>
-                          <div class="stat-value" id="closed-date">-</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Ticket Details Grid -->
-                    <div class="details-grid">
-                      <!-- Row 1: Circuit & Status -->
-                    
-                    <!-- FIXED: Ticket Status Progress Indicator - REMOVED PROGRESS BAR AND PERCENTAGE -->
-                      <div class="detail-card status-progress-card">
-                        <div class="detail-card-header">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                            <polyline points="22,4 12,14.01 9,11.01"/>
-                          </svg>
-                          <span>TICKET STATUS PROGRESS</span>
-                          <!-- REMOVED: status-progress-percentage div -->
-                        </div>
-                        <div class="status-progress-container">
-                          <div class="status-progress-visual">
-                            <!-- REMOVED: Progress bar section -->
-                            <div class="status-progress-stages">
-                              <div class="status-stage" data-stage="open">
-                                <div class="stage-dot" style="background-color: #dc2626;"></div>
-                                <div class="stage-label">Open</div>
-                              </div>
-                              <div class="status-stage" data-stage="replied">
-                                <div class="stage-dot" style="background-color: #2563eb;"></div>
-                                <div class="stage-label">Replied</div>
-                              </div>
-                              <div class="status-stage" data-stage="on-hold">
-                                <div class="stage-dot" style="background-color: #d97706;"></div>
-                                <div class="stage-label">On Hold</div>
-                              </div>
-                              <div class="status-stage" data-stage="wrong-circuit">
-                                <div class="stage-dot" style="background-color: #8b5cf6;"></div>
-                                <div class="stage-label">Wrong Circuit</div>
-                              </div>
-                              <div class="status-stage" data-stage="resolved">
-                                <div class="stage-dot" style="background-color: #10b981;"></div>
-                                <div class="stage-label">Resolved</div>
-                              </div>
-                              <div class="status-stage" data-stage="closed">
-                                <div class="stage-dot" style="background-color: #6b7280;"></div>
-                                <div class="stage-label">Closed</div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                      
-                      <!-- Row 2: Subject -->
-                      <div class="detail-card subject-card">
-                        <div class="detail-card-header">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                            <polyline points="14 2 14 8 20 8"/>
-                            <line x1="16" y1="13" x2="8" y2="13"/>
-                            <line x1="16" y1="17" x2="8" y2="17"/>
-                            <line x1="10" y1="9" x2="8" y2="9"/>
-                          </svg>
-                          <span>SUBJECT</span>
-                        </div>
-                        <div class="detail-card-content" id="detail-subject">-</div>
-                      </div>
-
-                      <!-- Row 3: Description -->
-                      <div class="detail-card description-card">
-                        <div class="detail-card-header">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                          </svg>
-                          <span>ISSUE DESCRIPTION</span>
-                        </div>
-                        <div class="detail-card-content">
-                          <div id="detail-description" class="description-content">-</div>
-                        </div>
-                      </div>
-
-                      <!-- Row 4: Ticket Info Grid - UPDATED: Removed TICKET CREATED, rearranged -->
-                      <div class="detail-card info-grid-card">
-                        <div class="detail-card-header">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <line x1="12" y1="16" x2="12" y2="12"/>
-                            <line x1="12" y1="8" x2="12.01" y2="8"/>
-                          </svg>
-                          <span>TICKET INFORMATION</span>
-                        </div>
-                        <div class="info-grid">
-
-                        <div class="info-item">
-                            <div class="info-label">CIRCUIT ID</div>
-                            <div class="circuit-id" id="detail-circuit">-</div>
-                          </div>
-
-                          <div class="info-item">
-                            <div class="info-label">SITE NAME</div>
-                            <div class="info-value" id="detail-site-name">-</div>
-                          </div>
-                          
-                          <div class="info-item">
-                            <div class="info-label">SITE TYPE</div>
-                            <div class="info-value" id="detail-site-type">-</div>
-                          </div>                          
-                          
-                          <div class="info-item">
-                            <div class="info-label">PRIORITY</div>
-                            <div class="info-value priority-value" id="detail-priority">-</div>
-                          </div>
-                          <div class="info-item">
-                            <div class="info-label">SITE ID</div>
-                            <div class="info-value" id="detail-site-id">-</div>
-                          </div>
-                          <!-- UPDATED: Removed TICKET CREATED row, moved RESOLUTION to take its place -->
-                          <div class="info-item">
-                            <div class="info-label">RCA</div>
-                            <div class="info-value" id="detail-resolution">-</div>
-                          </div>
-                        </div>
-                      </div>
-
-                      
-                      <!-- Row 6: Site Address -->
-                      <div class="detail-card address-card">
-                        <div class="detail-card-header">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                            <circle cx="12" cy="10" r="3"/>
-                          </svg>
-                          <span>SITE ADDRESS</span>
-                        </div>
-                        <div class="address-grid">
-                          <div class="address-item">
-                            <div class="address-label">STREET</div>
-                            <div class="address-value" id="detail-address-street">-</div>
-                          </div>
-                          <div class="address-item">
-                            <div class="address-label">DISTRICT</div>
-                            <div class="address-value" id="detail-district">-</div>
-                          </div>
-                          <div class="address-item">
-                            <div class="address-label">CITY</div>
-                            <div class="address-value" id="detail-city">-</div>
-                          </div>
-                          <div class="address-item">
-                            <div class="address-label">PINCODE</div>
-                            <div class="address-value" id="detail-pincode">-</div>
-                          </div>
-                          <div class="address-item">
-                            <div class="address-label">STATE</div>
-                            <div class="address-value" id="detail-state">-</div>
-                          </div>
-                          <div class="address-item">
-                            <div class="address-label">TERRITORY</div>
-                            <div class="address-value" id="detail-territory">-</div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <!-- Row 7: Contact Information -->
-                      <div class="detail-card contact-card">
-                        <div class="detail-card-header">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                          </svg>
-                          <span>CONTACT INFORMATION</span>
-                        </div>
-                        <div class="contact-grid">
-                          <div class="contact-item">
-                            <div class="contact-label">CONTACT PERSON</div>
-                            <div class="contact-value" id="detail-contact-person">-</div>
-                          </div>
-                          <div class="contact-item">
-                            <div class="contact-label">MOBILE</div>
-                            <div class="contact-value" id="detail-primary-contact-mobile">-</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
-
         <style>
+          /* Keep existing styles here for dropdowns etc */
+<style>
           .header-spacer {
           height: 10px;   /* You can adjust (e.g., 10px, 20px, 30px) */          
           }
@@ -903,6 +919,7 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
           /* Main Content */
           .main-content {
             display: flex;
+            flex-direction: column;
             gap: 24px;
             position: relative;
           }
@@ -1831,6 +1848,83 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
               width: 100%;
             }
           }
+
+        /* Custom Report Builder UI */
+        .crb-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1050; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .crb-modal { width: 95vw; height: 90vh; background: #fff; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .crb-topbar { padding: 16px 24px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #fff; }
+        .crb-topbar-title { font-size: 18px; font-weight: 600; color: #111827; }
+        .crb-topbar-subtitle { font-size: 13px; color: #6b7280; }
+        .crb-topbar-actions { display: flex; gap: 12px; align-items: center; }
+        .crb-btn { padding: 8px 16px; border-radius: 6px; font-weight: 500; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; border: none; }
+        .crb-btn-generate { background: #3b82f6; color: white; }
+        .crb-btn-excel { background: #10b981; color: white; }
+        .crb-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .crb-close-btn { background: none; border: none; font-size: 20px; color: #6b7280; cursor: pointer; padding: 4px; }
+        
+        .crb-body { display: flex; flex: 1; overflow: hidden; background: #f9fafb; }
+        .crb-panel-filters { width: 300px; padding: 20px; border-right: 1px solid #e5e7eb; overflow-y: auto; background: #fff; }
+        .crb-filter-group { margin-bottom: 16px; }
+        .crb-filter-label { font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 6px; text-transform: uppercase; }
+        .crb-filter-select, .crb-filter-input { width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; }
+        .crb-filter-dates { display: none; gap: 8px; margin-top: 8px; }
+        .crb-filter-dates.visible { display: flex; flex-direction: column; }
+        .crb-circuit-dropdown { position: absolute; background: white; border: 1px solid #d1d5db; border-radius: 6px; width: 100%; max-height: 200px; overflow-y: auto; display: none; z-index: 10; margin-top: 4px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .crb-circuit-dropdown.visible { display: block; }
+        .crb-circuit-option { padding: 8px 12px; font-size: 13px; cursor: pointer; }
+        .crb-circuit-option:hover { background: #f3f4f6; }
+        .crb-circuit-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .crb-circuit-tag { background: #e0f2fe; color: #0369a1; padding: 4px 8px; border-radius: 4px; font-size: 12px; display: flex; align-items: center; gap: 4px; }
+        .crb-circuit-tag-remove { cursor: pointer; font-weight: bold; }
+        
+        .crb-panel-fields { width: 350px; padding: 20px; border-right: 1px solid #e5e7eb; overflow-y: auto; background: #f9fafb; }
+        .crb-panel-title { font-size: 14px; font-weight: 600; color: #111827; margin-bottom: 16px; }
+        .crb-field-group { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 16px; overflow: hidden; }
+        .crb-field-group-title { padding: 12px 16px; background: #f3f4f6; font-weight: 600; font-size: 13px; display: flex; justify-content: space-between; border-bottom: 1px solid #e5e7eb; }
+        .crb-select-all { font-size: 11px; color: #3b82f6; cursor: pointer; font-weight: 500; }
+        .crb-sub-section { padding: 12px 16px; border-bottom: 1px solid #e5e7eb; }
+        .crb-sub-section:last-child { border-bottom: none; }
+        .crb-sub-section-title { font-size: 11px; font-weight: 600; color: #6b7280; margin-bottom: 8px; text-transform: uppercase; }
+        .crb-field-grid { display: flex; flex-direction: column; gap: 8px; }
+        .crb-field-item { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
+        
+        .crb-panel-preview { flex: 1; padding: 20px; overflow: hidden; display: flex; flex-direction: column; background: #fff; }
+        .crb-preview-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .crb-preview-title { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+        .crb-preview-badge { background: #f3f4f6; padding: 2px 8px; border-radius: 12px; font-size: 12px; color: #4b5563; }
+        .crb-preview-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #9ca3af; }
+        .crb-preview-empty i { font-size: 48px; margin-bottom: 16px; }
+        .crb-table-wrap { flex: 1; overflow: auto; border: 1px solid #e5e7eb; border-radius: 8px; }
+        .crb-preview-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .crb-preview-table th, .crb-preview-table td { padding: 12px 16px; border-bottom: 1px solid #e5e7eb; text-align: left; white-space: nowrap; }
+        .crb-preview-table th { background: #f9fafb; font-weight: 600; color: #374151; position: sticky; top: 0; z-index: 10; box-shadow: 0 1px 0 #e5e7eb; }
+        .crb-preview-table tr:hover { background: #f9fafb; }
+
+
+        /* Charts Grid Styling */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        .chart-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            min-height: 300px;
+        }
+        .chart-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 16px;
+        }
+
         </style>
       `;
 
@@ -1843,7 +1937,102 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
       }, 50);
     },
 
+    showNexAIModal(query, answer) {
+        $('.nexai-chat-modal').remove();
+        
+        // Parse basic markdown to HTML for a better UI experience
+        let formattedAnswer = answer;
+        
+        // Use frappe.markdown if available, otherwise fallback to simple regex
+        if (frappe && frappe.markdown) {
+            // Strip the existing <br> so markdown parses properly, then render
+            formattedAnswer = frappe.markdown(answer.replace(/<br>/g, "\n"));
+        } else {
+            // Fallback Regex parser
+            formattedAnswer = formattedAnswer
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold
+                .replace(/\*(.*?)\*/g, '<em>$1</em>') // Italic
+                .replace(/- (.*?)<br>/g, '<li>$1</li>') // List items
+                .replace(/<li>(.*?)<\/li>/g, '<ul style="margin-top:4px; margin-bottom:4px; padding-left: 20px;"><li>$1</li></ul>') // Wrap lists
+                .replace(/<\/ul><ul[^>]*>/g, ''); // Merge adjacent lists
+        }
+
+        
+        const modalHtml = `
+          <div class="nexai-chat-modal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 1050; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+              <div style="background: white; width: 650px; max-width: 90%; border-radius: 12px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); display: flex; flex-direction: column; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+                  
+                  <div style="padding: 16px 20px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f9fafb;">
+                      <div style="display: flex; align-items: center; gap: 8px;">
+                          <div style="width: 28px; height: 28px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: bold;">N</div>
+                          <h3 style="margin: 0; font-size: 16px; font-weight: 600; color: #111827;">NexAI Intelligence</h3>
+                      </div>
+                      <button class="nexai-chat-close" style="background: transparent; border: none; font-size: 24px; color: #6b7280; cursor: pointer; padding: 0 8px; line-height: 1;">&times;</button>
+                  </div>
+
+                  <div style="padding: 24px; display: flex; flex-direction: column; gap: 24px; max-height: 70vh; overflow-y: auto;">
+                      
+                      <div style="display: flex; gap: 16px; align-items: flex-start;">
+                          <div style="width: 36px; height: 36px; background: #e5e7eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #4b5563; font-weight: 600; font-size: 15px;">U</div>
+                          <div style="flex: 1; font-size: 15px; color: #374151; line-height: 1.5; padding-top: 6px; font-weight: 500;">
+                              ${query}
+                          </div>
+                      </div>
+
+                      <div style="display: flex; gap: 16px; align-items: flex-start; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #f1f5f9;">
+                          <div style="width: 36px; height: 36px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: white; font-weight: 600; font-size: 15px;">N</div>
+                          <div style="flex: 1; font-size: 15px; color: #1e293b; line-height: 1.6; padding-top: 6px;">
+                              ${formattedAnswer}
+                          </div>
+                      </div>
+                      
+                  </div>
+              </div>
+          </div>
+        `;
+        
+        const $modal = $(modalHtml).appendTo('body');
+        
+        $modal.find('.nexai-chat-close').on('click', () => $modal.fadeOut(150, () => $modal.remove()));
+        $modal.on('click', (e) => {
+            if (e.target === $modal[0]) $modal.fadeOut(150, () => $modal.remove());
+        });
+        
+        $modal.hide().fadeIn(150);
+    },
+
     bindEvents() {
+      // Suggestion chips
+      $(document).off('click', '.nexai-chip').on('click', '.nexai-chip', (e) => {
+          $('#nexai-ask-input').val($(e.currentTarget).text());
+          $('#nexai-ask-btn').click();
+      });
+
+      // Ask NexAI Button
+      $(document).off('click', '#nexai-ask-btn').on('click', '#nexai-ask-btn', () => {
+          const query = $('#nexai-ask-input').val();
+          if (!query) return;
+          $('#nexai-ask-btn').text('Thinking...').prop('disabled', true);
+          frappe.call({
+              method: 'nexapp.api.ask_nexai',
+              args: { query: query },
+              callback: (r) => {
+                  $('#nexai-ask-btn').text('Ask').prop('disabled', false);
+                  if (r.message) {
+                      this.showNexAIModal(query, r.message);
+                  }
+                  $('#nexai-ask-input').val('');
+              }
+          });
+      });
+      $(document).off('keypress', '#nexai-ask-input').on('keypress', '#nexai-ask-input', (e) => {
+          if (e.which === 13) $('#nexai-ask-btn').click();
+      });
+
+      // Custom Report Builder Button
+      $(document).off('click', '#open-report-builder').on('click', '#open-report-builder', () => {
+        this.showCustomReportBuilder();
+      });
       // Refresh button click
       $(document).on('click', '#refresh-btn', () => {
         this.manualRefresh();
@@ -1853,14 +2042,14 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
       $('#rows-per-page').on('change', (e) => {
         state.page_size = parseInt($(e.target).val(), 10);
         state.page = 1;
-        this.loadData();
+        this.loadCharts();
       });
 
       // Filter inputs - enter key support
       $(document).on('keypress', '.filter-input', (e) => {
         if (e.which === 13) {
           state.page = 1;
-          this.loadData();
+          this.loadCharts();
         }
       });
 
@@ -1884,7 +2073,7 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
         clearTimeout(filterTimeout);
         filterTimeout = setTimeout(() => {
           state.page = 1;
-          this.loadData();
+          this.loadCharts();
         }, 450);
       });
 
@@ -1905,7 +2094,7 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
           $(e.currentTarget).addClass('active');
 
           setTimeout(() => {
-            this.loadData();
+            this.loadCharts();
           }, 100);
         } else if (status === 'total') {
           state.page = 1;
@@ -1913,7 +2102,7 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
           $(e.currentTarget).addClass('active');
 
           setTimeout(() => {
-            this.loadData();
+            this.loadCharts();
           }, 100);
         }
       });
@@ -2011,7 +2200,7 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
         // Refresh BOTH stats and ticket list
         await Promise.all([
           this.loadTotalStats(),
-          this.loadData()
+          this.loadCharts()
         ]);
         
         // If a ticket is open, refresh its details too
@@ -2186,8 +2375,8 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
               // MODIFIED: Update status progress indicator without percentage
               this.updateStatusProgress(newStatus);
               
-              this.loadTotalStats();
-              this.loadData();
+              // this.loadTotalStats(); // Disabled, stats now load via loadCharts
+              this.loadCharts();
             } else {
               frappe.msgprint('Error updating ticket status');
             }
@@ -2215,26 +2404,241 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
       return filters;
     },
 
-    async loadData() {
+    loadCharts() {
+        frappe.call({
+            method: 'nexapp.api.get_ticket_dashboard_charts',
+            callback: (r) => {
+                if(r.message) {
+                    $('#hd-charts-grid').show();
+                    this.renderCharts(r.message);
+                }
+            }
+        });
+    },
+
+        
+    
+    loadNexaiData() {
+      frappe.call({
+          method: 'nexapp.api.get_nexai_dashboard_data',
+          callback: (r) => {
+              if (r.message) {
+                  const data = r.message;
+                  const firp = data.firp;
+                  
+                  // 1. Facts with Emojis
+                  const emojis = ['✔', '⚠', '🔍', '⏰'];
+                  let factsHtml = '';
+                  firp.facts.forEach((f, i) => {
+                      if (f) factsHtml += `<div style="display: flex; gap: 12px;"><span style="color: #6b7280;">${emojis[i%4]}</span><span>${f}</span></div>`;
+                  });
+                  $('#nexai-facts').html(factsHtml);
+                  
+                  // Good News
+                  if (firp.good_news && firp.good_news.some(n => n)) {
+                      let gnHtml = '<div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;"><p style="font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;"><span>👏</span> Good News</p>';
+                      firp.good_news.forEach(gn => {
+                          if (gn) gnHtml += `<div style="color: #10b981; font-size: 14px; margin-bottom: 4px;">✓ ${gn}</div>`;
+                      });
+                      gnHtml += '</div>';
+                      $('#nexai-facts').append(gnHtml);
+                  }
+
+                  // 2. Mission
+                  $('#nexai-mission').text(data.mission.title || "Maintain SLA and reduce backlog.");
+                  $('#nexai-mission-progress-bar').css('width', (data.mission.progress || 0) + '%');
+                  $('#nexai-mission-progress-text').text((data.mission.progress || 0) + '%');
+
+                  // 3. Top 3 Recommendations
+                  let recHtml = '';
+                  const medals = ['🥇', '🥈', '🥉'];
+                  (data.recommendations || []).slice(0, 3).forEach((r, i) => {
+                      recHtml += `
+                          <div style="display: flex; align-items: center; gap: 16px; background: #f9fafb; padding: 12px 16px; border-radius: 8px;">
+                              <div style="font-size: 20px;">${medals[i]}</div>
+                              <div style="flex: 1; font-size: 15px; font-weight: 600; color: #1f2937;">${r.action}</div>
+                          </div>
+                      `;
+                  });
+                  if(!recHtml) recHtml = '<div style="color: #6b7280; font-size: 14px;">No critical recommendations.</div>';
+                  $('#nexai-actions-list').html(recHtml);
+                  
+                  // 4. Customer Health
+                  let chHtml = '';
+                  if (data.charts && data.charts.customer_health && data.charts.customer_health.length > 0) {
+                      data.charts.customer_health.forEach(c => {
+                          chHtml += `
+                              <div style="display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;">
+                                  <div>
+                                      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                                          <span style="display: inline-block; width: 8px; height: 8px; border-radius: 4px; background: ${c.risk === 'Critical' ? '#dc2626' : '#f59e0b'};"></span>
+                                          <span style="font-weight: 600; color: #111827;">${c.customer}</span>
+                                      </div>
+                                      <div style="font-size: 13px; color: #dc2626; margin-left: 16px;">${c.risk}</div>
+                                  </div>
+                                  <div style="text-align: right; font-size: 12px; color: #6b7280;">
+                                      <div>${c.open_tickets} open tickets</div>
+                                      <div>${c.breached} breached</div>
+                                  </div>
+                              </div>
+                          `;
+                      });
+                  } else {
+                      chHtml = '<div style="color: #10b981; font-size: 14px; display: flex; align-items: center; gap: 8px;"><span>✔</span> All VIP customers are healthy.</div>';
+                  }
+                  $('#nexai-customer-health').html(chHtml);
+
+                  // 5. SLA Health Redesigned
+                  const sla = data.charts.sla;
+                  let slaHtml = '';
+                  if (sla.compliance >= 90) {
+                      slaHtml = `
+                          <div style="display: flex; align-items: center; gap: 8px; color: #10b981; font-weight: 600; margin-bottom: 8px;">
+                              <span>✔</span> Healthy
+                          </div>
+                          <div style="font-size: 48px; font-weight: 800; color: #111827; margin-bottom: 16px;">${sla.compliance}%</div>
+                      `;
+                  } else {
+                      slaHtml = `
+                          <div style="display: flex; align-items: center; gap: 8px; color: #dc2626; font-weight: 600; margin-bottom: 8px;">
+                              <span>⚠</span> SLA Status Critical
+                          </div>
+                          <div style="font-size: 48px; font-weight: 800; color: #dc2626; margin-bottom: 16px;">${sla.compliance}%</div>
+                      `;
+                  }
+                  
+                  slaHtml += `
+                      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; border-top: 1px solid #e5e7eb; padding-top: 16px;">
+                          <div>
+                              <div style="font-size: 12px; color: #6b7280; font-weight: 600; text-transform: uppercase;">Open</div>
+                              <div style="font-size: 18px; font-weight: 600; color: #111827;">${sla.open}</div>
+                          </div>
+                          <div>
+                              <div style="font-size: 12px; color: #f59e0b; font-weight: 600; text-transform: uppercase;">At Risk</div>
+                              <div style="font-size: 18px; font-weight: 600; color: #111827;">${sla.at_risk}</div>
+                          </div>
+                          <div>
+                              <div style="font-size: 12px; color: #dc2626; font-weight: 600; text-transform: uppercase;">Breached</div>
+                              <div style="font-size: 18px; font-weight: 600; color: #111827;">${sla.breached}</div>
+                          </div>
+                      </div>
+                  `;
+                  $('#nexai-sla-container').html(slaHtml);
+
+                  // 6. Live Queue
+                  let queueHtml = '';
+                  data.charts.queue.forEach(q => {
+                      const max = Math.max(...data.charts.queue.map(x => x.count));
+                      const width = Math.max(5, (q.count / max) * 100);
+                      const color = q.priority === 'Critical' ? '#dc2626' : q.priority === 'High' ? '#f97316' : q.priority === 'Medium' ? '#3b82f6' : '#6b7280';
+                      
+                      queueHtml += `
+                          <div style="display: flex; align-items: center; gap: 12px; font-size: 13px;">
+                              <div style="width: 60px; color: #4b5563;">${q.priority}</div>
+                              <div style="flex: 1; height: 8px; background: #f3f4f6; border-radius: 4px;">
+                                  <div style="height: 100%; width: ${width}%; background: ${color}; border-radius: 4px;"></div>
+                              </div>
+                              <div style="width: 30px; text-align: right; font-weight: 600; color: #111827;">${q.count}</div>
+                          </div>
+                      `;
+                  });
+                  $('#nexai-queue-bars').html(queueHtml || '<div style="color: #6b7280; font-size: 13px;">No open tickets.</div>');
+
+                  // 7. Aging
+                  let agingHtml = '';
+                  data.charts.aging.forEach(a => {
+                      const max = Math.max(...data.charts.aging.map(x => x.count));
+                      const width = Math.max(5, (a.count / max) * 100);
+                      const color = a.age_bucket.includes('>') ? '#dc2626' : a.age_bucket.includes('Days') ? '#f59e0b' : '#3b82f6';
+                      
+                      agingHtml += `
+                          <div style="display: flex; align-items: center; gap: 12px; font-size: 13px;">
+                              <div style="width: 80px; color: #4b5563;">${a.age_bucket}</div>
+                              <div style="flex: 1; height: 8px; background: #f3f4f6; border-radius: 4px;">
+                                  <div style="height: 100%; width: ${width}%; background: ${color}; border-radius: 4px;"></div>
+                              </div>
+                              <div style="width: 30px; text-align: right; font-weight: 600; color: #111827;">${a.count}</div>
+                          </div>
+                      `;
+                  });
+                  $('#nexai-aging-bars').html(agingHtml || '<div style="color: #6b7280; font-size: 13px;">No tickets found.</div>');
+
+                  // 8. Agent Workload
+                  let wlHtml = '';
+                  
+                  // 9. Render Trend Chart
+                  if (data.charts.trend && data.charts.trend.length > 0) {
+                      const labels = data.charts.trend.map(t => t.hour);
+                      const values = data.charts.trend.map(t => t.count);
+                      
+                      new frappe.Chart("#nexai-incoming-trend-chart", {
+                          data: {
+                              labels: labels,
+                              datasets: [
+                                  {
+                                      name: "Tickets",
+                                      values: values
+                                  }
+                              ]
+                          },
+                          title: "",
+                          type: 'line',
+                          height: 250,
+                          colors: ['#8b5cf6'],
+                          lineOptions: {
+                              regionFill: 1, // fill area under line
+                              hideDots: 0
+                          },
+                          axisOptions: {
+                              xIsSeries: 1
+                          }
+                      });
+                  } else {
+                      $('#nexai-incoming-trend-chart').html('<div style="color: #6b7280; text-align: center; padding: 40px 0;">No tickets in the last 12 hours.</div>');
+                  }
+
+                  data.charts.workload.forEach(w => {
+                      const color = w.count > 10 ? '#dc2626' : w.count > 5 ? '#f59e0b' : '#10b981';
+                      wlHtml += `
+                          <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px;">
+                              <div style="display: flex; align-items: center; gap: 8px;">
+                                  <div style="width: 24px; height: 24px; border-radius: 12px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #4b5563;">
+                                      ${w.agent_name.charAt(0)}
+                                  </div>
+                                  <span style="color: #374151; font-weight: 500;">${w.agent_name}</span>
+                              </div>
+                              <div style="background: ${color}20; color: ${color}; padding: 2px 8px; border-radius: 12px; font-weight: 600;">
+                                  ${w.count} tickets
+                              </div>
+                          </div>
+                      `;
+                  });
+                  $('#nexai-workload-list').html(wlHtml || '<div style="color: #6b7280; font-size: 13px;">No assignments found.</div>');
+
+              }
+          }
+      });
+    },
+async loadData() {
       try {
         $('#table-body').html('<tr><td colspan="6" style="text-align:center;padding:40px;color:#6b7280;">Loading tickets...</td></tr>');
 
         const filters = this.getFilters();
         const response = await frappe.call({
-          method: "nexapp.api.get_tickets",
+          method: "nexapp.api.get_ticket_dashboard_charts",
           args: {
-            filters: JSON.stringify(filters),
-            page: state.page,
-            page_size: state.page_size
+            filters: JSON.stringify(filters)
           }
         });
 
-        if (response && response.message) {
-          state.total = response.message.total || 0;
-          const tickets = response.message.tickets || [];
+        if (response && response.message && response.message.recent_tickets) {
+          state.total = response.message.recent_tickets.length || 0;
+          const tickets = response.message.recent_tickets || [];
           this.renderTable(tickets);
-          this.updateTableInfo();
-          this.renderPagination();
+          
+          // Hide pagination since we are just showing recent tickets
+          $('#table-info').text(`Showing latest ${tickets.length} tickets from last 24 hours`);
+          $('.pagination-controls').hide();
         } else {
           $('#table-body').html('<tr><td colspan="6" style="text-align:center;padding:40px;color:#6b7280;">No tickets found</td></tr>');
         }
@@ -2268,14 +2672,20 @@ frappe.pages['custom-helpdesk'].on_page_load = function(wrapper) {
 
       tickets.forEach(ticket => {
         const statusBadge = utils.createStatusBadge(ticket.status || '');
+        let lastUpdatedStr = '-';
+        if(ticket.modified) {
+            const modDate = new Date(ticket.modified);
+            lastUpdatedStr = modDate.toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute:'2-digit' });
+        }
+        
         const row = $(`
-          <tr data-ticket="${utils.escapeHtml(ticket.name)}">
-            <td><strong>${utils.escapeHtml(ticket.name)}</strong></td>
-            <td>${utils.escapeHtml(ticket.custom_channel || '-')}</td>
-            <td>${utils.escapeHtml(ticket.custom_circuit_id || '-')}</td>
-            <td>${utils.escapeHtml(ticket.customer || '-')}</td>
-            <td>${utils.escapeHtml(ticket.custom_site_name || '-')}</td>
-            <td>${statusBadge}</td>
+          <tr data-ticket="${utils.escapeHtml(ticket.name)}" style="font-size: 13px; color: #374151;">
+            <td style="padding: 12px 8px;"><strong>${utils.escapeHtml(ticket.name)}</strong></td>
+            <td style="padding: 12px 8px;">${utils.escapeHtml(ticket.custom_channel || '-')}</td>
+            <td style="padding: 12px 8px;">${utils.escapeHtml(ticket.custom_circuit_id || '-')}</td>
+            <td style="padding: 12px 8px;">${utils.escapeHtml(ticket.customer || '-')}</td>
+            <td style="padding: 12px 8px;">${statusBadge}</td>
+            <td style="padding: 12px 8px; color: #6b7280; font-size: 12px;">${lastUpdatedStr}</td>
           </tr>
         `);
 

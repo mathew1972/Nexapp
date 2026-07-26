@@ -584,6 +584,7 @@ function SiteDashboardRenderer(wrapper, page) {
                         <span class="crb-fixed-chip">Site Name</span>
                         <span class="crb-fixed-chip">Customer</span>
                         <span class="crb-fixed-chip">Site Status</span>
+                        <span class="crb-fixed-chip">Assigned Name</span>
                     </div>
                     <div id="crb-status-msg" style="font-style: italic;"></div>
                 </div>
@@ -696,7 +697,7 @@ function SiteDashboardRenderer(wrapper, page) {
     };
 
     this._crb_get_fields = function (overlay) {
-        const selected = { 'Site': ['circuit_id', 'site_name', 'customer', 'site_status'] };
+        const selected = { 'Site': ['circuit_id', 'site_name', 'customer', 'site_status', 'assigned_name'] };
         overlay.find('.crb-field-cb:checked').each(function () {
             const dt = $(this).data('doctype');
             const f = $(this).data('field');
@@ -757,6 +758,7 @@ function SiteDashboardRenderer(wrapper, page) {
     this._crb_render_table = function (data, filters) {
         const all_fields = {
             'circuit_id': 'Circuit ID', 'customer': 'Customer', 'site_status': 'Site Status',
+            'assigned_name': 'Assigned Name',
             'customer_type': 'Customer Type', 'site_name': 'Site Name', 'order_type': 'Order Type',
             'site_type': 'Site Type', 'stock_stage': 'Stock Stage', 'site_lms_stage': 'Site LMS Stage',
             'site_id__legal_code': 'Site ID / Legal Code', 'service_type': 'Service Type',

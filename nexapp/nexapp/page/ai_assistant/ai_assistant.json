@@ -4,7 +4,7 @@
  "docstatus": 0,
  "doctype": "Page",
  "idx": 0,
- "modified": "2026-05-07 10:21:36.678141",
+ "modified": "2026-06-23 23:23:56.761360",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "ai-assistant",
@@ -19,6 +19,18 @@
   },
   {
    "role": "Sales User"
+  },
+  {
+   "role": "L1 Trainee"
+  },
+  {
+   "role": "Accounts  & Finance Manager"
+  },
+  {
+   "role": "accounts receivable"
+  },
+  {
+   "role": "Account Payable"
   }
  ],
  "script": null,

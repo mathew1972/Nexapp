@@ -315,7 +315,15 @@
   "weight": 0.0
  },
  {
-  "_liked_by": "[\"Administrator\"]",
+  "custom_department": "Human Resources",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Task Type",
+  "modified": "2026-07-01 10:28:16.681849",
+  "name": "sim issue",
+  "weight": 0.0
+ },
+ {
   "custom_department": "Service Delivery - NTPL",
   "description": "Power & Cabling Readiness\n",
   "docstatus": 0,
@@ -406,7 +414,6 @@
   "weight": 0.0
  },
  {
-  "_liked_by": "[\"Administrator\"]",
   "custom_department": "Service Delivery - NTPL",
   "description": "Onsite Hardware Installation & Rack Setup",
   "docstatus": 0,
@@ -479,6 +486,15 @@
   "weight": 0.0
  },
  {
+  "custom_department": "Technology - NTPL",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Task Type",
+  "modified": "2026-06-30 18:36:53.804200",
+  "name": "kangra review",
+  "weight": 0.0
+ },
+ {
   "custom_department": "Service Delivery - NTPL",
   "description": null,
   "docstatus": 0,
@@ -542,13 +558,22 @@
   "weight": 0.0
  },
  {
-  "custom_department": "Accounts  - NTPL",
-  "description": "Sales Order - One Time Visit (OTV)",
+  "custom_department": "Technology - NTPL",
+  "description": null,
   "docstatus": 0,
   "doctype": "Task Type",
-  "modified": "2026-04-13 16:30:17.256783",
-  "name": "Sales Order - One Time Visit (OTV)",
-  "weight": 5.0
+  "modified": "2026-05-15 18:25:38.165959",
+  "name": "TESTING 1",
+  "weight": 0.0
+ },
+ {
+  "custom_department": "Technology - NTPL",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Task Type",
+  "modified": "2026-07-10 18:47:55.877273",
+  "name": "YDCC report JUNE month",
+  "weight": 0.0
  },
  {
   "custom_department": "Service Delivery - NTPL",
@@ -566,15 +591,6 @@
   "doctype": "Task Type",
   "modified": "2025-05-31 10:52:07.874969",
   "name": "Internal Meeting",
-  "weight": 0.0
- },
- {
-  "custom_department": "Customer Service",
-  "description": null,
-  "docstatus": 0,
-  "doctype": "Task Type",
-  "modified": "2025-08-01 10:28:50.878848",
-  "name": "Mock drill",
   "weight": 0.0
  },
  {
@@ -596,6 +612,33 @@
   "weight": 0.0
  },
  {
+  "custom_department": "Accounts  - NTPL",
+  "description": "Sales Order - One Time Visit (OTV)",
+  "docstatus": 0,
+  "doctype": "Task Type",
+  "modified": "2026-04-13 16:30:17.256783",
+  "name": "Sales Order - One Time Visit (OTV)",
+  "weight": 5.0
+ },
+ {
+  "custom_department": "Technology - NTPL",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Task Type",
+  "modified": "2026-05-15 12:34:21.748699",
+  "name": "Testing",
+  "weight": 0.0
+ },
+ {
+  "custom_department": "Technology - NTPL",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Task Type",
+  "modified": "2026-07-10 18:39:43.783786",
+  "name": "AMJ report WIPRO 2026",
+  "weight": 0.0
+ },
+ {
   "custom_department": "Sales and Marketing - NTPL",
   "description": null,
   "docstatus": 0,
@@ -611,6 +654,15 @@
   "doctype": "Task Type",
   "modified": "2025-05-14 17:24:37.277518",
   "name": "Internal Team Meeting",
+  "weight": 0.0
+ },
+ {
+  "custom_department": "Technology - NTPL",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Task Type",
+  "modified": "2026-06-30 18:19:33.595393",
+  "name": "ticket review",
   "weight": 0.0
  },
  {
@@ -639,6 +691,15 @@
   "modified": "2025-04-02 19:45:24.886024",
   "name": "MOM",
   "weight": 5.0
+ },
+ {
+  "custom_department": "Customer Service",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Task Type",
+  "modified": "2025-08-01 10:28:50.878848",
+  "name": "Mock drill",
+  "weight": 0.0
  },
  {
   "custom_department": "Technology - NTPL",
@@ -695,21 +756,21 @@
   "weight": 0.0
  },
  {
-  "custom_department": "Sales and Marketing - NTPL",
-  "description": null,
-  "docstatus": 0,
-  "doctype": "Task Type",
-  "modified": "2025-06-02 17:13:40.779867",
-  "name": "Sales Order Renewal",
-  "weight": 0.0
- },
- {
   "custom_department": "Technology - NTPL",
   "description": null,
   "docstatus": 0,
   "doctype": "Task Type",
   "modified": "2025-05-16 12:10:22.224271",
   "name": "Troubleshooting",
+  "weight": 0.0
+ },
+ {
+  "custom_department": "Sales and Marketing - NTPL",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Task Type",
+  "modified": "2025-06-02 17:13:40.779867",
+  "name": "Sales Order Renewal",
   "weight": 0.0
  },
  {
@@ -758,21 +819,21 @@
   "weight": 0.02
  },
  {
-  "custom_department": "Technology - NTPL",
-  "description": null,
-  "docstatus": 0,
-  "doctype": "Task Type",
-  "modified": "2025-07-18 11:15:06.115035",
-  "name": "Training",
-  "weight": 0.0
- },
- {
   "custom_department": "Customer Service",
   "description": null,
   "docstatus": 0,
   "doctype": "Task Type",
   "modified": "2025-08-12 18:37:05.659732",
   "name": "Documentaion",
+  "weight": 0.0
+ },
+ {
+  "custom_department": "Technology - NTPL",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Task Type",
+  "modified": "2025-07-18 11:15:06.115035",
+  "name": "Training",
   "weight": 0.0
  },
  {
@@ -812,15 +873,6 @@
   "weight": 0.0
  },
  {
-  "custom_department": "Technology - NTPL",
-  "description": null,
-  "docstatus": 0,
-  "doctype": "Task Type",
-  "modified": "2025-05-22 18:36:09.634110",
-  "name": "POC",
-  "weight": 0.0
- },
- {
   "custom_department": "HRMS - NTPL",
   "description": null,
   "docstatus": 0,
@@ -830,12 +882,12 @@
   "weight": 0.0
  },
  {
-  "custom_department": "Customer Service",
+  "custom_department": "Technology - NTPL",
   "description": null,
   "docstatus": 0,
   "doctype": "Task Type",
-  "modified": "2025-04-11 12:45:34.210447",
-  "name": "Maintenance Visit",
+  "modified": "2025-05-22 18:36:09.634110",
+  "name": "POC",
   "weight": 0.0
  },
  {
@@ -857,7 +909,6 @@
   "weight": 16.0
  },
  {
-  "_liked_by": "[\"Administrator\"]",
   "custom_department": "Service Delivery - NTPL",
   "description": null,
   "docstatus": 0,
@@ -900,6 +951,15 @@
   "doctype": "Task Type",
   "modified": "2025-05-03 17:21:46.520859",
   "name": "MBB Issue",
+  "weight": 0.0
+ },
+ {
+  "custom_department": "Customer Service",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Task Type",
+  "modified": "2025-04-11 12:45:34.210447",
+  "name": "Maintenance Visit",
   "weight": 0.0
  }
 ]

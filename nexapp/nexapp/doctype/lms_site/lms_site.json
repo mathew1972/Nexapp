@@ -294,6 +294,7 @@
   {
    "columns": 2,
    "description": "this date will be considered for billing, customer acceptance proof is a must",
+   "fetch_from": "lms_id.billing_start_date",
    "fieldname": "customer_approval_date",
    "fieldtype": "Date",
    "in_list_view": 1,
@@ -304,7 +305,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-04-12 23:04:13.338164",
+ "modified": "2026-06-16 22:16:46.862992",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "LMS Site",

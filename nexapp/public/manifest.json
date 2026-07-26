@@ -1,0 +1,21 @@
+{
+  "name": "Nexapp Careers",
+  "short_name": "Careers",
+  "description": "Nexapp Job Portal for open positions and talent acquisition.",
+  "start_url": "/careers",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#ee8d21",
+  "icons": [
+    {
+      "src": "/assets/nexapp/images/nexapp-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/nexapp/images/nexapp-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

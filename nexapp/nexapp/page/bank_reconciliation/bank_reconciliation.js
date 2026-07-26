@@ -1499,6 +1499,14 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
                                             </select>
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td><strong>Custom Taxes and Charges</strong></td>
+                                        <td><input type="number" id="unearned-revenue-amount-input" class="amount-input" placeholder="0.00" step="0.01" /></td>
+                                        <td>
+                                            <select id="unearned-revenue-account-select" class="account-select">
+                                            </select>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                             <div class="total-highlight">
@@ -1549,6 +1557,7 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
     let customers = [];
     let suppliers = [];
     let bankAccounts = [];
+    let allBankAccounts = [];  // All Bank Accounts in the system (for To Account dropdown)
     let selectedBankAccount = '';
     let dateFrom = '';
     let dateTo = '';
@@ -1572,7 +1581,7 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
     let selectedReverseEntries = [];
 
 
-    // ⭐ Sync From Account = Selected Bank Account
+    // ⭐ Sync From Account = Selected Bank Account (only From, not To)
     function sync_from_account_with_bank() {
 
         if (!selectedBankAccount) return;
@@ -1583,13 +1592,13 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
 
         const displayName = acc.custom_account_head || acc.name;
 
-        // Set hidden values (used in entry creation)
+        // Set From Account hidden value and display text
         $('#from-account').val(acc.name);
-        $('#to-account').val(acc.name);
-
-        // Show label text in UI
         $('#from-account-toggle').text(displayName);
-        $('#to-account-toggle').text(displayName);
+
+        // Reset To Account so user must pick a different bank
+        $('#to-account-toggle').text('Select To Account');
+        $('#to-account').val('');
     }
 
 
@@ -2112,10 +2121,8 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
     // Initialize transfer dropdowns with validation
     function initialize_transfer_dropdowns() {
 
-        // ❌ REMOVE generic loader for From Account
-        // initialize_single_dropdown('from-account');
-
-        // ✅ Keep To Account generic
+        // ✅ Initialize both From Account and To Account dropdowns
+        initialize_single_dropdown('from-account');
         initialize_single_dropdown('to-account');
 
         $('#from-account').on('change', function () {
@@ -2123,6 +2130,7 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
         });
 
         $('#to-account').on('change', function () {
+            update_from_account_dropdown();
             validate_transfer_accounts();
         });
     }
@@ -2130,17 +2138,38 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
 
     function load_transfer_accounts_from_bank_accounts() {
 
-        const $items = $('#from-account-items');
-        $items.empty();
+        const $fromItems = $('#from-account-items');
+        const $toItems = $('#to-account-items');
+        $fromItems.empty();
+        $toItems.empty();
 
+        // From Account: populate from bankAccounts (banks with statement entries)
         bankAccounts.forEach(acc => {
             const displayName = acc.custom_account_head || acc.name;
-
-            $items.append(
+            $fromItems.append(
                 `<div class="dropdown-item" data-value="${acc.name}">
                 ${displayName}
             </div>`
             );
+        });
+
+        // To Account: populate from ALL bank GL Accounts (from Account doctype)
+        // These are accounts under "Bank Accounts" parent in Chart of Accounts
+        const fromAccount = $('#from-account').val();
+        // Find which Account head the selected From bank maps to
+        const fromBankObj = bankAccounts.find(a => a.name === fromAccount);
+        const fromAccountHead = fromBankObj ? fromBankObj.custom_account_head : '';
+
+        allBankAccounts.forEach(acc => {
+            const displayName = acc.account_name || acc.name;
+            // Exclude the From Account's GL Account from To Account list
+            if (acc.name !== fromAccountHead) {
+                $toItems.append(
+                    `<div class="dropdown-item" data-value="${acc.name}">
+                    ${displayName}
+                </div>`
+                );
+            }
         });
     }
 
@@ -2294,6 +2323,7 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
         const tdsDefault = "TDS Receivable - NTPL";
         const writeOffDefault = "Write Off - NTPL";
         const roundedOffDefault = "Rounded Off - NTPL";
+        const unearnedRevenueDefault = "Unearned Revenue - NTPL";
 
         $('#tds-account-select').empty();
         taxAccounts.forEach(account => {
@@ -2308,6 +2338,12 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
         $('#roundedoff-account-select').empty();
         taxAccounts.forEach(account => {
             $('#roundedoff-account-select').append('<option value="' + account.name + '" ' + (account.name === roundedOffDefault ? 'selected' : '') + '>' + account.name + '</option>');
+        });
+
+        $('#unearned-revenue-account-select').empty();
+        $('#unearned-revenue-account-select').append('<option value="">Select Account...</option>');
+        taxAccounts.forEach(account => {
+            $('#unearned-revenue-account-select').append('<option value="' + account.name + '">' + account.name + '</option>');
         });
     }
 
@@ -2595,11 +2631,28 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
             $('#transfer-description-group').show();
             $('#match-now-section').show();
 
-            // ⭐ AUTO SET From Account = Bank Account
+            // Ensure dropdowns are unlocked and interactive
+            $('#from-account-toggle').removeClass('readonly-field').css({
+                'pointer-events': '',
+                'background': '',
+                'color': ''
+            });
+            $('#to-account-toggle').removeClass('readonly-field').css({
+                'pointer-events': '',
+                'background': '',
+                'color': ''
+            });
+
+            // Reload both dropdowns from bankAccounts
+            load_transfer_accounts_from_bank_accounts();
+
+            // ⭐ AUTO SET From Account = currently selected Bank Account
             const bankAccount = $('#bank-account-select').val();
             if (bankAccount) {
+                const acc = bankAccounts.find(a => a.name === bankAccount);
+                const displayName = acc ? (acc.custom_account_head || acc.name) : bankAccount;
                 $('#from-account').val(bankAccount);
-                $('#from-account-toggle').text(bankAccount);
+                $('#from-account-toggle').text(displayName);
             }
 
             isTransfer = true;
@@ -3143,6 +3196,20 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
                         charge_type: 'Actual',
                         account_head: roundedOffAccount,
                         tax_amount: roundedOffAmount
+                    });
+                }
+
+                const unearnedRevenueAmount = parseFloat($('#unearned-revenue-amount-input').val()) || 0;
+                const unearnedRevenueAccount = $('#unearned-revenue-account-select').val();
+                if (unearnedRevenueAmount > 0) {
+                    if (!unearnedRevenueAccount) {
+                        frappe.msgprint('Please select an account for Custom Taxes and Charges');
+                        return;
+                    }
+                    taxAdjustments.push({
+                        charge_type: 'Actual',
+                        account_head: unearnedRevenueAccount,
+                        tax_amount: unearnedRevenueAmount
                     });
                 }
             }
@@ -3736,8 +3803,9 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
         const tds = parseFloat($('#tds-amount-input').val()) || 0;
         const writeoff = parseFloat($('#writeoff-amount-input').val()) || 0;
         const roundedoff = parseFloat($('#roundedoff-amount-input').val()) || 0;
+        const unearned = parseFloat($('#unearned-revenue-amount-input').val()) || 0;
 
-        const totalPayment = allocated - tds - writeoff - roundedoff;
+        const totalPayment = allocated - tds - writeoff - roundedoff - unearned;
 
         $('#customer-total-highlight').text(format_currency(totalPayment));
     }
@@ -3913,6 +3981,7 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
         $('#tds-amount-input').val('0.00');
         $('#writeoff-amount-input').val('0.00');
         $('#roundedoff-amount-input').val('0.00');
+        $('#unearned-revenue-amount-input').val('0.00');
         $('#customer-total-highlight').text('0.00');
         $('#payment-amount-display').text('0.00');
 
@@ -3954,7 +4023,7 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
     }
 
     // Event listeners for tax adjustment inputs
-    $('#tds-amount-input, #writeoff-amount-input, #roundedoff-amount-input').on('input', function () {
+    $('#tds-amount-input, #writeoff-amount-input, #roundedoff-amount-input, #unearned-revenue-amount-input').on('input', function () {
         update_total_payment();
     });
 
@@ -4055,6 +4124,20 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
                                 tax_amount: roundedOffAmount
                             });
                         }
+
+                        const unearnedRevenueAmount = parseFloat($container.find('.unearned-revenue-amount').val()) || 0;
+                        const unearnedRevenueAccount = $container.find('.unearned-revenue-account').val();
+                        if (unearnedRevenueAmount > 0) {
+                            if (!unearnedRevenueAccount) {
+                                frappe.msgprint('Please select an account for Custom Taxes and Charges');
+                                return;
+                            }
+                            taxAdjustments.push({
+                                charge_type: "Actual",
+                                account_head: unearnedRevenueAccount,
+                                tax_amount: unearnedRevenueAmount
+                            });
+                        }
                     }
 
                     frappe.confirm(
@@ -4153,6 +4236,21 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
             '</select>' +
             '</td>' +
             '</tr>' +
+            '<tr>' +
+            '<td><strong>Custom Taxes and Charges</strong></td>' +
+            '<td><input type="number" class="tax-adjustment-input unearned-revenue-amount" data-type="unearned-revenue" placeholder="0.00" step="0.01" /></td>' +
+            '<td>' +
+            '<select class="tax-adjustment-select unearned-revenue-account">' +
+            '<option value="">Select Account...</option>';
+
+        taxAccounts.forEach(account => {
+            html += '<option value="' + account.name + '">' + account.name + '</option>';
+        });
+
+        html +=
+            '</select>' +
+            '</td>' +
+            '</tr>' +
             '</tbody>' +
             '</table>' +
             '</div>';
@@ -4160,14 +4258,14 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
         return html;
     }
 
-    // Load transfer accounts
+    // Load ALL bank GL Accounts (from Account doctype under "Bank Accounts" parent)
     function load_transfer_accounts() {
         frappe.call({
             method: "frappe.client.get_list",
             args: {
                 doctype: "Account",
                 filters: {
-                    custom_bank_account: 1,
+                    parent_account: ["like", "Bank Accounts%"],
                     is_group: 0,
                     company: frappe.defaults.get_default("company")
                 },
@@ -4175,25 +4273,18 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
                 limit_page_length: 0
             },
             callback: function (r) {
-                transferAccounts = r.message || [];
-                update_transfer_account_dropdowns();
+                allBankAccounts = r.message || [];
+                // If bankAccounts (from statement entries) are already loaded, populate dropdowns
+                if (bankAccounts.length > 0) {
+                    load_transfer_accounts_from_bank_accounts();
+                }
             }
         });
     }
 
     // Update transfer account dropdowns
     function update_transfer_account_dropdowns() {
-        const $fromItems = $('#from-account-items');
-        const $toItems = $('#to-account-items');
-
-        $fromItems.empty();
-        $toItems.empty();
-
-        transferAccounts.forEach(acc => {
-            const name = acc.account_name || acc.name;
-            $fromItems.append(`<div class="dropdown-item" data-value="${acc.name}">${name}</div>`);
-            $toItems.append(`<div class="dropdown-item" data-value="${acc.name}">${name}</div>`);
-        });
+        load_transfer_accounts_from_bank_accounts();
     }
 
     // Validate transfer accounts - ensure From Account and To Account are different
@@ -4216,33 +4307,57 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
     }
 
     // Update To Account dropdown based on From Account selection
+    // Uses allBankAccounts (Account doctype GL accounts under "Bank Accounts" parent)
     function update_to_account_dropdown() {
         const fromAccount = $('#from-account').val();
         const $toItems = $('#to-account-items');
 
         $toItems.empty();
 
-        if (!fromAccount) {
-            transferAccounts.forEach(acc => {
-                const name = acc.account_name || acc.name;
-                $toItems.append(`<div class="dropdown-item" data-value="${acc.name}">${name}</div>`);
-            });
-        } else {
-            transferAccounts.forEach(acc => {
-                if (acc.name !== fromAccount) {
-                    const name = acc.account_name || acc.name;
-                    $toItems.append(`<div class="dropdown-item" data-value="${acc.name}">${name}</div>`);
-                }
-            });
+        // Find which Account head the selected From bank maps to
+        const fromBankObj = bankAccounts.find(a => a.name === fromAccount);
+        const fromAccountHead = fromBankObj ? fromBankObj.custom_account_head : '';
 
-            const currentToAccount = $('#to-account').val();
-            if (currentToAccount === fromAccount) {
-                $('#to-account-toggle').text('Select To Account');
-                $('#to-account').val('');
+        allBankAccounts.forEach(acc => {
+            const displayName = acc.account_name || acc.name;
+            // Exclude the From Account's GL Account from To Account list
+            if (acc.name !== fromAccountHead) {
+                $toItems.append(`<div class="dropdown-item" data-value="${acc.name}">${displayName}</div>`);
             }
+        });
+
+        // If the current To Account matches the From Account's head, reset it
+        const currentToAccount = $('#to-account').val();
+        if (currentToAccount && currentToAccount === fromAccountHead) {
+            $('#to-account-toggle').text('Select To Account');
+            $('#to-account').val('');
         }
 
         validate_transfer_accounts();
+    }
+
+    // Update From Account dropdown based on To Account selection
+    // Uses bankAccounts (banks with statement entries) for the From Account list
+    function update_from_account_dropdown() {
+        const toAccount = $('#to-account').val();
+        const $fromItems = $('#from-account-items');
+
+        $fromItems.empty();
+
+        bankAccounts.forEach(acc => {
+            // Exclude the currently selected To Account from From Account list
+            if (acc.name !== toAccount) {
+                const displayName = acc.custom_account_head || acc.name;
+                $fromItems.append(`<div class="dropdown-item" data-value="${acc.name}">${displayName}</div>`);
+            }
+        });
+
+        // If the current From Account is the same as the newly selected To Account, reset it
+        const currentFromAccount = $('#from-account').val();
+        if (currentFromAccount && currentFromAccount === toAccount) {
+            $('#from-account-toggle').text('Select From Account');
+            $('#from-account').val('');
+        }
     }
 
     // ============================================
@@ -4703,64 +4818,13 @@ frappe.pages['bank-reconciliation'].on_page_load = function (wrapper) {
 };
 
 // =====================================================
-// AUTO SET FROM ACCOUNT = SELECTED BANK ACCOUNT
+// TRANSFER ACCOUNT HELPERS (From/To Account)
 // =====================================================
 
-function set_from_account_as_bank() {
-    const bankAccount = $('#bank-account-select').val();
-    if (!bankAccount) return;
-
-    // Set hidden field values
-    $('#from-account').val(bankAccount);
-    $('#to-account').val(bankAccount);
-
-    // Set display text and lock fields
-    const styles = {
-        'pointer-events': 'none',
-        'background': '#f5f5f5',
-        'color': '#555'
-    };
-
-    $('#from-account-toggle')
-        .text(bankAccount)
-        .addClass('readonly-field')
-        .css(styles);
-
-    $('#to-account-toggle')
-        .text(bankAccount)
-        .addClass('readonly-field')
-        .css(styles);
-}
-
-// When Category changes
-$(document).on('change', '#category', function () {
-    const category = $(this).val();
-
-    if (category === "Transfer To Another Account") {
-        $('#from-account-group').show();
-        $('#to-account-group').show();
-        $('#transfer-description-group').show();
-
-        set_from_account_as_bank();   // ⭐ AUTO SET HERE
-    }
-    else {
-        // Reset when not transfer
-        $('#from-account-group').hide();
-        $('#to-account-group').hide();
-        $('#transfer-description-group').hide();
-
-        // ⭐ DON'T CLEAR from-account anymore, as we need it for other categories too
-        // We just keep it hidden but set it to the selected bank
-        set_from_account_as_bank();
-    }
-});
-
-// If Bank Account filter changes, update From Account
-$(document).on('change', '#bank-account-select', function () {
-    if ($('#category').val() === "Transfer To Another Account") {
-        set_from_account_as_bank();
-    }
-});
+// NOTE: From Account and To Account are now fully interactive dropdowns
+// populated from the bankAccounts list. No auto-locking is applied.
+// The category change handler inside the page already shows/hides
+// the relevant groups and triggers update_to_account_dropdown().
 
 
 

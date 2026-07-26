@@ -23,6 +23,7 @@
   "column_break_mctq",
   "custom_info",
   "lms_stage",
+  "lms_request_type",
   "ageing",
   "cancel_reason",
   "lms_payment_request",
@@ -41,6 +42,7 @@
   "circuit_id",
   "site",
   "site_id__legal_code",
+  "site_status",
   "solution",
   "pin_code",
   "city",
@@ -929,11 +931,9 @@
    "label": "Site ID / Legal Code"
   },
   {
-   "bold": 1,
    "fieldname": "ageing",
    "fieldtype": "Data",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
+   "hidden": 1,
    "label": "Ageing"
   },
   {
@@ -941,12 +941,23 @@
    "fieldname": "customer_type",
    "fieldtype": "Data",
    "label": "Customer Type"
+  },
+  {
+   "fetch_from": "circuit_id.site_status",
+   "fieldname": "site_status",
+   "fieldtype": "Data",
+   "label": "Site Status"
+  },
+  {
+   "fieldname": "lms_request_type",
+   "fieldtype": "Data",
+   "label": "LMS Request Type"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2026-04-24 14:30:54.928540",
+ "modified": "2026-07-20 15:44:26.218730",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Lastmile Services Master",
@@ -1026,6 +1037,5 @@
  "sort_order": "DESC",
  "states": [],
  "track_changes": 1,
- "track_seen": 1,
- "track_views": 1
+ "track_seen": 1
 }

@@ -131,7 +131,7 @@ app_license = "mit"
 # Override standard doctype classes
 
 override_doctype_class = {
-	"HD Ticket": "nexapp.overrides.NexappHDTicket"
+	"HD Ticket": "nexapp.overrides.NexappHDTicket"        
 }
 
 # Document Events
@@ -299,7 +299,7 @@ scheduler_events = {
 
 
 app_include_css = [
-    "/assets/nexapp/css/custom.css",
+    "/assets/nexapp/css/custom.css?v=13",
     "/assets/nexapp/css/Number_card.css",
     "/assets/nexapp/css/hd_ticket_ai_chatbot_v17.css",
     "/assets/nexapp/css/ai_command_center.css"     
@@ -318,12 +318,14 @@ app_include_js = [
     "/assets/nexapp/js/ai/utils/intent.js",
     "/assets/nexapp/js/ai/utils/api.js",
     "/assets/nexapp/js/ai/components/header.js",
-    "/assets/nexapp/js/ai/features/feasibility.js"
+    "/assets/nexapp/js/ai/features/feasibility.js",
+    "/assets/nexapp/js/material_request_global_v2.js"
 ]
 
 
 doctype_list_js = {    
-    "CRM Deal": "public/js/crm_deal_list.js"    
+    "CRM Deal": "public/js/crm_deal_list.js",
+    "Material Request": "public/js/material_request_list.js"    
 }
 
 doc_events = {
@@ -357,9 +359,9 @@ doc_events = {
         "validate": "nexapp.api.update_site_child_table",
         "on_update": "nexapp.api.sync_lms_review_to_site"        
     },
-    "HD Ticket": {
-        "after_insert": "nexapp.api.create_lms_ticket"
-    },
+    #"HD Ticket": {
+       # "after_insert": "nexapp.api.create_lms_ticket"
+   # },
     "Change Management Request": {
         "on_update": "nexapp.api.on_update"
     },
@@ -377,7 +379,9 @@ doc_events = {
         "on_update": "nexapp.api.sync_custom_agent_from_todo"
     },
     "Payment Entry": {
-        "on_submit": "nexapp.api.update_expense_claim_status"
+        "on_submit": "nexapp.api.update_expense_claim_status",
+        "on_submit": "nexapp.api.update_expense_claim_rounding",
+        "on_cancel": "nexapp.api.update_expense_claim_rounding"
     },      
     "Sales Order": {
         "after_save": "nexapp.api.update_task_circuit_sales_order",
@@ -392,24 +396,29 @@ doc_events = {
     "User": {
         "after_insert": "nexapp.api.create_user_permission",
         "on_update": "nexapp.api.create_user_permission"
+    },
+    "File": {
+        "after_insert": "nexapp.api.auto_move_attachments"
     }      
 }
 
-fixtures = [      
-    {"dt": "DocType", "filters": [["module", "=", "Nexapp"], ["custom", "=", 1]]},  # Fix: Only custom doctypes
+fixtures = [
+    {"dt": "DocType", "filters": [["module", "=", "Nexapp"], ["custom", "=", 1]]},
     {"dt": "Custom Field", "filters": [["module", "=", "Nexapp"]]},
-    {"dt": "Property Setter"},    
+    {"dt": "Property Setter"},
     {"dt": "Email Domain"},
     {"dt": "Client Script"},
     {"dt": "Restricted"},
-    {"dt": "AI Assistant Prompt"},
-    {"dt": "Product Bundle"},
+    {"dt": "AI Assistant Prompt"},    
     {"dt": "Survey Type"},
     {"dt": "Task Type"},
     {"dt": "Expense Claim Status"},
     {"dt": "OTC Details"},
-    {"dt": "CRM Lost Reason"}
-    
+    {"dt": "CRM Lost Reason"},
+    {"dt": "Impact"},
+    {"dt": "Item"},
+    {"dt": "Product Bundle"},    
+    {"dt": "Resolution Detail"},
 ]
 
 doctype_list_js = {
@@ -440,10 +449,14 @@ doctype_js = {
     "Territory": "public/js/Territory_custom.js",
     "Job Opening": "public/js/Job_opening_custom.js",
     "Job Applicant": "public/js/Job_applicant_custom.js",
+    "Interview": "public/js/Interview_custom.js",
     "Job Offer": "public/js/Job_offer_custom.js",
     "Employee": "public/js/Employee_custom.js",
     "Expense Claim": "public/js/expense_claim_custom.js",
     "Leave Application": "public/js/Leave_application_custom.js",
+    "Staffing Plan": "public/js/Staffing_plan_custom.js",
+    "Job Requisition": "public/js/Job_requisition_custom.js",
+    "Interview Feedback": "public/js/Interview_feedback_custom.js",
     "Company": "public/js/Company_custom.js",
     "Branch": "public/js/Branch_custom.js",
     "Department": "public/js/Department_custom.js",
@@ -453,7 +466,8 @@ doctype_js = {
         "public/js/Stock_custom_ui.js",  
         "public/js/sales_order_delivery_note_id.js",
         "public/js/delivery_note.js",
-        "public/js/delivery_note_serial.js"
+        "public/js/delivery_note_serial.js",
+        "public/js/return_packed_item.js"
     ],
     "Material Request": "public/js/Stock_custom_ui.js",
     "Stock Entry": "public/js/Stock_custom_ui.js",
@@ -486,10 +500,10 @@ doctype_js = {
     ],
     "HD Ticket": [
         "public/js/hd_ticket_custom.js",
-        "public/js/inhouse_ticket.js",
-        "public/js/sla.js",
-        "public/js/maintenanc.js",
-        "public/js/ticket_task.js"        
+        #"public/js/inhouse_ticket.js",
+        "public/js/sla.js"
+        #"public/js/maintenanc.js",
+        #"public/js/ticket_task.js"        
     ],
     "Project": "public/js/Project_custom_ui.js",
     "CCR": "public/js/ccr_custom.js",
@@ -505,6 +519,7 @@ doctype_js = {
     "Purchase Order": "public/js/purchase_order_custom.js",
     "Purchase Invoice": "public/js/purchase_invoice_custom.js",
     "Provisioning": "public/js/provisioning_custom.js",
+    "Installation Note": "public/js/installation_note_custom.js",
     "Employee Survey": "public/js/employee_survey.js",
     "Change Management": "doctype/change_management/change_management.js"
 }
@@ -512,7 +527,7 @@ doctype_js = {
 override_whitelisted_methods = {
     "crm.api.navigation.get_navigation_items": "nexapp.crm_sidebar.get_crm_sidebar_items",
     "nexapp.create_hd_ticket": "nexapp.api.create_hd_ticket"
-}
+    }
     
 
 

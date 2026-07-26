@@ -1,0 +1,65 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"gm8Deixpc3\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Helpdesk Trainee</span>\",\"col\":12}},{\"id\":\"mwDsb5K2Iv\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"HD Ticket\",\"col\":3}},{\"id\":\"mzSAXnoNPp\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Feasibility\",\"col\":3}},{\"id\":\"9kO5CTG1dE\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Nexapp AI Assistant\",\"col\":3}},{\"id\":\"T5-rI6RQ9F\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Expense Claim\",\"col\":3}}]",
+ "creation": "2026-05-27 12:40:31.218971",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "support",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "Helpdesk Trainee",
+ "links": [],
+ "modified": "2026-06-06 13:30:15.584937",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "Helpdesk Trainee",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {
+   "role": "L1 Trainee"
+  }
+ ],
+ "sequence_id": 51.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Nexapp AI Assistant",
+   "type": "URL",
+   "url": "https://erp.nexapp.co.in/app/ai-assistant"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "HD Ticket",
+   "link_to": "HD Ticket",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Expense Claim",
+   "link_to": "Expense Claim",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Feasibility",
+   "link_to": "Feasibility",
+   "stats_filter": "[]",
+   "type": "DocType"
+  }
+ ],
+ "title": "Helpdesk Trainee"
+}

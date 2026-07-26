@@ -120,10 +120,14 @@ frappe.ui.form.on('Opportunity', {
             if (pincode.length === 6) {
                 frappe.show_alert({message: "Fetching location details...", indicator: "blue"});
 
-                fetch("https://api.postalpincode.in/pincode/" + pincode)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data && data[0].Status === "Success" && data[0].PostOffice.length > 0) {
+                frappe.call({
+                    method: "nexapp.api.get_pincode_details",
+                    args: {
+                        pincode: pincode
+                    },
+                    callback: function(r) {
+                        const data = r.message;
+                        if (data && data[0].Status === "Success" && data[0].PostOffice && data[0].PostOffice.length > 0) {
                             const postOffice = data[0].PostOffice[0];
                             frm.set_value("custom_district", postOffice.District || "");
                             frm.set_value("country", postOffice.Country || "India");
@@ -132,11 +136,12 @@ frappe.ui.form.on('Opportunity', {
                         } else {
                             frappe.msgprint("Pincode not found or invalid.");
                         }
-                    })
-                    .catch(error => {
-                        console.error("API Error:", error);
+                    },
+                    error: function(err) {
+                        console.error("API Error:", err);
                         frappe.msgprint("Error fetching data from API.");
-                    });
+                    }
+                });
             } else if (pincode.length === 0) {
                 frm.set_value("custom_district", "");
                 frm.set_value("country", "");

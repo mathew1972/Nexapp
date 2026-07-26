@@ -10,7 +10,7 @@
   "product",
   "small_text_aebj",
   "qty",
-  "sales_order_no"
+  "otc"
  ],
  "fields": [
   {
@@ -40,18 +40,17 @@
    "label": "Description"
   },
   {
-   "fieldname": "sales_order_no",
-   "fieldtype": "Link",
+   "fieldname": "otc",
+   "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Sales Order No",
-   "options": "Sales Order"
+   "label": "OTC"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-04-01 22:18:20.673823",
+ "modified": "2026-05-28 17:39:13.547591",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Supply Item",

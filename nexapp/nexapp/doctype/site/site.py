@@ -6,6 +6,142 @@ from frappe.model.document import Document
 
 class Site(Document):
     
+    def before_save(self):
+        self.calculate_tat()
+
+    def on_update(self):
+        doc_before = self.get_doc_before_save()
+        if doc_before and doc_before.site_status != "Cancelled" and self.site_status == "Cancelled":
+            from frappe.utils import now_datetime
+            dt_str = now_datetime().strftime("%d-%b-%Y %I:%M %p")
+            user_fullname = frappe.utils.get_fullname(frappe.session.user)
+            
+            content = f"""Site cancelled by {user_fullname}<br>
+<br>
+Previous Status : {doc_before.site_status}<br>
+New Status      : Cancelled<br>
+<br>
+Date & Time     : {dt_str}"""
+            
+            self.add_comment("Info", content)
+
+
+    def calculate_tat(self):
+        from frappe.utils import now_datetime, time_diff_in_hours, getdate
+
+        # Set site_created_date if not set
+        if not self.site_created_date and self.creation:
+            self.site_created_date = self.creation
+        elif not self.site_created_date:
+            self.site_created_date = now_datetime()
+
+        if self.is_new():
+            self.hold_days = 0
+            self.on_hold_since = None
+            self.site_completed_date = None
+            self.site_tat = 0.0
+
+        doc_before = None
+        try:
+            doc_before = self.get_doc_before_save()
+        except Exception:
+            pass
+
+        old_status = doc_before.site_status if doc_before else None
+        new_status = self.site_status
+
+        was_paused = (old_status == "On Hold")
+        is_paused = (new_status == "On Hold")
+
+        if is_paused and not was_paused:
+            self.on_hold_since = now_datetime()
+        elif was_paused and not is_paused:
+            if self.on_hold_since:
+                hours_on_hold = time_diff_in_hours(now_datetime(), self.on_hold_since)
+                # Convert to integer days by standard rounding
+                days_on_hold = int(round(hours_on_hold / 24.0))
+                self.hold_days = (self.hold_days or 0) + days_on_hold
+                self.on_hold_since = None
+
+        # 2. Set Due Date
+        creation = self.site_created_date or self.creation or now_datetime()
+        from frappe.utils import get_datetime, add_days
+        
+        dt_creation = get_datetime(creation)
+        if dt_creation.hour >= 13:
+            effective_start_date = add_days(dt_creation, 1)
+        else:
+            effective_start_date = dt_creation
+            
+        from nexapp.api import get_tat_target, calculate_tat_due_date, calculate_tat_working_days
+        
+        # Get TAT target strictly from Master using lms_type
+        period_days = get_tat_target("Site", self.lms_type)
+        total_tat_days = period_days + (self.hold_days or 0)
+        self.due_date = calculate_tat_due_date(effective_start_date, total_tat_days)
+
+        # 3. Calculate TAT and Statuses
+        if self.site_status == "Delivered and Live":
+            if self.date:
+                self.site_completed_date = self.date
+            elif not self.site_completed_date:
+                if not self.is_new() and self.creation and time_diff_in_hours(now_datetime(), self.creation) > 24:
+                    historical_completion = None
+                    try:
+                        versions = frappe.get_all("Version", filters={"docname": self.name, "ref_doctype": "Site"}, fields=["creation", "data"], order_by="creation asc", limit=0)
+                        for v in versions:
+                            try:
+                                v_data = frappe.parse_json(v.data)
+                                if isinstance(v_data, dict) and v_data.get("changed"):
+                                    for change in v_data.get("changed"):
+                                        if change and len(change) >= 3 and change[0] == "site_status" and str(change[2]).strip() == "Delivered and Live":
+                                            historical_completion = v.creation
+                                            break
+                            except Exception:
+                                pass
+                            if historical_completion:
+                                break
+                    except Exception:
+                        pass
+                    self.site_completed_date = historical_completion or self.modified or now_datetime()
+                else:
+                    self.site_completed_date = now_datetime()
+            
+            completed_dt = getattr(self, "site_completed_date", None) or now_datetime()
+            
+            # Use the new working days calculation to match due_date logic
+            total_working_days = calculate_tat_working_days(effective_start_date, completed_dt)
+            # Ensure it's not negative and subtract hold days (assuming hold_days are also working days)
+            actual_tat = max(0.0, float(total_working_days) - (self.hold_days or 0))
+            self.site_tat = round(actual_tat, 2)
+            self.sla_status = "Completed"
+            
+            # Check if completed within due date
+            if getdate(self.site_completed_date) <= getdate(self.due_date):
+                self.tat_status = "Fulfilled"
+            else:
+                self.tat_status = "Failed"
+                
+        elif self.site_status == "On Hold":
+            self.sla_status = "Paused"
+            self.tat_status = "Paused"
+            
+        else:
+            self.site_completed_date = None
+            self.site_tat = 0.0
+            self.tat_status = "Resolution Due"
+            
+            # Dynamic SLA tracking for ongoing
+            if self.due_date:
+                hours_remaining = time_diff_in_hours(self.due_date, now_datetime())
+                # If negative, it's overdue
+                if hours_remaining < 0:
+                    self.sla_status = "Overdue"
+                elif hours_remaining <= 48:
+                    self.sla_status = "Near Due"
+                else:
+                    self.sla_status = "Within TAT"
+
     @frappe.whitelist()
     def create_stock_request(self):
         return self.handle_status_update(
@@ -220,3 +356,60 @@ class Site(Document):
         frappe.msgprint(msg)
         frappe.publish_realtime('list_refresh', 'Stock Management')
         return sm.name
+
+    @frappe.whitelist()
+    def validate_site_cancellation(self):
+        # 1. Check Delivery Notes
+        dn_records = []
+        dn_items = frappe.db.sql("""
+            SELECT parent 
+            FROM `tabDelivery Note Item` 
+            WHERE custom_circuit_id = %s
+        """, self.name, as_dict=True)
+        
+        if dn_items:
+            dn_names = [d.parent for d in dn_items]
+            dns = frappe.db.sql("""
+                SELECT name, posting_date 
+                FROM `tabDelivery Note` 
+                WHERE name IN %s AND status IN ('To Bill', 'Completed') AND docstatus < 2 AND is_return = 0
+            """, (tuple(dn_names),), as_dict=True)
+            for dn in dns:
+                dn_records.append({"name": dn.name, "posting_date": dn.posting_date})
+                
+        # 2. Check Purchase Orders
+        po_records = []
+        
+        po_items = frappe.db.sql("""
+            SELECT parent 
+            FROM `tabPurchase Order Item` 
+            WHERE custom_circuit_id = %s
+        """, self.name, as_dict=True)
+        
+        po_names_from_items = [d.parent for d in po_items]
+        
+        if po_names_from_items:
+            pos = frappe.db.sql("""
+                SELECT name, supplier_name, transaction_date 
+                FROM `tabPurchase Order` 
+                WHERE (custom_site_circuit_id = %s OR name IN %s) 
+                AND status IN ('To Receive and Bill', 'To Bill', 'To Receive', 'Completed', 'Delivered')
+                AND docstatus < 2
+            """, (self.name, tuple(po_names_from_items)), as_dict=True)
+        else:
+            pos = frappe.db.sql("""
+                SELECT name, supplier_name, transaction_date 
+                FROM `tabPurchase Order` 
+                WHERE custom_site_circuit_id = %s 
+                AND status IN ('To Receive and Bill', 'To Bill', 'To Receive', 'Completed', 'Delivered')
+                AND docstatus < 2
+            """, self.name, as_dict=True)
+            
+        for po in pos:
+            po_records.append({"name": po.name, "supplier_name": po.supplier_name, "transaction_date": po.transaction_date})
+            
+        return {
+            "can_cancel": len(dn_records) == 0 and len(po_records) == 0,
+            "delivery_notes": dn_records,
+            "purchase_orders": po_records
+        }

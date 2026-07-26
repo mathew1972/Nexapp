@@ -1,10 +1,76 @@
-.navbar {
-    background-color: #17ACE4!important;
-    border-bottom: 1px solid #ccc;
+/* Sleek Dark Navbar for Nexapp without affecting core dropdowns/components */
+:root {
+    --navbar-height: 64px !important;
 }
 
-.navbar .navbar-brand, .navbar .navbar-nav > li > a {
-    color: white !important;
+.navbar {
+    background-color: #1E2329 !important;
+    border-bottom: 1px solid #1e293b !important;
+    min-height: var(--navbar-height) !important;
+    height: var(--navbar-height) !important;
+}
+
+/* Style only the top-level brand and breadcrumbs */
+.navbar .navbar-brand,
+.navbar #navbar-breadcrumbs,
+.navbar .breadcrumb-item,
+.navbar .breadcrumb-item a,
+.navbar .breadcrumb-item.active {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+/* Target only top-level nav links and buttons */
+.navbar .navbar-nav > li > a,
+.navbar .navbar-nav > li > button,
+.navbar .navbar-nav > li > .nav-link,
+.navbar .navbar-nav > li > a > span,
+.navbar .navbar-nav > li > button > span {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+/* Style only top-level SVG icons */
+.navbar .navbar-nav > li > a svg,
+.navbar .navbar-nav > li > button svg,
+.navbar .navbar-nav > li > a .icon,
+.navbar .navbar-nav > li > button .icon,
+.navbar .navbar-nav > li > a svg use,
+.navbar .navbar-nav > li > button svg use {
+    stroke: #ffffff !important;
+    fill: #ffffff !important;
+    color: #ffffff !important;
+}
+
+/* Style the search input to look premium on dark background */
+.navbar .search-bar input,
+.navbar input#navbar-search {
+    color: #1e293b !important;
+    background-color: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    font-weight: normal !important;
+}
+
+/* Search placeholder color */
+.navbar .search-bar input::placeholder,
+.navbar input#navbar-search::placeholder {
+    color: #64748b !important;
+}
+
+/* Search icon inside input */
+.navbar .search-icon svg,
+.navbar .search-bar .search-icon svg {
+    stroke: #64748b !important;
+    fill: #64748b !important;
+}
+
+/* Ensure z-index of search dropdown/awesomplete works correctly */
+ul.awesomplete, 
+.navbar .awesomplete > ul,
+.navbar-search-results {
+    z-index: 99999 !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
 }
 
 /* Target the color dot specifically within the child table for the 'item_name' column */
@@ -41,3 +107,375 @@
 
 
 
+
+
+/* Odoo Premium UI Styles (Scoped) */
+/* Odoo Form Sheet and Layout Styling */
+.odoo-premium-ui .form-layout, .odoo-premium-ui .odoo-form-sheet {
+    background: #f9fafb !important;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.03) !important;
+    border-radius: 10px !important;
+    border: 1px solid #e5e7eb !important;
+    padding: 28px 32px !important;
+    margin-top: 16px !important;
+    margin-bottom: 32px !important;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important
+    }
+.odoo-premium-ui .form-page, .odoo-premium-ui .form-page .page-container, .odoo-premium-ui .form-page .page-body, .odoo-premium-ui .form-page .page-wrapper, .odoo-premium-ui .form-page .layout-main-section {
+    background-color: #fff !important
+    }
+/* Odoo Form Tabs Styling — Premium Enterprise Tab Bar */
+.odoo-premium-ui .form-tabs {
+    border: none !important;
+    border-bottom: none !important;
+    margin-bottom: 4px !important;
+    background: linear-gradient(135deg, #f3f1f9 0%, #ece9f4 100%) !important;
+    padding: 6px 8px !important;
+    border-radius: 10px !important;
+    box-shadow: inset 0 1px 3px rgba(113, 99, 158, 0.08) !important;
+    overflow: hidden !important;
+    max-height: 48px !important;
+    scrollbar-width: none !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important
+    }
+.odoo-premium-ui .form-tabs::-webkit-scrollbar {
+    display: none !important
+    }
+.odoo-premium-ui .form-tabs .nav-tabs {
+    border: none !important;
+    border-bottom: none !important;
+    margin-bottom: 0 !important;
+    padding-left: 0 !important;
+    overflow: visible !important;
+    scrollbar-width: none !important;
+    gap: 4px !important;
+    display: flex !important;
+    align-items: center !important
+    }
+.odoo-premium-ui .form-tabs .nav-tabs::-webkit-scrollbar {
+    display: none !important
+    }
+.odoo-premium-ui .form-page .form-tab-content, .odoo-premium-ui .form-page .tab-content, .odoo-premium-ui .form-page .form-tab-pane, .odoo-premium-ui .form-page .tab-pane {
+    border: none !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important
+    }
+.odoo-premium-ui .form-tabs .nav-link {
+    color: #5b5580 !important;
+    font-weight: 700 !important;
+    font-size: 12.5px !important;
+    padding: 8px 12px !important;
+    border: none !important;
+    border-radius: 7px !important;
+    background: transparent !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    letter-spacing: 0.015em !important;
+    font-family: "Inter", sans-serif !important;
+    margin-bottom: 0 !important;
+    white-space: nowrap !important
+    }
+.odoo-premium-ui .form-tabs .nav-link:hover {
+    color: #3d3566 !important;
+    background: rgba(113, 99, 158, 0.08) !important;
+    border: none !important
+    }
+.odoo-premium-ui .form-tabs .nav-link.active {
+    color: #fff !important;
+    background: linear-gradient(135deg, #7b6daa 0%, #635490 100%) !important;
+    border: none !important;
+    font-weight: 700 !important;
+    box-shadow: 0 2px 8px rgba(113, 99, 158, 0.3) !important
+    }
+/* Odoo Section Headings (Subheadings) */
+.odoo-premium-ui .form-section {
+    border: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important
+    }
+.odoo-premium-ui .form-section .section-head {
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    background-color: #f6f5fa !important;
+    border-left: 3px solid #71639e !important;
+    border-bottom: none !important;
+    padding: 10px 16px !important;
+    margin-top: 24px !important;
+    margin-bottom: 20px !important;
+    border-radius: 0 6px 6px 0 !important;
+    font-family: "Inter", sans-serif !important;
+    letter-spacing: 0.01em !important
+    }
+.odoo-premium-ui .form-section:first-child .section-head {
+    margin-top: 4px !important
+    }
+/* Odoo Smart Buttons Hover Effect */
+.odoo-premium-ui .odoo-smart-btn, .odoo-premium-ui.odoo-smart-btn {
+    background: #fff !important;
+    border: 1px solid #e2e0ea !important;
+    border-radius: 10px !important;
+    padding: 5px 14px !important;
+    color: #334155 !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    height: 41px !important;
+    font-family: "Inter", sans-serif !important
+    }
+.odoo-premium-ui .odoo-smart-btn:hover, .odoo-premium-ui.odoo-smart-btn:hover {
+    background: #faf9fd !important;
+    border-color: #71639e !important;
+    box-shadow: 0 3px 10px rgba(113, 99, 158, 0.12) !important;
+    transform: translatey(-1px) !important
+    }
+/* Odoo Premium Primary Button Styling */
+.odoo-premium-ui .form-page .btn-primary, .odoo-premium-ui .btn-modal-primary, .odoo-premium-ui .modal-footer .btn-primary, .odoo-premium-ui .form-page .frappe-control .btn-primary {
+    background-color: #71639e !important;
+    border-color: #71639e !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 4px rgba(113, 99, 158, 0.25) !important;
+    transition: all 0.2s ease-in-out !important
+    }
+.odoo-premium-ui .form-page .btn-primary:hover, .odoo-premium-ui .btn-modal-primary:hover, .odoo-premium-ui .modal-footer .btn-primary:hover, .odoo-premium-ui .form-page .frappe-control .btn-primary:hover {
+    background-color: #5b4f80 !important;
+    border-color: #5b4f80 !important;
+    box-shadow: 0 4px 6px rgba(113, 99, 158, 0.35) !important;
+    transform: translatey(-1px) !important
+    }
+/* Odoo Premium Custom Checkbox Styling (Our Color Theme #71639e) */
+/* 1. Hide Frappe's redundant fake checkbox pseudo-elements and indicators across ALL forms, modals, and child tables so we never get double boxes */
+/* 2. Ensure disp-area is fully visible in child table grid cells so static checkboxes appear perfectly */
+.odoo-premium-ui .form-layout .grid-body .grid-row .grid-cell > .disp-area, .odoo-premium-ui .modal .grid-body .grid-row .grid-cell > .disp-area {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important
+    }
+/* 3. Style ALL checkboxes (both active and disabled/grid view) perfectly */
+/* ==========================================================================
+                   WIRELESS FEASIBILITY CHILD TABLE SPECIFIC OVERRIDES
+                   Ensure checkboxes (3G, 4G, 5G) remain perfectly centered in active edit mode
+                   ========================================================================== */
+/* Guarantee that 3G, 4G, 5G headings in Wireless Feasibility never get truncated to 3.., 4.., 5.. */
+.odoo-premium-ui [data-fieldname="wireless_feasiblity"] .grid-heading-row .grid-static-col[data-fieldname="3g"], .odoo-premium-ui [data-fieldname="wireless_feasiblity"] .grid-heading-row .grid-static-col[data-fieldname="4g"], .odoo-premium-ui [data-fieldname="wireless_feasiblity"] .grid-heading-row .grid-static-col[data-fieldname="5g"], .odoo-premium-ui [data-fieldname="wireless_feasiblity"] .grid-heading-row .grid-static-col[data-fieldname="3g"] .static-area, .odoo-premium-ui [data-fieldname="wireless_feasiblity"] .grid-heading-row .grid-static-col[data-fieldname="4g"] .static-area, .odoo-premium-ui [data-fieldname="wireless_feasiblity"] .grid-heading-row .grid-static-col[data-fieldname="5g"] .static-area {
+    text-overflow: clip !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 4px !important
+    }
+/* Static rows: style static-area to be a perfectly centered flex container, leave field-area hidden */
+.odoo-premium-ui [data-fieldname="wireless_feasiblity"] .grid-body .grid-row:not(.editable-row) .grid-static-col[data-fieldtype="Check"] .static-area {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important
+    }
+/* Editable rows: style field-area and its inner wrappers to be perfectly centered flex containers, leave static-area hidden */
+.odoo-premium-ui [data-fieldname="wireless_feasiblity"] .editable-row .grid-static-col[data-fieldtype="Check"], .odoo-premium-ui [data-fieldname="wireless_feasiblity"] .editable-row .grid-static-col[data-fieldtype="Check"] .field-area, .odoo-premium-ui [data-fieldname="wireless_feasiblity"] .editable-row .grid-static-col[data-fieldtype="Check"] .frappe-control, .odoo-premium-ui [data-fieldname="wireless_feasiblity"] .editable-row .grid-static-col[data-fieldtype="Check"] .form-group, .odoo-premium-ui [data-fieldname="wireless_feasiblity"] .editable-row .grid-static-col[data-fieldtype="Check"] .control-input-wrapper, .odoo-premium-ui [data-fieldname="wireless_feasiblity"] .editable-row .grid-static-col[data-fieldtype="Check"] .checkbox, .odoo-premium-ui [data-fieldname="wireless_feasiblity"] .editable-row .grid-static-col[data-fieldtype="Check"] .checkbox label {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-direction: row !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: transparent !important;
+    line-height: 0 !important
+    }
+/* Universal Odoo-Indigo Checkbox Styling scoped to Form and Modal */
+/* Bulletproof checkmark using ::before to ensure it renders inside all input boxes across Chrome/Safari/Firefox */
+/* Ensure all form inputs, selects, and textareas have consistent font family and bold weight */
+.odoo-premium-ui .form-layout input[type="text"], .odoo-premium-ui .form-layout input[type="number"], .odoo-premium-ui .form-layout input[type="email"], .odoo-premium-ui .form-layout input[type="password"], .odoo-premium-ui .form-layout input[type="tel"], .odoo-premium-ui .form-layout select, .odoo-premium-ui .form-layout textarea, .odoo-premium-ui .form-page .frappe-control input[type="text"], .odoo-premium-ui .form-page .frappe-control input[type="number"], .odoo-premium-ui .form-page .frappe-control input[type="email"], .odoo-premium-ui .form-page .frappe-control input[type="password"], .odoo-premium-ui .form-page .frappe-control input[type="tel"], .odoo-premium-ui .form-page .frappe-control select, .odoo-premium-ui .form-page .frappe-control textarea, .odoo-premium-ui .form-layout input[readonly]:not([type="checkbox"]):not([type="radio"]), .odoo-premium-ui .form-layout input[disabled]:not([type="checkbox"]):not([type="radio"]), .odoo-premium-ui .form-layout .control-value:not([type="checkbox"]):not([type="radio"]), .odoo-premium-ui .form-layout .like-disabled-input:not([type="checkbox"]):not([type="radio"]), .odoo-premium-ui .modal input[readonly]:not([type="checkbox"]):not([type="radio"]), .odoo-premium-ui .modal input[disabled]:not([type="checkbox"]):not([type="radio"]), .odoo-premium-ui .modal .control-value:not([type="checkbox"]):not([type="radio"]), .odoo-premium-ui .modal .like-disabled-input:not([type="checkbox"]):not([type="radio"]) {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 13px !important;
+    color: #1e293b !important;
+    background-color: transparent !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 7px 10px !important;
+    height: auto !important;
+    min-height: 36px !important;
+    line-height: 1.5 !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    transition: border-bottom-color 0.2s ease !important
+    }
+.odoo-premium-ui .form-page .frappe-control input::placeholder, .odoo-premium-ui .form-layout input::placeholder, .odoo-premium-ui .modal input::placeholder {
+    font-size: 12px !important;
+    color: #9ca3af !important;
+    font-weight: 400 !important;
+    white-space: normal !important;
+    text-overflow: ellipsis !important
+    }
+.odoo-premium-ui .form-layout input[type="text"]:focus, .odoo-premium-ui .form-layout input[type="number"]:focus, .odoo-premium-ui .form-layout input[type="email"]:focus, .odoo-premium-ui .form-layout input[type="password"]:focus, .odoo-premium-ui .form-layout input[type="tel"]:focus, .odoo-premium-ui .form-layout select:focus, .odoo-premium-ui .form-page .frappe-control input[type="text"]:focus, .odoo-premium-ui .form-page .frappe-control input[type="number"]:focus, .odoo-premium-ui .form-page .frappe-control input[type="email"]:focus, .odoo-premium-ui .form-page .frappe-control input[type="password"]:focus, .odoo-premium-ui .form-page .frappe-control input[type="tel"]:focus, .odoo-premium-ui .form-page .frappe-control select:focus {
+    border-bottom: 1px solid #e2e8f0 !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    outline: none !important
+    }
+.odoo-premium-ui .form-layout textarea:focus, .odoo-premium-ui .form-page .frappe-control textarea:focus {
+    border-bottom: 2px solid #71639e !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    outline: none !important
+    }
+/* Material Design Focus Underline Animation */
+/* Odoo Horizontal Field Layout: Label on Left, Input on Right */
+.odoo-premium-ui .form-layout .frappe-control:not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Check"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Small Text"]):not([data-fieldtype="Text"]):not([data-fieldtype="Long Text"]):not([data-fieldtype="Text Editor"]):not([data-fieldtype="Code"]) .form-group, .odoo-premium-ui .modal .frappe-control:not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Check"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Small Text"]):not([data-fieldtype="Text"]):not([data-fieldtype="Long Text"]):not([data-fieldtype="Text Editor"]):not([data-fieldtype="Code"]) .form-group {
+    display: flex !important;
+    align-items: center !important;
+    margin-bottom: 22px !important
+    }
+/* Standard / 2-Column Layout Label Width */
+.odoo-premium-ui .form-layout .frappe-control:not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Check"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Small Text"]):not([data-fieldtype="Text"]):not([data-fieldtype="Long Text"]):not([data-fieldtype="Text Editor"]):not([data-fieldtype="Code"]) .form-group .clearfix, .odoo-premium-ui .modal .frappe-control:not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Check"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Small Text"]):not([data-fieldtype="Text"]):not([data-fieldtype="Long Text"]):not([data-fieldtype="Text Editor"]):not([data-fieldtype="Code"]) .form-group .clearfix {
+    width: 210px !important;
+    min-width: 210px !important;
+    margin-bottom: 0 !important;
+    padding-right: 24px !important;
+    display: flex !important;
+    align-items: center !important
+    }
+/* 3-Column / Compact Layout Label Width (e.g. Central Spoke Information) */
+.odoo-premium-ui .form-layout .form-column.col-sm-4 .frappe-control:not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Check"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Small Text"]):not([data-fieldtype="Text"]):not([data-fieldtype="Long Text"]):not([data-fieldtype="Text Editor"]):not([data-fieldtype="Code"]) .form-group .clearfix, .odoo-premium-ui .form-layout .form-column.col-md-4 .frappe-control:not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Check"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Small Text"]):not([data-fieldtype="Text"]):not([data-fieldtype="Long Text"]):not([data-fieldtype="Text Editor"]):not([data-fieldtype="Code"]) .form-group .clearfix, .odoo-premium-ui .form-layout .form-column.col-sm-3 .frappe-control:not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Check"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Small Text"]):not([data-fieldtype="Text"]):not([data-fieldtype="Long Text"]):not([data-fieldtype="Text Editor"]):not([data-fieldtype="Code"]) .form-group .clearfix, .odoo-premium-ui .form-layout .form-column.col-md-3 .frappe-control:not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Check"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Small Text"]):not([data-fieldtype="Text"]):not([data-fieldtype="Long Text"]):not([data-fieldtype="Text Editor"]):not([data-fieldtype="Code"]) .form-group .clearfix {
+    width: 110px !important;
+    min-width: 110px !important;
+    padding-right: 8px !important
+    }
+.odoo-premium-ui .form-layout .frappe-control:not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Check"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Small Text"]):not([data-fieldtype="Text"]):not([data-fieldtype="Long Text"]):not([data-fieldtype="Text Editor"]):not([data-fieldtype="Code"]) .form-group .clearfix .control-label, .odoo-premium-ui .modal .frappe-control:not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Check"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Small Text"]):not([data-fieldtype="Text"]):not([data-fieldtype="Long Text"]):not([data-fieldtype="Text Editor"]):not([data-fieldtype="Code"]) .form-group .clearfix .control-label {
+    font-weight: 700 !important;
+    font-size: 12.5px !important;
+    color: #1e293b !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+    line-height: 1.3 !important;
+    text-align: left !important;
+    font-family: "Inter", sans-serif !important;
+    letter-spacing: 0.01em !important
+    }
+/* Apply bold styling to text field labels without inline layout constraints */
+.odoo-premium-ui .form-layout .frappe-control[data-fieldtype="Small Text"] .form-group .clearfix .control-label, .odoo-premium-ui .form-layout .frappe-control[data-fieldtype="Text"] .form-group .clearfix .control-label, .odoo-premium-ui .form-layout .frappe-control[data-fieldtype="Long Text"] .form-group .clearfix .control-label, .odoo-premium-ui .form-layout .frappe-control[data-fieldtype="Text Editor"] .form-group .clearfix .control-label {
+    font-weight: 700 !important;
+    font-size: 12.5px !important;
+    color: #1e293b !important;
+    font-family: "Inter", sans-serif !important;
+    letter-spacing: 0.01em !important
+    }
+/* Style the specific section break description as a yellow banner */
+.odoo-premium-ui .form-layout .frappe-control[data-fieldname="section_break_sjvn"] > .section-head, .odoo-premium-ui .form-layout .frappe-control[data-fieldname="section_break_sjvn"] > .section-description, .odoo-premium-ui .form-layout .frappe-control[data-fieldname="section_break_sjvn"] > .instructions, .odoo-premium-ui .form-layout .frappe-control[data-fieldname="section_break_sjvn"] > .text-muted, .odoo-premium-ui .form-layout .frappe-control[data-fieldname="section_break_sjvn"] > .help-box {
+    background-color: #fffbeb !important;
+    border-left: 4px solid #fde68a !important;
+    padding: 12px 16px !important;
+    border-radius: 4px !important;
+    font-size: 13px !important;
+    color: #92400e !important;
+    font-weight: 500 !important;
+    line-height: 1.5 !important;
+    margin-bottom: 12px !important;
+    display: block !important
+    }
+.odoo-premium-ui .form-layout .frappe-control[data-fieldname="section_break_sjvn"] > .section-head::before, .odoo-premium-ui .form-layout .frappe-control[data-fieldname="section_break_sjvn"] > .section-description::before, .odoo-premium-ui .form-layout .frappe-control[data-fieldname="section_break_sjvn"] > .instructions::before, .odoo-premium-ui .form-layout .frappe-control[data-fieldname="section_break_sjvn"] > .text-muted::before, .odoo-premium-ui .form-layout .frappe-control[data-fieldname="section_break_sjvn"] > .help-box::before {
+    content: "💡 Note: ";
+    font-size: 14px;
+    margin-right: 4px
+    }
+.odoo-premium-ui .form-layout .frappe-control:not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Check"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Small Text"]):not([data-fieldtype="Text"]):not([data-fieldtype="Long Text"]):not([data-fieldtype="Text Editor"]):not([data-fieldtype="Code"]) .form-group .control-input-wrapper, .odoo-premium-ui .modal .frappe-control:not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Check"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Small Text"]):not([data-fieldtype="Text"]):not([data-fieldtype="Long Text"]):not([data-fieldtype="Text Editor"]):not([data-fieldtype="Code"]) .form-group .control-input-wrapper {
+    flex: 1 !important;
+    width: 100% !important
+    }
+/* Style read-only / display fields similarly */
+.odoo-premium-ui .form-layout .frappe-control[data-fieldtype="Small Text"] .disp-area, .odoo-premium-ui .form-layout .frappe-control[data-fieldtype="Text"] .disp-area, .odoo-premium-ui .form-layout .frappe-control[data-fieldtype="Long Text"] .disp-area, .odoo-premium-ui .form-layout .frappe-control[data-fieldtype="Text Editor"] .disp-area, .odoo-premium-ui .form-layout .frappe-control[data-fieldtype="Code"] .disp-area, .odoo-premium-ui .modal .frappe-control[data-fieldtype="Small Text"] .disp-area, .odoo-premium-ui .modal .frappe-control[data-fieldtype="Text"] .disp-area, .odoo-premium-ui .modal .frappe-control[data-fieldtype="Long Text"] .disp-area, .odoo-premium-ui .modal .frappe-control[data-fieldtype="Text Editor"] .disp-area, .odoo-premium-ui .modal .frappe-control[data-fieldtype="Code"] .disp-area {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 13px !important;
+    color: #1e293b !important;
+    background-color: transparent !important;
+    border: 1px solid transparent !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    padding: 7px 10px !important;
+    height: auto !important;
+    min-height: 36px !important;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    overflow: visible !important;
+    display: block !important
+    }
+/* Reset any buttons or links inside disp-area so they don't break alignment */
+.odoo-premium-ui .form-layout .frappe-control .disp-area a, .odoo-premium-ui .modal .frappe-control .disp-area a, .odoo-premium-ui .form-layout .frappe-control .disp-area .btn, .odoo-premium-ui .modal .frappe-control .disp-area .btn {
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    display: inline !important;
+    color: inherit !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    text-decoration: none !important
+    }
+/* Odoo Two-Column Separation: Visible Vertical Divider */
+@media (min-width: 768px) {
+    .odoo-premium-ui .form-layout .form-section .form-column.col-sm-6:first-child, .odoo-premium-ui .form-layout .form-section .form-column.col-md-6:first-child {
+        border-right: 2px solid #e8e4f0 !important;
+        padding-right: 32px !important
+        }
+    .odoo-premium-ui .form-layout .form-section .form-column.col-sm-6:nth-child(2), .odoo-premium-ui .form-layout .form-section .form-column.col-md-6:nth-child(2) {
+        padding-left: 32px !important
+        }
+    }
+/* Align On Hold Reason and Cancel Reason to be horizontal like other fields */
+.odoo-premium-ui .form-layout .frappe-control[data-fieldname="on_hold_reason"] .form-group, .odoo-premium-ui .form-layout .frappe-control[data-fieldname="cancel_reason"] .form-group {
+    display: flex !important;
+    align-items: flex-start !important;
+    margin-bottom: 22px !important
+    }
+.odoo-premium-ui .form-layout .frappe-control[data-fieldname="on_hold_reason"] .form-group .clearfix, .odoo-premium-ui .form-layout .frappe-control[data-fieldname="cancel_reason"] .form-group .clearfix {
+    width: 210px !important;
+    min-width: 210px !important;
+    margin-bottom: 0 !important;
+    padding-right: 24px !important;
+    display: flex !important;
+    align-items: center !important
+    }
+.odoo-premium-ui .form-layout .frappe-control[data-fieldname="on_hold_reason"] .form-group .clearfix .control-label, .odoo-premium-ui .form-layout .frappe-control[data-fieldname="cancel_reason"] .form-group .clearfix .control-label {
+    font-weight: 700 !important;
+    font-size: 12.5px !important;
+    color: #1e293b !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+    line-height: 1.3 !important;
+    text-align: left !important;
+    font-family: "Inter", sans-serif !important;
+    letter-spacing: 0.01em !important
+    }
+.odoo-premium-ui .form-layout .frappe-control[data-fieldname="on_hold_reason"] .form-group .control-input-wrapper, .odoo-premium-ui .form-layout .frappe-control[data-fieldname="cancel_reason"] .form-group .control-input-wrapper {
+    flex: 1 !important;
+    width: 100% !important
+    }

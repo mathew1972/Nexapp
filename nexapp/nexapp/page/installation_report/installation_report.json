@@ -1,0 +1,32 @@
+{
+ "content": null,
+ "creation": "2026-06-03 21:02:09.678114",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2026-06-10 15:36:43.110560",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "installation-report",
+ "owner": "Administrator",
+ "page_name": "installation-report",
+ "roles": [
+  {
+   "role": "Administrator"
+  },
+  {
+   "role": "Installation Report Viewer"
+  },
+  {
+   "role": "Projects Manager"
+  },
+  {
+   "role": "accounts receivable"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Installation Report"
+}

@@ -28,6 +28,7 @@
   "branch_natted_ip",
   "column_break_ipvv",
   "branch_router_ip",
+  "terminal_ip",
   "branch_lan_series",
   "dc_ip_information_section",
   "dc_static_ip",
@@ -463,12 +464,17 @@
    "fieldtype": "Table",
    "label": "Provisioning Attachment",
    "options": "Provisioning Attachment"
+  },
+  {
+   "fieldname": "terminal_ip",
+   "fieldtype": "Data",
+   "label": "Terminal IP"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-05-12 10:43:27.686690",
+ "modified": "2026-05-13 12:37:21.762171",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Provisioning",

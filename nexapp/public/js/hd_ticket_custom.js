@@ -5,6 +5,12 @@ frappe.ui.form.on('HD Ticket', {
     },
 
     refresh: function(frm) {
+        if (frm.doc.custom_has_merged_emails) {
+            frm.dashboard.set_headline_alert(
+                '<div style="background-color: #ff9800; color: white; padding: 8px; font-weight: bold; font-size: 14px; text-align: center; border-radius: 4px; letter-spacing: 0.5px;">⚠️ Additional Customer Emails have been merged into this ticket</div>'
+            );
+        }
+
         const fields = [
             'custom_serial_no', 'custom_model', 'custom_finance_inhouse_escalation', 
             'custom_finance_issue', 'custom_finance_expected_end_date', 'custom_finance_task_details', 
@@ -147,8 +153,116 @@ frappe.ui.form.on('HD Ticket', {
             frappe.msgprint(__('Customer feedback is required to close the ticket'));
             frappe.validated = false;
         }
+    },
+
+    custom_stage: function(frm) {
+        if (['Finance Issue', 'MBB Issue', 'ILL Issue'].includes(frm.doc.custom_stage)) {
+            if (frm.doc.custom_circuit_id) {
+                show_lms_selection_window(frm);
+            } else {
+                frappe.msgprint(__('Please set Circuit ID first.'));
+            }
+        } else {
+            frm.set_value('custom_lms_detail', null);
+            frm.refresh_field('custom_lms_detail');
+        }
     }
 });
+
+function show_lms_selection_window(frm) {
+    frappe.call({
+        method: "frappe.client.get_list",
+        args: {
+            doctype: "Lastmile Services Master",
+            filters: {
+                "circuit_id": frm.doc.custom_circuit_id
+            },
+            fields: ["name", "bandwith_type", "supplier"]
+        },
+        callback: function(r) {
+            if(r.message && r.message.length > 0) {
+                render_custom_lms_window(frm, r.message);
+            } else {
+                frappe.msgprint(__('No LMS records found for this Circuit ID.'));
+            }
+        }
+    });
+}
+
+function render_custom_lms_window(frm, records) {
+    if ($('#custom-lms-overlay').length > 0) {
+        $('#custom-lms-overlay').remove();
+    }
+
+    let rowsHtml = '';
+    records.forEach(function(record) {
+        rowsHtml += `
+            <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 12px; text-align: center;">
+                    <input type="checkbox" name="lms_select" value="${record.name}" data-supplier="${record.supplier || ''}" style="transform: scale(1.2); cursor: pointer;" />
+                </td>
+                <td style="padding: 12px; font-weight: 500; color: #333;">${record.name || ''}</td>
+                <td style="padding: 12px; color: #555;">${record.bandwith_type || ''}</td>
+                <td style="padding: 12px; color: #555;">${record.supplier || ''}</td>
+            </tr>
+        `;
+    });
+
+    let html = `
+        <div id="custom-lms-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(2px);">
+            <div style="background: white; width: 650px; max-width: 90%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; font-family: inherit;">
+                <div style="padding: 20px 24px; display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #111;">Select LMS Provider</h3>
+                    <button class="lms-close-btn" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #888;">&times;</button>
+                </div>
+                
+                <div style="padding: 10px 24px 24px 24px; max-height: 400px; overflow-y: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid #e0e0e0; text-align: left;">
+                                <th style="padding: 12px; font-weight: 600; color: #444; text-align: center;">Select (Check Button)</th>
+                                <th style="padding: 12px; font-weight: 600; color: #444;">LMS ID (name)</th>
+                                <th style="padding: 12px; font-weight: 600; color: #444;">Bandwith Type</th>
+                                <th style="padding: 12px; font-weight: 600; color: #444;">Supplier</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rowsHtml}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="padding: 16px 24px; background: #fff; display: flex; justify-content: flex-end; gap: 12px;">
+                    <button class="lms-confirm-btn" style="padding: 8px 24px; border: none; background: #28a745; color: white; border-radius: 20px; cursor: pointer; font-weight: 500; font-size: 14px;">Select</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    $('body').append(html);
+
+    // Event listeners
+    $('#custom-lms-overlay .lms-close-btn').on('click', function() {
+        $('#custom-lms-overlay').remove();
+    });
+
+    $('#custom-lms-overlay .lms-confirm-btn').on('click', function() {
+        let selectedDetails = [];
+        $('input[name="lms_select"]:checked').each(function() {
+            let lmsId = $(this).val();
+            let supplier = $(this).attr('data-supplier');
+            selectedDetails.push(`${supplier} (${lmsId})`);
+        });
+        
+        if (selectedDetails.length > 0) {
+            frm.set_value('custom_lms_detail', selectedDetails.join(', '));
+            frappe.show_alert({message: 'LMS Details Updated', indicator: 'green'});
+            $('#custom-lms-overlay').remove();
+        } else {
+            frappe.msgprint(__('Please select at least one LMS record.'));
+        }
+    });
+}
 
 /////////////////////////////////////////////////////////////////
 /*
