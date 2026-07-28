@@ -19,11 +19,11 @@
   "customer_request",
   "column_break_zthd",
   "feasibility_status",
-  "circuit_id",
   "reason_for_high_commercials",
   "reason_for_not_feasible",
   "reason_for_on_hold",
   "order_type",
+  "circuit_id",
   "exiting_circuit_id",
   "site_type",
   "site_id__legal_code",
@@ -58,7 +58,7 @@
   "secondary_email",
   "adress_information_section",
   "address_street",
-  "section_break_xxnn",
+  "adress_information",
   "city",
   "state",
   "territory",
@@ -73,16 +73,16 @@
   "description",
   "site_address_section",
   "address",
-  "ai_evaluation",
   "column_break_iewh",
   "address_html",
   "lms_provider_information_tab",
   "lms_provider_information_section",
   "lms_note",
   "lms_provider",
-  "section_break_dmtu",
+  "section_break_kfqx",
+  "column_break_yuuk",
   "supplier_pool",
-  "column_break_ylse",
+  "column_break_hwvd",
   "info",
   "wireless_feasibility_tab",
   "section_break_eokw",
@@ -99,15 +99,16 @@
   "due_date",
   "sla_status",
   "remaining_days",
+  "overdue_days",
   "on_hold_since",
+  "hold_days",
   "column_break_xhis",
   "feasibility_completed_date",
   "feasibility_tat",
   "tat_status",
-  "overdue_days",
-  "hold_days",
   "sales_order_information_section",
   "sales_order",
+  "test",
   "column_break_jitn",
   "sales_order_date"
  ],
@@ -145,9 +146,7 @@
   {
    "fieldname": "lms_provider",
    "fieldtype": "Table",
-   "label": "LMS Provider ",
-   "options": "LMS Feasibility",
-   "permlevel": 1
+   "options": "LMS Feasibility"
   },
   {
    "fieldname": "column_break_zthd",
@@ -190,7 +189,7 @@
   {
    "depends_on": "eval: doc.feasibility_status == \"Feasible\" || doc.feasibility_status == \"High Commercials\"\n",
    "fieldname": "feasibility_completed_date",
-   "fieldtype": "Date",
+   "fieldtype": "Datetime",
    "label": "Feasibility Completed Datetime",
    "read_only": 1
   },
@@ -199,6 +198,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "depends_on": "eval:doc.solution_type!=\"SIM\"",
    "fieldname": "lms_provider_information_tab",
    "fieldtype": "Tab Break",
    "label": "LMS Feasibility"
@@ -211,18 +211,20 @@
   {
    "depends_on": "eval:doc.feasibility_status==\"Not Feasible\"",
    "fieldname": "reason_for_not_feasible",
-   "fieldtype": "Small Text",
+   "fieldtype": "Link",
    "label": "Reason For Not Feasible",
    "mandatory_depends_on": "eval:doc.feasibility_status==\"Not Feasible\"",
-   "max_height": "80px"
+   "max_height": "80px",
+   "options": "Not Feasible Reason"
   },
   {
    "depends_on": "eval:doc.feasibility_status==\"High Commercials\"",
    "fieldname": "reason_for_high_commercials",
-   "fieldtype": "Small Text",
+   "fieldtype": "Link",
    "label": "Reason For High Commercials",
    "mandatory_depends_on": "eval:doc.feasibility_status==\"High Commercials\"",
-   "max_height": "80px"
+   "max_height": "80px",
+   "options": "High Commercials Reason"
   },
   {
    "fieldname": "site_information_tab",
@@ -235,8 +237,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Sales Order",
-   "placeholder": "This data will be automatically updated"
+   "label": "Sales Order"
   },
   {
    "allow_on_submit": 1,
@@ -387,9 +388,7 @@
   {
    "fieldname": "wireless_feasiblity",
    "fieldtype": "Table",
-   "label": "Wireless Feasiblity",
-   "options": "Wireless Feasiblity",
-   "permlevel": 1
+   "options": "Wireless Feasiblity"
   },
   {
    "default": "Paid Customer",
@@ -407,7 +406,9 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Territory",
-   "options": "Territory"
+   "options": "Territory",
+   "placeholder": "Territory update automatically",
+   "reqd": 1
   },
   {
    "default": "Service",
@@ -433,7 +434,7 @@
    "fieldname": "pincode",
    "fieldtype": "Data",
    "label": "Pincode ",
-   "placeholder": "Please enter the 6-digit Pin Code to fetch the address more accurately.",
+   "placeholder": "Enter 6-digit Pin Code for accurate address.",
    "reqd": 1
   },
   {
@@ -462,7 +463,8 @@
   {
    "fieldname": "city",
    "fieldtype": "Data",
-   "label": "City"
+   "label": "City",
+   "placeholder": "City update automatically"
   },
   {
    "default": "Customer",
@@ -523,9 +525,11 @@
   },
   {
    "default": "0",
+   "depends_on": "eval:doc.isp_change_feasibility_check== 1",
    "fieldname": "isp_change_feasibility_check",
    "fieldtype": "Check",
-   "hidden": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "ISP Change Feasibility"
   },
   {
@@ -536,12 +540,11 @@
    "options": "Contact"
   },
   {
-   "fetch_from": "central_spoke.mobile_no",
+   "fetch_from": "central_spoke.phone",
    "fieldname": "mobile",
    "fieldtype": "Data",
    "label": "Mobile",
-   "length": 10,
-   "options": "\nPhone"
+   "length": 10
   },
   {
    "fetch_from": "central_spoke.email_id",
@@ -571,6 +574,7 @@
   {
    "fieldname": "supplier_pool",
    "fieldtype": "HTML",
+   "hidden": 1,
    "label": "Supplier Pool"
   },
   {
@@ -594,7 +598,8 @@
    "fieldtype": "Link",
    "in_standard_filter": 1,
    "label": "Sales Person",
-   "options": "User"
+   "options": "User",
+   "reqd": 1
   },
   {
    "fetch_from": "primary_data_plan.item_name",
@@ -609,10 +614,6 @@
    "fieldtype": "Data",
    "label": "Secondary Data Plan",
    "read_only": 1
-  },
-  {
-   "fieldname": "section_break_xxnn",
-   "fieldtype": "Section Break"
   },
   {
    "fieldname": "longitude",
@@ -630,11 +631,11 @@
    "label": "Open Map & Pick Location"
   },
   {
-   "fetch_from": "solution_code.custom_lms_type",
    "fieldname": "lms_type",
    "fieldtype": "Select",
    "label": "LMS Type",
-   "options": "\nNo LMS\nSingle\nDual"
+   "options": "\nNo LMS\nSingle\nDual",
+   "read_only": 1
   },
   {
    "depends_on": "eval:doc.feasibility_status==\"On Hold\"",
@@ -659,6 +660,7 @@
   {
    "fieldname": "due_date",
    "fieldtype": "Date",
+   "in_list_view": 1,
    "label": "Due Date",
    "read_only": 1
   },
@@ -672,6 +674,7 @@
   {
    "fieldname": "remaining_days",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Remaining Days",
    "read_only": 1
   },
@@ -684,10 +687,12 @@
   {
    "fieldname": "on_hold_since",
    "fieldtype": "Datetime",
+   "hidden": 1,
    "label": "On Hold Since",
    "read_only": 1
   },
   {
+   "default": "0",
    "fieldname": "hold_days",
    "fieldtype": "Int",
    "label": "Hold Days",
@@ -696,8 +701,9 @@
   {
    "fieldname": "sla_status",
    "fieldtype": "Select",
-   "label": "SLA Status",
-   "options": "\nWithin TAT\nOverdue\nPaused\nCompleted\nNear Due",
+   "in_list_view": 1,
+   "label": "TAT Status",
+   "options": "Within TAT\nOverdue\nPaused\nCompleted\nNear Due",
    "read_only": 1
   },
   {
@@ -705,15 +711,6 @@
    "fieldtype": "Float",
    "label": "Feasibility TAT (Days)",
    "read_only": 1
-  },
-  {
-   "fieldname": "section_break_dmtu",
-   "fieldtype": "Section Break",
-   "hidden": 1
-  },
-  {
-   "fieldname": "column_break_ylse",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "lms_note",
@@ -730,14 +727,29 @@
    "default": "0",
    "fieldname": "isp_pending",
    "fieldtype": "Check",
-   "in_standard_filter": 1,
    "label": "ISP Pending"
   },
   {
-   "default": "JSON",
-   "fieldname": "ai_evaluation",
-   "fieldtype": "Code",
-   "label": "AI Evaluation"
+   "fieldname": "adress_information",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_kfqx",
+   "fieldtype": "Section Break",
+   "hidden": 1
+  },
+  {
+   "fieldname": "column_break_yuuk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_hwvd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "test",
+   "fieldtype": "Small Text",
+   "label": "Test for Git"
   }
  ],
  "grid_page_length": 50,
@@ -746,7 +758,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2026-07-13 22:05:59.177916",
+ "modified": "2026-07-28 23:14:19.499391",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",
@@ -852,20 +864,9 @@
    "role": "Projects Manager",
    "share": 1,
    "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Administrator",
-   "share": 1,
-   "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [
