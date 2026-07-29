@@ -170,8 +170,46 @@ if (!window.custom_frappe_msgprint_overridden) {
     window.custom_frappe_msgprint_overridden = true;
 }
 // --- END FRAPPE MSGPRINT OVERRIDE ---
-
 frappe.ui.form.on("Sales Order", {
+    before_submit: function(frm) {
+        if (frm.doc.custom_task_type !== "Sales Order Request - POC To Paid") {
+            return;
+        }
+
+        return new Promise((resolve, reject) => {
+            let is_confirmed = false;
+            
+            const d = new frappe.ui.Dialog({
+                title: "Confirm POC to Paid Conversion",
+                fields: [{ fieldtype: "HTML", options: `<p>Do you want to convert the POC to a Paid Customer?</p>` }],
+                primary_action_label: "Convert",
+                secondary_action_label: "Cancel",
+                primary_action: function () {
+                    is_confirmed = true;
+                    d.hide();
+                    resolve(); // Let the framework continue submitting
+                },
+                secondary_action: function () {
+                    d.hide();
+                }
+            });
+
+            // Intercept modal close (via Cancel or clicking outside)
+            d.onhide = () => {
+                if (!is_confirmed) {
+                    frappe.validated = false; // standard Frappe way to safely abort the transaction
+                    reject(new Error("User cancelled POC to Paid conversion")); // Stop the submit promise
+                }
+            };
+
+            // Style primary button to be green
+            $(d.wrapper).find('.btn-primary').css({ 'background': '#10b981', 'border-color': '#10b981' });
+            d.show();
+        });
+    },
+
+    // Following methods (setup, custom_task) are defined later
+
     setup(frm) {
 
         frm.set_query("custom_feasibility", "items", function (doc, cdt, cdn) {

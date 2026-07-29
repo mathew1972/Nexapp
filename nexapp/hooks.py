@@ -403,23 +403,34 @@ doc_events = {
 }
 
 fixtures = [
-    {"dt": "DocType", "filters": [["module", "=", "Nexapp"], ["custom", "=", 1]]},
-    {"dt": "Custom Field", "filters": [["module", "=", "Nexapp"]]},
-    {"dt": "Property Setter"},
-    {"dt": "Email Domain"},
-    {"dt": "Client Script"},
-    {"dt": "Restricted"},
-    {"dt": "AI Assistant Prompt"},    
-    {"dt": "Survey Type"},
-    {"dt": "Task Type"},
-    {"dt": "Expense Claim Status"},
-    {"dt": "OTC Details"},
-    {"dt": "CRM Lost Reason"},
-    {"dt": "Impact"},
-    {"dt": "Item"},
-    {"dt": "Product Bundle"},    
-    {"dt": "Resolution Detail"},
+    {
+        "dt": "DocType",
+        "filters": [
+            ["module", "=", "Nexapp"],
+            ["custom", "=", 1]
+        ]
+    },
+    {
+        "dt": "Custom Field",
+        "filters": [
+            ["module", "=", "Nexapp"]
+        ]
+    },
+    {
+        "dt": "Property Setter",
+        "filters": [
+            ["module", "=", "Nexapp"]
+        ]
+    },
+    {
+        "dt": "Client Script",
+        "filters": [
+            ["module", "=", "Nexapp"]
+        ]
+    }
 ]
+
+
 
 doctype_list_js = {
     "HD Ticket": "public/js/hd_ticket_custom.js"

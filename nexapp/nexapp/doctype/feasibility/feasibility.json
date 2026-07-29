@@ -15,6 +15,8 @@
   "feaseibility_from",
   "customer",
   "customer_type",
+  "reason_for_poc",
+  "management_approval",
   "site_name",
   "customer_request",
   "column_break_zthd",
@@ -108,7 +110,6 @@
   "tat_status",
   "sales_order_information_section",
   "sales_order",
-  "test",
   "column_break_jitn",
   "sales_order_date"
  ],
@@ -747,9 +748,18 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "test",
+   "depends_on": "eval:doc.customer_type==\"POC Customer\"",
+   "fieldname": "management_approval",
+   "fieldtype": "Attach",
+   "label": "Management Approval For POC",
+   "mandatory_depends_on": "eval:doc.customer_type==\"POC Customer\""
+  },
+  {
+   "depends_on": "eval:doc.customer_type==\"POC Customer\"",
+   "fieldname": "reason_for_poc",
    "fieldtype": "Small Text",
-   "label": "Test for Git"
+   "label": "Reason For POC",
+   "mandatory_depends_on": "eval:doc.customer_type==\"POC Customer\""
   }
  ],
  "grid_page_length": 50,
@@ -758,7 +768,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 4,
- "modified": "2026-07-28 23:14:19.499391",
+ "modified": "2026-07-29 22:09:48.129184",
  "modified_by": "Administrator",
  "module": "Nexapp",
  "name": "Feasibility",

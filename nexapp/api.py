@@ -8226,8 +8226,20 @@ import frappe
 
 
 def update_feasibility_and_site_on_so_save(doc, method):
-
+    # Generic updater for all Sales Orders (excluding POC → Paid which uses a separate handler)
     if not doc.items:
+        return
+    # Skip generic processing for POC → Paid; let POC handler run
+    if getattr(doc, 'custom_task_type', None) == "Sales Order Request - POC To Paid":
+        _update_poc_to_paid(doc)
+        return
+    # Existing generic behavior (unchanged)
+    # Existing behavior: update Site and Feasibility for all Sales Orders
+    # (unchanged) 
+    if not doc.items:
+        return
+
+    
         return
 
     updated_records = []
@@ -8274,12 +8286,71 @@ def update_feasibility_and_site_on_so_save(doc, method):
                 }
             )
 
-            updated_records.append(f"Site: {ref_name}")
+def apply_poc_to_paid_updates(doc):
+    """Update Site and Feasibility records for the POC → Paid flow.
+    This is called only when `custom_task_type` matches the POC conversion.
+    """
+    updated_sites = []
+    updated_feas = []
+    for item in doc.items:
+        feas_name = item.custom_feasibility
+        if not feas_name:
+            continue
+        # Update Site if it exists – single DB call via get_value for existence
+        site_exists = frappe.db.get_value("Site", feas_name, "name")
+        if site_exists:
+            try:
+                frappe.db.set_value(
+                    "Site",
+                    feas_name,
+                    {
+                        "customer_type": "Paid Customer",
+                        "customer_po_no": doc.custom_deal_po_number,
+                        "customer_po_date": doc.custom_deal_po_date,
+                        "po_end_date": doc.custom_pr_number,
+                        "sales_order": doc.name,
+                        "sales_order_date": doc.transaction_date,
+                    },
+                )
+                updated_sites.append(feas_name)
+            except Exception as e:
+                frappe.log_error(f"Failed to update Site {feas_name}: {e}")
+        # Update Feasibility if it exists
+        feas_exists = frappe.db.get_value("Feasibility", feas_name, "name")
+        if feas_exists:
+            try:
+                frappe.db.set_value(
+                    "Feasibility",
+                    feas_name,
+                    {
+                        "customer_type": "Paid Customer",
+                        "sales_order": doc.name,
+                        "sales_order_date": doc.transaction_date,
+                    },
+                )
+                updated_feas.append(feas_name)
+            except Exception as e:
+                frappe.log_error(f"Failed to update Feasibility {feas_name}: {e}")
+    # Show concise summary
+    if updated_sites or updated_feas:
+        parts = []
+        if updated_sites:
+            parts.append(f"Sites updated ({len(updated_sites)}): {', '.join(updated_sites)}")
+        if updated_feas:
+            parts.append(f"Feasibility updated ({len(updated_feas)}): {', '.join(updated_feas)}")
+        frappe.msgprint("<br>".join(parts))
 
-    if updated_records:
-        frappe.msgprint(
-            "Updated records:<br><b>" + "<br>".join(updated_records) + "</b>"
-        )
+
+def sales_order_submit_handler(doc, method=None):
+    """Unified on_submit handler for Sales Order.
+    Delegates to the generic updater or the POC‑to‑Paid updater based on task type.
+    """
+    if getattr(doc, "custom_task_type", None) == "Sales Order Request - POC To Paid":
+        apply_poc_to_paid_updates(doc)
+    else:
+        update_feasibility_and_site_on_so_save(doc, method)
+
+
 #################################################################################
 # Updateing Billing status to 'Circuit Delivery Backdate' and 'Site
 
