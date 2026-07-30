@@ -306,10 +306,6 @@ app_include_css = [
 ]
 
 app_include_js = [
-    "/nexapp/page/bank_reconciliation/bank_reconciliation.js",
-    "/nexapp/page/custom_helpdesk/custom_helpdesk.js",
-    "/nexapp/page/billing_potal/billing_potal.js",
-    "public/js/crm_extensions.js",
     "/assets/nexapp/js/deal_list_custom.js",
     "/assets/nexapp/js/crm_extensions.js",
     "/assets/nexapp/js/helpdesk/ticket_view.js",
@@ -319,7 +315,8 @@ app_include_js = [
     "/assets/nexapp/js/ai/utils/api.js",
     "/assets/nexapp/js/ai/components/header.js",
     "/assets/nexapp/js/ai/features/feasibility.js",
-    "/assets/nexapp/js/material_request_global_v2.js"
+    "/assets/nexapp/js/material_request_global_v2.js",
+    "/assets/nexapp/js/odoo_premium_ui.js"
 ]
 
 

@@ -44,8 +44,8 @@ frappe.ui.form.on('Feasibility', {
     },
     onload: function (frm) {
         // Apply styling immediately on load to prevent visual flicker
-        if (typeof render_odoo_ui === 'function') {
-            render_odoo_ui(frm);
+        if (typeof render_feasibility_status_bar === 'function') {
+            render_feasibility_status_bar(frm);
         }
     },
     refresh: function (frm) {
@@ -71,7 +71,7 @@ frappe.ui.form.on('Feasibility', {
         // CSS handles mandatory styling directly using Frappe's native [data-reqd="1"] attributes
 
         // Trigger Odoo UI rendering
-        render_odoo_ui(frm);
+        render_feasibility_status_bar(frm);
         frm.events.calculate_lms_type(frm);
 
         // Highlight POC Customer field after all UI rendering
@@ -201,10 +201,10 @@ frappe.ui.form.on('Feasibility', {
             frm.set_value('feasibility_tat', 0.0);
         }
         frm._prev_feasibility_status = frm.doc.feasibility_status;
-        render_odoo_ui(frm);
+        render_feasibility_status_bar(frm);
     },
     pincode: function (frm) {
-        render_odoo_ui(frm);
+        render_feasibility_status_bar(frm);
     }
 });
 
@@ -332,7 +332,7 @@ function load_tat_settings(frm) {
     if (!frm.doc.solution_name && !frm.doc.solution_code) {
         frm.tat_period_days = undefined;
         frm.tat_status_map = undefined;
-        render_odoo_ui(frm);
+        render_feasibility_status_bar(frm);
         return;
     }
     frappe.call({
@@ -345,304 +345,16 @@ function load_tat_settings(frm) {
             if (r.message) {
                 frm.tat_period_days = r.message.period_days;
                 frm.tat_status_map = r.message.status_map;
-                render_odoo_ui(frm);
+                render_feasibility_status_bar(frm);
             }
         }
     });
 }
 
-function render_odoo_ui(frm) {
-    if (!$('#odoo_google_font').length) {
-        $('head').append('<link id="odoo_google_font" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">');
+function render_feasibility_status_bar(frm) {
+    if (window.nexapp && window.nexapp.ui && window.nexapp.ui.render_odoo_ui) {
+        window.nexapp.ui.render_odoo_ui(frm);
     }
-
-    // Apply mandatory class to the wrapper dynamically
-    if (frm && frm.fields) {
-        frm.fields.forEach(function (f) {
-            if (!f.wrapper) return;
-            const excluded_types = ['Table', 'HTML', 'Section Break', 'Column Break', 'Tab Break', 'Button'];
-            if (excluded_types.includes(f.df.fieldtype)) return;
-
-            const wrapper = $(f.wrapper).find('.control-input-wrapper');
-            if (f.df.reqd || f.df.mandatory_depends_on) {
-                wrapper.addClass('is-mandatory-field');
-            } else {
-                wrapper.removeClass('is-mandatory-field');
-            }
-        });
-
-        // Force bulletproof auto-resize on all textareas using Event Delegation
-        // This ensures the listener survives Frappe dynamically rebuilding the DOM
-        $(frm.wrapper).off('input.autoResize').on('input.autoResize', 'textarea', function () {
-            this.style.setProperty('height', 'auto', 'important');
-            this.style.setProperty('height', (this.scrollHeight + 2) + 'px', 'important');
-            // Also force the wrapper to adjust
-            let wrapper = $(this).closest('.control-input-wrapper');
-            if (wrapper.length) {
-                wrapper[0].style.setProperty('height', 'auto', 'important');
-            }
-        });
-
-        // Trigger initial calculation
-        setTimeout(() => {
-            $(frm.wrapper).find('textarea').trigger('input.autoResize');
-        }, 500);
-    }
-
-    $('#odoo_ui_styles').remove();
-    $(`<style id="odoo_ui_styles">
-        /* Odoo Form Sheet and Layout Styling */
-        div.odoo-premium-ui .form-layout, 
-        div.odoo-premium-ui .odoo-form-sheet {
-            background: #f9fafb !important;
-            box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.03) !important;
-            border-radius: 10px !important;
-            border: 1px solid #e5e7eb !important;
-            padding: 28px 32px !important;
-            margin-top: 16px !important;
-            margin-bottom: 32px !important;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
-        }
-        
-        /* Odoo Form Tabs Styling */
-        div.odoo-premium-ui .form-tabs {
-            border: none !important;
-            border-bottom: none !important;
-            margin-bottom: 4px !important;
-            background: linear-gradient(135deg, #f3f1f9 0%, #ece9f4 100%) !important;
-            padding: 6px 8px !important;
-            border-radius: 10px !important;
-            box-shadow: inset 0 1px 3px rgba(113, 99, 158, 0.08) !important;
-            overflow: hidden !important;
-            max-height: 48px !important;
-            scrollbar-width: none !important;
-            display: flex !important;
-            align-items: center !important;
-            gap: 4px !important;
-        }
-        div.odoo-premium-ui .form-tabs::-webkit-scrollbar { display: none !important; }
-        
-        div.odoo-premium-ui .form-tabs .nav-tabs {
-            border: none !important;
-            border-bottom: none !important;
-            margin-bottom: 0px !important;
-            padding-left: 0 !important;
-            overflow: visible !important;
-            scrollbar-width: none !important;
-            gap: 4px !important;
-            display: flex !important;
-            align-items: center !important;
-        }
-        div.odoo-premium-ui .form-tabs .nav-tabs::-webkit-scrollbar { display: none !important; }
-        
-        div.odoo-premium-ui .form-tab-content, 
-        div.odoo-premium-ui .tab-content, 
-        div.odoo-premium-ui .form-tab-pane, 
-        div.odoo-premium-ui .tab-pane {
-            border: none !important;
-            margin-top: 0px !important;
-            padding-top: 0px !important;
-        }
-
-        div.odoo-premium-ui .form-tabs .nav-link {
-            color: #5b5580 !important;
-            font-weight: 700 !important;
-            font-size: 12.5px !important;
-            padding: 8px 12px !important;
-            border: none !important;
-            border-radius: 7px !important;
-            background: transparent !important;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
-            letter-spacing: 0.015em !important;
-            font-family: 'Inter', sans-serif !important;
-            margin-bottom: 0 !important;
-            white-space: nowrap !important;
-        }
-
-        div.odoo-premium-ui .form-tabs .nav-link:hover {
-            color: #3d3566 !important;
-            background: rgba(113, 99, 158, 0.08) !important;
-            border: none !important;
-        }
-
-        div.odoo-premium-ui .form-tabs .nav-link.active {
-            color: #ffffff !important;
-            background: linear-gradient(135deg, #7b6daa 0%, #635490 100%) !important;
-            border: none !important;
-            font-weight: 700 !important;
-            box-shadow: 0 2px 8px rgba(113, 99, 158, 0.3) !important;
-        }
-
-        /* Odoo Section Headings */
-        div.odoo-premium-ui .form-section { 
-            border: none !important; 
-            border-top: none !important; 
-            border-bottom: none !important; 
-            margin-top: 0 !important; 
-            padding-top: 0 !important; 
-        }
-        div.odoo-premium-ui .form-section .section-head {
-            font-size: 13.5px !important;
-            font-weight: 700 !important;
-            color: #1e293b !important;
-            background-color: #f6f5fa !important;
-            border-left: 3px solid #71639e !important;
-            border-bottom: none !important;
-            padding: 10px 16px !important;
-            margin-top: 24px !important;
-            margin-bottom: 20px !important;
-            border-radius: 0 6px 6px 0 !important;
-            font-family: 'Inter', sans-serif !important;
-            letter-spacing: 0.01em !important;
-        }
-        div.odoo-premium-ui .form-section:first-child .section-head {
-            margin-top: 4px !important;
-        }
-        
-        /* Style the WRAPPER as the box to avoid Frappe's dynamic input vs read-only hiding */
-        div.odoo-premium-ui .frappe-control:not([data-fieldtype="Check"]):not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Button"]) .control-input-wrapper {
-            background-color: #f1f5f9 !important;
-            border: 1px solid #94a3b8 !important;
-            border-radius: 6px !important;
-            padding: 0 12px !important;
-            min-height: 38px !important;
-            display: flex !important;
-            align-items: center !important;
-            transition: all 0.2s ease !important;
-            width: 100% !important;
-            overflow: visible !important;
-        }
-
-        /* Make the actual inputs/text inside the wrapper transparent and borderless.
-           Use padding: 0 so we don't accidentally double-pad nested elements. The wrapper's flexbox centers them. */
-        div.odoo-premium-ui .frappe-control .control-input-wrapper .control-input,
-        div.odoo-premium-ui .frappe-control .control-input-wrapper input,
-        div.odoo-premium-ui .frappe-control .control-input-wrapper select,
-        div.odoo-premium-ui .frappe-control .control-input-wrapper .control-value,
-        div.odoo-premium-ui .frappe-control .control-input-wrapper .disp-area,
-        div.odoo-premium-ui .frappe-control .control-input-wrapper .like-disabled-input {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
-            font-weight: 400 !important;
-            font-size: 13px !important;
-            color: #1e293b !important;
-            background-color: transparent !important;
-            background-image: none !important;
-            border: none !important;
-            box-shadow: none !important;
-            padding: 0 !important;
-            height: auto !important;
-            min-height: unset !important;
-            line-height: 1.5 !important;
-            width: 100% !important;
-            outline: none !important;
-            margin: 0 !important;
-        }
-
-        /* Textareas need vertical padding as they are multi-line and don't flex-center well */
-        div.odoo-premium-ui .frappe-control .control-input-wrapper textarea {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
-            font-weight: 400 !important;
-            font-size: 13px !important;
-            color: #1e293b !important;
-            background-color: transparent !important;
-            background-image: none !important;
-            border: none !important;
-            box-shadow: none !important;
-            padding: 8px 0 !important;
-            /* Let custom JS handle the height */
-            line-height: 1.5 !important;
-            width: 100% !important;
-            outline: none !important;
-            margin: 0 !important;
-            resize: none !important;
-            overflow: hidden !important; /* Hide scrollbars since we auto-resize */
-            min-height: 38px !important; /* Baseline height */
-        }
-        
-        div.odoo-premium-ui .frappe-control .control-input-wrapper textarea:focus {
-            border: none !important;
-            box-shadow: none !important;
-            outline: none !important;
-            background-color: transparent !important;
-            background-image: none !important;
-        }
-
-        /* Align multi-line fields to the top instead of center */
-        div.odoo-premium-ui .frappe-control[data-fieldtype="Text"] .control-input-wrapper,
-        div.odoo-premium-ui .frappe-control[data-fieldtype="Small Text"] .control-input-wrapper,
-        div.odoo-premium-ui .frappe-control[data-fieldtype="Long Text"] .control-input-wrapper {
-            align-items: flex-start !important;
-        }
-
-        /* Focus state on the wrapper via :focus-within */
-        div.odoo-premium-ui .frappe-control .control-input-wrapper:focus-within {
-            border: 1px solid #ee8d21 !important;
-            background-color: #ffffff !important;
-            box-shadow: 0 0 0 3px rgba(238, 141, 33, 0.15) !important;
-        }
-
-        /* Horizontal Layout: Label left, Input right */
-        div.odoo-premium-ui .frappe-control:not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Check"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Small Text"]):not([data-fieldtype="Text"]):not([data-fieldtype="Long Text"]):not([data-fieldtype="Text Editor"]):not([data-fieldtype="Code"]) .form-group {
-            display: flex !important;
-            align-items: center !important;
-            margin-bottom: 22px !important;
-        }
-        
-        /* Label container width */
-        div.odoo-premium-ui .frappe-control:not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Check"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Small Text"]):not([data-fieldtype="Text"]):not([data-fieldtype="Long Text"]):not([data-fieldtype="Text Editor"]):not([data-fieldtype="Code"]) .form-group .clearfix {
-            width: 210px !important;
-            min-width: 210px !important;
-            margin-bottom: 0 !important;
-            padding-right: 24px !important;
-            display: flex !important;
-            align-items: center !important;
-        }
-
-        /* Label styling */
-        div.odoo-premium-ui .frappe-control:not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Check"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Small Text"]):not([data-fieldtype="Text"]):not([data-fieldtype="Long Text"]):not([data-fieldtype="Text Editor"]):not([data-fieldtype="Code"]) .form-group .clearfix .control-label {
-            font-weight: 700 !important;
-            font-size: 12.5px !important;
-            color: #1e293b !important;
-            margin-bottom: 0 !important;
-            padding-bottom: 0 !important;
-            line-height: 1.3 !important;
-            text-align: left !important;
-            font-family: 'Inter', sans-serif !important;
-            letter-spacing: 0.01em !important;
-        }
-
-        /* Text field labels */
-        div.odoo-premium-ui .frappe-control[data-fieldtype="Small Text"] .form-group .clearfix .control-label,
-        div.odoo-premium-ui .frappe-control[data-fieldtype="Text"] .form-group .clearfix .control-label,
-        div.odoo-premium-ui .frappe-control[data-fieldtype="Long Text"] .form-group .clearfix .control-label,
-        div.odoo-premium-ui .frappe-control[data-fieldtype="Text Editor"] .form-group .clearfix .control-label {
-            font-weight: 700 !important;
-            font-size: 12.5px !important;
-            color: #1e293b !important;
-            font-family: 'Inter', sans-serif !important;
-            letter-spacing: 0.01em !important;
-        }
-
-        /* Input wrapper flex */
-        div.odoo-premium-ui .frappe-control:not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Check"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Small Text"]):not([data-fieldtype="Text"]):not([data-fieldtype="Long Text"]):not([data-fieldtype="Text Editor"]):not([data-fieldtype="Code"]) .form-group .control-input-wrapper {
-            flex: 1 !important;
-            width: 100% !important;
-        }
-
-        /* Hide the default bottom border for disp-area since we now have a full box */
-        div.odoo-premium-ui .frappe-control:not([data-fieldtype="Check"]) .disp-area:not(.checkbox .disp-area) {
-            border-bottom: none !important;
-        }
-
-        /* Mandatory Field Red Left Border - completely CSS driven */
-        div.odoo-premium-ui .frappe-control:not([data-fieldtype="Check"]):not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Button"]) .control-input-wrapper.is-mandatory-field,
-        div.odoo-premium-ui .frappe-control:not([data-fieldtype="Check"]):not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Button"]).has-error .control-input-wrapper,
-        div.odoo-premium-ui .frappe-control:not([data-fieldtype="Check"]):not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Button"])[data-reqd="1"] .control-input-wrapper {
-            border-left: 4px solid #ef4444 !important;
-        }
-    </style>`).appendTo('head');
-
-    $(frm.wrapper).addClass('odoo-premium-ui');
 
     if (!frm._saved_feasibility_status || !frm.is_dirty()) {
         frm._saved_feasibility_status = frm.doc.feasibility_status || 'Pending';
@@ -666,7 +378,7 @@ function render_odoo_ui(frm) {
                         frm._fetching_last_status = false;
                         if (r.message) {
                             frm._last_valid_status = r.message;
-                            render_odoo_ui(frm);
+                            render_feasibility_status_bar(frm);
                         }
                     }
                 });

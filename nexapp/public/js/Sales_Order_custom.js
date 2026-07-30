@@ -29,16 +29,15 @@ frappe.ui.form.on('Sales Order', {
         setTimeout(collapse_sidebar_by_default, 300);
 
         // --- START UI STYLING ---
-        render_odoo_ui(frm);
+        if (window.nexapp && window.nexapp.ui && window.nexapp.ui.render_odoo_ui) {
+            window.nexapp.ui.render_odoo_ui(frm);
+        }
+        $(frm.wrapper).addClass('custom-sales-order-ui');
         inject_so_guidelines_button(frm);
     }
 });
 
-function render_odoo_ui(frm) {
-    $(frm.wrapper).addClass('odoo-premium-ui');
 
-    $(frm.wrapper).addClass('custom-sales-order-ui');
-}
 
 // --- START FRAPPE CONFIRM OVERRIDE (CHATGPT STYLE) ---
 if (!window.custom_frappe_confirm_overridden) {

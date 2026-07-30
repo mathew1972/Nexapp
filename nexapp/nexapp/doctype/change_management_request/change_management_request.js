@@ -188,7 +188,7 @@ frappe.ui.form.on('Change Management Request', {
         fetch_manager_email(frm);
     },
     onload: function(frm) {
-        if (typeof render_odoo_ui === 'function') render_odoo_ui(frm);
+        if (typeof render_cmr_status_bar === 'function') render_cmr_status_bar(frm);
     },
     circuit_id: function(frm) {
         load_lms_feasibility_details(frm);
@@ -212,7 +212,7 @@ frappe.ui.form.on('Change Management Request', {
             setTimeout(collapse_sidebar_by_default, 300);
         }
 
-        if (typeof render_odoo_ui === 'function') render_odoo_ui(frm);
+        if (typeof render_cmr_status_bar === 'function') render_cmr_status_bar(frm);
         
         load_lms_feasibility_details(frm);
 
@@ -268,7 +268,7 @@ frappe.ui.form.on('Change Management Request', {
     },
     stage: function(frm) {
         set_stage_color(frm);
-        if (typeof render_odoo_ui === 'function') render_odoo_ui(frm);
+        if (typeof render_cmr_status_bar === 'function') render_cmr_status_bar(frm);
     },
     sla_status: function(frm) {
         set_sla_status_color(frm);
@@ -408,122 +408,11 @@ function set_sla_status_color(frm) {
 }
 
 
-function render_odoo_ui(frm) {
-    if (!$('#odoo_google_font').length) {
-        $('head').append('<link id="odoo_google_font" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">');
+function render_cmr_status_bar(frm) {
+    if (window.nexapp && window.nexapp.ui && window.nexapp.ui.render_odoo_ui) {
+        window.nexapp.ui.render_odoo_ui(frm);
     }
-
-    if (frm && frm.fields) {
-        frm.fields.forEach(function (f) {
-            if (!f.wrapper) return;
-            const excluded_types = ['Table', 'HTML', 'Section Break', 'Column Break', 'Tab Break', 'Button'];
-            if (excluded_types.includes(f.df.fieldtype)) return;
-            const wrapper = $(f.wrapper).find('.control-input-wrapper');
-            if (f.df.reqd || f.df.mandatory_depends_on) {
-                wrapper.addClass('is-mandatory-field');
-            } else {
-                wrapper.removeClass('is-mandatory-field');
-            }
-        });
-    }
-
-    $('#odoo_ui_styles').remove();
-    $(`<style id="odoo_ui_styles">
-        div.odoo-premium-ui .form-layout, 
-        div.odoo-premium-ui .odoo-form-sheet {
-            background: #f9fafb !important;
-            box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.03) !important;
-            border-radius: 10px !important;
-            border: 1px solid #e5e7eb !important;
-            padding: 28px 32px !important;
-            margin-top: 16px !important;
-            margin-bottom: 32px !important;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
-        }
-        div.odoo-premium-ui .form-tabs {
-            border: none !important;
-            border-bottom: none !important;
-            margin-bottom: 4px !important;
-            background: linear-gradient(135deg, #f3f1f9 0%, #ece9f4 100%) !important;
-            padding: 6px 8px !important;
-            border-radius: 10px !important;
-            box-shadow: inset 0 1px 3px rgba(113, 99, 158, 0.08) !important;
-            overflow: hidden !important;
-            max-height: 48px !important;
-            display: flex !important;
-            align-items: center !important;
-            gap: 4px !important;
-        }
-        div.odoo-premium-ui .form-tabs .nav-tabs {
-            border: none !important;
-            border-bottom: none !important;
-            margin-bottom: 0px !important;
-            padding-left: 0 !important;
-            gap: 4px !important;
-            display: flex !important;
-            align-items: center !important;
-        }
-        div.odoo-premium-ui .form-tabs .nav-link {
-            color: #5b5580 !important;
-            font-weight: 700 !important;
-            font-size: 12.5px !important;
-            padding: 8px 12px !important;
-            border: none !important;
-            border-radius: 7px !important;
-            background: transparent !important;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
-            font-family: 'Inter', sans-serif !important;
-        }
-        div.odoo-premium-ui .form-tabs .nav-link:hover {
-            color: #3d3566 !important;
-            background: rgba(113, 99, 158, 0.08) !important;
-        }
-        div.odoo-premium-ui .form-tabs .nav-link.active {
-            color: #ffffff !important;
-            background: linear-gradient(135deg, #7b6daa 0%, #635490 100%) !important;
-            font-weight: 700 !important;
-            box-shadow: 0 2px 8px rgba(113, 99, 158, 0.3) !important;
-        }
-        div.odoo-premium-ui .form-section .section-head {
-            font-size: 13.5px !important;
-            font-weight: 700 !important;
-            color: #1e293b !important;
-            background-color: #f6f5fa !important;
-            border-left: 3px solid #71639e !important;
-            padding: 10px 16px !important;
-            margin-top: 24px !important;
-            margin-bottom: 20px !important;
-            border-radius: 0 6px 6px 0 !important;
-            font-family: 'Inter', sans-serif !important;
-        }
-        div.odoo-premium-ui .frappe-control:not([data-fieldtype="Check"]):not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Button"]) .control-input-wrapper {
-            background-color: #f1f5f9 !important;
-            border: 1px solid #94a3b8 !important;
-            border-radius: 6px !important;
-            padding: 0 12px !important;
-            min-height: 38px !important;
-            display: flex !important;
-            align-items: center !important;
-            width: 100% !important;
-        }
-        div.odoo-premium-ui .frappe-control .control-input-wrapper .control-input,
-        div.odoo-premium-ui .frappe-control .control-input-wrapper input,
-        div.odoo-premium-ui .frappe-control .control-input-wrapper select,
-        div.odoo-premium-ui .frappe-control .control-input-wrapper .control-value {
-            font-family: 'Inter', sans-serif !important;
-            font-size: 13px !important;
-            color: #1e293b !important;
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            width: 100% !important;
-            outline: none !important;
-        }
-        div.odoo-premium-ui .frappe-control:not([data-fieldtype="Check"]):not([data-fieldtype="Table"]):not([data-fieldtype="HTML"]):not([data-fieldtype="Section Break"]):not([data-fieldtype="Column Break"]):not([data-fieldtype="Button"]) .control-input-wrapper.is-mandatory-field {
-            border-left: 4px solid #ef4444 !important;
-        }
-    </style>`).appendTo('head');
-
+    
     $(frm.wrapper).addClass('odoo-premium-ui');
     $(frm.wrapper).find('.form-layout').addClass('odoo-form-sheet');
 

@@ -64,8 +64,8 @@ frappe.ui.form.on('Site', {
     onload: function (frm) {
         override_timeline_date_format();
         frm._original_eta = frm.doc.estimated_time_of_arrival;
-        if (typeof render_odoo_ui === "function") {
-            render_odoo_ui(frm);
+        if (typeof render_site_status_bar === "function") {
+            render_site_status_bar(frm);
         }
     },
     refresh: function (frm) {
@@ -105,15 +105,15 @@ frappe.ui.form.on('Site', {
                     } else {
                         frm.tat_period_days = 30; // standard fallback
                     }
-                    if (typeof render_odoo_ui === "function") {
-                        render_odoo_ui(frm);
+                    if (typeof render_site_status_bar === "function") {
+                        render_site_status_bar(frm);
                     }
                 }
             });
-        } else if (typeof render_odoo_ui === "function") {
+        } else if (typeof render_site_status_bar === "function") {
             frm.tat_period_days = 30; // standard fallback for new docs
             setTimeout(() => {
-                render_odoo_ui(frm);
+                render_site_status_bar(frm);
             }, 100);
         }
 
@@ -1401,8 +1401,10 @@ frappe.listview_settings['Site'] = {
 };
 
 // --- Odoo UI Injected from Feasibility ---
-function render_odoo_ui(frm) {
-    $(frm.wrapper).addClass('odoo-premium-ui');
+function render_site_status_bar(frm) {
+    if (window.nexapp && window.nexapp.ui && window.nexapp.ui.render_odoo_ui) {
+        window.nexapp.ui.render_odoo_ui(frm);
+    }
 
     if (!frm._saved_site_status || !frm.is_dirty()) {
         frm._saved_site_status = frm.doc.site_status || 'Pending';
@@ -1426,7 +1428,7 @@ function render_odoo_ui(frm) {
                         frm._fetching_last_status = false;
                         if (r.message) {
                             frm._last_valid_status = r.message;
-                            render_odoo_ui(frm);
+                            render_site_status_bar(frm);
                         }
                     }
                 });
@@ -1436,7 +1438,6 @@ function render_odoo_ui(frm) {
         frm._last_valid_status = frm.doc.site_status;
         frm._saved_site_status = frm.doc.site_status;
     }
-    $(frm.wrapper).find('.form-layout').addClass('odoo-form-sheet');
 
     // Hide old standalone HTML field wrappers to keep form clean
     if (frm.fields_dict.info) frm.fields_dict.info.$wrapper.hide();
