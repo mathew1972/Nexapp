@@ -8231,16 +8231,11 @@ def update_feasibility_and_site_on_so_save(doc, method):
         return
     # Skip generic processing for POC → Paid; let POC handler run
     if getattr(doc, 'custom_task_type', None) == "Sales Order Request - POC To Paid":
-        _update_poc_to_paid(doc)
+        apply_poc_to_paid_updates(doc)
         return
     # Existing generic behavior (unchanged)
     # Existing behavior: update Site and Feasibility for all Sales Orders
     # (unchanged) 
-    if not doc.items:
-        return
-
-    
-        return
 
     updated_records = []
 
