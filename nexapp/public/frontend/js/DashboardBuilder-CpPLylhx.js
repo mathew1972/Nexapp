@@ -1,0 +1,1 @@
+import{_ as r}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{o as s,c as a,a as o}from"./index-CyRBnpaS.js";const t={},n={class:"p-6"};function c(d,e){return s(),a("div",n,[...e[0]||(e[0]=[o("h1",null,"Dashboard Builder",-1),o("p",null,"Canvas, Widgets, Grid Layout",-1)])])}const _=r(t,[["render",c]]);export{_ as default};

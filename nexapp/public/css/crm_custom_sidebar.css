@@ -1,0 +1,101 @@
+/* Custom Nexapp Dark Sidebar Theme matching sample image exactly */
+
+#app > div > div:first-child,
+#app .h-screen > div:first-child,
+div[class*="sidebar"],
+nav[class*="sidebar"] {
+  background-color: #0b1329 !important; /* Deep dark blue-black background */
+  color: #94a3b8 !important;
+}
+
+/* App Title (e.g. Nexapp CRM) */
+#app > div > div:first-child div[class*="font-semibold"],
+#app > div > div:first-child span[class*="font-semibold"],
+#app > div > div:first-child a {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+/* Standard Unselected Navigation Links */
+#app > div > div:first-child button,
+#app > div > div:first-child a,
+#app > div > div:first-child nav a,
+#app > div > div:first-child nav button {
+  color: #cbd5e1 !important;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  transition: all 0.15s ease-in-out !important;
+  border-left: 3px solid transparent !important;
+  background-color: transparent !important;
+}
+
+/* Unselected Icons */
+#app > div > div:first-child button:not([data-active="true"]):not([aria-current="page"]):not(.router-link-active) svg,
+#app > div > div:first-child a:not([data-active="true"]):not([aria-current="page"]):not(.router-link-active) svg {
+  color: #94a3b8 !important;
+  stroke: #94a3b8 !important;
+  fill: currentColor !important;
+}
+
+/* Hover State */
+#app > div > div:first-child button:hover,
+#app > div > div:first-child a:hover,
+#app > div > div:first-child nav a:hover,
+#app > div > div:first-child nav button:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+/* ACTIVE / SELECTED NAVIGATION ITEM (Only when item is actively selected for current route) */
+#app > div > div:first-child nav a.router-link-active,
+#app > div > div:first-child nav button.router-link-active,
+#app > div > div:first-child nav a.router-link-exact-active,
+#app > div > div:first-child nav button.router-link-exact-active,
+#app > div > div:first-child nav a[aria-current="page"],
+#app > div > div:first-child nav button[aria-current="page"],
+#app > div > div:first-child nav a[data-active="true"],
+#app > div > div:first-child nav button[data-active="true"] {
+  background-color: #262121 !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  border-radius: 8px !important;
+  border-left: 3px solid #f97316 !important;
+}
+
+/* ONLY Selected Item Icon is Vibrant Orange and Bold */
+#app > div > div:first-child nav a.router-link-active svg,
+#app > div > div:first-child nav button.router-link-active svg,
+#app > div > div:first-child nav a.router-link-exact-active svg,
+#app > div > div:first-child nav button.router-link-exact-active svg,
+#app > div > div:first-child nav a[aria-current="page"] svg,
+#app > div > div:first-child nav button[aria-current="page"] svg,
+#app > div > div:first-child nav a[data-active="true"] svg,
+#app > div > div:first-child nav button[data-active="true"] svg {
+  color: #f97316 !important;
+  stroke: #f97316 !important;
+  fill: currentColor !important;
+  stroke-width: 2.5px !important;
+  font-weight: 700 !important;
+}
+
+/* Bottom Actions in Sidebar */
+#app > div > div:first-child div.mt-auto button,
+#app > div > div:first-child div.mt-auto a {
+  color: #64748b !important;
+  border-left: none !important;
+}
+
+#app > div > div:first-child div.mt-auto button:hover,
+#app > div > div:first-child div.mt-auto a:hover {
+  color: #cbd5e1 !important;
+}
+
+/* Ensure native default dashboard components are hidden whenever custom dashboard is active */
+#nexapp-crm-dashboard-container ~ * {
+  display: none !important;
+}
+:has(> #nexapp-crm-dashboard-container) > *:not(#nexapp-crm-dashboard-container) {
+  display: none !important;
+}
+

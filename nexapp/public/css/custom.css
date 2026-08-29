@@ -479,3 +479,212 @@ ul.awesomplete,
     flex: 1 !important;
     width: 100% !important
     }
+
+/* ==========================================================================
+   UNIVERSAL DARK SIDEBAR THEME MATCHING SAMPLE IMAGE
+   ========================================================================== */
+
+.layout-side-section,
+.sidebar-section,
+body [class*="layout-side-section"],
+.desk-sidebar,
+.desk-sidebar .standard-sidebar,
+div[class*="sidebar-container"],
+nav[class*="sidebar"],
+.body-sidebar,
+.sidebar-child,
+.desk-sidebar-item,
+div[class*="body-sidebar"],
+div[class*="workspace-sidebar"] {
+    background-color: #0b1329 !important;
+    color: #94a3b8 !important;
+}
+
+.body-sidebar .workspace-title,
+.body-sidebar [class*="sidebar-header"],
+.desk-sidebar [class*="sidebar-header"],
+.layout-side-section [class*="sidebar-header"] {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+.layout-side-section .sidebar-label,
+.layout-side-section .sidebar-item-label,
+.standard-sidebar .sidebar-section-header,
+.standard-sidebar .sidebar-label,
+.body-sidebar .sidebar-label,
+.body-sidebar .sidebar-group-title {
+    color: #64748b !important;
+    font-weight: 700 !important;
+    font-size: 11px !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
+}
+
+.layout-side-section a,
+.layout-side-section button,
+.layout-side-section .sidebar-item,
+.standard-sidebar .sidebar-item a,
+.standard-sidebar .sidebar-item button,
+.standard-sidebar .desk-sidebar-item,
+.body-sidebar a,
+.body-sidebar button,
+.body-sidebar .sidebar-item,
+.body-sidebar .desk-sidebar-item,
+.sidebar-child a,
+.sidebar-child button {
+    color: #cbd5e1 !important;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-weight: 500 !important;
+    font-size: 13.5px !important;
+    border-radius: 8px !important;
+    border-left: 3px solid transparent !important;
+    transition: all 0.15s ease-in-out !important;
+}
+
+.body-sidebar a span,
+.body-sidebar button span,
+.sidebar-child a span,
+.sidebar-child button span {
+    color: inherit !important;
+}
+
+.layout-side-section svg,
+.layout-side-section .icon,
+.standard-sidebar svg,
+.standard-sidebar .icon,
+.body-sidebar svg,
+.body-sidebar .icon,
+.sidebar-child svg,
+.sidebar-child .icon {
+    color: #94a3b8 !important;
+    stroke: #94a3b8 !important;
+    fill: none !important;
+}
+
+.layout-side-section a:hover,
+.layout-side-section button:hover,
+.layout-side-section .sidebar-item:hover,
+.standard-sidebar .sidebar-item a:hover,
+.standard-sidebar .desk-sidebar-item:hover,
+.body-sidebar a:hover,
+.body-sidebar button:hover,
+.body-sidebar .sidebar-item:hover,
+.body-sidebar .desk-sidebar-item:hover,
+.sidebar-child a:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+}
+
+.layout-side-section a:hover svg,
+.layout-side-section button:hover svg,
+.standard-sidebar .sidebar-item a:hover svg,
+.body-sidebar a:hover svg,
+.body-sidebar button:hover svg {
+    color: #ffffff !important;
+    stroke: #ffffff !important;
+}
+
+/* ACTIVE / SELECTED ITEM IN DESK SIDEBAR */
+.layout-side-section .active,
+.layout-side-section .selected,
+.layout-side-section .sidebar-item.selected,
+.layout-side-section .sidebar-item.active,
+.layout-side-section [class*="selected"],
+.layout-side-section [class*="active"],
+.standard-sidebar .sidebar-item.selected,
+.standard-sidebar .sidebar-item.active,
+.standard-sidebar .desk-sidebar-item.selected,
+.standard-sidebar .desk-sidebar-item.active,
+.standard-sidebar .desk-sidebar-item[class*="active"],
+.body-sidebar .selected,
+.body-sidebar .active,
+.body-sidebar .sidebar-item.selected,
+.body-sidebar .sidebar-item.active,
+.body-sidebar .desk-sidebar-item.selected,
+.body-sidebar .desk-sidebar-item.active,
+.body-sidebar [class*="selected"],
+.body-sidebar [class*="active"],
+.sidebar-child .selected,
+.sidebar-child .active,
+.desk-sidebar-item.selected,
+.desk-sidebar-item.active,
+.desk-sidebar-item[class*="selected"],
+.desk-sidebar-item[class*="active"],
+[class*="sidebar"] .desk-sidebar-item.selected,
+[class*="sidebar"] .desk-sidebar-item.active,
+[class*="sidebar"] a.active,
+[class*="sidebar"] a.selected,
+[class*="sidebar"] button.active,
+[class*="sidebar"] button.selected {
+    background-color: #262121 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+    border-left: 3px solid #f97316 !important;
+}
+
+.body-sidebar .selected span,
+.body-sidebar .active span,
+.body-sidebar [class*="selected"] span,
+.body-sidebar [class*="active"] span,
+[class*="sidebar"] .selected span,
+[class*="sidebar"] .active span,
+[class*="sidebar"] [class*="selected"] span,
+[class*="sidebar"] [class*="active"] span,
+[class*="sidebar"] .selected a,
+[class*="sidebar"] .active a {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+/* ONLY Selected Item Icon is Vibrant Orange and Bold */
+.layout-side-section .active svg,
+.layout-side-section .selected svg,
+.layout-side-section .sidebar-item.selected svg,
+.layout-side-section .sidebar-item.active svg,
+.layout-side-section [class*="selected"] svg,
+.layout-side-section [class*="active"] svg,
+.standard-sidebar .sidebar-item.selected svg,
+.standard-sidebar .sidebar-item.active svg,
+.standard-sidebar .desk-sidebar-item.selected svg,
+.standard-sidebar .desk-sidebar-item.active svg,
+.body-sidebar .selected svg,
+.body-sidebar .active svg,
+.body-sidebar .sidebar-item.selected svg,
+.body-sidebar .sidebar-item.active svg,
+.body-sidebar .desk-sidebar-item.selected svg,
+.body-sidebar .desk-sidebar-item.active svg,
+.body-sidebar [class*="selected"] svg,
+.body-sidebar [class*="active"] svg,
+.sidebar-child .selected svg,
+.sidebar-child .active svg,
+.desk-sidebar-item.selected svg,
+.desk-sidebar-item.active svg,
+.desk-sidebar-item[class*="selected"] svg,
+.desk-sidebar-item[class*="active"] svg,
+[class*="sidebar"] .desk-sidebar-item.selected svg,
+[class*="sidebar"] .desk-sidebar-item.active svg,
+[class*="sidebar"] a.active svg,
+[class*="sidebar"] a.selected svg,
+[class*="sidebar"] button.active svg,
+[class*="sidebar"] button.selected svg,
+[class*="sidebar"] .selected .icon,
+[class*="sidebar"] .active .icon,
+[class*="sidebar"] .selected use,
+[class*="sidebar"] .active use {
+    color: #f97316 !important;
+    stroke: #f97316 !important;
+    fill: #f97316 !important;
+    stroke-width: 2.5px !important;
+    font-weight: 700 !important;
+}
+
+.body-sidebar .user-box,
+.body-sidebar [class*="user-profile"],
+.body-sidebar [class*="sidebar-footer"],
+.desk-sidebar [class*="sidebar-footer"] {
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: #94a3b8 !important;
+}
+

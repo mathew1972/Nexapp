@@ -26,12 +26,22 @@ app_license = "mit"
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/nexapp/css/nexapp.css"
-# app_include_js = "/assets/nexapp/js/nexapp.js"
+app_include_css = [
+    "/assets/nexapp/css/crm_custom_sidebar.css",
+    "/assets/nexapp/css/crm_lead_enhancement.css"
+]
+app_include_js = [
+    "/assets/nexapp/js/crm_extensions.js"
+]
 
 # include js, css files in header of web template
-# web_include_css = "/assets/nexapp/css/nexapp.css"
-# web_include_js = "/assets/nexapp/js/nexapp.js"
+web_include_css = [
+    "/assets/nexapp/css/crm_custom_sidebar.css",
+    "/assets/nexapp/css/crm_lead_enhancement.css"
+]
+web_include_js = [
+    "/assets/nexapp/js/crm_extensions.js"
+]
 
 # include custom scss in every website theme (without file extension ".scss")
 # website_theme_scss = "nexapp/public/scss/website"
@@ -85,6 +95,10 @@ app_license = "mit"
 
 # before_install = "nexapp.install.before_install"
 # after_install = "nexapp.install.after_install"
+after_migrate = "nexapp.setup.after_migrate"
+
+# Nexapp CRM Page Renderer — intercepts /crm to inject crm_extensions.js
+page_renderer = "nexapp.crm_page_renderer.NexappCRMPageRenderer"
 
 # Uninstallation
 # ------------
@@ -326,6 +340,10 @@ doctype_list_js = {
 }
 
 doc_events = {
+    "CRM Deal": {
+        "after_insert": "nexapp.api.crm_events.on_deal_created",
+        "before_save": "nexapp.api.crm_events.on_deal_before_save",
+    },
     "Delivery Note": {
         "on_submit": "nexapp.api.update_site_status_on_delivery_note_save",
         "before_save": "nexapp.api.validate_delivery_note"
@@ -336,9 +354,6 @@ doc_events = {
             "nexapp.email_override.set_hd_ticket_sender",
             "nexapp.api.create_hd_ticket_from_communication"
         ]
-    },
-    "Customer": {
-        "after_insert": "nexapp.api.customer_created"
     },
     "Shipment": {
         "on_update": "nexapp.api.update_site_and_stock_management"
@@ -371,9 +386,9 @@ doc_events = {
         "on_cancel": "nexapp.api.update_site_on_installation_note"
     },
     "ToDo": {
-        "after_insert": "nexapp.api.notify_assignment",
-        "after_insert": "nexapp.api.sync_custom_agent_from_todo",
-        "on_update": "nexapp.api.sync_custom_agent_from_todo"
+        # "after_insert": "nexapp.api.notify_assignment",
+        # "after_insert": "nexapp.api.sync_custom_agent_from_todo",
+        # "on_update": "nexapp.api.sync_custom_agent_from_todo"
     },
     "Payment Entry": {
         "on_submit": "nexapp.api.update_expense_claim_status",
@@ -389,11 +404,7 @@ doc_events = {
     },
     "Task": {
         "on_update": "nexapp.api.update_hd_ticket_from_task"
-    },
-    "User": {
-        "after_insert": "nexapp.api.create_user_permission",
-        "on_update": "nexapp.api.create_user_permission"
-    },
+    },    
     "File": {
         "after_insert": "nexapp.api.auto_move_attachments"
     }      
@@ -540,4 +551,17 @@ override_whitelisted_methods = {
 
 
 
+
+
+# Nexapp Studio Vue SPA Routes
+website_route_rules = [
+    {"from_route": "/reports/<path:app_path>", "to_route": "reports"},
+    {"from_route": "/dashboards/<path:app_path>", "to_route": "reports"},
+    {"from_route": "/crm-dashboard/<path:app_path>", "to_route": "reports"},
+]
+website_route_rules.extend([
+    {"from_route": "/reports", "to_route": "reports"},
+    {"from_route": "/dashboards", "to_route": "reports"},
+    {"from_route": "/crm-dashboard", "to_route": "reports"},
+])
 

@@ -1,0 +1,143 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "creation": "2026-08-16 22:59:45.774343",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "deal",
+  "deal_owner",
+  "event_type",
+  "field_name",
+  "old_value",
+  "new_value",
+  "numeric_old_value",
+  "numeric_new_value",
+  "days_pushed",
+  "dwell_days",
+  "event_timestamp",
+  "changed_by"
+ ],
+ "fields": [
+  {
+   "fieldname": "deal",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "CRM Deal",
+   "options": "CRM Deal",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "deal_owner",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Deal Owner",
+   "options": "User",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "event_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Event Type",
+   "options": "CREATED\nSTAGE_CHANGED\nCLOSE_DATE_CHANGED\nPROBABILITY_CHANGED\nVALUE_CHANGED\nOWNER_CHANGED",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "field_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Field Name",
+   "search_index": 1
+  },
+  {
+   "fieldname": "old_value",
+   "fieldtype": "Small Text",
+   "label": "Old Value"
+  },
+  {
+   "fieldname": "new_value",
+   "fieldtype": "Small Text",
+   "label": "New Value"
+  },
+  {
+   "fieldname": "numeric_old_value",
+   "fieldtype": "Float",
+   "label": "Numeric Old Value"
+  },
+  {
+   "fieldname": "numeric_new_value",
+   "fieldtype": "Float",
+   "label": "Numeric New Value"
+  },
+  {
+   "fieldname": "days_pushed",
+   "fieldtype": "Int",
+   "label": "Days Pushed"
+  },
+  {
+   "fieldname": "dwell_days",
+   "fieldtype": "Float",
+   "label": "Dwell Days"
+  },
+  {
+   "fieldname": "event_timestamp",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Event Timestamp",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "changed_by",
+   "fieldtype": "Link",
+   "label": "Changed By",
+   "options": "User"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-08-16 22:59:45.774343",
+ "modified_by": "Administrator",
+ "module": "Nexapp",
+ "name": "CRM Deal Event",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager"
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User"
+  }
+ ],
+ "read_only": 1,
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
